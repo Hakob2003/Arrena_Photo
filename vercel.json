@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "buildCommand": "cd packages/database && npx prisma generate && cd ../../apps/frontend && npm run build",
+  "outputDirectory": "apps/frontend/.next",
+  "framework": "nextjs",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://ai-studio-backend.onrender.com/api/:path*"
+    }
+  ]
+}
