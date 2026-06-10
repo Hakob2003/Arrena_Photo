@@ -1,0 +1,28 @@
+{
+  "name": "ai-template-studio-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "pnpm --parallel --recursive run dev",
+    "build": "pnpm --recursive run build",
+    "start": "pnpm --parallel --recursive run start",
+    "lint": "pnpm --recursive run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "db:generate": "pnpm --filter @ai-studio/database run generate",
+    "db:migrate": "pnpm --filter @ai-studio/database run migrate:deploy",
+    "db:push": "pnpm --filter @ai-studio/database run push",
+    "db:seed": "pnpm --filter @ai-studio/database run seed"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5"
+  }
+}

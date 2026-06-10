@@ -1,0 +1,81 @@
+import React from 'react';
+
+export default function TemplateDetailsPage({ params }: { params: { id: string } }) {
+  // Mock data
+  const template = {
+    id: params.id,
+    name: 'Cyberpunk Neon Portraits',
+    description: 'A highly detailed prompt for generating cyberpunk style portraits with neon lighting. Best used with DALL-E 3 or SDXL.',
+    coverUrl: 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&q=80',
+    price: 4.99,
+    avgRating: 4.8,
+    reviewsCount: 124,
+    downloads: 3000,
+    author: { name: 'NeonDreams', followers: 890 }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 py-12 px-8">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+        {/* Left: Image Gallery */}
+        <div className="space-y-4">
+          <div className="aspect-square w-full rounded-3xl overflow-hidden shadow-2xl">
+            <img src={template.coverUrl} alt="Cover" className="w-full h-full object-cover" />
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-4">
+            {/* Additional gallery images would go here */}
+            {[1,2,3].map(i => (
+              <div key={i} className="w-24 h-24 flex-shrink-0 bg-gray-200 dark:bg-gray-800 rounded-xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-500 transition-all">
+                <img src={template.coverUrl} className="w-full h-full object-cover opacity-60 hover:opacity-100" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: Info & Actions */}
+        <div className="flex flex-col justify-center space-y-6">
+          <div>
+            <h1 className="text-4xl font-extrabold mb-2">{template.name}</h1>
+            <div className="flex items-center gap-4 text-sm text-gray-500">
+              <span className="flex items-center text-yellow-500">
+                ⭐ <span className="ml-1 font-bold">{template.avgRating}</span>
+                <span className="text-gray-400 ml-1">({template.reviewsCount} reviews)</span>
+              </span>
+              <span>•</span>
+              <span>{template.downloads.toLocaleString()} downloads</span>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm flex justify-between items-center">
+            <div>
+              <p className="text-sm text-gray-500 mb-1">Created by</p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full"></div>
+                <div>
+                  <p className="font-bold">{template.author.name}</p>
+                  <p className="text-xs text-gray-400">{template.author.followers} followers</p>
+                </div>
+              </div>
+            </div>
+            <button className="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg font-medium transition-colors">
+              Follow
+            </button>
+          </div>
+
+          <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-300">
+            {template.description}
+          </p>
+
+          <div className="pt-6 border-t border-gray-200 dark:border-gray-800 flex gap-4">
+            <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1">
+              Buy Prompt • ${template.price}
+            </button>
+            <button className="px-6 border border-gray-200 dark:border-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+              ❤️
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

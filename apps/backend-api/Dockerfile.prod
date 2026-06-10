@@ -1,0 +1,42 @@
+# Build Stage
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Enable pnpm or npm
+# Assuming npm for this project
+COPY package*.json ./
+COPY apps/backend-api/package*.json ./apps/backend-api/
+COPY packages/database/package*.json ./packages/database/
+
+RUN npm ci
+
+COPY . .
+
+# Generate Prisma Client
+RUN cd packages/database && npx prisma generate
+
+# Build Backend
+RUN cd apps/backend-api && npm run build
+
+# Production Stage
+FROM node:20-alpine AS production
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY package*.json ./
+COPY apps/backend-api/package*.json ./apps/backend-api/
+COPY packages/database/package*.json ./packages/database/
+
+RUN npm ci --only=production
+
+# Copy built assets
+COPY --from=builder /app/packages/database/node_modules/.prisma ./packages/database/node_modules/.prisma
+COPY --from=builder /app/packages/database/prisma ./packages/database/prisma
+COPY --from=builder /app/apps/backend-api/dist ./apps/backend-api/dist
+
+EXPOSE 4000
+
+CMD ["node", "apps/backend-api/dist/main.js"]

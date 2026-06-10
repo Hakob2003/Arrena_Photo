@@ -1,0 +1,37 @@
+name: Production Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # In a real environment, you might build Docker images and push to GHCR here,
+      # but for a VPS, we can deploy via SSH and trigger docker-compose up --build.
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /opt/ai-studio
+            git pull origin main
+            
+            # Restart services
+            docker-compose -f docker-compose.prod.yml up --build -d
+            
+            # Cleanup old images
+            docker image prune -f
