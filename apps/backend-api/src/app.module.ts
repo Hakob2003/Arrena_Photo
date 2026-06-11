@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { BullModule } from '@nestjs/bullmq';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TemplatesModule } from './templates/templates.module';
 import { MarketplaceModule } from './marketplace/marketplace.module';
+import { GenerationsModule } from './generations/generations.module';
 
 @Module({
   imports: [
@@ -20,6 +22,19 @@ import { MarketplaceModule } from './marketplace/marketplace.module';
       limit: 100, // 100 requests per minute
     }]),
 
+    // Redis & BullMQ
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        connection: {
+          host: configService.get('REDIS_HOST', 'localhost'),
+          port: configService.get('REDIS_PORT', 6379),
+          password: configService.get('REDIS_PASSWORD', ''),
+        },
+      }),
+      inject: [ConfigService],
+    }),
+
     // Core Modules
     PrismaModule,
     
@@ -28,6 +43,7 @@ import { MarketplaceModule } from './marketplace/marketplace.module';
     UsersModule,
     TemplatesModule,
     MarketplaceModule,
+    GenerationsModule,
   ],
 })
 export class AppModule {}
