@@ -19,8 +19,6 @@ export interface GenerationResultDto {
   meta?: any;
 }
 
-// F:\Arrena_Photo\apps\backend-api\src\ai-providers\interfaces\provider-strategy.interface.ts
-import { GenerationParamsDto, GenerationResultDto } from './index';
 
 export interface AiProviderStrategy {
   get id(): string;

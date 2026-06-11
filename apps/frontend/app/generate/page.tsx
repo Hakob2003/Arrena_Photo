@@ -3,30 +3,82 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useGenerationStore, useAuthStore } from '../../store';
 
+import { api } from '../../lib/api';
+
 export default function GeneratorPage() {
   const { prompt, setPrompt, model, setModel, isGenerating, setGenerating, resultImage, setResult } = useGenerationStore();
-  const { deductCredits } = useAuthStore();
+  const { user, login, deductCredits } = useAuthStore();
   const [loadingText, setLoadingText] = useState('Initializing AI...');
+  const [models, setModels] = useState<any[]>([]);
 
-  const handleGenerate = () => {
-    if (!prompt) return;
+  // 1. Auto-login as test user for now (Bypassing UI login page)
+  React.useEffect(() => {
+    if (!user) {
+      api.post('/auth/login', { email: 'test@example.com', password: 'dummy_password' })
+        .then(res => {
+          login(res.data.user, res.data.accessToken);
+        })
+        .catch(err => console.error('Failed to auto-login test user:', err));
+    }
+  }, [user, login]);
+
+  // 2. Fetch Models from backend (Simulated or real if endpoint exists)
+  React.useEffect(() => {
+    // For now, hardcode the seeded models since we don't have a GET /models endpoint yet
+    setModels([
+      { id: 'sdxl-1.0', name: 'Stable Diffusion XL 1.0 (Seed)' },
+      { id: 'dall-e-3', name: 'OpenAI DALL-E 3 (Seed)' }
+    ]);
+  }, []);
+
+  const handleGenerate = async () => {
+    if (!prompt || !user) return;
     setGenerating(true);
     deductCredits(5);
+    setLoadingText('Submitting prompt to backend...');
     
-    // Fake progress simulation
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 10;
-      if (progress === 30) setLoadingText('Loading model weights...');
-      if (progress === 60) setLoadingText('Sampling latents (steps 15/30)...');
-      if (progress === 90) setLoadingText('Decoding VAE image...');
+    try {
+      // Note: We're mapping 'sdxl-1.0' to the actual DB ID. Since we seeded it, we need the UUID.
+      // Wait, we seeded it by name, but we don't know the UUID here!
+      // To fix this without a GET /models endpoint, we will temporarily just send the model name and let the backend resolve it, 
+      // or we just bypass the DB model check in backend for this test.
+      // Actually, let's just assume the backend expects aiModelId. We will send the string name and update the backend to find by name!
       
-      if (progress >= 100) {
-        clearInterval(interval);
-        setGenerating(false);
-        setResult('https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&q=80');
-      }
-    }, 400);
+      const res = await api.post('/generations', {
+        aiModelId: model, // Temporarily sending name, will fix backend to accept name
+        prompt,
+      });
+
+      const generationId = res.data.id;
+      setLoadingText('Waiting in queue (BullMQ)...');
+
+      // Poll every 1 second
+      const poll = setInterval(async () => {
+        try {
+          const statusRes = await api.get(`/generations/${generationId}`);
+          const status = statusRes.data.status;
+          
+          if (status === 'PROCESSING') {
+            setLoadingText('Generation in progress...');
+          } else if (status === 'DONE') {
+            clearInterval(poll);
+            setResult(statusRes.data.result.imageUrl);
+            setGenerating(false);
+          } else if (status === 'FAILED') {
+            clearInterval(poll);
+            alert('Generation failed!');
+            setGenerating(false);
+          }
+        } catch (pollErr) {
+          console.error('Polling error:', pollErr);
+        }
+      }, 1000);
+
+    } catch (err) {
+      console.error(err);
+      alert('Failed to submit generation');
+      setGenerating(false);
+    }
   };
 
   return (
@@ -51,10 +103,9 @@ export default function GeneratorPage() {
             onChange={(e) => setModel(e.target.value)}
             className="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-white mb-4 outline-none"
           >
-            <option value="sdxl-1.0">Stable Diffusion XL 1.0</option>
-            <option value="dall-e-3">OpenAI DALL-E 3</option>
-            <option value="midjourney-v6">Midjourney v6 (Via API)</option>
-            <option value="comfyui">Custom ComfyUI Workflow</option>
+            {models.map(m => (
+              <option key={m.id} value={m.id}>{m.name}</option>
+            ))}
           </select>
 
           {/* Fake settings sliders */}

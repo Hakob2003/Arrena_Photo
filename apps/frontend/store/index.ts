@@ -3,17 +3,19 @@ import { create } from 'zustand';
 // --- Auth Store ---
 interface AuthState {
   user: { id: string; name: string; email: string; role: string } | null;
+  token: string | null;
   credits: number;
-  login: (user: any) => void;
+  login: (user: any, token: string) => void;
   logout: () => void;
   deductCredits: (amount: number) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: { id: 'u1', name: 'John Doe', email: 'john@example.com', role: 'CREATOR' }, // Mock default
+  user: null,
+  token: null,
   credits: 1500,
-  login: (user) => set({ user }),
-  logout: () => set({ user: null }),
+  login: (user, token) => set({ user, token }),
+  logout: () => set({ user: null, token: null }),
   deductCredits: (amount) => set((state) => ({ credits: Math.max(0, state.credits - amount) })),
 }));
 
