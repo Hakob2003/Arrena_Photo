@@ -1,0 +1,20 @@
+services:
+  - name: backend-api
+    github:
+      repository: Hakob2003/Arrena_Photo
+      branch: main
+      build_command: "npm ci && cd packages/database && npx prisma generate && cd ../../apps/backend-api && npm run build"
+      run_command: "cd apps/backend-api && node dist/main.js"
+    ports:
+      - port: 4000
+        protocol: http
+    env:
+      - name: PORT
+        value: "4000"
+      - name: NODE_ENV
+        value: "production"
+      # Остальные секретные переменные (DATABASE_URL, REDIS_HOST и т.д.) нужно задать вручную в панели Koyeb
+    regions:
+      - fra
+    instance_types:
+      - free
