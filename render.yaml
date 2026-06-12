@@ -11,9 +11,10 @@ services:
   # 2. Redis (Поднимаем через Docker-образ как приватный сервис)
   - type: pserv
     name: ai-studio-redis
-    env: docker
+    env: image
     plan: free
-    image: redis:7-alpine
+    image:
+      url: redis:7-alpine
 
   # 3. Backend API (Web Service)
   - type: web
