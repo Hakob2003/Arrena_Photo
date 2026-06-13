@@ -25,13 +25,28 @@ import { GenerationsModule } from './generations/generations.module';
     // Redis & BullMQ
     BullModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        connection: {
-          host: configService.get('REDIS_HOST', 'localhost'),
-          port: configService.get('REDIS_PORT', 6379),
-          password: configService.get('REDIS_PASSWORD', ''),
-        },
-      }),
+      useFactory: async (configService: ConfigService) => {
+        const redisUrl = configService.get('REDIS_URL');
+        if (redisUrl) {
+          const url = new URL(redisUrl);
+          return {
+            connection: {
+              host: url.hostname,
+              port: parseInt(url.port, 10),
+              username: url.username,
+              password: url.password,
+              tls: url.protocol === 'rediss:' ? {} : undefined,
+            },
+          };
+        }
+        return {
+          connection: {
+            host: configService.get('REDIS_HOST', 'localhost'),
+            port: configService.get('REDIS_PORT', 6379),
+            password: configService.get('REDIS_PASSWORD', ''),
+          },
+        };
+      },
       inject: [ConfigService],
     }),
 

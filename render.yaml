@@ -8,13 +8,10 @@ databases:
     plan: free
 
 services:
-  # 2. Redis (Поднимаем через Docker-образ как приватный сервис)
-  - type: pserv
+  # 2. Redis (Встроенный Managed Redis / Valkey на Render)
+  - type: redis # or keyvalue
     name: arrena-photo-redis
-    env: image
     plan: free
-    image:
-      url: redis:7-alpine
 
   # 3. Backend API (Web Service)
   - type: web
@@ -28,29 +25,13 @@ services:
         fromDatabase:
           name: arrena-photo-db
           property: connectionString
-      - key: REDIS_HOST
-        value: "arrena-photo-redis"
-      - key: REDIS_PORT
-        value: "6379"
-
-  # 4. Фоновый Worker (Background Service)
-  - type: worker
-    name: arrena-photo-worker
-    env: node
-    plan: free
-    buildCommand: "pnpm install && pnpm run db:generate && pnpm run build"
-    startCommand: "cd apps/worker && pnpm run start:prod"
-    envVars:
-      - key: DATABASE_URL
-        fromDatabase:
-          name: arrena-photo-db
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: arrena-photo-redis
           property: connectionString
-      - key: REDIS_HOST
-        value: "arrena-photo-redis"
-      - key: REDIS_PORT
-        value: "6379"
 
-  # 5. Frontend (Next.js)
+  # 4. Frontend (Next.js)
   - type: web
     name: arrena-photo-frontend
     env: node
