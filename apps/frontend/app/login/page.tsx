@@ -1,22 +1,49 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store';
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
   const { login } = useAuthStore();
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  // Handle auto-login if token is present in URL (e.g. from OAuth redirect)
+  useEffect(() => {
+    if (token) {
+      try {
+        // Simple JWT decode to get user info
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const user = {
+          id: payload.sub,
+          email: payload.email,
+          role: payload.role,
+          name: payload.email?.split('@')[0] || 'User',
+        };
+        // Store in localStorage for persistence if needed in other places
+        localStorage.setItem('token', token);
+        login(user, token);
+        router.push('/');
+      } catch (err) {
+        console.error('Failed to parse token', err);
+        setError('Неверный токен авторизации');
+      }
+    }
+  }, [token, login, router]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const res = await api.post('/auth/login', { email, password });
+      localStorage.setItem('token', res.data.access_token);
       login(res.data.user, res.data.access_token);
       router.push('/');
     } catch (err: any) {
@@ -84,5 +111,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Загрузка...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
