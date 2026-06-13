@@ -12,6 +12,7 @@ services:
   - type: redis # or keyvalue
     name: arrena-photo-redis
     plan: free
+    ipAllowList: []
 
   # 3. Backend API (Web Service)
   - type: web
