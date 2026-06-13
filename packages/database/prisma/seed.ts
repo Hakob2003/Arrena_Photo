@@ -15,18 +15,31 @@ async function main() {
     },
   });
 
-  // 2. Create Test User
-  const testUser = await prisma.user.upsert({
-    where: { email: 'test@example.com' },
+  // 2. Create Admin User
+  // Password is 'admin123'
+  const adminHash = '$2a$10$EAlG/EoWQ9dTZ8JiIaeAY.k5IDkxmz.HT0EKpq.y2ZI9.H1bkUV9S'; // pre-computed hash for admin123
+  
+  const adminRole = await prisma.role.upsert({
+    where: { name: 'ADMIN' },
     update: {},
     create: {
-      email: 'test@example.com',
-      passwordHash: 'dummy_hash',
-      name: 'Test User',
-      roleId: role.id,
+      name: 'ADMIN',
+      permissions: ['admin:all', 'templates:read', 'generations:create'],
     },
   });
-  console.log('Test User created:', testUser.id);
+
+  const adminUser = await prisma.user.upsert({
+    where: { email: 'admin@arrena.com' },
+    update: {},
+    create: {
+      email: 'admin@arrena.com',
+      passwordHash: adminHash,
+      name: 'Admin',
+      roleId: adminRole.id,
+      emailVerified: new Date(),
+    },
+  });
+  console.log('Admin User created:', adminUser.email);
 
   // 3. Create Storage Provider (needed for generations)
   const storage = await prisma.storageProvider.upsert({
