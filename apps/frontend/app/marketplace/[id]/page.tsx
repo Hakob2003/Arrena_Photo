@@ -1,9 +1,14 @@
 import React from 'react';
 
-export default function TemplateDetailsPage({ params }: { params: { id: string } }) {
+type PageProps = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function TemplateDetailsPage({ params }: PageProps) {
+  const resolvedParams = await params;
   // Mock data
   const template = {
-    id: params.id,
+    id: resolvedParams.id,
     name: 'Cyberpunk Neon Portraits',
     description: 'A highly detailed prompt for generating cyberpunk style portraits with neon lighting. Best used with DALL-E 3 or SDXL.',
     coverUrl: 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&q=80',
