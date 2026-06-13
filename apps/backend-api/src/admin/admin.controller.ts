@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Param, Query, UseGuards, Req, Body } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
@@ -89,6 +89,24 @@ export class AdminController {
   @ApiOperation({ summary: 'Process a payout request' })
   processPayout(@Param('id') id: string) {
     return this.adminService.processPayout(id);
+  }
+
+  // --- API Keys ---
+  @Get('api-providers')
+  @ApiOperation({ summary: 'Get list of AI Providers and global API key status' })
+  getApiProviders(@Req() req) {
+    // Assuming req.user contains the authenticated admin user
+    return this.adminService.getApiProviders(req.user.id);
+  }
+
+  @Post('api-providers/:providerId/key')
+  @ApiOperation({ summary: 'Set global API key for a provider' })
+  updateProviderKey(
+    @Req() req,
+    @Param('providerId') providerId: string,
+    @Body('apiKey') apiKey: string
+  ) {
+    return this.adminService.updateGlobalApiKey(req.user.id, providerId, apiKey);
   }
 }
 

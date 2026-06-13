@@ -5,6 +5,10 @@ import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { FacebookStrategy } from './strategies/facebook.strategy';
+import { VkStrategy } from './strategies/vk.strategy';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -16,9 +20,10 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         signOptions: { expiresIn: '7d' },
       }),
     }),
+    MailModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, FacebookStrategy, VkStrategy],
   exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}

@@ -1,7 +1,8 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Body, HttpCode, HttpStatus, UseGuards, Req, Res, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -21,5 +22,54 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Login successful' })
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
+  }
+
+  @Get('verify')
+  @ApiOperation({ summary: 'Verify email token' })
+  async verifyEmail(@Query('token') token: string) {
+    return this.authService.verifyEmail(token);
+  }
+
+  // --- GOOGLE ---
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {
+    // Redirects to Google
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthCallback(@Req() req, @Res() res) {
+    const { access_token } = await this.authService.handleOAuthLogin('google', req.user);
+    // Redirect back to frontend with token
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?token=${access_token}`);
+  }
+
+  // --- VK ---
+  @Get('vk')
+  @UseGuards(AuthGuard('vkontakte'))
+  async vkAuth() {
+    // Redirects to VK
+  }
+
+  @Get('vk/callback')
+  @UseGuards(AuthGuard('vkontakte'))
+  async vkAuthCallback(@Req() req, @Res() res) {
+    const { access_token } = await this.authService.handleOAuthLogin('vk', req.user);
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?token=${access_token}`);
+  }
+
+  // --- FACEBOOK ---
+  @Get('facebook')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookAuth() {
+    // Redirects to Facebook
+  }
+
+  @Get('facebook/callback')
+  @UseGuards(AuthGuard('facebook'))
+  async facebookAuthCallback(@Req() req, @Res() res) {
+    const { access_token } = await this.authService.handleOAuthLogin('facebook', req.user);
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?token=${access_token}`);
   }
 }

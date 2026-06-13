@@ -161,5 +161,49 @@ export class AdminService {
       data: { status: 'COMPLETED' }
     });
   }
+
+  // --- API Keys (AI Providers) ---
+  async getApiProviders(adminId: string) {
+    const providers = await this.prisma.aIProvider.findMany({
+      include: {
+        connections: {
+          where: { userId: adminId },
+          select: { id: true, encryptedApiKey: true }
+        }
+      }
+    });
+
+    return providers.map(p => ({
+      id: p.id,
+      name: p.name,
+      isGlobal: p.isGlobal,
+      hasKeySet: p.connections.length > 0 && !!p.connections[0].encryptedApiKey
+    }));
+  }
+
+  async updateGlobalApiKey(adminId: string, providerId: string, apiKey: string) {
+    // In a real app, use AES-256-GCM encryption here.
+    // For demonstration, we just base64 it or store directly if it's an MVP
+    const encryptedKey = Buffer.from(apiKey).toString('base64'); // Mock encryption
+
+    const existingConnection = await this.prisma.aIConnection.findUnique({
+      where: { userId_providerId: { userId: adminId, providerId } }
+    });
+
+    if (existingConnection) {
+      return this.prisma.aIConnection.update({
+        where: { id: existingConnection.id },
+        data: { encryptedApiKey: encryptedKey }
+      });
+    }
+
+    return this.prisma.aIConnection.create({
+      data: {
+        userId: adminId,
+        providerId,
+        encryptedApiKey: encryptedKey
+      }
+    });
+  }
 }
 

@@ -16,6 +16,7 @@ const ADMIN_LINKS = [
   ]},
   { section: 'Configuration', items: [
     { name: 'AI Providers', href: '/admin/ai-providers', icon: '🤖' },
+    { name: 'API Keys', href: '/admin/api-keys', icon: '🔑' },
     { name: 'Cloud Storage', href: '/admin/cloud', icon: '☁️' },
     { name: 'Billing', href: '/admin/billing', icon: '💳' },
   ]},
