@@ -1,12 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store';
 
-export default function VerifyPage() {
+function VerifyContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -36,7 +36,7 @@ export default function VerifyPage() {
         setStatus('error');
         setMessage(err.response?.data?.message || 'Не удалось подтвердить Email.');
       });
-  }, [token]);
+  }, [token, router, login]);
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
@@ -62,5 +62,13 @@ export default function VerifyPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Загрузка...</div>}>
+      <VerifyContent />
+    </Suspense>
   );
 }
