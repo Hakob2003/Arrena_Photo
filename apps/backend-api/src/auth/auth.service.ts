@@ -59,6 +59,28 @@ export class AuthService {
     return { message: 'Registration successful. Please check your email to verify your account.' };
   }
 
+  async setupAdmin() {
+    const adminHash = '$2a$10$EAlG/EoWQ9dTZ8JiIaeAY.k5IDkxmz.HT0EKpq.y2ZI9.H1bkUV9S'; // admin123
+    let adminRole = await this.prisma.role.findUnique({ where: { name: 'ADMIN' } });
+    if (!adminRole) {
+      adminRole = await this.prisma.role.create({
+        data: { name: 'ADMIN', permissions: ['admin:all', 'templates:read', 'generations:create'] },
+      });
+    }
+    const adminUser = await this.prisma.user.upsert({
+      where: { email: 'admin@arrena.com' },
+      update: { passwordHash: adminHash, roleId: adminRole.id, emailVerified: new Date() },
+      create: {
+        email: 'admin@arrena.com',
+        passwordHash: adminHash,
+        name: 'Admin',
+        roleId: adminRole.id,
+        emailVerified: new Date(),
+      },
+    });
+    return { message: 'Admin account setup complete', email: adminUser.email };
+  }
+
   async verifyEmail(token: string) {
     const verification = await this.prisma.verificationToken.findUnique({
       where: { token },

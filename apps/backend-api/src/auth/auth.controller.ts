@@ -24,6 +24,12 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
+  @Get('setup-admin')
+  @ApiOperation({ summary: 'Setup initial admin account' })
+  async setupAdmin() {
+    return this.authService.setupAdmin();
+  }
+
   @Get('verify')
   @ApiOperation({ summary: 'Verify email token' })
   async verifyEmail(@Query('token') token: string) {
