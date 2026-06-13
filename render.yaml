@@ -31,6 +31,10 @@ services:
           type: redis
           name: arrena-photo-redis
           property: connectionString
+      - key: NODE_VERSION
+        value: "20.x"
+      - key: PNPM_VERSION
+        value: "8.15.6"
 
   # 4. Frontend (Next.js)
   - type: web
@@ -42,3 +46,7 @@ services:
     envVars:
       - key: NEXT_PUBLIC_API_URL
         value: "https://arrena-photo-backend.onrender.com/v1"
+      - key: NODE_VERSION
+        value: "20.x"
+      - key: PNPM_VERSION
+        value: "8.15.6"

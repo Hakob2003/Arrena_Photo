@@ -1,0 +1,37 @@
+Список поддерживаемых глобальных AI-провайдеров для платформы AI Template Studio:
+
+1. OpenAI
+   - Официальный сайт: https://openai.com
+   - Получить ключ: https://platform.openai.com/api-keys
+
+2. Google Gemini
+   - Официальный сайт: https://deepmind.google/technologies/gemini/
+   - Получить ключ: https://aistudio.google.com/app/apikey
+
+3. Leonardo AI
+   - Официальный сайт: https://leonardo.ai
+   - Получить ключ: https://app.leonardo.ai/api
+
+4. Midjourney
+   - Официальный сайт: https://www.midjourney.com
+   - Примечание: Официального публичного API пока нет, используются неофициальные прокси-сервисы (например, GoAPI, MyMidjourney и т.д.)
+
+5. Replicate
+   - Официальный сайт: https://replicate.com
+   - Получить ключ: https://replicate.com/account/api-tokens
+
+6. Fal.ai
+   - Официальный сайт: https://fal.ai
+   - Получить ключ: https://fal.ai/dashboard/keys
+
+7. ComfyUI (Local/Remote)
+   - Официальный репозиторий: https://github.com/comfyanonymous/ComfyUI
+   - Примечание: Ключ не требуется, если запускается локально. Требуется URL для доступа к серверу.
+
+8. RunPod
+   - Официальный сайт: https://www.runpod.io
+   - Получить ключ: https://www.runpod.io/console/serverless/user/settings
+
+9. Stability AI
+   - Официальный сайт: https://stability.ai
+   - Получить ключ: https://platform.stability.ai/account/keys

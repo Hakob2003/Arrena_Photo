@@ -74,6 +74,7 @@ model User {
   auditLogs           AuditLog[]
   aiConnections       AIConnection[]
   storageConnections  StorageConnection[]
+  aiUsages            AIUsage[]
 
   // Social & Marketplace
   favorites           TemplateFav[]
@@ -216,7 +217,9 @@ model AIModel {
   id          String     @id @default(uuid())
   providerId  String
   name        String     // e.g. "sdxl-1.0", "dall-e-3"
+  slug        String     @unique // e.g. "openrouter/free"
   endpoint    String?
+  isFree      Boolean    @default(false)
   isActive    Boolean    @default(true)
 
   provider    AIProvider @relation(fields: [providerId], references: [id])
@@ -235,6 +238,20 @@ model AIConnection {
   provider   AIProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
 
   @@unique([userId, providerId])
+}
+
+model AIUsage {
+  id           String   @id @default(uuid())
+  userId       String
+  model        String   // the model slug
+  inputTokens  Int
+  outputTokens Int
+  totalTokens  Int
+  createdAt    DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Generation {

@@ -3,12 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import api from '@/lib/api';
+import { api } from '@/lib/api';
+import { useAuthStore } from '@/store';
 
 export default function VerifyPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
+  const login = useAuthStore((state) => state.login);
   
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Проверка токена...');
@@ -21,11 +23,16 @@ export default function VerifyPage() {
     }
 
     api.get(`/auth/verify?token=${token}`)
-      .then((res) => {
+      .then((res: any) => {
         setStatus('success');
         setMessage(res.data.message || 'Email успешно подтвержден!');
+        // Automatically log the user in if the token is provided
+        if (res.data && res.data.token && res.data.user) {
+          login(res.data.user, res.data.token);
+          setTimeout(() => router.push('/'), 2000);
+        }
       })
-      .catch((err) => {
+      .catch((err: any) => {
         setStatus('error');
         setMessage(err.response?.data?.message || 'Не удалось подтвердить Email.');
       });

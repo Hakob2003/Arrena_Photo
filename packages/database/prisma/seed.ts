@@ -49,6 +49,7 @@ async function main() {
     { name: 'Fal.ai', isGlobal: true },
     { name: 'ComfyUI (Local/Remote)', isGlobal: true },
     { name: 'RunPod', isGlobal: true },
+    { name: 'OpenRouter', isGlobal: true },
   ];
 
   const createdProviders = {};
@@ -62,27 +63,47 @@ async function main() {
   const provider = createdProviders['Stability AI'];
 
   // 5. Create AI Model
+  const openRouterProvider = createdProviders['OpenRouter'];
+  const orModels = [
+    { name: 'OpenRouter Free', slug: 'openrouter/free', providerId: openRouterProvider.id, isFree: true, isActive: true },
+    { name: 'OpenRouter Auto', slug: 'openrouter/auto', providerId: openRouterProvider.id, isFree: false, isActive: true },
+    { name: 'Qwen 3 Coder', slug: 'qwen/qwen3-coder:free', providerId: openRouterProvider.id, isFree: true, isActive: true },
+    { name: 'DeepSeek R1', slug: 'deepseek/deepseek-r1:free', providerId: openRouterProvider.id, isFree: true, isActive: true },
+  ];
+
+  for (const model of orModels) {
+    await prisma.aIModel.upsert({
+      where: { slug: model.slug },
+      update: {},
+      create: model,
+    });
+  }
+
   const model1 = await prisma.aIModel.upsert({
-    where: { providerId_name: { providerId: provider.id, name: 'sdxl-1.0' } },
+    where: { slug: 'stability-ai/sdxl-1.0' },
     update: {},
     create: {
       name: 'sdxl-1.0',
+      slug: 'stability-ai/sdxl-1.0',
       providerId: provider.id,
       isActive: true,
+      isFree: false
     },
   });
 
   const model2 = await prisma.aIModel.upsert({
-    where: { providerId_name: { providerId: provider.id, name: 'dall-e-3' } },
+    where: { slug: 'openai/dall-e-3' },
     update: {},
     create: {
       name: 'dall-e-3',
-      providerId: provider.id,
+      slug: 'openai/dall-e-3',
+      providerId: createdProviders['OpenAI'].id,
       isActive: true,
+      isFree: false
     },
   });
 
-  console.log('AI Models created:', model1.name, model2.name);
+  console.log('AI Models seeded successfully');
   console.log('--- SEED COMPLETE ---');
 }
 
