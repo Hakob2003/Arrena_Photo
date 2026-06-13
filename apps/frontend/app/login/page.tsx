@@ -31,7 +31,11 @@ function LoginContent() {
         // Store in localStorage for persistence if needed in other places
         localStorage.setItem('token', token);
         login(user, token);
-        router.push('/');
+        if (user.role === 'ADMIN') {
+          router.push('/admin');
+        } else {
+          router.push('/');
+        }
       } catch (err) {
         console.error('Failed to parse token', err);
         setError('Неверный токен авторизации');
@@ -45,7 +49,11 @@ function LoginContent() {
       const res = await api.post('/auth/login', { email, password });
       localStorage.setItem('token', res.data.access_token);
       login(res.data.user, res.data.access_token);
-      router.push('/');
+      if (res.data.user.role === 'ADMIN') {
+        router.push('/admin');
+      } else {
+        router.push('/');
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed');
     }

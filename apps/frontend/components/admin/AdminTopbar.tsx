@@ -1,9 +1,11 @@
 "use client";
 import React from 'react';
 import { usePathname } from 'next/navigation';
+import { useAuthStore } from '../../store';
 
 export function AdminTopbar() {
   const pathname = usePathname();
+  const { user, logout } = useAuthStore();
   
   // Create simple breadcrumbs from pathname
   const paths = pathname?.split('/').filter(Boolean) || [];
@@ -25,8 +27,18 @@ export function AdminTopbar() {
       <div className="flex items-center gap-4">
         <button className="text-gray-400 hover:text-white text-sm">Feedback</button>
         <button className="text-gray-400 hover:text-white text-sm">Docs</button>
+        <button 
+          onClick={() => {
+            logout();
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+          }}
+          className="text-gray-400 hover:text-white text-sm transition-colors"
+        >
+          Выйти
+        </button>
         <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-700 to-gray-500 flex items-center justify-center text-xs font-bold text-white border border-white/10 cursor-pointer">
-          A
+          {user?.name?.charAt(0)?.toUpperCase() || 'A'}
         </div>
       </div>
     </header>
