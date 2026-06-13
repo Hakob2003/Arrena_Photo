@@ -12,8 +12,8 @@
   ],
   "scripts": {
     "dev": "pnpm --parallel --recursive run dev",
-    "build": "pnpm --recursive run build",
-    "start": "pnpm --parallel --recursive run start",
+    "build": "if [ \"$RENDER_SERVICE_NAME\" = \"arrena-photo-backend\" ]; then pnpm run db:generate && pnpm --filter @ai-studio/backend-api run build; elif [ \"$RENDER_SERVICE_NAME\" = \"arrena-photo-frontend\" ]; then cd apps/frontend && npm run build; else pnpm --recursive run build; fi",
+    "start": "if [ \"$RENDER_SERVICE_NAME\" = \"arrena-photo-backend\" ]; then pnpm run db:push && cd apps/backend-api && pnpm run start:prod; elif [ \"$RENDER_SERVICE_NAME\" = \"arrena-photo-frontend\" ]; then cd apps/frontend && npm start; else pnpm --parallel --recursive run start; fi",
     "lint": "pnpm --recursive run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "db:generate": "pnpm --filter @ai-studio/database run generate",
