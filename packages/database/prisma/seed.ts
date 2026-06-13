@@ -38,15 +38,28 @@ async function main() {
     },
   });
 
-  // 4. Create AI Provider
-  const provider = await prisma.aIProvider.upsert({
-    where: { name: 'Stability AI' },
-    update: {},
-    create: {
-      name: 'Stability AI',
-      isGlobal: true,
-    },
-  });
+  // 4. Create AI Providers
+  const providers = [
+    { name: 'Stability AI', isGlobal: true },
+    { name: 'OpenAI', isGlobal: true },
+    { name: 'Google Gemini', isGlobal: true },
+    { name: 'Leonardo AI', isGlobal: true },
+    { name: 'Midjourney', isGlobal: true },
+    { name: 'Replicate', isGlobal: true },
+    { name: 'Fal.ai', isGlobal: true },
+    { name: 'ComfyUI (Local/Remote)', isGlobal: true },
+    { name: 'RunPod', isGlobal: true },
+  ];
+
+  const createdProviders = {};
+  for (const p of providers) {
+    createdProviders[p.name] = await prisma.aIProvider.upsert({
+      where: { name: p.name },
+      update: {},
+      create: p,
+    });
+  }
+  const provider = createdProviders['Stability AI'];
 
   // 5. Create AI Model
   const model1 = await prisma.aIModel.upsert({
