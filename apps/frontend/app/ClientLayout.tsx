@@ -2,11 +2,31 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { Sidebar } from '../components/layout/Sidebar';
+import { useAuthStore } from '../store';
 import { Topbar } from '../components/layout/Topbar';
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith('/admin');
+  const { login } = useAuthStore();
+
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token && !useAuthStore.getState().user) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const user = {
+          id: payload.sub,
+          email: payload.email,
+          role: payload.role,
+          name: payload.email?.split('@')[0] || 'User',
+        };
+        login(user, token);
+      } catch (err) {
+        localStorage.removeItem('token');
+      }
+    }
+  }, [login]);
 
   if (isAdmin) {
     // Return children directly; admin/layout.tsx will handle the admin UI
