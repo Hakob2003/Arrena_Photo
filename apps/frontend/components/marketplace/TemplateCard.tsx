@@ -26,7 +26,7 @@ export const TemplateCard: React.FC<{ template: TemplateProps }> = ({ template }
           </div>
         )}
         <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full">
-          {template.price === null || template.price === 0 ? 'FREE' : `$${template.price.toFixed(2)}`}
+          {template.price == null || template.price === 0 ? 'FREE' : `$${template.price.toFixed(2)}`}
         </div>
       </div>
       
