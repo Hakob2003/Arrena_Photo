@@ -1,15 +1,39 @@
 "use client";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { PageHeader } from '../../../components/admin/PageHeader';
 import { DataTable } from '../../../components/admin/DataTable';
 import { Badge } from '../../../components/admin/Badge';
+import { adminApi } from '../../../lib/admin.api';
 
 export default function AdminMarketplace() {
-  const payouts = [
-    { id: 'p1', user: 'creator@studio.ai', amount: '$540.00', date: '2026-06-09', status: 'PENDING' },
-    { id: 'p2', user: 'alice_design', amount: '$1,200.00', date: '2026-06-08', status: 'COMPLETED' },
-    { id: 'p3', user: 'bob_arts', amount: '$50.00', date: '2026-06-08', status: 'COMPLETED' },
-  ];
+  const [payouts, setPayouts] = useState<any[]>([]);
+  const [metrics, setMetrics] = useState({ totalPaid: 0, pendingAmount: 0 });
+  const [loading, setLoading] = useState(true);
+
+  const fetchPayouts = () => {
+    setLoading(true);
+    adminApi.getPayouts(1, 50).then((data) => {
+      const formatted = data.payouts.map((p: any) => ({
+        id: p.id,
+        user: p.user?.email || 'Unknown',
+        amount: `$${p.amount.toFixed(2)}`,
+        date: new Date(p.createdAt).toISOString().split('T')[0],
+        status: p.status,
+      }));
+      setPayouts(formatted);
+      setMetrics({ totalPaid: data.totalPaid, pendingAmount: data.pendingAmount });
+      setLoading(false);
+    }).catch(console.error);
+  };
+
+  useEffect(() => {
+    fetchPayouts();
+  }, []);
+
+  const handleProcessPayment = async (id: string) => {
+    await adminApi.processPayout(id);
+    fetchPayouts();
+  };
 
   return (
     <>
@@ -21,35 +45,39 @@ export default function AdminMarketplace() {
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="p-4 border border-white/10 rounded-lg bg-[#0a0a0a]">
            <p className="text-sm text-gray-500">Pending Payouts</p>
-           <p className="text-2xl font-semibold text-white">$540.00</p>
+           <p className="text-2xl font-semibold text-white">${metrics.pendingAmount.toFixed(2)}</p>
         </div>
         <div className="p-4 border border-white/10 rounded-lg bg-[#0a0a0a]">
            <p className="text-sm text-gray-500">Total Paid (All Time)</p>
-           <p className="text-2xl font-semibold text-white">$84,200.00</p>
+           <p className="text-2xl font-semibold text-white">${metrics.totalPaid.toFixed(2)}</p>
         </div>
         <div className="p-4 border border-white/10 rounded-lg bg-[#0a0a0a]">
-           <p className="text-sm text-gray-500">Platform Revenue (10% Cut)</p>
-           <p className="text-2xl font-semibold text-green-400">$9,355.00</p>
+           <p className="text-sm text-gray-500">Platform Revenue (10% Cut Est.)</p>
+           <p className="text-2xl font-semibold text-green-400">${(metrics.totalPaid * 0.1).toFixed(2)}</p>
         </div>
       </div>
 
       <h3 className="text-lg font-medium text-white mb-4">Payout Requests</h3>
-      <DataTable 
-        data={payouts}
-        columns={[
-          { key: 'user', header: 'Creator Email' },
-          { key: 'amount', header: 'Amount', render: (r) => <span className="font-mono text-white">{r.amount}</span> },
-          { key: 'date', header: 'Request Date' },
-          { key: 'status', header: 'Status', render: (r) => (
-            <Badge variant={r.status === 'COMPLETED' ? 'success' : 'warning'}>{r.status}</Badge>
-          )},
-          { key: 'actions', header: '', render: (r) => (
-             r.status === 'PENDING' && (
-               <button className="text-xs px-2 py-1 bg-white text-black rounded hover:bg-gray-200 font-medium">Process Payment</button>
-             )
-          )}
-        ]}
-      />
+      {loading ? (
+        <div className="text-gray-400 p-8 text-center">Loading payouts...</div>
+      ) : (
+        <DataTable 
+          data={payouts}
+          columns={[
+            { key: 'user', header: 'Creator Email' },
+            { key: 'amount', header: 'Amount', render: (r: any) => <span className="font-mono text-white">{r.amount}</span> },
+            { key: 'date', header: 'Request Date' },
+            { key: 'status', header: 'Status', render: (r: any) => (
+              <Badge variant={r.status === 'COMPLETED' ? 'success' : 'warning'}>{r.status}</Badge>
+            )},
+            { key: 'actions', header: '', render: (r: any) => (
+               r.status === 'PENDING' && (
+                 <button onClick={() => handleProcessPayment(r.id)} className="text-xs px-2 py-1 bg-white text-black rounded hover:bg-gray-200 font-medium">Process Payment</button>
+               )
+            )}
+          ]}
+        />
+      )}
     </>
   );
 }

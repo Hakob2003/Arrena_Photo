@@ -1,12 +1,20 @@
-import React from 'react';
+"use client";
+import React, { useEffect, useState } from 'react';
 import { PageHeader } from '../../components/admin/PageHeader';
+import { adminApi } from '../../lib/admin.api';
 
 export default function AdminDashboard() {
+  const [stats, setStats] = useState<any>(null);
+
+  useEffect(() => {
+    adminApi.getDashboardStats().then(setStats).catch(console.error);
+  }, []);
+
   const kpis = [
-    { label: 'Total Revenue', value: '$124,500.00', trend: '+12.5%' },
-    { label: 'Active Users', value: '14,205', trend: '+5.2%' },
-    { label: 'Total Generations', value: '1.2M', trend: '+18.1%' },
-    { label: 'API Errors', value: '0.02%', trend: '-0.01%', good: true },
+    { label: 'Total Revenue', value: stats ? `$${stats.revenue.toFixed(2)}` : '...', trend: '+0.0%' },
+    { label: 'Total Users', value: stats ? stats.users.toString() : '...', trend: '+0.0%' },
+    { label: 'Total Templates', value: stats ? stats.templates.toString() : '...', trend: '+0.0%' },
+    { label: 'Total Generations', value: stats ? stats.generations.toString() : '...', trend: '+0.0%' },
   ];
 
   return (
@@ -24,7 +32,7 @@ export default function AdminDashboard() {
             <p className="text-sm text-gray-500 mb-1">{kpi.label}</p>
             <div className="flex items-end justify-between">
               <h3 className="text-2xl font-semibold text-white tracking-tight">{kpi.value}</h3>
-              <span className={`text-xs font-medium ${kpi.trend.startsWith('+') && !kpi.good ? 'text-green-400' : 'text-red-400'}`}>
+              <span className={`text-xs font-medium text-gray-500`}>
                 {kpi.trend}
               </span>
             </div>

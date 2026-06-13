@@ -8,6 +8,12 @@ import { UsersModule } from './users/users.module';
 import { TemplatesModule } from './templates/templates.module';
 import { MarketplaceModule } from './marketplace/marketplace.module';
 import { GenerationsModule } from './generations/generations.module';
+import { RolesModule } from './roles/roles.module';
+import { StorageModule } from './storage/storage.module';
+import { AdminModule } from './admin/admin.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { BillingModule } from './billing/billing.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -59,6 +65,12 @@ import { GenerationsModule } from './generations/generations.module';
     TemplatesModule,
     MarketplaceModule,
     GenerationsModule,
+    RolesModule,
+    StorageModule,
+    AdminModule,
+    AnalyticsModule,
+    BillingModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}
