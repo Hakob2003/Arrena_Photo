@@ -47,14 +47,26 @@ function LoginContent() {
     e.preventDefault();
     try {
       const res = await api.post('/auth/login', { email, password });
-      localStorage.setItem('token', res.data.access_token);
-      login(res.data.user, res.data.access_token);
-      if (res.data.user.role === 'ADMIN') {
+      const token = res.data.access_token;
+      localStorage.setItem('token', token);
+      
+      // Decode JWT token
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const user = {
+        id: payload.sub,
+        email: payload.email,
+        role: payload.role,
+        name: payload.email?.split('@')[0] || 'User',
+      };
+
+      login(user, token);
+      if (user.role === 'ADMIN') {
         router.push('/admin');
       } else {
         router.push('/');
       }
     } catch (err: any) {
+      console.error(err);
       setError(err.response?.data?.message || 'Login failed');
     }
   };
