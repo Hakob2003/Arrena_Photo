@@ -16,6 +16,7 @@ import { BillingModule } from './billing/billing.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { MailModule } from './mail/mail.module';
 import { AiModule } from './modules/ai/ai.module';
+import { GoogleDriveModule } from './integrations/google-drive/google-drive.module';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { AiModule } from './modules/ai/ai.module';
     NotificationsModule,
     MailModule,
     AiModule,
+    GoogleDriveModule,
   ],
 })
 export class AppModule {}

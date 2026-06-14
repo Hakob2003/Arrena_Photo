@@ -123,7 +123,7 @@ export class AuthService {
   }
 
   async handleOAuthLogin(provider: string, profile: any) {
-    const { email, name, providerAccountId, accessToken } = profile;
+    const { email, name, providerAccountId, accessToken, refreshToken } = profile;
 
     if (!email) {
       throw new BadRequestException(`No email provided by ${provider}`);
@@ -150,6 +150,7 @@ export class AuthService {
               provider,
               providerAccountId,
               accessToken,
+              refreshToken,
             },
           },
         },
@@ -162,7 +163,16 @@ export class AuthService {
       });
       if (!existingOAuth) {
         await this.prisma.oAuthAccount.create({
-          data: { userId: user.id, provider, providerAccountId, accessToken }
+          data: { userId: user.id, provider, providerAccountId, accessToken, refreshToken }
+        });
+      } else {
+        // Update tokens if they changed
+        await this.prisma.oAuthAccount.update({
+          where: { id: existingOAuth.id },
+          data: { 
+            accessToken, 
+            ...(refreshToken ? { refreshToken } : {}) 
+          }
         });
       }
       
