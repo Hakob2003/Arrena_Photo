@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useUIStore } from '../../store';
 
 const ADMIN_LINKS = [
   { section: 'Overview', items: [
@@ -28,17 +29,38 @@ const ADMIN_LINKS = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const { isSidebarOpen, setSidebarOpen } = useUIStore();
 
   return (
-    <aside className="w-64 h-full bg-[#0a0a0a] border-r border-white/5 flex flex-col text-sm">
+    <>
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 z-40 md:hidden backdrop-blur-sm transition-opacity"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-64 bg-[#0a0a0a] border-r border-white/5 flex flex-col text-sm
+        transition-transform duration-300 ease-in-out
+        md:relative md:translate-x-0
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
       {/* Brand Header */}
-      <div className="h-14 flex items-center px-6 border-b border-white/5">
+      <div className="h-14 flex items-center justify-between px-6 border-b border-white/5">
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 bg-white text-black rounded flex items-center justify-center font-bold text-xs">
             ▲
           </div>
-          <span className="font-semibold text-white tracking-tight">Vercel Style Admin</span>
+          <span className="font-semibold text-white tracking-tight">Admin Panel</span>
         </div>
+        <button 
+          className="md:hidden text-gray-400 hover:text-white p-2"
+          onClick={() => setSidebarOpen(false)}
+        >
+          ✕
+        </button>
       </div>
 
       {/* Navigation */}
@@ -78,6 +100,7 @@ export function AdminSidebar() {
           <span>Back to App</span>
         </Link>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

@@ -55,3 +55,14 @@ export const useGenerationStore = create<GenerationState>((set) => ({
   setProgress: (progress) => set({ progress }),
   setResult: (resultImage) => set({ resultImage }),
 }));
+
+// --- UI Store ---
+interface UIState {
+  isSidebarOpen: boolean;
+  setSidebarOpen: (v: boolean) => void;
+}
+
+export const useUIStore = create<UIState>((set) => ({
+  isSidebarOpen: false,
+  setSidebarOpen: (isSidebarOpen) => set({ isSidebarOpen }),
+}));
