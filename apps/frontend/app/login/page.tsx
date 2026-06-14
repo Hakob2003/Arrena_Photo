@@ -82,12 +82,13 @@ function LoginContent() {
         
         {error && <div className="mb-4 p-3 bg-red-100 text-red-600 rounded-md text-sm">{error}</div>}
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
             <input 
               type="email" 
               required
+              autoComplete="off"
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -98,6 +99,7 @@ function LoginContent() {
             <input 
               type="password" 
               required
+              autoComplete="new-password"
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
