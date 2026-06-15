@@ -111,9 +111,9 @@ export class GoogleDriveService {
 
     const drive = google.drive({ version: 'v3', auth: this.oauth2Client });
 
-    let folderId = await this.getFolderId(drive, 'AI Studio');
+    let folderId = await this.getFolderId(drive, 'ArrenaPhoto');
     if (!folderId) {
-      folderId = await this.createFolder(drive, 'AI Studio');
+      folderId = await this.createFolder(drive, 'ArrenaPhoto');
     }
 
     try {
