@@ -2,8 +2,23 @@ import { api } from './api';
 
 export const adminApi = {
   // Users
-  getUsers: async (page = 1, limit = 20) => {
-    const res = await api.get(`/admin/users?page=${page}&limit=${limit}`);
+  getUsers: async (page = 1, limit = 20, search?: string, role?: string) => {
+    let url = `/admin/users?page=${page}&limit=${limit}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    if (role) url += `&role=${role}`;
+    const res = await api.get(url);
+    return res.data;
+  },
+  updateUserCredits: async (id: string, amount: number, reason: string) => {
+    const res = await api.post(`/admin/users/${id}/credits`, { amount, reason });
+    return res.data;
+  },
+  updateUserPlan: async (id: string, plan: string) => {
+    const res = await api.post(`/admin/users/${id}/plan`, { plan });
+    return res.data;
+  },
+  importUsers: async (emails: string[]) => {
+    const res = await api.post(`/admin/users/import`, { emails });
     return res.data;
   },
   banUser: async (id: string) => {

@@ -6,18 +6,71 @@ export class AdminService {
   constructor(private prisma: PrismaService) {}
 
   async getDashboardStats() {
-    const [usersCount, templatesCount, generationsCount, totalRevenue] = await Promise.all([
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    const [
+      usersCount,
+      usersDay,
+      usersWeek,
+      usersMonth,
+      templatesCount,
+      generationsCount,
+      generationsSuccess,
+      generationsFailed,
+      totalRevenue,
+      activeSubscriptions,
+      popularTemplates
+    ] = await Promise.all([
       this.prisma.user.count(),
+      this.prisma.user.count({ where: { createdAt: { gte: oneDayAgo } } }),
+      this.prisma.user.count({ where: { createdAt: { gte: oneWeekAgo } } }),
+      this.prisma.user.count({ where: { createdAt: { gte: oneMonthAgo } } }),
       this.prisma.template.count(),
       this.prisma.generation.count(),
+      this.prisma.generation.count({ where: { status: 'DONE' } }),
+      this.prisma.generation.count({ where: { status: 'FAILED' } }),
       this.prisma.purchase.aggregate({ _sum: { amount: true } }),
+      this.prisma.subscription.count({ where: { plan: { not: 'FREE' } } }),
+      this.prisma.template.findMany({
+        take: 5,
+        orderBy: { downloadCount: 'desc' },
+        select: { id: true, name: true, downloadCount: true }
+      })
     ]);
+
+    // For chart data, generating a 7-day mock trend for now.
+    // In production, this would be a group-by query using prisma.$queryRaw
+    const chartData = Array.from({ length: 7 }).map((_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (6 - i));
+      return {
+        date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        users: Math.floor(Math.random() * 50) + 10,
+        revenue: Math.floor(Math.random() * 500) + 50,
+        generations: Math.floor(Math.random() * 200) + 100,
+      };
+    });
 
     return {
       users: usersCount,
+      newUsers: {
+        day: usersDay,
+        week: usersWeek,
+        month: usersMonth
+      },
       templates: templatesCount,
-      generations: generationsCount,
+      generations: {
+        total: generationsCount,
+        success: generationsSuccess,
+        failed: generationsFailed
+      },
       revenue: totalRevenue._sum.amount || 0,
+      activeSubscriptions,
+      popularTemplates,
+      chartData
     };
   }
 
@@ -30,18 +83,112 @@ export class AdminService {
   }
 
   // --- Users ---
-  async getAllUsers(page: number = 1, limit: number = 20) {
+  async getAllUsers(page: number = 1, limit: number = 20, search?: string, roleName?: string) {
     const skip = (page - 1) * limit;
+    
+    const where: any = {};
+    if (search) {
+      where.OR = [
+        { email: { contains: search, mode: 'insensitive' } },
+        { name: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+    if (roleName) {
+      where.role = { name: roleName.toUpperCase() };
+    }
+
     const [users, total] = await Promise.all([
       this.prisma.user.findMany({
+        where,
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
-        include: { role: true },
+        include: { role: true, subscriptions: { orderBy: { createdAt: 'desc' }, take: 1 } },
       }),
-      this.prisma.user.count(),
+      this.prisma.user.count({ where }),
     ]);
+    
+    // Calculate generation counts manually or add to Prisma schema if needed.
+    // For now, let's fetch generation counts for these users in a separate query if performance allows
+    // but to be safe, we just return the user data as is.
+    
     return { users, total, page, limit };
+  }
+
+  async updateUserCredits(userId: string, amount: number, reason: string) {
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        credits: { increment: amount }
+      }
+    });
+
+    await this.prisma.auditLog.create({
+      data: {
+        userId,
+        action: amount > 0 ? 'CREDITS_ADDED' : 'CREDITS_REMOVED',
+        details: { amount, reason }
+      }
+    });
+
+    return user;
+  }
+
+  async updateUserPlan(userId: string, plan: string) {
+    // Basic logic: update or create a subscription
+    const existingSub = await this.prisma.subscription.findFirst({
+      where: { userId, status: 'ACTIVE' }
+    });
+
+    if (existingSub) {
+      await this.prisma.subscription.update({
+        where: { id: existingSub.id },
+        data: { plan, endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // 30 days
+      });
+    } else {
+      await this.prisma.subscription.create({
+        data: {
+          userId,
+          plan,
+          status: 'ACTIVE',
+          startDate: new Date(),
+          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        }
+      });
+    }
+
+    await this.prisma.auditLog.create({
+      data: {
+        userId,
+        action: 'PLAN_CHANGED',
+        details: { plan }
+      }
+    });
+
+    return { success: true };
+  }
+
+  async importUsers(emails: string[]) {
+    // Create users with no password (they will reset it or use OAuth)
+    const role = await this.prisma.role.findUnique({ where: { name: 'USER' } });
+    if (!role) throw new NotFoundException('USER role not found');
+
+    let importedCount = 0;
+    for (const email of emails) {
+      const existing = await this.prisma.user.findUnique({ where: { email } });
+      if (!existing) {
+        await this.prisma.user.create({
+          data: {
+            email,
+            name: email.split('@')[0],
+            roleId: role.id,
+          }
+        });
+        importedCount++;
+      }
+    }
+
+    return { success: true, importedCount };
   }
 
   async banUser(userId: string) {
@@ -204,6 +351,25 @@ export class AdminService {
         encryptedApiKey: encryptedKey
       }
     });
+  }
+
+  // --- Billing ---
+  async getBillingStats() {
+    const [totalRevenue, activeSubscriptions, recentPurchases] = await Promise.all([
+      this.prisma.purchase.aggregate({ _sum: { amount: true } }),
+      this.prisma.subscription.count({ where: { status: 'ACTIVE', plan: { not: 'FREE' } } }),
+      this.prisma.purchase.findMany({
+        take: 10,
+        orderBy: { createdAt: 'desc' },
+        include: { user: { select: { email: true } } }
+      })
+    ]);
+
+    return {
+      revenue: totalRevenue._sum.amount || 0,
+      activeSubscriptions,
+      recentPurchases
+    };
   }
 }
 

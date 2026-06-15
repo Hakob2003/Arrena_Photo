@@ -24,11 +24,36 @@ export class AdminController {
 
   // --- Users ---
   @Get('users')
-  @ApiOperation({ summary: 'Get all users with pagination' })
+  @ApiOperation({ summary: 'Get all users with pagination and filters' })
   @ApiQuery({ name: 'page', required: false })
   @ApiQuery({ name: 'limit', required: false })
-  getAllUsers(@Query('page') page?: string, @Query('limit') limit?: string) {
-    return this.adminService.getAllUsers(Number(page) || 1, Number(limit) || 20);
+  @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'role', required: false })
+  getAllUsers(
+    @Query('page') page?: string, 
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+    @Query('role') role?: string
+  ) {
+    return this.adminService.getAllUsers(Number(page) || 1, Number(limit) || 20, search, role);
+  }
+
+  @Post('users/:id/credits')
+  @ApiOperation({ summary: 'Add or remove credits from a user' })
+  updateUserCredits(@Param('id') id: string, @Body() body: { amount: number, reason: string }) {
+    return this.adminService.updateUserCredits(id, body.amount, body.reason);
+  }
+
+  @Post('users/:id/plan')
+  @ApiOperation({ summary: 'Change user subscription plan' })
+  updateUserPlan(@Param('id') id: string, @Body() body: { plan: string }) {
+    return this.adminService.updateUserPlan(id, body.plan);
+  }
+
+  @Post('users/import')
+  @ApiOperation({ summary: 'Import users from CSV (emails)' })
+  importUsers(@Body() body: { emails: string[] }) {
+    return this.adminService.importUsers(body.emails);
   }
 
   @Post('users/:id/ban')
@@ -107,6 +132,13 @@ export class AdminController {
     @Body('apiKey') apiKey: string
   ) {
     return this.adminService.updateGlobalApiKey(req.user.id, providerId, apiKey);
+  }
+
+  // --- Billing ---
+  @Get('billing')
+  @ApiOperation({ summary: 'Get billing stats and recent purchases' })
+  getBillingStats() {
+    return this.adminService.getBillingStats();
   }
 }
 
