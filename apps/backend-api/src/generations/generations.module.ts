@@ -4,6 +4,7 @@ import { GenerationsController } from './generations.controller';
 import { GenerationsService } from './generations.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { GenerationProcessor } from './generation.processor';
+import { BillingModule } from '../billing/billing.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { GenerationProcessor } from './generation.processor';
     BullModule.registerQueue({
       name: 'generations',
     }),
+    BillingModule,
   ],
   controllers: [GenerationsController],
   providers: [GenerationsService, GenerationProcessor],

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SubscriptionPlan } from '@prisma/client';
 
@@ -24,12 +24,32 @@ export class BillingService {
   }
 
   async addCredits(userId: string, amount: number, reason: string) {
-    return this.prisma.creditTransaction.create({
-      data: {
-        userId,
-        amount,
-        reason,
-      },
+    return this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.update({
+        where: { id: userId },
+        data: { credits: { increment: amount } }
+      });
+      const txRecord = await tx.creditTransaction.create({
+        data: { userId, amount, reason }
+      });
+      return { user, transaction: txRecord };
+    });
+  }
+
+  async deductCredits(userId: string, amount: number, reason: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.findUnique({ where: { id: userId } });
+      if (!user || user.credits < amount) {
+        throw new BadRequestException('Insufficient credits');
+      }
+      const updatedUser = await tx.user.update({
+        where: { id: userId },
+        data: { credits: { decrement: amount } }
+      });
+      const txRecord = await tx.creditTransaction.create({
+        data: { userId, amount: -amount, reason }
+      });
+      return { user: updatedUser, transaction: txRecord };
     });
   }
 }

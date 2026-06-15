@@ -5,16 +5,19 @@ import { Sidebar } from '../components/layout/Sidebar';
 import { useAuthStore, useUIStore } from '../store';
 import { Topbar } from '../components/layout/Topbar';
 
+import { api } from '../lib/api';
+
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith('/admin');
-  const { login } = useAuthStore();
+  const { login, setCredits } = useAuthStore();
   const { isSidebarOpen, setSidebarOpen } = useUIStore();
   const [touchStart, setTouchStart] = useState<number | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token && !useAuthStore.getState().user) {
+      // Decode initially to render quickly
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         const user = {
@@ -24,11 +27,23 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
           name: payload.email?.split('@')[0] || 'User',
         };
         login(user, token);
+        
+        // Fetch fresh profile from backend
+        api.get('/users/profile')
+          .then(res => {
+             const freshUser = res.data;
+             login(freshUser, token);
+             if (typeof freshUser.credits === 'number') {
+               setCredits(freshUser.credits);
+             }
+          })
+          .catch(err => console.error('Failed to fetch user profile:', err));
+          
       } catch (err) {
         localStorage.removeItem('token');
       }
     }
-  }, [login]);
+  }, [login, setCredits]);
 
   useEffect(() => {
     // Close sidebar on navigation on mobile

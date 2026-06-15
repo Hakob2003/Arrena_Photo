@@ -13,6 +13,7 @@ export class UsersService {
         email: true,
         name: true,
         avatarUrl: true,
+        credits: true,
         createdAt: true,
         role: {
           select: {

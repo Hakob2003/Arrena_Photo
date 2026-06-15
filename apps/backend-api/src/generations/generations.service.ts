@@ -4,11 +4,14 @@ import { Queue } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateGenerationDto } from './dto/create-generation.dto';
 
+import { BillingService } from '../billing/billing.service';
+
 @Injectable()
 export class GenerationsService {
   constructor(
     private prisma: PrismaService,
     @InjectQueue('generations') private generationsQueue: Queue,
+    private billingService: BillingService,
   ) {}
 
   async create(userId: string, dto: CreateGenerationDto) {
@@ -25,6 +28,9 @@ export class GenerationsService {
     if (!aiModel) {
       throw new NotFoundException('AI Model not found');
     }
+
+    // Deduct credits before generating
+    await this.billingService.deductCredits(userId, 5, 'Image Generation');
 
     // 2. Create Pending Generation Record
     const generation = await this.prisma.generation.create({

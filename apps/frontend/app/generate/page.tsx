@@ -74,9 +74,13 @@ export default function GeneratorPage() {
         }
       }, 1000);
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Failed to submit generation');
+      if (err.response?.status === 400 && err.response?.data?.message === 'Insufficient credits') {
+        alert('У вас недостаточно кредитов для генерации! (Insufficient credits)');
+      } else {
+        alert('Failed to submit generation');
+      }
       setGenerating(false);
     }
   };
