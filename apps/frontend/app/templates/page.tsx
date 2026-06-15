@@ -3,6 +3,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export default function TemplatesPage() {
+  const [selectedCategory, setSelectedCategory] = React.useState('Все');
+  
   const categories = ['Anime', 'Realistic', 'Cyberpunk', 'Fantasy', 'Product Photography', 'Logo'];
   const mockTemplates = [
     { id: 1, name: 'Neon City Cyberpunk', category: 'Cyberpunk', cover: '/mock/neon_cyberpunk.png' },
@@ -19,23 +21,35 @@ export default function TemplatesPage() {
     { id: 12, name: 'Bakery Logo', category: 'Logo', cover: '/mock/bakery_logo.png' },
   ];
 
+  const filteredTemplates = selectedCategory === 'Все' 
+    ? mockTemplates 
+    : mockTemplates.filter(t => t.category === selectedCategory);
+
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <div className="mb-10">
-        <h1 className="text-4xl font-bold mb-4">Prompt Templates</h1>
-        <p className="text-gray-400 text-lg">Start your creation with perfectly engineered prompts.</p>
+        <h1 className="text-4xl font-bold mb-4">Шаблоны промптов</h1>
+        <p className="text-gray-400 text-lg">Начните создание с идеально составленных промптов.</p>
       </div>
 
       <div className="flex gap-4 overflow-x-auto pb-4 mb-8 custom-scrollbar">
-        {['All', ...categories].map(c => (
-          <button key={c} className="px-5 py-2 glass rounded-full whitespace-nowrap hover:bg-white/10 transition-colors">
+        {['Все', ...categories].map(c => (
+          <button 
+            key={c} 
+            onClick={() => setSelectedCategory(c)}
+            className={`px-5 py-2 rounded-full whitespace-nowrap transition-colors ${
+              selectedCategory === c 
+                ? 'bg-indigo-600 text-white' 
+                : 'glass hover:bg-white/10'
+            }`}
+          >
             {c}
           </button>
         ))}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {mockTemplates.map((t, i) => (
+        {filteredTemplates.map((t, i) => (
           <motion.div 
             key={t.id}
             initial={{ opacity: 0, y: 20 }}
