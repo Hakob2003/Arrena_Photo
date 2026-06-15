@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { templatesApi } from "@/lib/templates.api";
+import Papa from "papaparse";
 
 interface ImportTemplatesModalProps {
   isOpen: boolean;
@@ -48,24 +49,30 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
           throw new Error("JSON must be an array of objects");
         }
       } catch (jsonError) {
-        // Fallback to TSV/CSV parsing if JSON fails
-        const lines = rawData.split('\n').filter(line => line.trim());
-        if (lines.length < 2) {
-          throw new Error("Invalid format: Need at least a header row and one data row, or valid JSON array.");
-        }
-
-        const delimiter = lines[0].includes('\t') ? '\t' : (lines[0].includes(';') ? ';' : ',');
-        const headers = lines[0].split(delimiter).map(h => h.trim());
+        // Fallback to TSV/CSV parsing with papaparse
+        const parseResult = Papa.parse(rawData, {
+          header: true,
+          skipEmptyLines: true,
+          dynamicTyping: true, // Automatically converts numbers/booleans
+        });
         
-        parsedTemplates = lines.slice(1).map(line => {
-          const values = line.split(delimiter);
+        if (parseResult.errors.length > 0 && parseResult.data.length === 0) {
+          throw new Error("Failed to parse CSV/TSV data: " + parseResult.errors[0].message);
+        }
+        
+        parsedTemplates = parseResult.data.map((row: any) => {
           const obj: any = {};
-          headers.forEach((header, i) => {
-            let val = values[i] ? values[i].trim() : '';
-            if (header === 'price' && val) obj[header] = parseFloat(val);
-            else if (header === 'recommendedModels' && val) obj[header] = val.split(',').map(m => m.trim());
-            else obj[header] = val;
-          });
+          // Clean up keys (trim) and handle nested data like recommendedModels
+          for (const [key, val] of Object.entries(row)) {
+            const cleanKey = key.trim();
+            if (cleanKey === 'recommendedModels' && typeof val === 'string') {
+              obj[cleanKey] = val.split(',').map(m => m.trim());
+            } else if (typeof val === 'string') {
+              obj[cleanKey] = val.trim();
+            } else {
+              obj[cleanKey] = val;
+            }
+          }
           return obj;
         });
       }
