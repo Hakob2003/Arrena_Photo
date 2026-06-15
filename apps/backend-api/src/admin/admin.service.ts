@@ -154,22 +154,23 @@ export class AdminService {
   async updateUserPlan(userId: string, plan: string) {
     // Basic logic: update or create a subscription
     const existingSub = await this.prisma.subscription.findFirst({
-      where: { userId, status: 'ACTIVE' }
+      where: { userId }
     });
+
+    // Validate plan name
+    const validPlan = plan === 'PRO' || plan === 'ENTERPRISE' ? plan : 'FREE';
 
     if (existingSub) {
       await this.prisma.subscription.update({
         where: { id: existingSub.id },
-        data: { plan, endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // 30 days
+        data: { plan: validPlan, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // 30 days
       });
     } else {
       await this.prisma.subscription.create({
         data: {
           userId,
-          plan,
-          status: 'ACTIVE',
-          startDate: new Date(),
-          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+          plan: validPlan,
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
         }
       });
     }
@@ -403,10 +404,10 @@ export class AdminService {
   async getBillingStats() {
     const [totalRevenue, activeSubscriptions, recentPurchases] = await Promise.all([
       this.prisma.purchase.aggregate({ _sum: { amount: true } }),
-      this.prisma.subscription.count({ where: { status: 'ACTIVE', plan: { not: 'FREE' } } }),
+      this.prisma.subscription.count({ where: { plan: { not: 'FREE' } } }),
       this.prisma.purchase.findMany({
         take: 10,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { purchasedAt: 'desc' },
         include: { user: { select: { email: true } } }
       })
     ]);
