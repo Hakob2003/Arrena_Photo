@@ -23,7 +23,7 @@ export default function CloudConnectionsPage() {
 
   const fetchStatus = async () => {
     try {
-      const res = await api.get('/integrations/google-drive/status');
+      const res = await api.get(`/integrations/google-drive/status?t=${Date.now()}`);
       setDriveConnected(res.data.connected);
     } catch (e) {
       console.error(e);
@@ -47,7 +47,6 @@ export default function CloudConnectionsPage() {
       await api.post('/integrations/google-drive/disconnect');
       setDriveConnected(false);
       toast.success('Google Drive отключен');
-      fetchStatus(); // re-fetch status in case they are logged in via Google SSO
     } catch (e) {
       toast.error('Ошибка при отключении');
     }
