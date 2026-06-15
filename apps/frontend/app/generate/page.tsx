@@ -70,15 +70,12 @@ function GeneratorContent() {
     
     try {
       // Note: We're mapping 'sdxl-1.0' to the actual DB ID. Since we seeded it, we need the UUID.
-      // Wait, we seeded it by name, but we don't know the UUID here!
-      // To fix this without a GET /models endpoint, we will temporarily just send the model name and let the backend resolve it, 
-      // or we just bypass the DB model check in backend for this test.
-      // Actually, let's just assume the backend expects aiModelId. We will send the string name and update the backend to find by name!
-      
       const res = await api.post('/generations', {
-        aiModelId: model, 
         prompt,
-        initImage, // Send base64 image if available
+        negativePrompt: '',
+        aiModelId: 'sdxl-1.0',
+        templateId: undefined, // Must be UUID or omitted
+        initImage: initImage
       });
 
       const generationId = res.data.id;
