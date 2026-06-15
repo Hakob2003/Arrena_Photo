@@ -42,7 +42,6 @@ export default function CloudConnectionsPage() {
   };
 
   const disconnectDrive = async () => {
-    if (!confirm('Отключить Google Drive? Вы больше не сможете сохранять туда фото напрямую.')) return;
     try {
       await api.post('/integrations/google-drive/disconnect');
       setDriveConnected(false);
