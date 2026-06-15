@@ -4,12 +4,20 @@ import { motion } from 'framer-motion';
 
 export default function TemplatesPage() {
   const categories = ['Anime', 'Realistic', 'Cyberpunk', 'Fantasy', 'Product Photography', 'Logo'];
-  const mockTemplates = Array(8).fill(null).map((_, i) => ({
-    id: i,
-    name: `Pro Template ${i + 1}`,
-    category: categories[i % categories.length],
-    cover: `https://picsum.photos/seed/template${i}/400/400`
-  }));
+  const mockTemplates = [
+    { id: 1, name: 'Neon City Cyberpunk', category: 'Cyberpunk', cover: 'https://picsum.photos/seed/cyberpunk/400/500' },
+    { id: 2, name: 'Studio Coffee Cup', category: 'Product Photography', cover: 'https://picsum.photos/seed/coffee/400/500' },
+    { id: 3, name: 'Epic Fantasy Landscape', category: 'Fantasy', cover: 'https://picsum.photos/seed/fantasy/400/500' },
+    { id: 4, name: 'Anime School Girl', category: 'Anime', cover: 'https://picsum.photos/seed/anime1/400/500' },
+    { id: 5, name: 'Modern Tech Logo', category: 'Logo', cover: 'https://picsum.photos/seed/logo1/400/500' },
+    { id: 6, name: 'Realistic Portrait', category: 'Realistic', cover: 'https://picsum.photos/seed/portrait1/400/500' },
+    { id: 7, name: 'Sci-Fi Spaceship', category: 'Cyberpunk', cover: 'https://picsum.photos/seed/spaceship/400/500' },
+    { id: 8, name: 'Minimalist Watch', category: 'Product Photography', cover: 'https://picsum.photos/seed/watch/400/500' },
+    { id: 9, name: 'Dragon in the Clouds', category: 'Fantasy', cover: 'https://picsum.photos/seed/dragon/400/500' },
+    { id: 10, name: 'Vintage Camera', category: 'Realistic', cover: 'https://picsum.photos/seed/camera/400/500' },
+    { id: 11, name: 'Mecha Robot', category: 'Anime', cover: 'https://picsum.photos/seed/mecha/400/500' },
+    { id: 12, name: 'Bakery Logo', category: 'Logo', cover: 'https://picsum.photos/seed/bakery/400/500' },
+  ];
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
