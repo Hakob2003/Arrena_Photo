@@ -67,23 +67,13 @@ export class GoogleDriveService {
   }
 
   async getStatus(userId: string) {
-    let account = await this.prisma.oAuthAccount.findFirst({
+    const account = await this.prisma.oAuthAccount.findFirst({
       where: { 
         userId, 
         provider: 'google-drive',
         refreshToken: { not: null }
       }
     });
-
-    if (!account) {
-      account = await this.prisma.oAuthAccount.findFirst({
-        where: { 
-          userId, 
-          provider: 'google',
-          refreshToken: { not: null }
-        }
-      });
-    }
 
     return {
       connected: !!account,
