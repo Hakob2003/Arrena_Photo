@@ -30,7 +30,7 @@ export function Topbar() {
             <div className="flex items-center gap-3">
               <div className="text-right hidden md:block">
                 <p className="text-sm font-medium text-white">{user.name}</p>
-                <p className="text-xs text-gray-500">{typeof user.role === 'object' ? user.role.name : user.role}</p>
+                <p className="text-xs text-gray-500">{user.role}</p>
               </div>
               <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center text-white font-bold cursor-pointer hover:ring-2 ring-white/20 transition-all">
                 {user.name?.charAt(0) || 'U'}
