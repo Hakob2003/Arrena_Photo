@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Put, Patch, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { TemplatesService } from './templates.service';
 import { TemplateVersionsService } from './template-versions.service';
 import { TemplatesImportExportService } from './templates-import-export.service';
-import { CreateTemplateDto, UpdateTemplateDto, FilterTemplatesDto } from './dto/template.dto';
+import { CreateTemplateDto, UpdateTemplateDto, FilterTemplatesDto, BulkActionDto } from './dto/template.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { TemplateStatus } from '@prisma/client';
@@ -23,6 +23,20 @@ export class TemplatesController {
   @ApiOperation({ summary: 'Create a new template' })
   async create(@CurrentUser() user: any, @Body() dto: CreateTemplateDto) {
     return this.templatesService.create(user.id, dto);
+  }
+
+  @Get('categories')
+  @ApiOperation({ summary: 'Get all template categories' })
+  async getCategories() {
+    return this.templatesService.getCategories();
+  }
+
+  @Post('bulk')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Perform bulk action on templates' })
+  async bulkAction(@Body() dto: BulkActionDto) {
+    return this.templatesService.bulkAction(dto.action, dto.templateIds);
   }
 
   @Get()
@@ -65,6 +79,22 @@ export class TemplatesController {
   @ApiOperation({ summary: 'Get similar recommended templates' })
   async getRecommendations(@Param('id') id: string) {
     return this.templatesService.getRecommendations(id);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a template' })
+  async delete(@Param('id') id: string) {
+    return this.templatesService.delete(id);
+  }
+
+  @Post(':id/clone')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Clone a template' })
+  async clone(@CurrentUser() user: any, @Param('id') id: string) {
+    return this.templatesService.clone(id, user.id);
   }
 
   @Get(':id/versions')

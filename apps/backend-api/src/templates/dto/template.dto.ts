@@ -44,6 +44,12 @@ export class CreateTemplateDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
+  @IsNumber()
+  @Min(0)
+  price?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
   negativePrompt?: string;
 
@@ -92,4 +98,22 @@ export class FilterTemplatesDto {
   @IsNumber()
   @Min(1)
   take?: number;
+}
+
+export enum BulkTemplateAction {
+  PUBLISH = 'PUBLISH',
+  DRAFT = 'DRAFT',
+  ARCHIVE = 'ARCHIVE',
+  DELETE = 'DELETE',
+}
+
+export class BulkActionDto {
+  @ApiProperty({ enum: BulkTemplateAction })
+  @IsEnum(BulkTemplateAction)
+  action!: BulkTemplateAction;
+
+  @ApiProperty({ type: [String] })
+  @IsArray()
+  @IsString({ each: true })
+  templateIds!: string[];
 }

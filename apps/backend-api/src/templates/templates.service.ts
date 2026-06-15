@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TemplateVersionsService } from './template-versions.service';
-import { CreateTemplateDto, UpdateTemplateDto, FilterTemplatesDto } from './dto/template.dto';
+import { CreateTemplateDto, UpdateTemplateDto, FilterTemplatesDto, BulkActionDto, BulkTemplateAction } from './dto/template.dto';
 import { TemplateStatus, Prisma } from '@prisma/client';
 
 @Injectable()
@@ -32,6 +32,7 @@ export class TemplatesService {
         galleryUrls: dto.galleryUrls || [],
         recommendedModels: dto.recommendedModels || [],
         status: TemplateStatus.DRAFT,
+        price: dto.price ?? null,
         tags: { connect: tagConnections },
       },
     });
@@ -99,6 +100,7 @@ export class TemplatesService {
       ...(dto.galleryUrls && { galleryUrls: dto.galleryUrls }),
       ...(dto.recommendedModels && { recommendedModels: dto.recommendedModels }),
       ...(dto.status && { status: dto.status }),
+      ...(dto.price !== undefined && { price: dto.price }),
     };
 
     if (dto.tags) {
@@ -148,5 +150,91 @@ export class TemplatesService {
       take: 5,
       orderBy: { createdAt: 'desc' }
     });
+  }
+
+  // --- Admin Methods ---
+
+  async delete(id: string) {
+    return this.prisma.template.delete({
+      where: { id }
+    });
+  }
+
+  async clone(id: string, userId: string) {
+    const original = await this.findOne(id);
+    const latestVersion = original.versions[0];
+
+    const newTemplate = await this.prisma.template.create({
+      data: {
+        name: `${original.name} (Copy)`,
+        description: original.description,
+        categoryId: original.categoryId,
+        creatorId: userId, // The admin cloning it
+        coverUrl: original.coverUrl,
+        galleryUrls: original.galleryUrls,
+        recommendedModels: original.recommendedModels,
+        status: TemplateStatus.DRAFT,
+        price: original.price,
+        tags: {
+          connect: original.tags.map(t => ({ id: t.id }))
+        }
+      }
+    });
+
+    if (latestVersion) {
+      await this.versionsService.createVersion(
+        newTemplate.id,
+        latestVersion.prompt,
+        latestVersion.negativePrompt,
+        latestVersion.settings
+      );
+    }
+
+    return this.findOne(newTemplate.id);
+  }
+
+  async bulkAction(action: BulkTemplateAction, templateIds: string[]) {
+    if (action === BulkTemplateAction.DELETE) {
+      return this.prisma.template.deleteMany({
+        where: { id: { in: templateIds } }
+      });
+    }
+
+    let targetStatus: TemplateStatus;
+    if (action === BulkTemplateAction.PUBLISH) targetStatus = TemplateStatus.PUBLISHED;
+    else if (action === BulkTemplateAction.ARCHIVE) targetStatus = TemplateStatus.ARCHIVED;
+    else targetStatus = TemplateStatus.DRAFT;
+
+    return this.prisma.template.updateMany({
+      where: { id: { in: templateIds } },
+      data: { status: targetStatus }
+    });
+  }
+
+  async getCategories() {
+    let categories = await this.prisma.templateCategory.findMany({
+      orderBy: { name: 'asc' }
+    });
+
+    if (categories.length === 0) {
+      const defaultCategories = [
+        'Business', 'Corporate', 'LinkedIn', 'Dating', 'Wedding', 
+        'Fashion', 'Gaming', 'Fantasy', 'Anime', 'Pixel Art', 
+        'Kids', 'Professional', 'Social Media'
+      ];
+      
+      await this.prisma.templateCategory.createMany({
+        data: defaultCategories.map(name => ({
+          name,
+          slug: name.toLowerCase().replace(/ /g, '-')
+        }))
+      });
+      
+      categories = await this.prisma.templateCategory.findMany({
+        orderBy: { name: 'asc' }
+      });
+    }
+
+    return categories;
   }
 }
