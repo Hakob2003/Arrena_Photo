@@ -15,13 +15,13 @@ export default function GalleryPage() {
   ];
 
   return (
-    <div className="p-8 max-w-screen-2xl mx-auto">
-      <div className="flex justify-between items-end mb-10">
+    <div className="p-4 sm:p-8 max-w-screen-2xl mx-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-6 sm:mb-10">
         <div>
-          <h1 className="text-4xl font-bold mb-2">Галерея сообщества</h1>
-          <p className="text-gray-400">Смотрите, что создают другие пользователи прямо сейчас.</p>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2">Галерея сообщества</h1>
+          <p className="text-gray-400 text-sm sm:text-base">Смотрите, что создают другие пользователи прямо сейчас.</p>
         </div>
-        <div className="flex bg-white/5 rounded-lg p-1">
+        <div className="flex bg-white/5 rounded-lg p-1 w-full sm:w-auto overflow-x-auto">
           <button className="px-4 py-1.5 rounded-md bg-white/10 text-white font-medium shadow-sm">Популярное</button>
           <button className="px-4 py-1.5 rounded-md text-gray-400 hover:text-white">Новое</button>
           <button className="px-4 py-1.5 rounded-md text-gray-400 hover:text-white">Лучшее</button>

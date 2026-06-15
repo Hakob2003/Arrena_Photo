@@ -53,8 +53,8 @@ export class GoogleDriveController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Save an image URL to Google Drive' })
-  async saveImage(@Req() req, @Body('imageUrl') imageUrl: string) {
-    return this.driveService.saveImageToDrive(req.user.id, imageUrl);
+  async saveImage(@Req() req, @Body() body: { imageUrl: string, generationId?: string }) {
+    return this.driveService.saveImageToDrive(req.user.id, body.imageUrl, body.generationId);
   }
 
   @Get('file/:id')

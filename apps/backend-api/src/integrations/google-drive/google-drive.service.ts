@@ -95,7 +95,7 @@ export class GoogleDriveService {
     }
   }
 
-  async saveImageToDrive(userId: string, imageUrl: string) {
+  async saveImageToDrive(userId: string, imageUrl: string, generationId?: string) {
     let account = await this.prisma.oAuthAccount.findFirst({
       where: { 
         userId, 
@@ -158,6 +158,13 @@ export class GoogleDriveService {
         media: media,
         fields: 'id'
       });
+
+      if (generationId) {
+        await this.prisma.generationResult.update({
+          where: { generationId },
+          data: { driveFileId: file.data.id }
+        });
+      }
 
       return { success: true, fileId: file.data.id };
     } catch (error) {

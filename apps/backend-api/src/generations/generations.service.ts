@@ -84,6 +84,7 @@ export class GenerationsService {
     return generations.map(g => ({
       id: g.id,
       imageUrl: g.result?.imageUrl,
+      driveFileId: g.result?.driveFileId,
       model: g.aiModel.name,
       template: g.template?.name,
       createdAt: g.createdAt

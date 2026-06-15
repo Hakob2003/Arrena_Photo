@@ -4,6 +4,8 @@ import { api } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/store';
 
+import { AuthImage } from '@/components/ui/AuthImage';
+
 export default function MyGenerationsPage() {
   const { user } = useAuthStore();
   const [generations, setGenerations] = useState<any[]>([]);
@@ -34,8 +36,10 @@ export default function MyGenerationsPage() {
     e.stopPropagation();
     try {
       setSavingId(id);
-      await api.post('/integrations/google-drive/save', { imageUrl });
+      await api.post('/integrations/google-drive/save', { imageUrl, generationId: id });
       toast.success('Сохранено на Google Drive!');
+      // Update local state to reflect it's saved
+      setGenerations(prev => prev.map(g => g.id === id ? { ...g, driveFileId: 'saved' } : g));
     } catch (error: any) {
       if (error.response?.status === 400 && error.response?.data?.message?.includes('not connected')) {
         toast.error('Google Drive не подключен. Привяжите его в настройках Cloud Storage.');
@@ -63,15 +67,15 @@ export default function MyGenerationsPage() {
   }
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-10">
+    <div className="p-4 sm:p-8 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-10">
         <div>
-          <h1 className="text-4xl font-bold">Мои генерации</h1>
-          <p className="text-gray-400 mt-1">Все ваши сгенерированные изображения</p>
+          <h1 className="text-3xl sm:text-4xl font-bold">Мои генерации</h1>
+          <p className="text-gray-400 mt-1 text-sm sm:text-base">Все ваши сгенерированные изображения</p>
         </div>
         <button 
           onClick={fetchGenerations}
-          className="px-5 py-2 glass rounded-lg hover:bg-white/10 text-sm font-bold"
+          className="w-full sm:w-auto px-5 py-2 glass rounded-lg hover:bg-white/10 text-sm font-bold min-h-[44px]"
         >
           Обновить
         </button>
@@ -96,17 +100,19 @@ export default function MyGenerationsPage() {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {generations.map(gen => (
             <div key={gen.id} className="group relative aspect-square rounded-xl overflow-hidden glass-card cursor-pointer">
-              <img src={gen.imageUrl} alt="Generated" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+              <AuthImage driveFileId={gen.driveFileId !== 'saved' ? gen.driveFileId : undefined} fallbackUrl={gen.imageUrl} alt="Generated" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-between">
                 <div className="flex justify-end">
                   <button 
                     onClick={(e) => saveToDrive(e, gen.id, gen.imageUrl)}
-                    disabled={savingId === gen.id}
-                    className="bg-black/50 hover:bg-black/80 text-white p-2 rounded-lg backdrop-blur-md transition-colors"
-                    title="Сохранить на Google Drive"
+                    disabled={savingId === gen.id || !!gen.driveFileId}
+                    className={`${gen.driveFileId ? 'bg-green-500/50 text-green-200' : 'bg-black/50 hover:bg-black/80 text-white'} p-2 rounded-lg backdrop-blur-md transition-colors`}
+                    title={gen.driveFileId ? "Уже сохранено" : "Сохранить на Google Drive"}
                   >
                     {savingId === gen.id ? (
                       <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    ) : gen.driveFileId ? (
+                      <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg>
                     ) : (
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
                     )}

@@ -277,6 +277,7 @@ model GenerationResult {
   id                String   @id @default(uuid())
   generationId      String   @unique
   imageUrl          String
+  driveFileId       String?
   durationMs        Int
   storageProviderId String
   createdAt         DateTime @default(now())

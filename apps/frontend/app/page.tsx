@@ -14,30 +14,30 @@ export default function HomePage() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="z-10 max-w-4xl"
       >
-        <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6">
+        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter mb-6 break-words">
           ВООБРАЖЕНИЕ <br />
           <span className="neon-text">ВНЕ РЕАЛЬНОСТИ</span>
         </h1>
-        <p className="text-xl md:text-2xl text-gray-400 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+        <p className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-8 sm:mb-10 max-w-2xl mx-auto font-light leading-relaxed px-4">
           Ультимативная AI-студия. Объединяйте модели, используйте профессиональные промпты и создавайте идеальные изображения.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-          <Link href="/generate">
-            <button className="px-8 py-4 bg-white text-black font-bold rounded-full text-lg hover:bg-gray-200 hover:scale-105 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)]">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 px-4">
+          <Link href="/generate" className="w-full sm:w-auto">
+            <button className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white text-black font-bold rounded-full text-base sm:text-lg hover:bg-gray-200 hover:scale-105 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)]">
               Начать генерацию
             </button>
           </Link>
-          <Link href="/marketplace">
-            <button className="px-8 py-4 glass text-white font-bold rounded-full text-lg hover:bg-white/10 transition-all border border-white/20">
+          <Link href="/marketplace" className="w-full sm:w-auto">
+            <button className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 glass text-white font-bold rounded-full text-base sm:text-lg hover:bg-white/10 transition-all border border-white/20">
               Перейти в Маркетплейс
             </button>
           </Link>
         </div>
       </motion.div>
 
-      {/* Floating Mockup Images */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30 z-0">
+      {/* Floating Mockup Images - Hidden on Mobile */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-30 z-0 hidden md:block">
         <motion.div 
           animate={{ y: [0, -20, 0], rotate: [0, 2, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}

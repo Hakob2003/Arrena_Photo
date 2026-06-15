@@ -23,13 +23,13 @@ export default function MarketplacePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-12 text-center space-y-4">
-          <h1 className="text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent break-words">
             Маркетплейс AI Шаблонов
           </h1>
-          <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto px-2">
             Открывайте тысячи готовых AI-промптов, созданных лучшими авторами.
           </p>
         </div>

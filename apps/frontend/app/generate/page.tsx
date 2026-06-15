@@ -5,6 +5,7 @@ import { useGenerationStore, useAuthStore } from '../../store';
 import { useSearchParams } from 'next/navigation';
 import { useDropzone } from 'react-dropzone';
 import { api } from '../../lib/api';
+import { AuthImage } from '@/components/ui/AuthImage';
 
 function GeneratorContent() {
   const searchParams = useSearchParams();
@@ -141,10 +142,10 @@ function GeneratorContent() {
   }, [fetchHistory]);
 
   return (
-    <div className="h-full flex flex-col lg:flex-row gap-6 p-6">
+    <div className="h-full flex flex-col lg:flex-row gap-4 sm:gap-6 p-4 sm:p-6 overflow-y-auto lg:overflow-hidden">
       
       {/* Left Panel: Controls */}
-      <div className="w-full lg:w-[400px] flex flex-col gap-6">
+      <div className="w-full lg:w-[400px] lg:shrink-0 flex flex-col gap-4 sm:gap-6">
         
         {/* Image Upload Zone */}
         <div className="glass-card p-5 rounded-2xl">
@@ -225,7 +226,7 @@ function GeneratorContent() {
       </div>
 
       {/* Right Panel: Output */}
-      <div className="flex-1 glass-card rounded-2xl flex flex-col relative overflow-hidden">
+      <div className="flex-1 min-h-[400px] lg:min-h-0 glass-card rounded-2xl flex flex-col relative overflow-hidden">
         {/* Topbar inside output */}
         <div className="absolute top-0 w-full h-14 bg-gradient-to-b from-black/80 to-transparent z-10 flex items-center px-6 justify-end">
            {resultImage && !isGenerating && (
@@ -268,14 +269,14 @@ function GeneratorContent() {
         
         {/* History Gallery */}
         <div className="h-48 border-t border-white/10 bg-black/40 p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-hide">
-          <h3 className="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">Мои генерации (Google Drive)</h3>
-          <div className="flex gap-4 h-[100px]">
+          <h3 className="text-xs sm:text-sm font-bold text-gray-400 mb-2 sm:mb-3 uppercase tracking-wider">Мои генерации (Google Drive)</h3>
+          <div className="flex gap-2 sm:gap-4 h-[80px] sm:h-[100px]">
             {history.length === 0 ? (
               <div className="text-gray-500 text-sm flex items-center h-full">История пуста. Создайте свою первую картинку!</div>
             ) : (
               history.map((item) => (
                 <div key={item.id} className="relative aspect-square h-full rounded-lg overflow-hidden group cursor-pointer" onClick={() => setResult(item.imageUrl)}>
-                  <img src={item.imageUrl} alt={item.prompt} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                  <AuthImage driveFileId={item.driveFileId} fallbackUrl={item.imageUrl} alt={item.prompt} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
                     <span className="text-white text-[10px] font-bold truncate">{item.template || item.model}</span>
                   </div>

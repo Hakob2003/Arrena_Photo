@@ -4,13 +4,13 @@ import Link from 'next/link';
 
 export default function MyTemplatesPage() {
   return (
-    <div className="p-8 max-w-7xl mx-auto h-full flex flex-col">
-      <div className="flex justify-between items-center mb-10">
+    <div className="p-4 sm:p-8 max-w-7xl mx-auto h-full flex flex-col">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-10">
         <div>
-          <h1 className="text-4xl font-bold mb-2">Мои шаблоны</h1>
-          <p className="text-gray-400">Управление созданными промптами и шаблонами.</p>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2">Мои шаблоны</h1>
+          <p className="text-gray-400 text-sm sm:text-base">Управление созданными промптами и шаблонами.</p>
         </div>
-        <button className="bg-white text-black px-6 py-2.5 rounded-full font-bold hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+        <button className="w-full sm:w-auto bg-white text-black px-6 py-3 sm:py-2.5 rounded-full font-bold hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.2)]">
           + Создать
         </button>
       </div>

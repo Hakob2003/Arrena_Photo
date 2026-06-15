@@ -99,12 +99,6 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />
         
         <div className="flex items-center w-full z-20 relative">
-          <button 
-            className="md:hidden p-4 text-white hover:text-gray-300"
-            onClick={() => setSidebarOpen(true)}
-          >
-            ☰
-          </button>
           <div className="flex-1">
             <Topbar />
           </div>

@@ -20,8 +20,8 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 py-12 px-8">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 py-6 sm:py-12 px-4 sm:px-8">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
         {/* Left: Image Gallery */}
         <div className="space-y-4">
           <div className="aspect-square w-full rounded-3xl overflow-hidden shadow-2xl">
@@ -40,7 +40,7 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
         {/* Right: Info & Actions */}
         <div className="flex flex-col justify-center space-y-6">
           <div>
-            <h1 className="text-4xl font-extrabold mb-2">{template.name}</h1>
+            <h1 className="text-3xl sm:text-4xl font-extrabold mb-2 break-words">{template.name}</h1>
             <div className="flex items-center gap-4 text-sm text-gray-500">
               <span className="flex items-center text-yellow-500">
                 ⭐ <span className="ml-1 font-bold">{template.avgRating}</span>
@@ -71,11 +71,11 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
             {template.description}
           </p>
 
-          <div className="pt-6 border-t border-gray-200 dark:border-gray-800 flex gap-4">
-            <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1">
+          <div className="pt-6 border-t border-gray-200 dark:border-gray-800 flex gap-2 sm:gap-4 sticky bottom-4 z-10 bg-black/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none p-4 sm:p-0 rounded-2xl sm:rounded-none">
+            <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1">
               Buy Prompt • ${template.price}
             </button>
-            <button className="px-6 border border-gray-200 dark:border-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+            <button className="px-4 sm:px-6 border border-gray-200 dark:border-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
               ❤️
             </button>
           </div>

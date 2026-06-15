@@ -77,7 +77,7 @@ function LoginContent() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
+      <div className="w-full max-w-md p-6 sm:p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
         <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">Вход</h2>
         
         {error && <div className="mb-4 p-3 bg-red-100 text-red-600 rounded-md text-sm">{error}</div>}
@@ -116,14 +116,14 @@ function LoginContent() {
           <span className="h-px bg-gray-300 flex-1"></span>
         </div>
 
-        <div className="mt-4 grid grid-cols-3 gap-3">
-          <button onClick={() => handleOAuth('google')} className="py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-center items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+          <button onClick={() => handleOAuth('google')} className="py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-center items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition text-sm">
             Google
           </button>
-          <button onClick={() => handleOAuth('facebook')} className="py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-center items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+          <button onClick={() => handleOAuth('facebook')} className="py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-center items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition text-sm">
             Facebook
           </button>
-          <button onClick={() => handleOAuth('vk')} className="py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-center items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+          <button onClick={() => handleOAuth('vk')} className="py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-center items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition text-sm">
             VK
           </button>
         </div>

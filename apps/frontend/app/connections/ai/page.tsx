@@ -11,8 +11,8 @@ export default function AiConnectionsPage() {
   ];
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <h1 className="text-4xl font-bold mb-2">AI Провайдеры</h1>
+    <div className="p-4 sm:p-8 max-w-5xl mx-auto">
+      <h1 className="text-3xl sm:text-4xl font-bold mb-2">AI Провайдеры</h1>
       <p className="text-gray-400 mb-10">Подключите свои API-ключи или локальные инстансы для генерации без траты кредитов платформы.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -56,7 +56,7 @@ export default function AiConnectionsPage() {
               )}
 
               <div className="pt-2 flex justify-end">
-                <button className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
+                <button className={`w-full sm:w-auto px-4 py-3 sm:py-2 rounded-lg text-sm font-bold transition-colors min-h-[44px] ${
                   p.status === 'connected' 
                   ? 'bg-white/10 hover:bg-red-500/20 hover:text-red-400 text-gray-300' 
                   : 'bg-indigo-600 hover:bg-indigo-700 text-white'
