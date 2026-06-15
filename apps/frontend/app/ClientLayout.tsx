@@ -23,7 +23,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         const user = {
           id: payload.sub,
           email: payload.email,
-          role: payload.role,
+          role: typeof payload.role === 'object' && payload.role !== null ? payload.role.name : payload.role,
           name: payload.email?.split('@')[0] || 'User',
         };
         login(user, token);
@@ -31,7 +31,10 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         // Fetch fresh profile from backend
         api.get('/users/profile')
           .then(res => {
-             const freshUser = res.data;
+             const freshUser = { 
+               ...res.data, 
+               role: typeof res.data.role === 'object' ? res.data.role.name : res.data.role 
+             };
              login(freshUser, token);
              if (typeof freshUser.credits === 'number') {
                setCredits(freshUser.credits);

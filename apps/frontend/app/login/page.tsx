@@ -25,7 +25,7 @@ function LoginContent() {
         const user = {
           id: payload.sub,
           email: payload.email,
-          role: payload.role,
+          role: typeof payload.role === 'object' && payload.role !== null ? payload.role.name : payload.role,
           name: payload.email?.split('@')[0] || 'User',
         };
         // Store in localStorage for persistence if needed in other places
@@ -55,7 +55,7 @@ function LoginContent() {
       const user = {
         id: payload.sub,
         email: payload.email,
-        role: payload.role,
+        role: typeof payload.role === 'object' && payload.role !== null ? payload.role.name : payload.role,
         name: payload.email?.split('@')[0] || 'User',
       };
 
