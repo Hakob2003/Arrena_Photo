@@ -18,6 +18,18 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
   const [loading, setLoading] = useState(false);
   const [rawData, setRawData] = useState("");
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      setRawData(text);
+    };
+    reader.readAsText(file);
+  };
+
   const handleImport = async () => {
     if (!rawData.trim()) {
       toast.error("Please paste your data first");
@@ -96,7 +108,16 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
 
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="data">Data (JSON or TSV/CSV)</Label>
+            <Label>Upload File (.csv, .tsv, .json)</Label>
+            <input 
+              type="file" 
+              accept=".csv,.json,.tsv,.txt" 
+              onChange={handleFileUpload} 
+              className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer"
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="data">Or Paste Data (JSON or TSV/CSV)</Label>
             <Textarea
               id="data"
               placeholder={'[\n  {\n    "name": "Template 1",\n    "categoryName": "Business",\n    "prompt": "A professional portrait..."\n  }\n]\n\nOR\n\nname\tcategoryName\tprompt\tprice\nTemp1\tBusiness\tPortrait of...\t10'}
