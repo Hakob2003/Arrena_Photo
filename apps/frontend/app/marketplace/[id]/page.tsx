@@ -9,9 +9,9 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
   // Mock data
   const template = {
     id: resolvedParams.id,
-    name: 'Cyberpunk Neon Portraits',
+    name: resolvedParams.id === '2' ? 'Minimalist Product Studio' : 'Cyberpunk Neon Portraits',
     description: 'A highly detailed prompt for generating cyberpunk style portraits with neon lighting. Best used with DALL-E 3 or SDXL.',
-    coverUrl: 'https://picsum.photos/seed/market/400/400',
+    coverUrl: resolvedParams.id === '2' ? 'https://picsum.photos/seed/minimalist/400/400' : 'https://picsum.photos/seed/cyberpunk/400/400',
     price: 4.99,
     avgRating: 4.8,
     reviewsCount: 124,
