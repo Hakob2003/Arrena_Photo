@@ -7,7 +7,7 @@ export default function MarketplacePage() {
     {
       id: '1',
       name: 'Cyberpunk Neon Portraits',
-      coverUrl: 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&q=80',
+      coverUrl: 'https://picsum.photos/seed/cyberpunk/400/400',
       price: 4.99,
       avgRating: 4.8,
       author: { id: 'a1', name: 'NeonDreams' }
@@ -15,7 +15,7 @@ export default function MarketplacePage() {
     {
       id: '2',
       name: 'Minimalist Product Studio',
-      coverUrl: 'https://images.unsplash.com/photo-1600003014755-ba31aa59c4b6?auto=format&fit=crop&q=80',
+      coverUrl: 'https://picsum.photos/seed/minimalist/400/400',
       price: 0,
       avgRating: 5.0,
       author: { id: 'a2', name: 'StudioPro' }
