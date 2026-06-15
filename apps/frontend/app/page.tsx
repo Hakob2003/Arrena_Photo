@@ -15,22 +15,22 @@ export default function HomePage() {
         className="z-10 max-w-4xl"
       >
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6">
-          IMAGINE <br />
-          <span className="neon-text">BEYOND REALITY</span>
+          ВООБРАЖЕНИЕ <br />
+          <span className="neon-text">ВНЕ РЕАЛЬНОСТИ</span>
         </h1>
         <p className="text-xl md:text-2xl text-gray-400 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-          The ultimate AI generation studio. Connect multiple models, use professional prompts, and orchestrate perfection.
+          Ультимативная AI-студия. Объединяйте модели, используйте профессиональные промпты и создавайте идеальные изображения.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
           <Link href="/generate">
             <button className="px-8 py-4 bg-white text-black font-bold rounded-full text-lg hover:bg-gray-200 hover:scale-105 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)]">
-              Start Generating
+              Начать генерацию
             </button>
           </Link>
           <Link href="/marketplace">
             <button className="px-8 py-4 glass text-white font-bold rounded-full text-lg hover:bg-white/10 transition-all border border-white/20">
-              Explore Marketplace
+              Перейти в Маркетплейс
             </button>
           </Link>
         </div>

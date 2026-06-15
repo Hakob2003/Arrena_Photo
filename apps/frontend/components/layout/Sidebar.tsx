@@ -5,22 +5,22 @@ import { motion } from 'framer-motion';
 import { useUIStore } from '../../store';
 
 const MAIN_LINKS = [
-  { href: '/', label: 'Home', icon: '🏠' },
-  { href: '/generate', label: 'Generator', icon: '✨' },
-  { href: '/templates', label: 'Templates', icon: '📁' },
-  { href: '/marketplace', label: 'Marketplace', icon: '🛒' },
-  { href: '/gallery', label: 'Gallery', icon: '🖼️' },
+  { href: '/', label: 'Главная', icon: '🏠' },
+  { href: '/generate', label: 'Генератор', icon: '✨' },
+  { href: '/templates', label: 'Шаблоны', icon: '📁' },
+  { href: '/marketplace', label: 'Маркетплейс', icon: '🛒' },
+  { href: '/gallery', label: 'Галерея', icon: '🖼️' },
 ];
 
 const USER_LINKS = [
-  { href: '/my-generations', label: 'My Generations', icon: '⏱️' },
-  { href: '/my-templates', label: 'My Templates', icon: '🎨' },
+  { href: '/my-generations', label: 'Мои генерации', icon: '⏱️' },
+  { href: '/my-templates', label: 'Мои шаблоны', icon: '🎨' },
 ];
 
 const SETTINGS_LINKS = [
-  { href: '/connections/ai', label: 'AI Connections', icon: '🔌' },
-  { href: '/connections/cloud', label: 'Cloud Storage', icon: '☁️' },
-  { href: '/profile', label: 'Profile & Billing', icon: '⚙️' },
+  { href: '/connections/ai', label: 'AI Провайдеры', icon: '🔌' },
+  { href: '/connections/cloud', label: 'Облако', icon: '☁️' },
+  { href: '/profile', label: 'Профиль и Баланс', icon: '⚙️' },
 ];
 
 export function Sidebar() {
@@ -86,17 +86,17 @@ export function Sidebar() {
 
       <div className="flex-1 overflow-y-auto px-4 py-2 space-y-8">
         <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3">Discover</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3">Обзор</p>
           {renderLinks(MAIN_LINKS)}
         </div>
         
         <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3">Studio</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3">Студия</p>
           {renderLinks(USER_LINKS)}
         </div>
 
         <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3">Settings</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3">Настройки</p>
           {renderLinks(SETTINGS_LINKS)}
         </div>
       </div>

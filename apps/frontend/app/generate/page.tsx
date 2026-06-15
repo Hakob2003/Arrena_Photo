@@ -91,17 +91,17 @@ export default function GeneratorPage() {
       {/* Left Panel: Controls */}
       <div className="w-full lg:w-[400px] flex flex-col gap-6">
         <div className="glass-card p-5 rounded-2xl">
-          <h2 className="text-lg font-bold mb-4">Prompt</h2>
+          <h2 className="text-lg font-bold mb-4">Промпт (Описание)</h2>
           <textarea 
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            placeholder="A futuristic cyberpunk city at night with neon lights reflecting in puddles..."
+            placeholder="Футуристический киберпанк город ночью, неоновые огни отражаются в лужах..."
             className="w-full h-40 bg-black/50 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
           />
         </div>
 
         <div className="glass-card p-5 rounded-2xl">
-          <h2 className="text-lg font-bold mb-4">Model & Settings</h2>
+          <h2 className="text-lg font-bold mb-4">Модель и Настройки</h2>
           <select 
             value={model}
             onChange={(e) => setModel(e.target.value)}
@@ -116,7 +116,7 @@ export default function GeneratorPage() {
           <div className="space-y-4">
             <div>
               <div className="flex justify-between text-xs text-gray-400 mb-1">
-                <span>Aspect Ratio</span>
+                <span>Соотношение сторон (Aspect Ratio)</span>
                 <span>16:9</span>
               </div>
               <div className="h-2 bg-white/10 rounded-full overflow-hidden">
@@ -135,7 +135,7 @@ export default function GeneratorPage() {
             : 'bg-white text-black hover:bg-gray-200 hover:scale-[1.02] neon-glow'
           }`}
         >
-          {isGenerating ? 'Generating...' : 'Generate ⚡ 5 Credits'}
+          {isGenerating ? 'Генерация...' : 'Создать ⚡ 5 Кредитов'}
         </button>
       </div>
 
@@ -176,7 +176,7 @@ export default function GeneratorPage() {
             />
           ) : (
             <div className="text-gray-600 text-lg">
-              Waiting for your prompt...
+              Ожидание вашего промпта...
             </div>
           )}
         </div>
