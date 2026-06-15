@@ -82,12 +82,17 @@ export class GoogleDriveService {
   }
 
   async disconnect(userId: string) {
-    // We only delete 'google-drive' explicit connections. 
-    // If they logged in via 'google', we shouldn't delete their login account.
-    await this.prisma.oAuthAccount.deleteMany({
-      where: { userId, provider: 'google-drive' }
-    });
-    return { success: true };
+    console.log(`[DriveService] Disconnecting user ${userId}`);
+    try {
+      const result = await this.prisma.oAuthAccount.deleteMany({
+        where: { userId, provider: 'google-drive' }
+      });
+      console.log(`[DriveService] Deleted ${result.count} records for user ${userId}`);
+      return { success: true, deletedCount: result.count };
+    } catch (e) {
+      console.error(`[DriveService] Error disconnecting:`, e);
+      throw new InternalServerErrorException('Failed to disconnect Google Drive');
+    }
   }
 
   async saveImageToDrive(userId: string, imageUrl: string) {
