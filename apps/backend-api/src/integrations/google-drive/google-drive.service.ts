@@ -176,4 +176,36 @@ export class GoogleDriveService {
     });
     return file.data.id;
   }
+
+  async streamFile(userId: string, fileId: string): Promise<Readable> {
+    const account = await this.prisma.oAuthAccount.findFirst({
+      where: { 
+        userId, 
+        provider: { in: ['google', 'google-drive'] }, 
+        refreshToken: { not: null } 
+      }
+    });
+
+    if (!account) {
+      throw new BadRequestException('Google Drive is not connected');
+    }
+
+    this.oauth2Client.setCredentials({
+      access_token: account.accessToken,
+      refresh_token: account.refreshToken,
+    });
+
+    const drive = google.drive({ version: 'v3', auth: this.oauth2Client });
+
+    try {
+      const response = await drive.files.get(
+        { fileId, alt: 'media' },
+        { responseType: 'stream' }
+      );
+      return response.data as Readable;
+    } catch (error) {
+      console.error('Failed to stream from Drive:', error);
+      throw new InternalServerErrorException('Failed to load image from Google Drive');
+    }
+  }
 }

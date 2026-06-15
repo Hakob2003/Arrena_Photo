@@ -7,10 +7,14 @@ export class CreateGenerationDto {
   @IsUUID()
   templateId?: string;
 
-  @ApiProperty({ description: 'ID of the AI Model to use' })
+  @ApiProperty({ description: 'ID or Name of the AI Model to use' })
   @IsString()
-  @IsUUID()
   aiModelId: string;
+
+  @ApiPropertyOptional({ description: 'Base64 of the initial image for img2img' })
+  @IsOptional()
+  @IsString()
+  initImage?: string;
 
   @ApiProperty({ description: 'The prompt text' })
   @IsString()

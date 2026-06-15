@@ -2,17 +2,21 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { ModuleRef } from '@nestjs/core';
 
 @Processor('generations')
 export class GenerationProcessor extends WorkerHost {
   private readonly logger = new Logger(GenerationProcessor.name);
 
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private moduleRef: ModuleRef
+  ) {
     super();
   }
 
   async process(job: Job<any, any, string>): Promise<any> {
-    const { generationId } = job.data;
+    const { generationId, initImage } = job.data;
     
     this.logger.log(`Processing generation job: ${generationId}`);
 
@@ -39,7 +43,8 @@ export class GenerationProcessor extends WorkerHost {
 
     try {
       // 3. Mock Generation Strategy: Wait 3 seconds and return a fake image URL
-      this.logger.log(`[MOCK] Generating image with provider: ${generation.aiModel.provider.name}, model: ${generation.aiModel.name}...`);
+      const mode = initImage ? 'img2img (editing)' : 'txt2img';
+      this.logger.log(`[MOCK] Generating image with provider: ${generation.aiModel.provider.name}, model: ${generation.aiModel.name}, mode: ${mode}...`);
       await new Promise((resolve) => setTimeout(resolve, 3000));
       
       const fakeImages = [
@@ -49,7 +54,22 @@ export class GenerationProcessor extends WorkerHost {
       ];
       const randomImage = fakeImages[Math.floor(Math.random() * fakeImages.length)];
 
-      // 4. Mark as DONE and save result
+      // 4. Try saving to Google Drive
+      let finalImageUrl = randomImage;
+      try {
+        const driveService = this.moduleRef.get('GoogleDriveService', { strict: false });
+        if (driveService) {
+           const uploadRes = await driveService.saveImageToDrive(generation.userId, randomImage);
+           if (uploadRes.success) {
+              finalImageUrl = `/api/integrations/google-drive/file/${uploadRes.fileId}`;
+              this.logger.log(`Saved generation ${generationId} to Google Drive: ${uploadRes.fileId}`);
+           }
+        }
+      } catch (e) {
+        this.logger.warn(`Could not save to Google Drive for user ${generation.userId}. Falling back to default URL. Error: ${e.message}`);
+      }
+
+      // 5. Mark as DONE and save result
       await this.prisma.generation.update({
         where: { id: generationId },
         data: { status: 'DONE' }
@@ -69,14 +89,14 @@ export class GenerationProcessor extends WorkerHost {
       await this.prisma.generationResult.create({
         data: {
           generationId,
-          imageUrl: randomImage,
+          imageUrl: finalImageUrl,
           durationMs: 3000,
           storageProviderId: storageProvider.id
         }
       });
 
       this.logger.log(`Successfully completed generation: ${generationId}`);
-      return { success: true, imageUrl: randomImage };
+      return { success: true, imageUrl: finalImageUrl };
 
     } catch (error: any) {
       this.logger.error(`Failed generation: ${generationId}`, error.stack);

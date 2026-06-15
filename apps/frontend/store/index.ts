@@ -30,6 +30,7 @@ interface GenerationState {
   isGenerating: boolean;
   progress: number;
   resultImage: string | null;
+  initImage: string | null; // Base64 or Object URL
   
   setPrompt: (v: string) => void;
   setNegativePrompt: (v: string) => void;
@@ -38,6 +39,7 @@ interface GenerationState {
   setGenerating: (isGenerating: boolean) => void;
   setProgress: (v: number) => void;
   setResult: (url: string) => void;
+  setInitImage: (v: string | null) => void;
 }
 
 export const useGenerationStore = create<GenerationState>((set) => ({
@@ -48,6 +50,7 @@ export const useGenerationStore = create<GenerationState>((set) => ({
   isGenerating: false,
   progress: 0,
   resultImage: null,
+  initImage: null,
 
   setPrompt: (prompt) => set({ prompt }),
   setNegativePrompt: (negativePrompt) => set({ negativePrompt }),
@@ -56,6 +59,7 @@ export const useGenerationStore = create<GenerationState>((set) => ({
   setGenerating: (isGenerating) => set({ isGenerating }),
   setProgress: (progress) => set({ progress }),
   setResult: (resultImage) => set({ resultImage }),
+  setInitImage: (initImage) => set({ initImage }),
 }));
 
 // --- UI Store ---

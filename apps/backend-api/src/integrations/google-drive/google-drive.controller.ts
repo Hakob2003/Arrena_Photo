@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query, Req, Res, UseGuards, Body } from '@nestjs/common';
+import { Controller, Get, Post, Query, Req, Res, UseGuards, Body, Param } from '@nestjs/common';
 import { GoogleDriveService } from './google-drive.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
@@ -55,5 +55,18 @@ export class GoogleDriveController {
   @ApiOperation({ summary: 'Save an image URL to Google Drive' })
   async saveImage(@Req() req, @Body('imageUrl') imageUrl: string) {
     return this.driveService.saveImageToDrive(req.user.id, imageUrl);
+  }
+
+  @Get('file/:id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Stream an image from Google Drive' })
+  async getFile(@Req() req, @Param('id') id: string, @Res() res) {
+    const stream = await this.driveService.streamFile(req.user.id, id);
+    res.set({
+      'Content-Type': 'image/png',
+      'Cache-Control': 'public, max-age=31536000',
+    });
+    stream.pipe(res);
   }
 }

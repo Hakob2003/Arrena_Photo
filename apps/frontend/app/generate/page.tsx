@@ -2,14 +2,36 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useGenerationStore, useAuthStore } from '../../store';
-
+import { useSearchParams } from 'next/navigation';
+import { useDropzone } from 'react-dropzone';
 import { api } from '../../lib/api';
 
-export default function GeneratorPage() {
-  const { prompt, setPrompt, model, setModel, isGenerating, setGenerating, resultImage, setResult } = useGenerationStore();
+function GeneratorContent() {
+  const searchParams = useSearchParams();
+  const templateName = searchParams.get('template');
+
+  const { prompt, setPrompt, model, setModel, isGenerating, setGenerating, resultImage, setResult, initImage, setInitImage } = useGenerationStore();
   const { user, login, deductCredits } = useAuthStore();
   const [loadingText, setLoadingText] = useState('Initializing AI...');
   const [models, setModels] = useState<any[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
+
+  const fetchHistory = React.useCallback(async () => {
+    if (!user) return;
+    try {
+      const res = await api.get('/generations/history');
+      setHistory(res.data);
+    } catch (e) {
+      console.error('Failed to fetch history', e);
+    }
+  }, [user]);
+
+  // 0. Prefill template if passed
+  React.useEffect(() => {
+    if (templateName && !prompt) {
+      setPrompt(`Style of ${templateName}, detailed, masterpiece, 8k resolution, highly realistic...`);
+    }
+  }, [templateName]);
 
   // 1. Auto-login as test user for now (Bypassing UI login page)
   React.useEffect(() => {
@@ -31,6 +53,23 @@ export default function GeneratorPage() {
     ]);
   }, []);
 
+  const onDrop = React.useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setInitImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [setInitImage]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { 'image/*': [] },
+    maxFiles: 1
+  });
+
   const handleGenerate = async () => {
     if (!prompt || !user) return;
     setGenerating(true);
@@ -45,8 +84,9 @@ export default function GeneratorPage() {
       // Actually, let's just assume the backend expects aiModelId. We will send the string name and update the backend to find by name!
       
       const res = await api.post('/generations', {
-        aiModelId: model, // Temporarily sending name, will fix backend to accept name
+        aiModelId: model, 
         prompt,
+        initImage, // Send base64 image if available
       });
 
       const generationId = res.data.id;
@@ -64,6 +104,7 @@ export default function GeneratorPage() {
             clearInterval(poll);
             setResult(statusRes.data.result.imageUrl);
             setGenerating(false);
+            fetchHistory(); // Refresh gallery
           } else if (status === 'FAILED') {
             clearInterval(poll);
             alert('Generation failed!');
@@ -85,11 +126,45 @@ export default function GeneratorPage() {
     }
   };
 
+  React.useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
+
   return (
     <div className="h-full flex flex-col lg:flex-row gap-6 p-6">
       
       {/* Left Panel: Controls */}
       <div className="w-full lg:w-[400px] flex flex-col gap-6">
+        
+        {/* Image Upload Zone */}
+        <div className="glass-card p-5 rounded-2xl">
+          <h2 className="text-lg font-bold mb-4">Исходное фото (Опционально)</h2>
+          <div 
+            {...getRootProps()} 
+            className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-colors ${
+              isDragActive ? 'border-indigo-500 bg-indigo-500/10' : 'border-white/20 hover:border-white/40 bg-black/30'
+            }`}
+          >
+            <input {...getInputProps()} />
+            {initImage ? (
+              <div className="relative group">
+                <img src={initImage} alt="Initial" className="w-full h-32 object-contain rounded-lg" />
+                <div 
+                  className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => { e.stopPropagation(); setInitImage(null); }}
+                >
+                  <span className="text-white font-bold text-sm bg-red-500/80 px-3 py-1 rounded-full cursor-pointer">Удалить</span>
+                </div>
+              </div>
+            ) : (
+              <div className="text-gray-400 py-6">
+                <p>Перетащите фото сюда или нажмите для выбора</p>
+                <p className="text-xs mt-2 text-gray-500">Поддерживаются форматы JPG, PNG</p>
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="glass-card p-5 rounded-2xl">
           <h2 className="text-lg font-bold mb-4">Промпт (Описание)</h2>
           <textarea 
@@ -180,8 +255,35 @@ export default function GeneratorPage() {
             </div>
           )}
         </div>
+        
+        {/* History Gallery */}
+        <div className="h-48 border-t border-white/10 bg-black/40 p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-hide">
+          <h3 className="text-sm font-bold text-gray-400 mb-3 uppercase tracking-wider">Мои генерации (Google Drive)</h3>
+          <div className="flex gap-4 h-[100px]">
+            {history.length === 0 ? (
+              <div className="text-gray-500 text-sm flex items-center h-full">История пуста. Создайте свою первую картинку!</div>
+            ) : (
+              history.map((item) => (
+                <div key={item.id} className="relative aspect-square h-full rounded-lg overflow-hidden group cursor-pointer" onClick={() => setResult(item.imageUrl)}>
+                  <img src={item.imageUrl} alt={item.prompt} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
+                    <span className="text-white text-[10px] font-bold truncate">{item.template || item.model}</span>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
 
     </div>
+  );
+}
+
+export default function GeneratorPage() {
+  return (
+    <React.Suspense fallback={<div className="h-full flex items-center justify-center text-white">Loading...</div>}>
+      <GeneratorContent />
+    </React.Suspense>
   );
 }

@@ -46,13 +46,34 @@ export class GenerationsService {
     await this.generationsQueue.add('generate-image', {
       generationId: generation.id,
       prompt: dto.prompt,
-      negativePrompt: dto.negativePrompt
+      negativePrompt: dto.negativePrompt,
+      initImage: dto.initImage
     }, {
       attempts: 3,
       backoff: { type: 'exponential', delay: 1000 }
     });
 
     return generation;
+  }
+
+  async getHistory(userId: string) {
+    const generations = await this.prisma.generation.findMany({
+      where: { userId, status: 'DONE' },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        result: true,
+        aiModel: { select: { name: true } },
+        template: { select: { name: true } }
+      }
+    });
+
+    return generations.map(g => ({
+      id: g.id,
+      imageUrl: g.result?.imageUrl,
+      model: g.aiModel.name,
+      template: g.template?.name,
+      createdAt: g.createdAt
+    }));
   }
 
   async getStatus(id: string, userId: string) {

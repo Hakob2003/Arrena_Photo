@@ -17,6 +17,12 @@ export class GenerationsController {
     return this.generationsService.create(req.user.id, createGenerationDto);
   }
 
+  @Get('history')
+  @ApiOperation({ summary: 'Get generation history for user' })
+  getHistory(@Req() req: any) {
+    return this.generationsService.getHistory(req.user.id);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get generation status and result' })
   getStatus(@Req() req: any, @Param('id') id: string) {
