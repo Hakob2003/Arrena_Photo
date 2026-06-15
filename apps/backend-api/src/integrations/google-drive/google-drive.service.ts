@@ -71,7 +71,7 @@ export class GoogleDriveService {
     const account = await this.prisma.oAuthAccount.findFirst({
       where: { 
         userId, 
-        provider: 'google-drive',
+        provider: { in: ['google-drive', 'google'] },
         refreshToken: { not: null }
       }
     });
@@ -95,7 +95,7 @@ export class GoogleDriveService {
     const account = await this.prisma.oAuthAccount.findFirst({
       where: { 
         userId, 
-        provider: 'google-drive', 
+        provider: { in: ['google-drive', 'google'] }, 
         refreshToken: { not: null } 
       }
     });
@@ -185,7 +185,7 @@ export class GoogleDriveService {
     const account = await this.prisma.oAuthAccount.findFirst({
       where: { 
         userId, 
-        provider: 'google-drive', 
+        provider: { in: ['google-drive', 'google'] }, 
         refreshToken: { not: null } 
       }
     });

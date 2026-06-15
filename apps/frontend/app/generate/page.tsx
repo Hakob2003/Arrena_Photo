@@ -53,10 +53,11 @@ function GeneratorContent() {
     }
   }, [setInitImage]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     accept: { 'image/*': [] },
-    maxFiles: 1
+    maxFiles: 1,
+    noClick: !!initImage,
   });
 
   const handleGenerate = async () => {
@@ -65,6 +66,12 @@ function GeneratorContent() {
       return;
     }
     if (!prompt) return;
+
+    if (!initImage) {
+      open();
+      return;
+    }
+
     setGenerating(true);
     setLoadingText('Отправка промпта...');
     
