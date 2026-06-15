@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { json, urlencoded } from 'express';
 import helmet from 'helmet';
 
 async function bootstrap() {
@@ -12,6 +13,10 @@ async function bootstrap() {
     // Global Middlewares
     app.use(helmet());
     app.enableCors();
+    
+    // Increase body size limits for base64 image uploads
+    app.use(json({ limit: '50mb' }));
+    app.use(urlencoded({ extended: true, limit: '50mb' }));
 
     // API Versioning
     app.enableVersioning({
