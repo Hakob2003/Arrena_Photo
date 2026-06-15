@@ -33,17 +33,6 @@ function GeneratorContent() {
     }
   }, [templateName]);
 
-  // 1. Auto-login as test user for now (Bypassing UI login page)
-  React.useEffect(() => {
-    if (!user) {
-      api.post('/auth/login', { email: 'test@example.com', password: 'dummy_password' })
-        .then(res => {
-          login(res.data.user, res.data.accessToken);
-        })
-        .catch(err => console.error('Failed to auto-login test user:', err));
-    }
-  }, [user, login]);
-
   // 2. Fetch Models from backend (Simulated or real if endpoint exists)
   React.useEffect(() => {
     // For now, hardcode the seeded models since we don't have a GET /models endpoint yet

@@ -3,6 +3,7 @@ import { Job } from 'bullmq';
 import { Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ModuleRef } from '@nestjs/core';
+import { GoogleDriveService } from '../integrations/google-drive/google-drive.service';
 
 @Processor('generations')
 export class GenerationProcessor extends WorkerHost {
@@ -57,7 +58,7 @@ export class GenerationProcessor extends WorkerHost {
       // 4. Try saving to Google Drive
       let finalImageUrl = randomImage;
       try {
-        const driveService = this.moduleRef.get('GoogleDriveService', { strict: false });
+        const driveService = this.moduleRef.get(GoogleDriveService, { strict: false });
         if (driveService) {
            const uploadRes = await driveService.saveImageToDrive(generation.userId, randomImage);
            if (uploadRes.success) {
@@ -68,12 +69,6 @@ export class GenerationProcessor extends WorkerHost {
       } catch (e) {
         this.logger.warn(`Could not save to Google Drive for user ${generation.userId}. Falling back to default URL. Error: ${e.message}`);
       }
-
-      // 5. Mark as DONE and save result
-      await this.prisma.generation.update({
-        where: { id: generationId },
-        data: { status: 'DONE' }
-      });
 
       // Find or create a default storage provider for the result
       let storageProvider = await this.prisma.storageProvider.findFirst();
@@ -93,6 +88,12 @@ export class GenerationProcessor extends WorkerHost {
           durationMs: 3000,
           storageProviderId: storageProvider.id
         }
+      });
+
+      // 5. Mark as DONE after result is created
+      await this.prisma.generation.update({
+        where: { id: generationId },
+        data: { status: 'DONE' }
       });
 
       this.logger.log(`Successfully completed generation: ${generationId}`);
