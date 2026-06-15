@@ -16,7 +16,7 @@ export class GenerationsService {
 
   async create(userId: string, dto: CreateGenerationDto) {
     // 1. Verify model exists (by name or ID)
-    const aiModel = await this.prisma.aIModel.findFirst({
+    let aiModel = await this.prisma.aIModel.findFirst({
       where: { 
         OR: [
           { id: dto.aiModelId },
