@@ -51,14 +51,40 @@
 ```bash
 Arrena_Photo/
 ├── apps/
-│   ├── frontend/         # Next.js 15 клиентское приложение
-│   └── backend-api/      # NestJS REST API сервер
+│   ├── backend-api/           # NestJS REST API сервер
+│   │   └── src/
+│   │       ├── admin/         # Эндпоинты панели администратора
+│   │       ├── auth/          # JWT Аутентификация
+│   │       ├── billing/       # Логика биллинга и списания кредитов
+│   │       ├── generations/   # Очереди генерации через ИИ (BullMQ)
+│   │       ├── marketplace/   # Логика маркетплейса
+│   │       ├── templates/     # Управление шаблонами
+│   │       └── users/         # Профили пользователей
+│   │
+│   └── frontend/              # Next.js 15 клиентское приложение
+│       ├── app/
+│       │   ├── admin/         # Интерфейс админки
+│       │   ├── generate/      # Интерфейс генерации ИИ
+│       │   ├── marketplace/   # Страницы маркетплейса
+│       │   ├── profile/       # Личный кабинет
+│       │   └── templates/     # Галерея шаблонов
+│       ├── components/        # UI компоненты (Tailwind + Shadcn)
+│       └── store/             # Zustand хранилища состояний
+│
 ├── packages/
-│   └── database/         # Prisma Schema & Миграции
-├── scripts/              # Скрипты обслуживания
-├── render.yaml           # Конфигурация деплоя на Render
-├── package.json          # Корневой pnpm-workspace
-└── pnpm-workspace.yaml   # Настройки monorepo
+│   ├── database/              # Модуль базы данных
+│   │   └── prisma/
+│   │       ├── schema.prisma  # Описание таблиц (PostgreSQL)
+│   │       └── seed.ts        # Стартовые данные (Админ, Модели ИИ)
+│   ├── shared-types/          # Общие TS-типы (если есть)
+│   └── ui-kit/                # Общие UI компоненты (если есть)
+│
+├── scripts/                   # bash/powershell скрипты обслуживания
+├── nginx/                     # Конфиги обратного прокси для Docker
+├── prometheus/                # Файлы конфигурации мониторинга
+├── render.yaml                # Конфигурация деплоя на Render
+├── package.json               # Корневой pnpm-workspace
+└── pnpm-workspace.yaml        # Настройки monorepo
 ```
 
 ---
