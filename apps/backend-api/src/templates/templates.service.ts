@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { TemplateVersionsService } from './template-versions.service';
-import { CreateTemplateDto, UpdateTemplateDto, FilterTemplatesDto, BulkActionDto, BulkTemplateAction } from './dto/template.dto';
+import { CreateTemplateDto, UpdateTemplateDto, FilterTemplatesDto, BulkActionDto, BulkTemplateAction, ImportTemplatesRequestDto } from './dto/template.dto';
 import { TemplateStatus, Prisma } from '@prisma/client';
 
 @Injectable()
@@ -235,6 +235,62 @@ export class TemplatesService {
       });
     }
 
+
     return categories;
+  }
+
+  async importTemplates(userId: string, dto: ImportTemplatesRequestDto) {
+    let imported = 0;
+    
+    // First, ensure all categories exist and cache their IDs
+    const categoryMap = new Map<string, string>();
+    const existingCats = await this.getCategories();
+    for (const cat of existingCats) {
+      categoryMap.set(cat.name.toLowerCase(), cat.id);
+    }
+
+    for (const tpl of dto.templates) {
+      const catNameLower = tpl.categoryName.toLowerCase();
+      let categoryId = categoryMap.get(catNameLower);
+      
+      if (!categoryId) {
+        // Create category if it doesn't exist
+        const newCat = await this.prisma.templateCategory.create({
+          data: {
+            name: tpl.categoryName,
+            slug: tpl.categoryName.toLowerCase().replace(/\s+/g, '-')
+          }
+        });
+        categoryId = newCat.id;
+        categoryMap.set(catNameLower, categoryId);
+      }
+
+      // Create template
+      const newTemplate = await this.prisma.template.create({
+        data: {
+          name: tpl.name,
+          description: tpl.description || '',
+          categoryId,
+          creatorId: userId,
+          coverUrl: tpl.coverUrl || '',
+          galleryUrls: [],
+          recommendedModels: tpl.recommendedModels || ['sdxl-1.0'],
+          status: tpl.status || TemplateStatus.DRAFT,
+          price: tpl.price ?? null,
+        }
+      });
+
+      // Create version
+      await this.versionsService.createVersion(
+        newTemplate.id,
+        tpl.prompt,
+        tpl.negativePrompt || '',
+        {}
+      );
+
+      imported++;
+    }
+
+    return { imported };
   }
 }

@@ -1,0 +1,120 @@
+"use client";
+
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { templatesApi } from "@/lib/templates.api";
+
+interface ImportTemplatesModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTemplatesModalProps) {
+  const [loading, setLoading] = useState(false);
+  const [rawData, setRawData] = useState("");
+
+  const handleImport = async () => {
+    if (!rawData.trim()) {
+      toast.error("Please paste your data first");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      let parsedTemplates: any[] = [];
+      
+      // Try parsing as JSON first
+      try {
+        parsedTemplates = JSON.parse(rawData);
+        if (!Array.isArray(parsedTemplates)) {
+          throw new Error("JSON must be an array of objects");
+        }
+      } catch (jsonError) {
+        // Fallback to TSV/CSV parsing if JSON fails
+        const lines = rawData.split('\n').filter(line => line.trim());
+        if (lines.length < 2) {
+          throw new Error("Invalid format: Need at least a header row and one data row, or valid JSON array.");
+        }
+
+        const delimiter = lines[0].includes('\t') ? '\t' : ',';
+        const headers = lines[0].split(delimiter).map(h => h.trim());
+        
+        parsedTemplates = lines.slice(1).map(line => {
+          const values = line.split(delimiter);
+          const obj: any = {};
+          headers.forEach((header, i) => {
+            let val = values[i] ? values[i].trim() : '';
+            if (header === 'price' && val) obj[header] = parseFloat(val);
+            else if (header === 'recommendedModels' && val) obj[header] = val.split(',').map(m => m.trim());
+            else obj[header] = val;
+          });
+          return obj;
+        });
+      }
+
+      // Basic validation
+      const validTemplates = parsedTemplates.filter(t => t.name && t.categoryName && t.prompt);
+      
+      if (validTemplates.length === 0) {
+        toast.error("No valid templates found. Ensure 'name', 'categoryName', and 'prompt' are provided.");
+        setLoading(false);
+        return;
+      }
+
+      const res = await templatesApi.importTemplates(validTemplates);
+      toast.success(`Successfully imported ${res.imported} templates!`);
+      setRawData("");
+      onSuccess();
+      onClose();
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.response?.data?.message || error.message || "Failed to import templates");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[700px] bg-[#1a1a1a] border-gray-800 text-white">
+        <DialogHeader>
+          <DialogTitle>Import Templates</DialogTitle>
+          <DialogDescription className="text-gray-400">
+            Paste a JSON array or a TSV/CSV (from Excel/Google Sheets).
+            Required headers/keys: <strong>name, categoryName, prompt</strong>.
+            Optional: <strong>description, coverUrl, negativePrompt, price, status, recommendedModels</strong> (comma-separated).
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="grid gap-4 py-4">
+          <div className="grid gap-2">
+            <Label htmlFor="data">Data (JSON or TSV/CSV)</Label>
+            <Textarea
+              id="data"
+              placeholder={'[\n  {\n    "name": "Template 1",\n    "categoryName": "Business",\n    "prompt": "A professional portrait..."\n  }\n]\n\nOR\n\nname\tcategoryName\tprompt\tprice\nTemp1\tBusiness\tPortrait of...\t10'}
+              className="bg-black border-gray-800 font-mono text-xs"
+              rows={15}
+              value={rawData}
+              onChange={(e) => setRawData(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button variant="ghost" onClick={onClose} disabled={loading} className="text-gray-400 hover:text-white">
+            Cancel
+          </Button>
+          <Button onClick={handleImport} disabled={loading} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+            {loading ? "Importing..." : "Import"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}

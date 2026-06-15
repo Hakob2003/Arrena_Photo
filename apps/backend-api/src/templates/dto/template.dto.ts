@@ -100,6 +100,47 @@ export class FilterTemplatesDto {
   take?: number;
 }
 
+export class ImportTemplateDto {
+  @IsString()
+  name!: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsString()
+  categoryName!: string;
+
+  @IsOptional()
+  @IsString()
+  coverUrl?: string;
+
+  @IsString()
+  prompt!: string;
+
+  @IsOptional()
+  @IsString()
+  negativePrompt?: string;
+
+  @IsOptional()
+  @IsNumber()
+  price?: number;
+
+  @IsOptional()
+  @IsEnum(TemplateStatus)
+  status?: TemplateStatus;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  recommendedModels?: string[];
+}
+
+export class ImportTemplatesRequestDto {
+  @IsArray()
+  templates!: ImportTemplateDto[];
+}
+
 export enum BulkTemplateAction {
   PUBLISH = 'PUBLISH',
   DRAFT = 'DRAFT',

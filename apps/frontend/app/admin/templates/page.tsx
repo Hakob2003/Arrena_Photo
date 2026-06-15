@@ -12,6 +12,7 @@ import { MoreHorizontal, Plus, Copy, Edit, Trash, PlaySquare, ImageIcon } from "
 import { toast } from "sonner";
 import { templatesApi } from "@/lib/templates.api";
 import { TemplateModal } from "@/components/admin/TemplateModal";
+import { ImportTemplatesModal } from "@/components/admin/ImportTemplatesModal";
 import { PageHeader } from "@/components/admin/PageHeader";
 
 export default function AdminTemplatesPage() {
@@ -23,6 +24,7 @@ export default function AdminTemplatesPage() {
   
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<any>(null);
 
   const fetchData = async () => {
@@ -112,9 +114,14 @@ export default function AdminTemplatesPage() {
           title="Template Management" 
           description="Manage AI generation templates, categories and visibility."
         />
-        <Button onClick={openCreate} className="mb-6">
-          <Plus className="mr-2 h-4 w-4" /> Create Template
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button onClick={() => setIsImportModalOpen(true)} variant="outline" className="bg-transparent border-gray-800 hover:bg-gray-800 text-white">
+            Import CSV/JSON
+          </Button>
+          <Button onClick={openCreate} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+            <Plus className="mr-2 h-4 w-4" /> Create Template
+          </Button>
+        </div>
       </div>
 
       {selectedIds.size > 0 && (
@@ -213,6 +220,12 @@ export default function AdminTemplatesPage() {
         template={editingTemplate}
         categories={categories}
         onSave={fetchData}
+      />
+
+      <ImportTemplatesModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onSuccess={fetchData}
       />
     </div>
   );

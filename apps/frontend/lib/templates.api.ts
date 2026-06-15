@@ -63,5 +63,11 @@ export const templatesApi = {
   bulkAction: async (action: 'PUBLISH' | 'DRAFT' | 'ARCHIVE' | 'DELETE', templateIds: string[]) => {
     const res = await api.post('/templates/bulk', { action, templateIds });
     return res.data;
+  },
+
+  // Import templates
+  importTemplates: async (templates: any[]) => {
+    const res = await api.post('/templates/import', { templates });
+    return res.data;
   }
 };

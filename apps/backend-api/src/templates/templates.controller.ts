@@ -3,7 +3,7 @@ import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { TemplatesService } from './templates.service';
 import { TemplateVersionsService } from './template-versions.service';
 import { TemplatesImportExportService } from './templates-import-export.service';
-import { CreateTemplateDto, UpdateTemplateDto, FilterTemplatesDto, BulkActionDto } from './dto/template.dto';
+import { CreateTemplateDto, UpdateTemplateDto, FilterTemplatesDto, BulkActionDto, ImportTemplatesRequestDto } from './dto/template.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { TemplateStatus } from '@prisma/client';
@@ -37,6 +37,14 @@ export class TemplatesController {
   @ApiOperation({ summary: 'Perform bulk action on templates' })
   async bulkAction(@Body() dto: BulkActionDto) {
     return this.templatesService.bulkAction(dto.action, dto.templateIds);
+  }
+
+  @Post('import')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Import multiple templates' })
+  async importTemplates(@CurrentUser() user: any, @Body() dto: ImportTemplatesRequestDto) {
+    return this.templatesService.importTemplates(user.id, dto);
   }
 
   @Get()
