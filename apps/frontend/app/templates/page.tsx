@@ -3,20 +3,19 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export default function TemplatesPage() {
-  const categories = ['Anime', 'Realistic', 'Cyberpunk', 'Fantasy', 'Product Photography', 'Logo'];
   const mockTemplates = [
-    { id: 1, name: 'Neon City Cyberpunk', category: 'Cyberpunk', cover: 'https://picsum.photos/seed/cyberpunk/400/500' },
-    { id: 2, name: 'Studio Coffee Cup', category: 'Product Photography', cover: 'https://picsum.photos/seed/coffee/400/500' },
-    { id: 3, name: 'Epic Fantasy Landscape', category: 'Fantasy', cover: 'https://picsum.photos/seed/fantasy/400/500' },
-    { id: 4, name: 'Anime School Girl', category: 'Anime', cover: 'https://picsum.photos/seed/anime1/400/500' },
-    { id: 5, name: 'Modern Tech Logo', category: 'Logo', cover: 'https://picsum.photos/seed/logo1/400/500' },
-    { id: 6, name: 'Realistic Portrait', category: 'Realistic', cover: 'https://picsum.photos/seed/portrait1/400/500' },
-    { id: 7, name: 'Sci-Fi Spaceship', category: 'Cyberpunk', cover: 'https://picsum.photos/seed/spaceship/400/500' },
-    { id: 8, name: 'Minimalist Watch', category: 'Product Photography', cover: 'https://picsum.photos/seed/watch/400/500' },
-    { id: 9, name: 'Dragon in the Clouds', category: 'Fantasy', cover: 'https://picsum.photos/seed/dragon/400/500' },
-    { id: 10, name: 'Vintage Camera', category: 'Realistic', cover: 'https://picsum.photos/seed/camera/400/500' },
-    { id: 11, name: 'Mecha Robot', category: 'Anime', cover: 'https://picsum.photos/seed/mecha/400/500' },
-    { id: 12, name: 'Bakery Logo', category: 'Logo', cover: 'https://picsum.photos/seed/bakery/400/500' },
+    { id: 1, name: 'Neon City Cyberpunk', category: 'Cyberpunk', cover: 'https://image.pollinations.ai/prompt/neon%20city%20cyberpunk?width=400&height=500&nologo=true' },
+    { id: 2, name: 'Studio Coffee Cup', category: 'Product Photography', cover: 'https://image.pollinations.ai/prompt/studio%20coffee%20cup?width=400&height=500&nologo=true' },
+    { id: 3, name: 'Epic Fantasy Landscape', category: 'Fantasy', cover: 'https://image.pollinations.ai/prompt/epic%20fantasy%20landscape?width=400&height=500&nologo=true' },
+    { id: 4, name: 'Anime School Girl', category: 'Anime', cover: 'https://image.pollinations.ai/prompt/anime%20school%20girl?width=400&height=500&nologo=true' },
+    { id: 5, name: 'Modern Tech Logo', category: 'Logo', cover: 'https://image.pollinations.ai/prompt/modern%20tech%20logo?width=400&height=500&nologo=true' },
+    { id: 6, name: 'Realistic Portrait', category: 'Realistic', cover: 'https://image.pollinations.ai/prompt/realistic%20portrait?width=400&height=500&nologo=true' },
+    { id: 7, name: 'Sci-Fi Spaceship', category: 'Cyberpunk', cover: 'https://image.pollinations.ai/prompt/sci-fi%20spaceship?width=400&height=500&nologo=true' },
+    { id: 8, name: 'Minimalist Watch', category: 'Product Photography', cover: 'https://image.pollinations.ai/prompt/minimalist%20watch?width=400&height=500&nologo=true' },
+    { id: 9, name: 'Dragon in the Clouds', category: 'Fantasy', cover: 'https://image.pollinations.ai/prompt/dragon%20in%20the%20clouds?width=400&height=500&nologo=true' },
+    { id: 10, name: 'Vintage Camera', category: 'Realistic', cover: 'https://image.pollinations.ai/prompt/vintage%20camera?width=400&height=500&nologo=true' },
+    { id: 11, name: 'Mecha Robot', category: 'Anime', cover: 'https://image.pollinations.ai/prompt/mecha%20robot?width=400&height=500&nologo=true' },
+    { id: 12, name: 'Bakery Logo', category: 'Logo', cover: 'https://image.pollinations.ai/prompt/bakery%20logo?width=400&height=500&nologo=true' },
   ];
 
   return (
