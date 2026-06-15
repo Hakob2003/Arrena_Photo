@@ -11,7 +11,7 @@ function GeneratorContent() {
   const templateName = searchParams.get('template');
 
   const { prompt, setPrompt, model, setModel, isGenerating, setGenerating, resultImage, setResult, initImage, setInitImage } = useGenerationStore();
-  const { user, login, deductCredits } = useAuthStore();
+  const { user, deductCredits, setCredits } = useAuthStore();
   const [loadingText, setLoadingText] = useState('Initializing AI...');
   const [models, setModels] = useState<any[]>([]);
   const [history, setHistory] = useState<any[]>([]);
@@ -60,10 +60,13 @@ function GeneratorContent() {
   });
 
   const handleGenerate = async () => {
-    if (!prompt || !user) return;
+    if (!user) {
+      window.location.href = '/login';
+      return;
+    }
+    if (!prompt) return;
     setGenerating(true);
-    deductCredits(5);
-    setLoadingText('Submitting prompt to backend...');
+    setLoadingText('Отправка промпта...');
     
     try {
       // Note: We're mapping 'sdxl-1.0' to the actual DB ID. Since we seeded it, we need the UUID.
@@ -79,30 +82,44 @@ function GeneratorContent() {
       });
 
       const generationId = res.data.id;
-      setLoadingText('Waiting in queue (BullMQ)...');
+      deductCredits(5); // Deduct only after backend accepted the request
+      setLoadingText('В очереди...');
 
-      // Poll every 1 second
+      // Poll every 1.5 seconds, max 60 seconds
+      let elapsed = 0;
       const poll = setInterval(async () => {
+        elapsed += 1500;
+        if (elapsed > 60000) {
+          clearInterval(poll);
+          setGenerating(false);
+          alert('Превышено время ожидания генерации. Попробуйте позже.');
+          return;
+        }
         try {
           const statusRes = await api.get(`/generations/${generationId}`);
           const status = statusRes.data.status;
           
           if (status === 'PROCESSING') {
-            setLoadingText('Generation in progress...');
+            setLoadingText('Генерация...');
           } else if (status === 'DONE') {
             clearInterval(poll);
             setResult(statusRes.data.result.imageUrl);
             setGenerating(false);
-            fetchHistory(); // Refresh gallery
+            fetchHistory();
+            // Sync credits from backend
+            try {
+              const meRes = await api.get('/auth/me');
+              if (typeof meRes.data.credits === 'number') setCredits(meRes.data.credits);
+            } catch (_) {}
           } else if (status === 'FAILED') {
             clearInterval(poll);
-            alert('Generation failed!');
+            alert('Генерация не удалась!');
             setGenerating(false);
           }
         } catch (pollErr) {
           console.error('Polling error:', pollErr);
         }
-      }, 1000);
+      }, 1500);
 
     } catch (err: any) {
       console.error(err);

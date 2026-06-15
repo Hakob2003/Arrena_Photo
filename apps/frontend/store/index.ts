@@ -14,8 +14,8 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   token: null,
-  credits: 1500,
-  login: (user, token) => set({ user, token, credits: user.credits ?? 1500 }),
+  credits: 0,
+  login: (user, token) => set({ user, token, credits: user.credits ?? 0 }),
   logout: () => set({ user: null, token: null }),
   deductCredits: (amount) => set((state) => ({ credits: Math.max(0, state.credits - amount) })),
   setCredits: (amount) => set({ credits: amount }),

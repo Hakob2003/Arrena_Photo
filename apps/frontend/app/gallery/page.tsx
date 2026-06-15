@@ -18,13 +18,13 @@ export default function GalleryPage() {
     <div className="p-8 max-w-screen-2xl mx-auto">
       <div className="flex justify-between items-end mb-10">
         <div>
-          <h1 className="text-4xl font-bold mb-2">Community Gallery</h1>
-          <p className="text-gray-400">Discover what others are creating right now.</p>
+          <h1 className="text-4xl font-bold mb-2">Галерея сообщества</h1>
+          <p className="text-gray-400">Смотрите, что создают другие пользователи прямо сейчас.</p>
         </div>
         <div className="flex bg-white/5 rounded-lg p-1">
-          <button className="px-4 py-1.5 rounded-md bg-white/10 text-white font-medium shadow-sm">Trending</button>
-          <button className="px-4 py-1.5 rounded-md text-gray-400 hover:text-white">Recent</button>
-          <button className="px-4 py-1.5 rounded-md text-gray-400 hover:text-white">Top Rated</button>
+          <button className="px-4 py-1.5 rounded-md bg-white/10 text-white font-medium shadow-sm">Популярное</button>
+          <button className="px-4 py-1.5 rounded-md text-gray-400 hover:text-white">Новое</button>
+          <button className="px-4 py-1.5 rounded-md text-gray-400 hover:text-white">Лучшее</button>
         </div>
       </div>
 
@@ -51,7 +51,7 @@ export default function GalleryPage() {
                 {item.prompt}
               </p>
               <div className="flex gap-2 mt-4">
-                <button className="flex-1 glass text-white text-xs font-bold py-2 rounded-lg hover:bg-white/20">Remix</button>
+                <button className="flex-1 glass text-white text-xs font-bold py-2 rounded-lg hover:bg-white/20">Ремикс</button>
                 <button className="w-10 glass flex items-center justify-center rounded-lg hover:bg-white/20">❤️</button>
               </div>
             </div>

@@ -54,8 +54,8 @@ export default function CloudConnectionsPage() {
   };
   return (
     <div className="p-8 max-w-5xl mx-auto">
-      <h1 className="text-4xl font-bold mb-2">Cloud Storage</h1>
-      <p className="text-gray-400 mb-10">Connect custom S3 buckets to host your own generated images and templates.</p>
+      <h1 className="text-4xl font-bold mb-2">Облачное хранилище</h1>
+      <p className="text-gray-400 mb-10">Подключите S3-хранилище для сохранения сгенерированных изображений.</p>
 
       <div className="glass-card p-8 rounded-2xl border-t-2 border-t-blue-500 mb-8">
         <div className="flex items-center justify-between mb-6">
@@ -128,8 +128,8 @@ export default function CloudConnectionsPage() {
         </div>
 
         <div className="mt-8 flex justify-end gap-4">
-          <button className="px-6 py-2 glass rounded-lg text-white font-medium hover:bg-white/10">Test Connection</button>
-          <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-[0_0_15px_rgba(37,99,235,0.4)]">Save Configuration</button>
+          <button className="px-6 py-2 glass rounded-lg text-white font-medium hover:bg-white/10">Тест соединения</button>
+          <button className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-[0_0_15px_rgba(37,99,235,0.4)]">Сохранить</button>
         </div>
       </div>
     </div>

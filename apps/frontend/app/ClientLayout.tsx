@@ -28,19 +28,30 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         };
         login(user, token);
         
-        // Fetch fresh profile from backend
-        api.get('/users/profile')
+        // Fetch fresh profile from backend (credits, name, etc.)
+        api.get('/auth/me')
           .then(res => {
+             const data = res.data;
              const freshUser = { 
-               ...res.data, 
-               role: typeof res.data.role === 'object' ? res.data.role.name : res.data.role 
+               id: data.id,
+               email: data.email,
+               name: data.name || data.email?.split('@')[0] || 'User',
+               role: typeof data.role === 'object' ? data.role.name : data.role,
+               credits: data.credits,
              };
              login(freshUser, token);
-             if (typeof freshUser.credits === 'number') {
-               setCredits(freshUser.credits);
+             if (typeof data.credits === 'number') {
+               setCredits(data.credits);
              }
           })
-          .catch(err => console.error('Failed to fetch user profile:', err));
+          .catch(err => {
+            console.error('Failed to fetch user profile:', err);
+            // Token might be expired — clear it
+            if (err.response?.status === 401) {
+              localStorage.removeItem('token');
+              useAuthStore.getState().logout();
+            }
+          });
           
       } catch (err) {
         localStorage.removeItem('token');

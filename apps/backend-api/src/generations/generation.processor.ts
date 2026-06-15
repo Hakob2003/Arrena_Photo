@@ -49,9 +49,9 @@ export class GenerationProcessor extends WorkerHost {
       await new Promise((resolve) => setTimeout(resolve, 3000));
       
       const fakeImages = [
-        'https://images.unsplash.com/photo-1707343843437-caacff5cfa74',
-        'https://images.unsplash.com/photo-1682687982501-1e58f8147c08',
-        'https://images.unsplash.com/photo-1682687220063-4742bd7fd538'
+        'https://picsum.photos/seed/gen1/512/512',
+        'https://picsum.photos/seed/gen2/512/512',
+        'https://picsum.photos/seed/gen3/512/512'
       ];
       const randomImage = fakeImages[Math.floor(Math.random() * fakeImages.length)];
 
@@ -66,8 +66,8 @@ export class GenerationProcessor extends WorkerHost {
               this.logger.log(`Saved generation ${generationId} to Google Drive: ${uploadRes.fileId}`);
            }
         }
-      } catch (e) {
-        this.logger.warn(`Could not save to Google Drive for user ${generation.userId}. Falling back to default URL. Error: ${e.message}`);
+      } catch (e: any) {
+        this.logger.warn(`Could not save to Google Drive for user ${generation.userId}. Falling back to default URL. Error: ${e?.message || e}`);
       }
 
       // Find or create a default storage provider for the result

@@ -27,16 +27,16 @@ export default function MarketplacePage() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-12 text-center space-y-4">
           <h1 className="text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            AI Template Marketplace
+            Маркетплейс AI Шаблонов
           </h1>
           <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-            Discover thousands of production-ready AI prompts, workflows, and models curated by top creators.
+            Открывайте тысячи готовых AI-промптов, созданных лучшими авторами.
           </p>
         </div>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-4 mb-8">
-          {['All', 'Free', 'Premium', 'Anime', 'Realistic', 'Cyberpunk'].map(tag => (
+          {['Все', 'Бесплатные', 'Премиум', 'Anime', 'Realistic', 'Cyberpunk'].map(tag => (
             <button key={tag} className="px-5 py-2 rounded-full border border-gray-200 dark:border-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
               {tag}
             </button>

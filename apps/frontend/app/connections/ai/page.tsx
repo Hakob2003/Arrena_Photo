@@ -12,8 +12,8 @@ export default function AiConnectionsPage() {
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
-      <h1 className="text-4xl font-bold mb-2">AI Providers</h1>
-      <p className="text-gray-400 mb-10">Connect your API keys or local instances to generate images without spending platform credits.</p>
+      <h1 className="text-4xl font-bold mb-2">AI Провайдеры</h1>
+      <p className="text-gray-400 mb-10">Подключите свои API-ключи или локальные инстансы для генерации без траты кредитов платформы.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {providers.map((p, i) => (
@@ -61,7 +61,7 @@ export default function AiConnectionsPage() {
                   ? 'bg-white/10 hover:bg-red-500/20 hover:text-red-400 text-gray-300' 
                   : 'bg-indigo-600 hover:bg-indigo-700 text-white'
                 }`}>
-                  {p.status === 'connected' ? 'Disconnect' : 'Connect'}
+                  {p.status === 'connected' ? 'Отключить' : 'Подключить'}
                 </button>
               </div>
             </div>
