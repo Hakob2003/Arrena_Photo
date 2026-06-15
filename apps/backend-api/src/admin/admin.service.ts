@@ -108,7 +108,7 @@ export class AdminService {
         orderBy: { createdAt: 'desc' },
         include: { 
           role: true, 
-          subscriptions: { orderBy: { createdAt: 'desc' }, take: 1 },
+          subscription: true,
           _count: { select: { generations: true } }
         },
       }),
@@ -125,7 +125,7 @@ export class AdminService {
       status: u.status,
       credits: u.credits,
       role: u.role,
-      plan: u.subscriptions[0]?.plan || 'FREE',
+      plan: u.subscription?.plan || 'FREE',
       generationCount: u._count.generations
     }));
     
