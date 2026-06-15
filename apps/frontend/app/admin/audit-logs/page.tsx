@@ -15,7 +15,7 @@ export default function AdminAuditLogs() {
         admin: l.user?.email || 'SYSTEM',
         action: l.action,
         target: JSON.stringify(l.details),
-        timestamp: new Date(l.createdAt).toLocaleString(),
+        timestamp: new Date(l.createdAt).toLocaleString('en-US'),
         ip: l.details?.ip || 'internal',
       }));
       setLogs(formatted);

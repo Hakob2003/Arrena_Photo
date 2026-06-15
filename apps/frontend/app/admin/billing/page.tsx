@@ -41,7 +41,7 @@ export default function AdminBilling() {
         columns={[
           { key: 'name', header: 'Plan Name', render: (r) => <span className="font-semibold text-white">{r.name}</span> },
           { key: 'price', header: 'Price' },
-          { key: 'users', header: 'Active Users', render: (r) => <span className="text-gray-300">{r.users.toLocaleString()}</span> },
+          { key: 'users', header: 'Active Users', render: (r) => <span className="text-gray-300">{r.users.toLocaleString('en-US')}</span> },
           { key: 'status', header: 'Status', render: (r) => {
             const v = r.status === 'ACTIVE' ? 'success' : 'default';
             return <Badge variant={v}>{r.status}</Badge>;

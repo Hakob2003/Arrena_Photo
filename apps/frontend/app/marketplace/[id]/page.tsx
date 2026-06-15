@@ -47,7 +47,7 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
                 <span className="text-gray-400 ml-1">({template.reviewsCount} reviews)</span>
               </span>
               <span>•</span>
-              <span>{template.downloads.toLocaleString()} downloads</span>
+              <span>{template.downloads.toLocaleString('en-US')} downloads</span>
             </div>
           </div>
 

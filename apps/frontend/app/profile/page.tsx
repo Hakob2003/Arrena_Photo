@@ -35,7 +35,7 @@ export default function ProfilePage() {
             <div>
               <p className="text-gray-400 text-sm mb-1">Available Balance</p>
               <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
-                {credits.toLocaleString()} <span className="text-lg text-gray-500 font-medium">CR</span>
+                {credits?.toLocaleString('en-US') || 0} <span className="text-lg text-gray-500 font-medium">CR</span>
               </p>
             </div>
             <button className="px-6 py-3 bg-white text-black font-bold rounded-xl hover:scale-105 transition-transform">

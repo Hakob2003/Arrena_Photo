@@ -20,7 +20,7 @@ export function Topbar() {
       <div className="flex items-center gap-4 md:gap-6 ml-auto">
         {/* Credits Pill */}
         <div className="flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1.5 rounded-full">
-          <span className="text-indigo-400 text-sm font-bold">⚡ {credits.toLocaleString()}</span>
+          <span className="text-indigo-400 text-sm font-bold">⚡ {credits?.toLocaleString('en-US') || 0}</span>
           <span className="text-xs text-indigo-300/70 uppercase">Credits</span>
         </div>
 
