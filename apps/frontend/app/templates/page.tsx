@@ -8,7 +8,7 @@ export default function TemplatesPage() {
     id: i,
     name: `Pro Template ${i + 1}`,
     category: categories[i % categories.length],
-    cover: `https://images.unsplash.com/photo-${1600000000000 + i * 1000}?auto=format&fit=crop&q=80&w=400`
+    cover: `https://picsum.photos/seed/template${i}/400/400`
   }));
 
   return (

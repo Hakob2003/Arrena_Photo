@@ -11,7 +11,7 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
     id: resolvedParams.id,
     name: 'Cyberpunk Neon Portraits',
     description: 'A highly detailed prompt for generating cyberpunk style portraits with neon lighting. Best used with DALL-E 3 or SDXL.',
-    coverUrl: 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&q=80',
+    coverUrl: 'https://picsum.photos/seed/market/400/400',
     price: 4.99,
     avgRating: 4.8,
     reviewsCount: 124,

@@ -7,7 +7,7 @@ export default function MyGenerationsPage() {
   const mockGens = Array(12).fill(null).map((_, i) => ({
     id: i,
     date: new Date(Date.now() - i * 86400000).toLocaleDateString(),
-    image: `https://images.unsplash.com/photo-${1550000000000 + i * 5000}?auto=format&fit=crop&q=80&w=400`,
+    image: `https://picsum.photos/seed/mygen${i}/400/400`,
     model: 'sdxl-1.0',
     prompt: 'A futuristic cityscape...'
   }));

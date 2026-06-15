@@ -43,7 +43,7 @@ export default function HomePage() {
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-[10%] left-[10%] w-64 h-64 rounded-3xl overflow-hidden glass p-2"
         >
-          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop" className="w-full h-full object-cover rounded-2xl" />
+          <img src="https://picsum.photos/seed/home1/400/400" className="w-full h-full object-cover rounded-2xl" />
         </motion.div>
         
         <motion.div 
@@ -51,7 +51,7 @@ export default function HomePage() {
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
           className="absolute bottom-[20%] right-[10%] w-80 h-96 rounded-3xl overflow-hidden glass p-2"
         >
-          <img src="https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?q=80&w=400&auto=format&fit=crop" className="w-full h-full object-cover rounded-2xl" />
+          <img src="https://picsum.photos/seed/home2/400/400" className="w-full h-full object-cover rounded-2xl" />
         </motion.div>
       </div>
 
