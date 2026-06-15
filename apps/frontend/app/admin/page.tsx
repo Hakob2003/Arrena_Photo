@@ -16,8 +16,9 @@ export default function AdminDashboard() {
 
   const kpis = [
     { label: 'Total Revenue', value: stats ? `$${stats.revenue.toFixed(2)}` : '...', trend: 'All Time' },
-    { label: 'Total Users', value: stats ? stats.users.toString() : '...', trend: stats ? `+${stats.newUsers.week} this week` : '...' },
-    { label: 'Total Templates', value: stats ? stats.templates.toString() : '...', trend: 'All Time' },
+    { label: 'Active Subscriptions', value: stats ? stats.activeSubscriptions.toString() : '...', trend: 'Paying users' },
+    { label: 'API Tokens Used', value: stats ? stats.apiTokensUsed.toLocaleString() : '...', trend: 'Total AI usage' },
+    { label: 'Total Users', value: stats ? stats.users.toString() : '...', trend: stats ? `+${stats.newUsers.day}d / +${stats.newUsers.week}w / +${stats.newUsers.month}m` : '...' },
     { label: 'Total Generations', value: stats ? stats.generations.total.toString() : '...', trend: stats ? `${((stats.generations.success / (stats.generations.total || 1)) * 100).toFixed(1)}% success` : '...' },
   ];
 
@@ -30,7 +31,7 @@ export default function AdminDashboard() {
       />
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
         {kpis.map((kpi, i) => (
           <div key={i} className="p-5 border border-white/10 rounded-lg bg-[#0a0a0a]">
             <p className="text-sm text-gray-500 mb-1">{kpi.label}</p>
@@ -81,20 +82,22 @@ export default function AdminDashboard() {
         </div>
 
         <div className="border border-white/10 rounded-lg bg-[#0a0a0a] p-6 h-[400px] flex flex-col">
-          <h3 className="text-sm font-medium text-gray-400 mb-4">User Growth</h3>
+          <h3 className="text-sm font-medium text-gray-400 mb-4">Tokens & Credits Usage</h3>
           <div className="flex-1 w-full">
             {stats?.chartData ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <AreaChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                   <XAxis dataKey="date" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
                   <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip 
-                    cursor={{ fill: '#222' }}
                     contentStyle={{ backgroundColor: '#111', borderColor: '#333', color: '#fff' }}
+                    itemStyle={{ color: '#fff' }}
                   />
-                  <Bar dataKey="users" name="Active Users" fill="#10b981" radius={[4, 4, 0, 0]} />
-                </BarChart>
+                  <Legend />
+                  <Area type="monotone" dataKey="tokens" name="Tokens" stroke="#f59e0b" fillOpacity={0.1} fill="#f59e0b" />
+                  <Area type="monotone" dataKey="credits" name="Credits" stroke="#ef4444" fillOpacity={0.1} fill="#ef4444" />
+                </AreaChart>
               </ResponsiveContainer>
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-600">Loading chart...</div>
@@ -125,10 +128,32 @@ export default function AdminDashboard() {
                <div className="text-2xl font-bold text-green-400">{stats?.generations?.success || 0}</div>
                <div className="text-xs text-green-500/70 mt-1 uppercase">Successful</div>
              </div>
-             <div className="flex-1 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-center">
-               <div className="text-2xl font-bold text-red-400">{stats?.generations?.failed || 0}</div>
-               <div className="text-xs text-red-500/70 mt-1 uppercase">Failed</div>
-             </div>
+              <div className="flex-1 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-center">
+                <div className="text-2xl font-bold text-red-400">{stats?.generations?.failed || 0}</div>
+                <div className="text-xs text-red-500/70 mt-1 uppercase">Failed</div>
+              </div>
+          </div>
+        </div>
+
+        <div className="border border-white/10 rounded-lg bg-[#0a0a0a] p-6">
+          <h3 className="text-sm font-medium text-gray-400 mb-4">User Activity Growth (7 Days)</h3>
+          <div className="h-[200px] w-full">
+            {stats?.chartData ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                  <XAxis dataKey="date" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
+                  <Tooltip 
+                    cursor={{ fill: '#222' }}
+                    contentStyle={{ backgroundColor: '#111', borderColor: '#333', color: '#fff' }}
+                  />
+                  <Bar dataKey="users" name="Active Users" fill="#10b981" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-600">Loading chart...</div>
+            )}
           </div>
         </div>
       </div>

@@ -14,8 +14,12 @@ type User = {
   email: string;
   name: string;
   createdAt: string;
-  role: { name: string };
+  lastLogin: string | null;
+  status: string;
   credits: number;
+  role: { name: string };
+  plan: string;
+  generationCount: number;
 };
 
 const columnHelper = createColumnHelper<User>();
@@ -30,6 +34,7 @@ export default function AdminUsersPage() {
 
   // Modals state
   const [editingCredits, setEditingCredits] = useState<User | null>(null);
+  const [changingPlan, setChangingPlan] = useState<User | null>(null);
   const [importing, setImporting] = useState(false);
   const [importText, setImportText] = useState('');
 
@@ -86,6 +91,21 @@ export default function AdminUsersPage() {
     }
   };
 
+  const handleChangePlan = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!changingPlan) return;
+    const form = e.target as HTMLFormElement;
+    const plan = form.plan.value;
+    
+    try {
+      await adminApi.updateUserPlan(changingPlan.id, plan);
+      setChangingPlan(null);
+      loadData();
+    } catch (err) {
+      alert('Error changing plan');
+    }
+  };
+
   const columns = [
     columnHelper.accessor('id', {
       header: 'ID',
@@ -95,47 +115,97 @@ export default function AdminUsersPage() {
       header: 'Email',
       cell: info => <span className="text-white">{info.getValue()}</span>,
     }),
-    columnHelper.accessor('name', {
-      header: 'Name',
-      cell: info => info.getValue() || <span className="text-gray-600 italic">No name</span>,
+    columnHelper.accessor('createdAt', {
+      header: 'Registered / Last Login',
+      cell: info => {
+        const row = info.row.original;
+        return (
+          <div className="flex flex-col">
+            <span>{new Date(row.createdAt).toLocaleDateString()}</span>
+            <span className="text-xs text-gray-500">{row.lastLogin ? new Date(row.lastLogin).toLocaleDateString() : 'Never'}</span>
+          </div>
+        );
+      }
     }),
-    columnHelper.accessor('role.name', {
-      header: 'Role',
+    columnHelper.accessor('plan', {
+      header: 'Plan',
       cell: info => (
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${info.getValue() === 'ADMIN' ? 'bg-purple-500/20 text-purple-400' : 'bg-gray-800 text-gray-300'}`}>
-          {info.getValue() || 'USER'}
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${info.getValue() === 'FREE' ? 'bg-gray-800 text-gray-400' : 'bg-blue-500/20 text-blue-400'}`}>
+          {info.getValue()}
         </span>
       ),
     }),
-    columnHelper.accessor('createdAt', {
-      header: 'Registered',
-      cell: info => new Date(info.getValue()).toLocaleDateString(),
+    columnHelper.accessor('status', {
+      header: 'Status',
+      cell: info => (
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${info.getValue() === 'BANNED' ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`}>
+          {info.getValue() || 'ACTIVE'}
+        </span>
+      ),
     }),
     columnHelper.accessor('credits', {
-      header: 'Credits',
-      cell: info => <span className="text-green-400 font-mono">{info.getValue() || 0}</span>,
+      header: 'Credits / Gens',
+      cell: info => {
+        const row = info.row.original;
+        return (
+          <div className="flex flex-col">
+            <span className="text-green-400 font-mono">{row.credits} cr</span>
+            <span className="text-xs text-gray-500 font-mono">{row.generationCount || 0} gens</span>
+          </div>
+        );
+      }
     }),
     columnHelper.display({
       id: 'actions',
       header: 'Actions',
-      cell: (props) => (
-        <div className="flex gap-2">
-          <button 
-            onClick={() => setEditingCredits(props.row.original)}
-            className="text-xs bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded transition-colors"
-          >
-            Credits
-          </button>
-          <button 
-            onClick={() => {
-              if (confirm('Ban user?')) adminApi.banUser(props.row.original.id).then(loadData);
-            }}
-            className="text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 px-2 py-1 rounded transition-colors"
-          >
-            Ban
-          </button>
-        </div>
-      )
+      cell: (props) => {
+        const user = props.row.original;
+        return (
+          <div className="flex flex-wrap gap-2">
+            <button 
+              onClick={() => setEditingCredits(user)}
+              className="text-xs bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded transition-colors"
+            >
+              Credits
+            </button>
+            <button 
+              onClick={() => setChangingPlan(user)}
+              className="text-xs bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-2 py-1 rounded transition-colors"
+            >
+              Plan
+            </button>
+            {user.status === 'BANNED' ? (
+              <button 
+                onClick={() => {
+                  if (confirm('Unban user?')) adminApi.unbanUser(user.id).then(loadData);
+                }}
+                className="text-xs bg-green-500/10 hover:bg-green-500/20 text-green-400 px-2 py-1 rounded transition-colors"
+              >
+                Unban
+              </button>
+            ) : (
+              <button 
+                onClick={() => {
+                  if (confirm('Ban user?')) adminApi.banUser(user.id).then(loadData);
+                }}
+                className="text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 px-2 py-1 rounded transition-colors"
+              >
+                Ban
+              </button>
+            )}
+            <button 
+              onClick={() => {
+                if (confirm('Are you sure you want to completely DELETE this user? This cannot be undone.')) {
+                  adminApi.deleteUser(user.id).then(loadData);
+                }
+              }}
+              className="text-xs bg-red-900/50 hover:bg-red-800 text-white px-2 py-1 rounded transition-colors"
+            >
+              Delete
+            </button>
+          </div>
+        );
+      }
     }),
   ];
 
@@ -275,6 +345,46 @@ export default function AdminUsersPage() {
                 <button 
                   type="button" 
                   onClick={() => setEditingCredits(null)}
+                  className="px-4 py-2 text-sm text-gray-400 hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="px-4 py-2 bg-white text-black text-sm font-medium rounded-md hover:bg-gray-200"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Change Plan Modal */}
+      {changingPlan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+          <div className="bg-[#111] border border-white/10 rounded-xl p-6 w-full max-w-md">
+            <h3 className="text-xl font-bold text-white mb-2">Change Subscription Plan</h3>
+            <p className="text-sm text-gray-400 mb-6">Updating plan for {changingPlan.email}</p>
+            
+            <form onSubmit={handleChangePlan} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Select Plan</label>
+                <select 
+                  name="plan" 
+                  defaultValue={changingPlan.plan}
+                  className="w-full bg-black border border-white/10 rounded-md px-3 py-2 text-white focus:outline-none focus:border-white/30"
+                >
+                  <option value="FREE">Free</option>
+                  <option value="PRO">Pro</option>
+                  <option value="ENTERPRISE">Enterprise</option>
+                </select>
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button 
+                  type="button" 
+                  onClick={() => setChangingPlan(null)}
                   className="px-4 py-2 text-sm text-gray-400 hover:text-white"
                 >
                   Cancel

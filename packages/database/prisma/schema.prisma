@@ -17,6 +17,11 @@ enum RoleName {
   USER
 }
 
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
+
 enum GenerationStatus {
   PENDING
   PROCESSING
@@ -56,6 +61,8 @@ model User {
   name          String?
   avatarUrl     String?
   credits       Int       @default(1500)
+  status        UserStatus @default(ACTIVE)
+  lastLogin     DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 

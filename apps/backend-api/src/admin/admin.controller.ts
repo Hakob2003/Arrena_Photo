@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Param, Query, UseGuards, Req, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Query, UseGuards, Req, Body } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
@@ -60,6 +60,18 @@ export class AdminController {
   @ApiOperation({ summary: 'Ban a user' })
   banUser(@Param('id') id: string) {
     return this.adminService.banUser(id);
+  }
+
+  @Post('users/:id/unban')
+  @ApiOperation({ summary: 'Unban a user' })
+  unbanUser(@Param('id') id: string) {
+    return this.adminService.unbanUser(id);
+  }
+
+  @Delete('users/:id')
+  @ApiOperation({ summary: 'Delete a user' })
+  deleteUser(@Param('id') id: string) {
+    return this.adminService.deleteUser(id);
   }
 
   // --- Templates ---

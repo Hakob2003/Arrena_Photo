@@ -25,6 +25,14 @@ export const adminApi = {
     const res = await api.post(`/admin/users/${id}/ban`);
     return res.data;
   },
+  unbanUser: async (id: string) => {
+    const res = await api.post(`/admin/users/${id}/unban`);
+    return res.data;
+  },
+  deleteUser: async (id: string) => {
+    const res = await api.delete(`/admin/users/${id}`);
+    return res.data;
+  },
   
   // Templates
   getTemplates: async (page = 1, limit = 20) => {

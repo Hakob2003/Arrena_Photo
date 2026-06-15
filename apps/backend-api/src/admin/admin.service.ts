@@ -22,7 +22,8 @@ export class AdminService {
       generationsFailed,
       totalRevenue,
       activeSubscriptions,
-      popularTemplates
+      popularTemplates,
+      aiUsageSum
     ] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.user.count({ where: { createdAt: { gte: oneDayAgo } } }),
@@ -38,7 +39,8 @@ export class AdminService {
         take: 5,
         orderBy: { downloadCount: 'desc' },
         select: { id: true, name: true, downloadCount: true }
-      })
+      }),
+      this.prisma.aIUsage.aggregate({ _sum: { totalTokens: true } })
     ]);
 
     // For chart data, generating a 7-day mock trend for now.
@@ -70,6 +72,7 @@ export class AdminService {
       revenue: totalRevenue._sum.amount || 0,
       activeSubscriptions,
       popularTemplates,
+      apiTokensUsed: aiUsageSum._sum.totalTokens || 0,
       chartData
     };
   }
@@ -103,16 +106,30 @@ export class AdminService {
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
-        include: { role: true, subscriptions: { orderBy: { createdAt: 'desc' }, take: 1 } },
+        include: { 
+          role: true, 
+          subscriptions: { orderBy: { createdAt: 'desc' }, take: 1 },
+          _count: { select: { generations: true } }
+        },
       }),
       this.prisma.user.count({ where }),
     ]);
     
-    // Calculate generation counts manually or add to Prisma schema if needed.
-    // For now, let's fetch generation counts for these users in a separate query if performance allows
-    // but to be safe, we just return the user data as is.
+    // Map the users to include generation count cleanly
+    const mappedUsers = users.map(u => ({
+      id: u.id,
+      email: u.email,
+      name: u.name,
+      createdAt: u.createdAt,
+      lastLogin: u.lastLogin,
+      status: u.status,
+      credits: u.credits,
+      role: u.role,
+      plan: u.subscriptions[0]?.plan || 'FREE',
+      generationCount: u._count.generations
+    }));
     
-    return { users, total, page, limit };
+    return { users: mappedUsers, total, page, limit };
   }
 
   async updateUserCredits(userId: string, amount: number, reason: string) {
@@ -192,11 +209,14 @@ export class AdminService {
   }
 
   async banUser(userId: string) {
-    // There is no explicit "isBanned" field, we can assign them to a banned role or create an audit log
-    // For simplicity, let's create an audit log and maybe disconnect their sessions
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
     
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { status: 'BANNED' }
+    });
+
     await this.prisma.auditLog.create({
       data: {
         userId: user.id,
@@ -205,9 +225,35 @@ export class AdminService {
       }
     });
     
-    // In a real scenario, we'd add an `isBanned` field to User model, 
-    // but without modifying Prisma schema unnecessarily, we just record it.
     return { success: true, message: 'User banned successfully' };
+  }
+
+  async unbanUser(userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+    
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { status: 'ACTIVE' }
+    });
+
+    await this.prisma.auditLog.create({
+      data: {
+        userId: user.id,
+        action: 'USER_UNBANNED',
+        details: { reason: 'Unbanned by admin' },
+      }
+    });
+    
+    return { success: true, message: 'User unbanned successfully' };
+  }
+
+  async deleteUser(userId: string) {
+    // Delete user completely
+    await this.prisma.user.delete({
+      where: { id: userId }
+    });
+    return { success: true, message: 'User deleted successfully' };
   }
 
   // --- Templates ---
