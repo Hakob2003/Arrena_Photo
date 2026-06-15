@@ -73,7 +73,7 @@ export function Sidebar() {
       `}>
         <div className="p-6 flex items-center justify-between">
           <div className="flex items-center gap-2 font-black text-2xl tracking-tighter neon-text">
-            <span>AI STUDIO</span>
+            <span>ARRENA_PHOTO</span>
           </div>
           {/* Mobile close button (optional but good for UX) */}
           <button 

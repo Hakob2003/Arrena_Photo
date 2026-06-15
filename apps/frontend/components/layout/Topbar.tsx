@@ -6,7 +6,7 @@ export function Topbar() {
 
   return (
     <header className="h-16 border-b border-white/5 bg-black/20 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-20">
-      <div className="flex-1 max-w-xl">
+      <div className="flex-1 max-w-xl hidden md:block">
         <div className="relative">
           <input 
             type="text" 
@@ -17,7 +17,7 @@ export function Topbar() {
         </div>
       </div>
 
-      <div className="flex items-center gap-6 ml-4">
+      <div className="flex items-center gap-4 md:gap-6 ml-auto">
         {/* Credits Pill */}
         <div className="flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1.5 rounded-full">
           <span className="text-indigo-400 text-sm font-bold">⚡ {credits.toLocaleString()}</span>
