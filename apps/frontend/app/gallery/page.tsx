@@ -3,8 +3,16 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export default function GalleryPage() {
-  // Creating a random masonry layout feel by assigning random heights
-  const heights = [300, 400, 250, 450, 350, 300, 500, 250];
+  const mockGalleryItems = [
+    { id: 1, height: 300, author: '@cyber_ninja', prompt: '"A stunning hyper-realistic portrait of a cyberpunk character in rain..."', seed: 'cyberpunk_char' },
+    { id: 2, height: 400, author: '@fantasy_art', prompt: '"Epic dragon breathing fire over a medieval castle, fantasy concept art..."', seed: 'dragon_castle' },
+    { id: 3, height: 250, author: '@minimal_studio', prompt: '"Minimalist setup of a coffee cup on a wooden desk, soft studio lighting..."', seed: 'minimal_coffee' },
+    { id: 4, height: 450, author: '@anime_fan', prompt: '"Anime girl looking at the stars, highly detailed, makoto shinkai style..."', seed: 'anime_stars' },
+    { id: 5, height: 350, author: '@nature_lover', prompt: '"A misty forest early in the morning, cinematic lighting, 8k resolution..."', seed: 'misty_forest' },
+    { id: 6, height: 300, author: '@space_explorer', prompt: '"Astronaut exploring an alien planet with glowing plants, sci-fi landscape..."', seed: 'alien_planet' },
+    { id: 7, height: 500, author: '@portrait_pro', prompt: '"Close up portrait of a young woman with neon face paint, highly detailed..."', seed: 'neon_portrait' },
+    { id: 8, height: 250, author: '@logo_master', prompt: '"Modern minimalist logo for a tech startup, vector art, flat design..."', seed: 'tech_logo' },
+  ];
 
   return (
     <div className="p-8 max-w-screen-2xl mx-auto">
@@ -21,26 +29,26 @@ export default function GalleryPage() {
       </div>
 
       <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
-        {heights.map((h, i) => (
+        {mockGalleryItems.map((item, i) => (
           <motion.div 
             key={i}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: i * 0.05 }}
             className="relative group rounded-2xl overflow-hidden break-inside-avoid bg-white/5"
-            style={{ height: h }}
+            style={{ height: item.height }}
           >
             <img 
-              src={`https://picsum.photos/seed/gallery${i}/600/${h}`}
+              src={`https://picsum.photos/seed/${item.seed}/600/${item.height}`}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
             />
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-orange-400" />
-                <span className="text-white font-medium text-sm">@creator_{i}</span>
+                <span className="text-white font-medium text-sm">{item.author}</span>
               </div>
               <p className="text-white/80 text-sm line-clamp-2">
-                "A stunning hyper-realistic portrait of a cyberpunk character..."
+                {item.prompt}
               </p>
               <div className="flex gap-2 mt-4">
                 <button className="flex-1 glass text-white text-xs font-bold py-2 rounded-lg hover:bg-white/20">Remix</button>

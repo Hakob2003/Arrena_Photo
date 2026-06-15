@@ -4,13 +4,20 @@ import { api } from '@/lib/api';
 import toast from 'react-hot-toast';
 
 export default function MyGenerationsPage() {
-  const mockGens = Array(12).fill(null).map((_, i) => ({
-    id: i,
-    date: new Date(Date.now() - i * 86400000).toLocaleDateString(),
-    image: `https://picsum.photos/seed/mygen${i}/400/400`,
-    model: 'sdxl-1.0',
-    prompt: 'A futuristic cityscape...'
-  }));
+  const mockGens = [
+    { id: 1, date: 'Today', image: 'https://picsum.photos/seed/mygen_neon/400/400', model: 'sdxl-1.0', prompt: 'Neon cyberpunk city street at night...' },
+    { id: 2, date: 'Today', image: 'https://picsum.photos/seed/mygen_coffee/400/400', model: 'midjourney-v6', prompt: 'Cozy coffee cup on a wooden table...' },
+    { id: 3, date: 'Yesterday', image: 'https://picsum.photos/seed/mygen_space/400/400', model: 'dall-e-3', prompt: 'Astronaut looking at earth from moon...' },
+    { id: 4, date: 'Yesterday', image: 'https://picsum.photos/seed/mygen_anime/400/400', model: 'sdxl-1.0', prompt: 'Anime girl in a rainy school yard...' },
+    { id: 5, date: '2 days ago', image: 'https://picsum.photos/seed/mygen_car/400/400', model: 'sdxl-1.0', prompt: 'Vintage red sports car driving on a coastal road...' },
+    { id: 6, date: '2 days ago', image: 'https://picsum.photos/seed/mygen_dragon/400/400', model: 'dall-e-3', prompt: 'Fierce red dragon breathing fire over a mountain...' },
+    { id: 7, date: '3 days ago', image: 'https://picsum.photos/seed/mygen_portrait/400/400', model: 'midjourney-v6', prompt: 'Hyper realistic portrait of a man with blue eyes...' },
+    { id: 8, date: '3 days ago', image: 'https://picsum.photos/seed/mygen_dog/400/400', model: 'sdxl-1.0', prompt: 'Cute golden retriever playing in autumn leaves...' },
+    { id: 9, date: '1 week ago', image: 'https://picsum.photos/seed/mygen_logo/400/400', model: 'dall-e-3', prompt: 'Modern minimalist logo for a bakery...' },
+    { id: 10, date: '1 week ago', image: 'https://picsum.photos/seed/mygen_shoes/400/400', model: 'midjourney-v6', prompt: 'Product shot of futuristic running shoes...' },
+    { id: 11, date: '2 weeks ago', image: 'https://picsum.photos/seed/mygen_forest/400/400', model: 'sdxl-1.0', prompt: 'Magical forest with glowing mushrooms and fairies...' },
+    { id: 12, date: '2 weeks ago', image: 'https://picsum.photos/seed/mygen_robot/400/400', model: 'dall-e-3', prompt: 'Steampunk robot reading a book in a library...' },
+  ];
 
   const [savingId, setSavingId] = useState<number | null>(null);
 
