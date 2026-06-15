@@ -67,7 +67,7 @@ export const templatesApi = {
 
   // Import templates
   importTemplates: async (templates: any[]) => {
-    const res = await api.post('/templates/import', { templates });
+    const res = await api.post('/templates/bulk-import', { templates });
     return res.data;
   }
 };

@@ -39,7 +39,7 @@ export class TemplatesController {
     return this.templatesService.bulkAction(dto.action, dto.templateIds);
   }
 
-  @Post('import')
+  @Post('bulk-import')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Import multiple templates' })
