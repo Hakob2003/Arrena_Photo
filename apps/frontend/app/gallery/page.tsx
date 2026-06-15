@@ -31,7 +31,7 @@ export default function GalleryPage() {
             style={{ height: h }}
           >
             <img 
-              src={`https://images.unsplash.com/photo-${1600000000000 + i * 2000}?auto=format&fit=crop&q=80&w=600`}
+              src={`https://picsum.photos/seed/gallery${i}/600/${h}`}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
             />
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
