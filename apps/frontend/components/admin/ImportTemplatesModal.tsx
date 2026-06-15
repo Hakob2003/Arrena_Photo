@@ -42,7 +42,7 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
           throw new Error("Invalid format: Need at least a header row and one data row, or valid JSON array.");
         }
 
-        const delimiter = lines[0].includes('\t') ? '\t' : ',';
+        const delimiter = lines[0].includes('\t') ? '\t' : (lines[0].includes(';') ? ';' : ',');
         const headers = lines[0].split(delimiter).map(h => h.trim());
         
         parsedTemplates = lines.slice(1).map(line => {
@@ -60,6 +60,8 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
 
       // Basic validation
       const validTemplates = parsedTemplates.filter(t => t.name && t.categoryName && t.prompt);
+      
+      console.log('Parsed Templates:', parsedTemplates, 'Valid:', validTemplates);
       
       if (validTemplates.length === 0) {
         toast.error("No valid templates found. Ensure 'name', 'categoryName', and 'prompt' are provided.");
