@@ -3,6 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export default function TemplatesPage() {
+  const categories = ['Anime', 'Realistic', 'Cyberpunk', 'Fantasy', 'Product Photography', 'Logo'];
   const mockTemplates = [
     { id: 1, name: 'Neon City Cyberpunk', category: 'Cyberpunk', cover: 'https://image.pollinations.ai/prompt/neon%20city%20cyberpunk?width=400&height=500&nologo=true' },
     { id: 2, name: 'Studio Coffee Cup', category: 'Product Photography', cover: 'https://image.pollinations.ai/prompt/studio%20coffee%20cup?width=400&height=500&nologo=true' },
