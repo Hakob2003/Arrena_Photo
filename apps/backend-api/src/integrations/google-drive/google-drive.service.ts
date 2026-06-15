@@ -67,14 +67,23 @@ export class GoogleDriveService {
   }
 
   async getStatus(userId: string) {
-    // Check if user has connected either via main Google login with drive scope OR explicit google-drive connection
-    const account = await this.prisma.oAuthAccount.findFirst({
+    let account = await this.prisma.oAuthAccount.findFirst({
       where: { 
         userId, 
-        provider: { in: ['google-drive', 'google'] },
+        provider: 'google-drive',
         refreshToken: { not: null }
       }
     });
+
+    if (!account) {
+      account = await this.prisma.oAuthAccount.findFirst({
+        where: { 
+          userId, 
+          provider: 'google',
+          refreshToken: { not: null }
+        }
+      });
+    }
 
     return {
       connected: !!account,
@@ -92,13 +101,23 @@ export class GoogleDriveService {
   }
 
   async saveImageToDrive(userId: string, imageUrl: string) {
-    const account = await this.prisma.oAuthAccount.findFirst({
+    let account = await this.prisma.oAuthAccount.findFirst({
       where: { 
         userId, 
-        provider: { in: ['google-drive', 'google'] }, 
+        provider: 'google-drive', 
         refreshToken: { not: null } 
       }
     });
+
+    if (!account) {
+      account = await this.prisma.oAuthAccount.findFirst({
+        where: { 
+          userId, 
+          provider: 'google', 
+          refreshToken: { not: null } 
+        }
+      });
+    }
 
     if (!account) {
       throw new BadRequestException('Google Drive is not connected');
@@ -182,13 +201,23 @@ export class GoogleDriveService {
   }
 
   async streamFile(userId: string, fileId: string): Promise<Readable> {
-    const account = await this.prisma.oAuthAccount.findFirst({
+    let account = await this.prisma.oAuthAccount.findFirst({
       where: { 
         userId, 
-        provider: { in: ['google-drive', 'google'] }, 
+        provider: 'google-drive', 
         refreshToken: { not: null } 
       }
     });
+
+    if (!account) {
+      account = await this.prisma.oAuthAccount.findFirst({
+        where: { 
+          userId, 
+          provider: 'google', 
+          refreshToken: { not: null } 
+        }
+      });
+    }
 
     if (!account) {
       throw new BadRequestException('Google Drive is not connected');
