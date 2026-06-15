@@ -11,7 +11,7 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
     id: resolvedParams.id,
     name: resolvedParams.id === '2' ? 'Minimalist Product Studio' : 'Cyberpunk Neon Portraits',
     description: 'A highly detailed prompt for generating cyberpunk style portraits with neon lighting. Best used with DALL-E 3 or SDXL.',
-    coverUrl: resolvedParams.id === '2' ? 'https://image.pollinations.ai/prompt/minimalist%20product%20studio?width=400&height=400&nologo=true' : 'https://image.pollinations.ai/prompt/cyberpunk%20neon%20portrait?width=400&height=400&nologo=true',
+    coverUrl: resolvedParams.id === '2' ? '/mock/studio_coffee.png' : '/mock/neon_cyberpunk.png',
     price: 4.99,
     avgRating: 4.8,
     reviewsCount: 124,

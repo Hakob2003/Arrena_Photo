@@ -7,7 +7,7 @@ export default function MarketplacePage() {
     {
       id: '1',
       name: 'Cyberpunk Neon Portraits',
-      coverUrl: 'https://image.pollinations.ai/prompt/cyberpunk%20neon%20portrait?width=400&height=400&nologo=true',
+      coverUrl: '/mock/neon_cyberpunk.png',
       price: 4.99,
       avgRating: 4.8,
       author: { id: 'a1', name: 'NeonDreams' }
@@ -15,7 +15,7 @@ export default function MarketplacePage() {
     {
       id: '2',
       name: 'Minimalist Product Studio',
-      coverUrl: 'https://image.pollinations.ai/prompt/minimalist%20product%20studio?width=400&height=400&nologo=true',
+      coverUrl: '/mock/studio_coffee.png',
       price: 0,
       avgRating: 5.0,
       author: { id: 'a2', name: 'StudioPro' }

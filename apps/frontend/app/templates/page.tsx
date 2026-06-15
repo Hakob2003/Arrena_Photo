@@ -5,18 +5,18 @@ import { motion } from 'framer-motion';
 export default function TemplatesPage() {
   const categories = ['Anime', 'Realistic', 'Cyberpunk', 'Fantasy', 'Product Photography', 'Logo'];
   const mockTemplates = [
-    { id: 1, name: 'Neon City Cyberpunk', category: 'Cyberpunk', cover: 'https://image.pollinations.ai/prompt/neon%20city%20cyberpunk?width=400&height=500&nologo=true' },
-    { id: 2, name: 'Studio Coffee Cup', category: 'Product Photography', cover: 'https://image.pollinations.ai/prompt/studio%20coffee%20cup?width=400&height=500&nologo=true' },
-    { id: 3, name: 'Epic Fantasy Landscape', category: 'Fantasy', cover: 'https://image.pollinations.ai/prompt/epic%20fantasy%20landscape?width=400&height=500&nologo=true' },
-    { id: 4, name: 'Anime School Girl', category: 'Anime', cover: 'https://image.pollinations.ai/prompt/anime%20school%20girl?width=400&height=500&nologo=true' },
-    { id: 5, name: 'Modern Tech Logo', category: 'Logo', cover: 'https://image.pollinations.ai/prompt/modern%20tech%20logo?width=400&height=500&nologo=true' },
-    { id: 6, name: 'Realistic Portrait', category: 'Realistic', cover: 'https://image.pollinations.ai/prompt/realistic%20portrait?width=400&height=500&nologo=true' },
-    { id: 7, name: 'Sci-Fi Spaceship', category: 'Cyberpunk', cover: 'https://image.pollinations.ai/prompt/sci-fi%20spaceship?width=400&height=500&nologo=true' },
-    { id: 8, name: 'Minimalist Watch', category: 'Product Photography', cover: 'https://image.pollinations.ai/prompt/minimalist%20watch?width=400&height=500&nologo=true' },
-    { id: 9, name: 'Dragon in the Clouds', category: 'Fantasy', cover: 'https://image.pollinations.ai/prompt/dragon%20in%20the%20clouds?width=400&height=500&nologo=true' },
-    { id: 10, name: 'Vintage Camera', category: 'Realistic', cover: 'https://image.pollinations.ai/prompt/vintage%20camera?width=400&height=500&nologo=true' },
-    { id: 11, name: 'Mecha Robot', category: 'Anime', cover: 'https://image.pollinations.ai/prompt/mecha%20robot?width=400&height=500&nologo=true' },
-    { id: 12, name: 'Bakery Logo', category: 'Logo', cover: 'https://image.pollinations.ai/prompt/bakery%20logo?width=400&height=500&nologo=true' },
+    { id: 1, name: 'Neon City Cyberpunk', category: 'Cyberpunk', cover: '/mock/neon_cyberpunk.png' },
+    { id: 2, name: 'Studio Coffee Cup', category: 'Product Photography', cover: '/mock/studio_coffee.png' },
+    { id: 3, name: 'Epic Fantasy Landscape', category: 'Fantasy', cover: '/mock/fantasy_landscape.png' },
+    { id: 4, name: 'Anime School Girl', category: 'Anime', cover: '/mock/anime_schoolgirl.png' },
+    { id: 5, name: 'Modern Tech Logo', category: 'Logo', cover: '/mock/tech_logo.png' },
+    { id: 6, name: 'Realistic Portrait', category: 'Realistic', cover: '/mock/realistic_portrait.png' },
+    { id: 7, name: 'Sci-Fi Spaceship', category: 'Cyberpunk', cover: '/mock/scifi_spaceship.png' },
+    { id: 8, name: 'Minimalist Watch', category: 'Product Photography', cover: '/mock/minimalist_watch.png' },
+    { id: 9, name: 'Dragon in the Clouds', category: 'Fantasy', cover: '/mock/dragon_clouds.png' },
+    { id: 10, name: 'Vintage Camera', category: 'Realistic', cover: '/mock/vintage_camera.png' },
+    { id: 11, name: 'Mecha Robot', category: 'Anime', cover: '/mock/mecha_robot.png' },
+    { id: 12, name: 'Bakery Logo', category: 'Logo', cover: '/mock/bakery_logo.png' },
   ];
 
   return (
