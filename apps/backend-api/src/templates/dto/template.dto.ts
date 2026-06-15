@@ -1,5 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsString, IsOptional, IsArray, IsBoolean, IsEnum, IsNumber, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 import { TemplateStatus } from '@prisma/client';
 
 export class CreateTemplateDto {
@@ -89,12 +90,14 @@ export class FilterTemplatesDto {
 
   @ApiProperty({ required: false, default: 0 })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   skip?: number;
 
   @ApiProperty({ required: false, default: 20 })
   @IsOptional()
+  @Type(() => Number)
   @IsNumber()
   @Min(1)
   take?: number;
