@@ -84,11 +84,14 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
           const obj: any = {};
           // Clean up keys and map them to expected names
           for (const [key, val] of Object.entries(row)) {
-            const cleanKey = key.trim().toLowerCase();
+            // Remove BOM character if present, trim and lowercase
+            const cleanKey = key.replace(/^\uFEFF/, '').trim().toLowerCase();
             const mappedKey = headerMap[cleanKey] || key.trim(); // fallback to original trimmed key
 
             if (mappedKey === 'recommendedModels' && typeof val === 'string') {
               obj[mappedKey] = val.split(',').map(m => m.trim());
+            } else if (mappedKey === 'price') {
+              obj[mappedKey] = val !== null && val !== undefined && val !== '' ? Number(val) : 0;
             } else if (typeof val === 'string') {
               obj[mappedKey] = val.trim();
             } else {
@@ -125,7 +128,7 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px] bg-[#1a1a1a] border-gray-800 text-white">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-[#1a1a1a] border-gray-800 text-white">
         <DialogHeader>
           <DialogTitle>Import Templates</DialogTitle>
           <DialogDescription className="text-gray-400">

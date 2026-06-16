@@ -34,5 +34,8 @@
       "prisma",
       "unrs-resolver"
     ]
+  },
+  "dependencies": {
+    "papaparse": "^5.5.3"
   }
 }
