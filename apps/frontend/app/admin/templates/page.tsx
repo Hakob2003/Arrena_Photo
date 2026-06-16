@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { MoreHorizontal, Plus, Copy, Edit, Trash, PlaySquare, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { templatesApi } from "@/lib/templates.api";
@@ -26,6 +27,10 @@ export default function AdminTemplatesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<any>(null);
+  
+  // Confirmation states
+  const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
+  const [bulkActionToConfirm, setBulkActionToConfirm] = useState<'DELETE' | null>(null);
 
   const fetchData = async () => {
     try {
@@ -72,16 +77,17 @@ export default function AdminTemplatesPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    console.log("Delete triggered for", id);
-    if (!window.confirm("Are you sure you want to delete this template?")) return;
+  const confirmDelete = async () => {
+    if (!templateToDelete) return;
     try {
-      await templatesApi.deleteTemplate(id);
+      await templatesApi.deleteTemplate(templateToDelete);
       toast.success("Template deleted");
       fetchData();
     } catch (e: any) {
       console.error("Delete error:", e);
       toast.error(e.response?.data?.message || e.message || "Failed to delete template");
+    } finally {
+      setTemplateToDelete(null);
     }
   };
 
@@ -97,7 +103,10 @@ export default function AdminTemplatesPage() {
 
   const handleBulkAction = async (action: 'PUBLISH' | 'DRAFT' | 'ARCHIVE' | 'DELETE') => {
     if (selectedIds.size === 0) return;
-    if (action === 'DELETE' && !window.confirm(`Delete ${selectedIds.size} templates?`)) return;
+    if (action === 'DELETE') {
+      setBulkActionToConfirm('DELETE');
+      return;
+    }
 
     try {
       await templatesApi.bulkAction(action, Array.from(selectedIds));
@@ -107,6 +116,21 @@ export default function AdminTemplatesPage() {
     } catch (e: any) {
       console.error("Bulk action error:", e);
       toast.error(e.response?.data?.message || e.message || "Failed to perform bulk action");
+    }
+  };
+
+  const confirmBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    try {
+      await templatesApi.bulkAction('DELETE', Array.from(selectedIds));
+      toast.success(`Bulk action DELETE completed`);
+      setSelectedIds(new Set());
+      fetchData();
+    } catch (e: any) {
+      console.error("Bulk action error:", e);
+      toast.error(e.response?.data?.message || e.message || "Failed to perform bulk action");
+    } finally {
+      setBulkActionToConfirm(null);
     }
   };
 
@@ -204,7 +228,7 @@ export default function AdminTemplatesPage() {
                           <Copy className="mr-2 h-4 w-4" /> Clone
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-gray-800" />
-                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); handleDelete(template.id); }} className="text-red-500 focus:bg-gray-800 focus:text-red-500 cursor-pointer">
+                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setTemplateToDelete(template.id); }} className="text-red-500 focus:bg-gray-800 focus:text-red-500 cursor-pointer">
                           <Trash className="mr-2 h-4 w-4" /> Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -230,6 +254,36 @@ export default function AdminTemplatesPage() {
         onClose={() => setIsImportModalOpen(false)}
         onSuccess={fetchData}
       />
+
+      <Dialog open={!!templateToDelete} onOpenChange={(open) => !open && setTemplateToDelete(null)}>
+        <DialogContent className="bg-[#1a1a1a] border-gray-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-gray-400">This action cannot be undone. This will permanently delete the selected template.</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setTemplateToDelete(null)} className="border-gray-700 bg-transparent text-white hover:bg-gray-800">Cancel</Button>
+            <Button variant="destructive" onClick={confirmDelete}>Delete Template</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!bulkActionToConfirm} onOpenChange={(open) => !open && setBulkActionToConfirm(null)}>
+        <DialogContent className="bg-[#1a1a1a] border-gray-800 text-white">
+          <DialogHeader>
+            <DialogTitle>Delete {selectedIds.size} templates?</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-gray-400">This action cannot be undone. All selected templates will be permanently deleted.</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBulkActionToConfirm(null)} className="border-gray-700 bg-transparent text-white hover:bg-gray-800">Cancel</Button>
+            <Button variant="destructive" onClick={confirmBulkDelete}>Delete All</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
