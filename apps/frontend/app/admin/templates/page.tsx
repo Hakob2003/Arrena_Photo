@@ -78,8 +78,9 @@ export default function AdminTemplatesPage() {
       await templatesApi.deleteTemplate(id);
       toast.success("Template deleted");
       fetchData();
-    } catch (e) {
-      toast.error("Failed to delete template");
+    } catch (e: any) {
+      console.error("Delete error:", e);
+      toast.error(e.response?.data?.message || e.message || "Failed to delete template");
     }
   };
 
@@ -102,8 +103,9 @@ export default function AdminTemplatesPage() {
       toast.success(`Bulk action ${action} completed`);
       setSelectedIds(new Set());
       fetchData();
-    } catch (e) {
-      toast.error("Failed to perform bulk action");
+    } catch (e: any) {
+      console.error("Bulk action error:", e);
+      toast.error(e.response?.data?.message || e.message || "Failed to perform bulk action");
     }
   };
 
