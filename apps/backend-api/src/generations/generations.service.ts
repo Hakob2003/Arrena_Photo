@@ -81,14 +81,26 @@ export class GenerationsService {
       }
     });
 
-    return generations.map(g => ({
-      id: g.id,
-      imageUrl: g.result?.imageUrl,
-      driveFileId: g.result?.driveFileId,
-      model: g.aiModel.name,
-      template: g.template?.name,
-      createdAt: g.createdAt
-    }));
+    return generations.map(g => {
+      let imageUrl = g.result?.imageUrl;
+      let driveFileId = g.result?.driveFileId;
+
+      // Handle legacy records where imageUrl was saved as a relative Drive proxy path
+      const drivePathPrefix = '/api/integrations/google-drive/file/';
+      if (imageUrl && imageUrl.startsWith(drivePathPrefix) && !driveFileId) {
+        driveFileId = imageUrl.substring(drivePathPrefix.length);
+        imageUrl = null; // No valid fallback URL available for legacy records
+      }
+
+      return {
+        id: g.id,
+        imageUrl: imageUrl || 'https://picsum.photos/seed/fallback/512/512',
+        driveFileId,
+        model: g.aiModel.name,
+        template: g.template?.name,
+        createdAt: g.createdAt
+      };
+    });
   }
 
   async getStatus(id: string, userId: string) {

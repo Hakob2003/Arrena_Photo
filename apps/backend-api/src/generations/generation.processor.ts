@@ -56,13 +56,13 @@ export class GenerationProcessor extends WorkerHost {
       const randomImage = fakeImages[Math.floor(Math.random() * fakeImages.length)];
 
       // 4. Try saving to Google Drive
-      let finalImageUrl = randomImage;
+      let driveFileId: string | null = null;
       try {
         const driveService = this.moduleRef.get(GoogleDriveService, { strict: false });
         if (driveService) {
            const uploadRes = await driveService.saveImageToDrive(generation.userId, randomImage);
-           if (uploadRes.success) {
-              finalImageUrl = `/api/integrations/google-drive/file/${uploadRes.fileId}`;
+           if (uploadRes.success && uploadRes.fileId) {
+              driveFileId = uploadRes.fileId;
               this.logger.log(`Saved generation ${generationId} to Google Drive: ${uploadRes.fileId}`);
            }
         }
@@ -81,10 +81,12 @@ export class GenerationProcessor extends WorkerHost {
         });
       }
 
+      // Always keep the original image URL as fallback; store driveFileId separately
       await this.prisma.generationResult.create({
         data: {
           generationId,
-          imageUrl: finalImageUrl,
+          imageUrl: randomImage,
+          driveFileId: driveFileId,
           durationMs: 3000,
           storageProviderId: storageProvider.id
         }
@@ -97,7 +99,7 @@ export class GenerationProcessor extends WorkerHost {
       });
 
       this.logger.log(`Successfully completed generation: ${generationId}`);
-      return { success: true, imageUrl: finalImageUrl };
+      return { success: true, imageUrl: randomImage, driveFileId };
 
     } catch (error: any) {
       this.logger.error(`Failed generation: ${generationId}`, error.stack);
