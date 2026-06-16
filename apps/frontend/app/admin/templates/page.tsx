@@ -73,7 +73,8 @@ export default function AdminTemplatesPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this template?")) return;
+    console.log("Delete triggered for", id);
+    if (!window.confirm("Are you sure you want to delete this template?")) return;
     try {
       await templatesApi.deleteTemplate(id);
       toast.success("Template deleted");
@@ -96,7 +97,7 @@ export default function AdminTemplatesPage() {
 
   const handleBulkAction = async (action: 'PUBLISH' | 'DRAFT' | 'ARCHIVE' | 'DELETE') => {
     if (selectedIds.size === 0) return;
-    if (action === 'DELETE' && !confirm(`Delete ${selectedIds.size} templates?`)) return;
+    if (action === 'DELETE' && !window.confirm(`Delete ${selectedIds.size} templates?`)) return;
 
     try {
       await templatesApi.bulkAction(action, Array.from(selectedIds));
@@ -196,14 +197,14 @@ export default function AdminTemplatesPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="bg-[#1a1a1a] border-gray-800 text-white">
                         <DropdownMenuLabel className="text-gray-400">Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => openEdit(template)} className="focus:bg-gray-800 focus:text-white cursor-pointer">
+                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); openEdit(template); }} className="focus:bg-gray-800 focus:text-white cursor-pointer">
                           <Edit className="mr-2 h-4 w-4" /> Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleClone(template.id)} className="focus:bg-gray-800 focus:text-white cursor-pointer">
+                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); handleClone(template.id); }} className="focus:bg-gray-800 focus:text-white cursor-pointer">
                           <Copy className="mr-2 h-4 w-4" /> Clone
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-gray-800" />
-                        <DropdownMenuItem onClick={() => handleDelete(template.id)} className="text-red-500 focus:bg-gray-800 focus:text-red-500 cursor-pointer">
+                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); handleDelete(template.id); }} className="text-red-500 focus:bg-gray-800 focus:text-red-500 cursor-pointer">
                           <Trash className="mr-2 h-4 w-4" /> Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
