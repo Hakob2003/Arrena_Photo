@@ -102,7 +102,7 @@ export default function TemplatesPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                onClick={() => window.location.href = `/generate?template=${encodeURIComponent(t.name)}`}
+                onClick={() => window.location.href = `/generate?templateId=${t.id}`}
                 className="group glass-card rounded-2xl overflow-hidden cursor-pointer relative"
               >
                 {t.price !== undefined && t.price !== null && (

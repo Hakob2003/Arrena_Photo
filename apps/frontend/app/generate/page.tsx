@@ -6,9 +6,11 @@ import { useSearchParams } from 'next/navigation';
 import { useDropzone } from 'react-dropzone';
 import { api } from '../../lib/api';
 import { AuthImage } from '@/components/ui/AuthImage';
+import { templatesApi } from '../../lib/templates.api';
 
 function GeneratorContent() {
   const searchParams = useSearchParams();
+  const templateId = searchParams.get('templateId');
   const templateName = searchParams.get('template');
 
   const { prompt, setPrompt, model, setModel, isGenerating, setGenerating, resultImage, setResult, initImage, setInitImage } = useGenerationStore();
@@ -29,10 +31,31 @@ function GeneratorContent() {
 
   // 0. Prefill template if passed
   React.useEffect(() => {
-    if (templateName && !prompt) {
-      setPrompt(`Style of ${templateName}, detailed, masterpiece, 8k resolution, highly realistic...`);
-    }
-  }, [templateName]);
+    const loadTemplateData = async () => {
+      if (templateId) {
+        try {
+          const tpl = await templatesApi.getTemplate(templateId);
+          if (tpl) {
+            const latestVersion = tpl.versions?.[0];
+            if (latestVersion?.prompt) {
+              setPrompt(latestVersion.prompt);
+            } else if (tpl.prompt) {
+              setPrompt(tpl.prompt);
+            }
+            if (tpl.recommendedModels?.[0]) {
+              setModel(tpl.recommendedModels[0]);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to load template details:", error);
+        }
+      } else if (templateName && !prompt) {
+        setPrompt(`Style of ${templateName}, detailed, masterpiece, 8k resolution, highly realistic...`);
+      }
+    };
+
+    loadTemplateData();
+  }, [templateId, templateName, setPrompt, setModel]);
 
   // 2. Fetch Models from backend (Simulated or real if endpoint exists)
   React.useEffect(() => {
