@@ -142,10 +142,10 @@ function GeneratorContent() {
   }, [fetchHistory]);
 
   return (
-    <div className="h-full flex flex-col lg:flex-row gap-4 sm:gap-6 p-4 sm:p-6 overflow-y-auto lg:overflow-hidden">
+    <div className="h-full flex flex-col lg:flex-row gap-3 sm:gap-4 xl:gap-6 p-3 sm:p-4 xl:p-6 overflow-y-auto lg:overflow-hidden">
       
       {/* Left Panel: Controls */}
-      <div className="w-full lg:w-[400px] lg:shrink-0 flex flex-col gap-4 sm:gap-6 overflow-y-auto pb-2 pr-1 custom-scrollbar">
+      <div className="w-full lg:w-[320px] xl:w-[380px] 2xl:w-[400px] lg:shrink-0 flex flex-col gap-4 sm:gap-6 overflow-y-auto pb-2 pr-1 custom-scrollbar">
         
         {/* Image Upload Zone */}
         <div className="glass-card p-5 rounded-2xl shrink-0">
@@ -238,10 +238,10 @@ function GeneratorContent() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 flex items-center justify-center p-6 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/[0.02] to-transparent">
+        <div className="flex-1 flex items-center justify-center p-3 sm:p-4 lg:p-6 preview-area-compact bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/[0.02] to-transparent">
           {isGenerating ? (
-            <div className="flex flex-col items-center gap-6">
-              <div className="w-24 h-24 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin" />
+            <div className="flex flex-col items-center gap-4 sm:gap-6">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin" />
               <motion.p 
                 key={loadingText}
                 initial={{ opacity: 0, y: 10 }}
@@ -268,9 +268,9 @@ function GeneratorContent() {
         </div>
         
         {/* History Gallery */}
-        <div className="h-48 border-t border-white/10 bg-black/40 p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-hide">
-          <h3 className="text-xs sm:text-sm font-bold text-gray-400 mb-2 sm:mb-3 uppercase tracking-wider">Мои генерации (Google Drive)</h3>
-          <div className="flex gap-2 sm:gap-4 h-[80px] sm:h-[100px]">
+        <div className="h-32 sm:h-36 lg:h-40 xl:h-44 shrink-0 gallery-container-compact border-t border-white/10 bg-black/40 p-3 sm:p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-hide">
+          <h3 className="text-[10px] sm:text-xs font-bold gallery-title-compact text-gray-400 mb-2 uppercase tracking-wider">Мои генерации (Google Drive)</h3>
+          <div className="flex gap-2 sm:gap-4 h-[60px] sm:h-[70px] lg:h-[80px] xl:h-[90px] gallery-items-compact">
             {history.length === 0 ? (
               <div className="text-gray-500 text-sm flex items-center h-full">История пуста. Создайте свою первую картинку!</div>
             ) : (

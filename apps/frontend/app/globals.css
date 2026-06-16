@@ -133,4 +133,23 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  /* Compact utilities for short vertical heights */
+  @media (max-height: 740px) {
+    .gallery-container-compact {
+      height: 112px !important;
+      padding-top: 8px !important;
+      padding-bottom: 8px !important;
+    }
+    .gallery-title-compact {
+      font-size: 10px !important;
+      margin-bottom: 4px !important;
+    }
+    .gallery-items-compact {
+      height: 56px !important;
+    }
+    .preview-area-compact {
+      padding: 12px !important;
+    }
+  }
 }
