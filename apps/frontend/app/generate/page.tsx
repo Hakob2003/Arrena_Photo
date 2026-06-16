@@ -145,10 +145,10 @@ function GeneratorContent() {
     <div className="h-full flex flex-col lg:flex-row gap-4 sm:gap-6 p-4 sm:p-6 overflow-y-auto lg:overflow-hidden">
       
       {/* Left Panel: Controls */}
-      <div className="w-full lg:w-[400px] lg:shrink-0 flex flex-col gap-4 sm:gap-6">
+      <div className="w-full lg:w-[400px] lg:shrink-0 flex flex-col gap-4 sm:gap-6 overflow-y-auto pb-2 pr-1 custom-scrollbar">
         
         {/* Image Upload Zone */}
-        <div className="glass-card p-5 rounded-2xl">
+        <div className="glass-card p-5 rounded-2xl shrink-0">
           <h2 className="text-lg font-bold mb-4">Исходное фото (Опционально)</h2>
           <div 
             {...getRootProps()} 
@@ -176,7 +176,7 @@ function GeneratorContent() {
           </div>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl">
+        <div className="glass-card p-5 rounded-2xl shrink-0">
           <h2 className="text-lg font-bold mb-4">Промпт (Описание)</h2>
           <textarea 
             value={prompt}
@@ -186,7 +186,7 @@ function GeneratorContent() {
           />
         </div>
 
-        <div className="glass-card p-5 rounded-2xl">
+        <div className="glass-card p-5 rounded-2xl shrink-0">
           <h2 className="text-lg font-bold mb-4">Модель и Настройки</h2>
           <select 
             value={model}
@@ -215,7 +215,7 @@ function GeneratorContent() {
         <button 
           onClick={handleGenerate}
           disabled={isGenerating || !prompt}
-          className={`mt-auto py-4 rounded-xl font-bold text-lg transition-all ${
+          className={`shrink-0 mt-auto py-4 rounded-xl font-bold text-lg transition-all ${
             isGenerating || !prompt 
             ? 'bg-white/10 text-gray-500 cursor-not-allowed' 
             : 'bg-white text-black hover:bg-gray-200 hover:scale-[1.02] neon-glow'
