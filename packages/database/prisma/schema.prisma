@@ -233,7 +233,7 @@ model AIModel {
   costPerToken  Float      @default(0) // Cost per 1k tokens in USD
   speed         String     @default("medium") // "fast", "medium", "slow"
   createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  updatedAt     DateTime   @updatedAt @default(now())
 
   provider    AIProvider @relation(fields: [providerId], references: [id])
   generations Generation[]
