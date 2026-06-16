@@ -60,17 +60,39 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
           throw new Error("Failed to parse CSV/TSV data: " + parseResult.errors[0].message);
         }
         
+        const headerMap: Record<string, string> = {
+          'name': 'name',
+          'category': 'categoryName',
+          'categoryname': 'categoryName',
+          'category name': 'categoryName',
+          'preview url (cover image)': 'coverUrl',
+          'coverurl': 'coverUrl',
+          'preview url': 'coverUrl',
+          'cover image': 'coverUrl',
+          'price (credits)': 'price',
+          'price': 'price',
+          'description': 'description',
+          'prompt': 'prompt',
+          'negative prompt': 'negativePrompt',
+          'negativeprompt': 'negativePrompt',
+          'status': 'status',
+          'recommended models': 'recommendedModels',
+          'recommendedmodels': 'recommendedModels',
+        };
+
         parsedTemplates = parseResult.data.map((row: any) => {
           const obj: any = {};
-          // Clean up keys (trim) and handle nested data like recommendedModels
+          // Clean up keys and map them to expected names
           for (const [key, val] of Object.entries(row)) {
-            const cleanKey = key.trim();
-            if (cleanKey === 'recommendedModels' && typeof val === 'string') {
-              obj[cleanKey] = val.split(',').map(m => m.trim());
+            const cleanKey = key.trim().toLowerCase();
+            const mappedKey = headerMap[cleanKey] || key.trim(); // fallback to original trimmed key
+
+            if (mappedKey === 'recommendedModels' && typeof val === 'string') {
+              obj[mappedKey] = val.split(',').map(m => m.trim());
             } else if (typeof val === 'string') {
-              obj[cleanKey] = val.trim();
+              obj[mappedKey] = val.trim();
             } else {
-              obj[cleanKey] = val;
+              obj[mappedKey] = val;
             }
           }
           return obj;
@@ -78,7 +100,7 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
       }
 
       // Basic validation
-      const validTemplates = parsedTemplates.filter(t => t.name && t.categoryName && t.prompt);
+      const validTemplates = parsedTemplates.filter(t => t.name && (t.categoryName || t.categoryId) && t.prompt);
       
       console.log('Parsed Templates:', parsedTemplates, 'Valid:', validTemplates);
       
@@ -108,8 +130,8 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
           <DialogTitle>Import Templates</DialogTitle>
           <DialogDescription className="text-gray-400">
             Paste a JSON array or a TSV/CSV (from Excel/Google Sheets).
-            Required headers/keys: <strong>name, categoryName, prompt</strong>.
-            Optional: <strong>description, coverUrl, negativePrompt, price, status, recommendedModels</strong> (comma-separated).
+            Required headers: <strong>Name, Category, Prompt</strong>.
+            Optional: <strong>Description, Preview URL (Cover Image), Negative Prompt, Price, Status, Recommended Models</strong>.
           </DialogDescription>
         </DialogHeader>
 
@@ -127,7 +149,7 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
             <Label htmlFor="data">Or Paste Data (JSON or TSV/CSV)</Label>
             <Textarea
               id="data"
-              placeholder={'[\n  {\n    "name": "Template 1",\n    "categoryName": "Business",\n    "prompt": "A professional portrait..."\n  }\n]\n\nOR\n\nname\tcategoryName\tprompt\tprice\nTemp1\tBusiness\tPortrait of...\t10'}
+              placeholder={'[\n  {\n    "name": "Template 1",\n    "categoryName": "Business",\n    "prompt": "A professional portrait..."\n  }\n]\n\nOR\n\nName,Category,Prompt,Price (Credits)\nTemp1,Business,Portrait of...,10'}
               className="bg-black border-gray-800 font-mono text-xs"
               rows={15}
               value={rawData}
