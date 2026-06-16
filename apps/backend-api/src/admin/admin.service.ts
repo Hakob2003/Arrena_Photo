@@ -418,5 +418,158 @@ export class AdminService {
       recentPurchases
     };
   }
-}
 
+  // --- AI Models ---
+  async getAIModels(page: number = 1, limit: number = 50, search?: string, providerId?: string) {
+    const skip = (page - 1) * limit;
+    const where: any = {};
+    
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { slug: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+    if (providerId) {
+      where.providerId = providerId;
+    }
+
+    const [models, total] = await Promise.all([
+      this.prisma.aIModel.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          provider: { select: { id: true, name: true } },
+          _count: { select: { generations: true } }
+        }
+      }),
+      this.prisma.aIModel.count({ where })
+    ]);
+
+    const mappedModels = models.map(m => ({
+      id: m.id,
+      name: m.name,
+      slug: m.slug,
+      endpoint: m.endpoint,
+      description: m.description,
+      isFree: m.isFree,
+      isActive: m.isActive,
+      costPerToken: m.costPerToken,
+      speed: m.speed,
+      provider: m.provider,
+      requestCount: m._count.generations,
+      createdAt: m.createdAt,
+      updatedAt: m.updatedAt
+    }));
+
+    return { models: mappedModels, total, page, limit };
+  }
+
+  async getAIProvidersList() {
+    return this.prisma.aIProvider.findMany({
+      select: { id: true, name: true, isGlobal: true, _count: { select: { models: true } } },
+      orderBy: { name: 'asc' }
+    });
+  }
+
+  async createAIModel(data: {
+    name: string;
+    slug: string;
+    providerId: string;
+    endpoint?: string;
+    description?: string;
+    isFree?: boolean;
+    isActive?: boolean;
+    costPerToken?: number;
+    speed?: string;
+  }) {
+    // Ensure provider exists, create if not
+    let provider = await this.prisma.aIProvider.findUnique({ where: { id: data.providerId } });
+    if (!provider) {
+      // Try finding by name
+      provider = await this.prisma.aIProvider.findUnique({ where: { name: data.providerId } });
+    }
+    if (!provider) {
+      provider = await this.prisma.aIProvider.create({
+        data: { name: data.providerId, isGlobal: true }
+      });
+    }
+
+    return this.prisma.aIModel.create({
+      data: {
+        name: data.name,
+        slug: data.slug,
+        providerId: provider.id,
+        endpoint: data.endpoint,
+        description: data.description,
+        isFree: data.isFree ?? false,
+        isActive: data.isActive ?? true,
+        costPerToken: data.costPerToken ?? 0,
+        speed: data.speed ?? 'medium',
+      },
+      include: {
+        provider: { select: { id: true, name: true } },
+        _count: { select: { generations: true } }
+      }
+    });
+  }
+
+  async updateAIModel(id: string, data: {
+    name?: string;
+    slug?: string;
+    providerId?: string;
+    endpoint?: string;
+    description?: string;
+    isFree?: boolean;
+    isActive?: boolean;
+    costPerToken?: number;
+    speed?: string;
+  }) {
+    const model = await this.prisma.aIModel.findUnique({ where: { id } });
+    if (!model) throw new NotFoundException('AI Model not found');
+
+    return this.prisma.aIModel.update({
+      where: { id },
+      data: {
+        ...(data.name !== undefined && { name: data.name }),
+        ...(data.slug !== undefined && { slug: data.slug }),
+        ...(data.providerId !== undefined && { providerId: data.providerId }),
+        ...(data.endpoint !== undefined && { endpoint: data.endpoint }),
+        ...(data.description !== undefined && { description: data.description }),
+        ...(data.isFree !== undefined && { isFree: data.isFree }),
+        ...(data.isActive !== undefined && { isActive: data.isActive }),
+        ...(data.costPerToken !== undefined && { costPerToken: data.costPerToken }),
+        ...(data.speed !== undefined && { speed: data.speed }),
+      },
+      include: {
+        provider: { select: { id: true, name: true } },
+        _count: { select: { generations: true } }
+      }
+    });
+  }
+
+  async toggleAIModel(id: string) {
+    const model = await this.prisma.aIModel.findUnique({ where: { id } });
+    if (!model) throw new NotFoundException('AI Model not found');
+
+    return this.prisma.aIModel.update({
+      where: { id },
+      data: { isActive: !model.isActive },
+      include: {
+        provider: { select: { id: true, name: true } },
+        _count: { select: { generations: true } }
+      }
+    });
+  }
+
+  async deleteAIModel(id: string) {
+    const model = await this.prisma.aIModel.findUnique({ where: { id } });
+    if (!model) throw new NotFoundException('AI Model not found');
+
+    await this.prisma.aIModel.delete({ where: { id } });
+    return { success: true, message: 'AI Model deleted' };
+  }
+}

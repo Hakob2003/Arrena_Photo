@@ -152,5 +152,61 @@ export class AdminController {
   getBillingStats() {
     return this.adminService.getBillingStats();
   }
+
+  // --- AI Models ---
+  @Get('ai-models')
+  @ApiOperation({ summary: 'Get all AI models with pagination and filters' })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'providerId', required: false })
+  getAIModels(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string,
+    @Query('providerId') providerId?: string
+  ) {
+    return this.adminService.getAIModels(Number(page) || 1, Number(limit) || 50, search, providerId);
+  }
+
+  @Get('ai-models/providers')
+  @ApiOperation({ summary: 'Get list of AI providers' })
+  getAIProvidersList() {
+    return this.adminService.getAIProvidersList();
+  }
+
+  @Post('ai-models')
+  @ApiOperation({ summary: 'Create a new AI model' })
+  createAIModel(@Body() body: {
+    name: string;
+    slug: string;
+    providerId: string;
+    endpoint?: string;
+    description?: string;
+    isFree?: boolean;
+    isActive?: boolean;
+    costPerToken?: number;
+    speed?: string;
+  }) {
+    return this.adminService.createAIModel(body);
+  }
+
+  @Put('ai-models/:id')
+  @ApiOperation({ summary: 'Update an AI model' })
+  updateAIModel(@Param('id') id: string, @Body() body: any) {
+    return this.adminService.updateAIModel(id, body);
+  }
+
+  @Post('ai-models/:id/toggle')
+  @ApiOperation({ summary: 'Toggle AI model active status' })
+  toggleAIModel(@Param('id') id: string) {
+    return this.adminService.toggleAIModel(id);
+  }
+
+  @Delete('ai-models/:id')
+  @ApiOperation({ summary: 'Delete an AI model' })
+  deleteAIModel(@Param('id') id: string) {
+    return this.adminService.deleteAIModel(id);
+  }
 }
 

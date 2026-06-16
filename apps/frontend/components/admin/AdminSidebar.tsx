@@ -16,6 +16,7 @@ const ADMIN_LINKS = [
     { name: 'Generations', href: '/admin/generations', icon: '⚡' },
   ]},
   { section: 'Configuration', items: [
+    { name: 'AI Models', href: '/admin/ai-models', icon: '🧠' },
     { name: 'AI Providers', href: '/admin/ai-providers', icon: '🤖' },
     { name: 'API Keys', href: '/admin/api-keys', icon: '🔑' },
     { name: 'Cloud Storage', href: '/admin/cloud', icon: '☁️' },
