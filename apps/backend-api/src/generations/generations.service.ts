@@ -43,8 +43,19 @@ export class GenerationsService {
       });
     }
 
+    // Determine cost
+    let generationCost = 5; // default
+    if (dto.templateId) {
+      const template = await this.prisma.template.findUnique({
+        where: { id: dto.templateId }
+      });
+      if (template && template.price != null) {
+        generationCost = template.price;
+      }
+    }
+
     // Deduct credits before generating
-    await this.billingService.deductCredits(userId, 5, 'Image Generation');
+    await this.billingService.deductCredits(userId, generationCost, 'Image Generation');
 
     // 2. Create Pending Generation Record
     const generation = await this.prisma.generation.create({

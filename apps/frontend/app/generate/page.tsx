@@ -18,6 +18,7 @@ function GeneratorContent() {
   const [loadingText, setLoadingText] = useState('Initializing AI...');
   const [models, setModels] = useState<any[]>([]);
   const [history, setHistory] = useState<any[]>([]);
+  const [cost, setCost] = useState(5);
 
   const fetchHistory = React.useCallback(async () => {
     if (!user) return;
@@ -44,6 +45,9 @@ function GeneratorContent() {
             }
             if (tpl.recommendedModels?.[0]) {
               setModel(tpl.recommendedModels[0]);
+            }
+            if (tpl.price !== undefined && tpl.price !== null) {
+              setCost(tpl.price);
             }
           }
         } catch (error) {
@@ -127,7 +131,7 @@ function GeneratorContent() {
       });
 
       const generationId = res.data.id;
-      deductCredits(5); // Deduct only after backend accepted the request
+      deductCredits(cost); // Deduct only after backend accepted the request
       setLoadingText('В очереди...');
 
       // Poll every 1.5 seconds, max 60 seconds
@@ -261,7 +265,7 @@ function GeneratorContent() {
             : 'bg-white text-black hover:bg-gray-200 hover:scale-[1.02] neon-glow'
           }`}
         >
-          {isGenerating ? 'Генерация...' : 'Создать ⚡ 5 Кредитов'}
+          {isGenerating ? 'Генерация...' : `Создать ⚡ ${cost} Кредитов`}
         </button>
       </div>
 
