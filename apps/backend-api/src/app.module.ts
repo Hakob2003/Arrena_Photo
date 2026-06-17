@@ -47,6 +47,7 @@ import { ScheduleModule } from '@nestjs/schedule';
             connection: new Redis(redisUrl, {
               maxRetriesPerRequest: null,
               tls: tlsConfig,
+              password: configService.get('REDIS_PASSWORD') || undefined,
             }) as any,
           };
         }
@@ -54,7 +55,7 @@ import { ScheduleModule } from '@nestjs/schedule';
           connection: {
             host: configService.get('REDIS_HOST', 'localhost'),
             port: configService.get('REDIS_PORT', 6379),
-            password: configService.get('REDIS_PASSWORD', ''),
+            password: configService.get('REDIS_PASSWORD') || undefined,
           },
         };
       },
