@@ -97,8 +97,8 @@ export function AdminSidebar() {
       {/* User Section */}
       <div className="p-4 border-t border-white/5">
         <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/5">
-          <span>⬅️</span>
-          <span>Back to App</span>
+          <span className="text-lg">⬅️</span>
+          <span className="font-medium">Вернуться в приложение</span>
         </Link>
       </div>
       </aside>

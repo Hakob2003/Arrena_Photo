@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { useUIStore } from '../../store';
+import { useUIStore, useAuthStore } from '../../store';
 
 const MAIN_LINKS = [
   { href: '/', label: 'Главная', icon: '🏠' },
@@ -26,6 +26,7 @@ const SETTINGS_LINKS = [
 export function Sidebar() {
   const pathname = usePathname();
   const { isSidebarOpen, setSidebarOpen } = useUIStore();
+  const { user } = useAuthStore();
 
   const renderLinks = (links: typeof MAIN_LINKS) => (
     <ul className="space-y-1">
@@ -98,6 +99,23 @@ export function Sidebar() {
         <div>
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3">Настройки</p>
           {renderLinks(SETTINGS_LINKS)}
+          
+          {user?.role === 'ADMIN' && (
+            <div className="mt-8">
+              <p className="text-xs font-semibold text-pink-500 uppercase tracking-wider mb-3 px-3">Админ Панель</p>
+              <ul className="space-y-1">
+                <li>
+                  <Link 
+                    href="/admin/ai-models"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-gray-400 hover:text-white hover:bg-white/5"
+                  >
+                    <span className="relative z-10 text-lg">👑</span>
+                    <span className="relative z-10 font-medium">Перейти в Админку</span>
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
       </aside>
