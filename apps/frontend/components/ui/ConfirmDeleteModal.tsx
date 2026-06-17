@@ -41,7 +41,7 @@ export function ConfirmDeleteModal({
           <Button variant="outline" onClick={onClose} disabled={isLoading} className="border-white/10 hover:bg-white/5">
             Отмена
           </Button>
-          <Button variant="destructive" onClick={onConfirm} disabled={isLoading}>
+          <Button onClick={onConfirm} disabled={isLoading} className="bg-red-600 hover:bg-red-700 text-white">
             {isLoading ? 'Удаление...' : 'Удалить'}
           </Button>
         </DialogFooter>
