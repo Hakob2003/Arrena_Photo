@@ -41,15 +41,24 @@ import { ScheduleModule } from '@nestjs/schedule';
         if (redisUrl) {
           const url = new URL(redisUrl);
           const tlsConfig = url.protocol === 'rediss:' ? { rejectUnauthorized: false } : undefined;
-          return {
-            connection: {
-              host: url.hostname,
-              port: parseInt(url.port, 10),
-              username: url.username ? decodeURIComponent(url.username) : undefined,
-              password: configService.get('REDIS_PASSWORD') || (url.password ? decodeURIComponent(url.password) : undefined),
-              tls: tlsConfig,
-            } as any,
+          
+          const conn = {
+            host: url.hostname,
+            port: parseInt(url.port, 10),
+            username: url.username ? decodeURIComponent(url.username) : undefined,
+            password: configService.get('REDIS_PASSWORD') || (url.password ? decodeURIComponent(url.password) : undefined),
+            tls: tlsConfig,
           };
+          
+          console.log('[Redis Debug] Connecting with URL mode:', {
+            host: conn.host,
+            port: conn.port,
+            username: conn.username,
+            hasPassword: !!conn.password,
+            tls: !!conn.tls,
+          });
+
+          return { connection: conn as any };
         }
         return {
           connection: {
