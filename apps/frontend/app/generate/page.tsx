@@ -314,12 +314,12 @@ function GeneratorContent() {
         {/* History Gallery */}
         <div className="h-32 sm:h-36 lg:h-40 xl:h-44 shrink-0 gallery-container-compact border-t border-white/10 bg-black/40 p-3 sm:p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-hide">
           <h3 className="text-[10px] sm:text-xs font-bold gallery-title-compact text-gray-400 mb-2 uppercase tracking-wider">Мои генерации (Google Drive)</h3>
-          <div className="flex gap-2 sm:gap-4 h-[60px] sm:h-[70px] lg:h-[80px] xl:h-[90px] gallery-items-compact">
+          <div className="flex w-max gap-2 sm:gap-4 h-[60px] sm:h-[70px] lg:h-[80px] xl:h-[90px] gallery-items-compact">
             {history.length === 0 ? (
               <div className="text-gray-500 text-sm flex items-center h-full">История пуста. Создайте свою первую картинку!</div>
             ) : (
               history.map((item) => (
-                <div key={item.id} className="relative aspect-square h-full rounded-lg overflow-hidden group cursor-pointer" onClick={() => setResult(item.imageUrl)}>
+                <div key={item.id} className="relative aspect-square h-full shrink-0 rounded-lg overflow-hidden group cursor-pointer" onClick={() => setResult(item.imageUrl)}>
                   <AuthImage driveFileId={item.driveFileId} fallbackUrl={item.imageUrl} alt={item.prompt} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                   <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
                     <span className="text-white text-[10px] font-bold truncate">{item.template || item.model}</span>
