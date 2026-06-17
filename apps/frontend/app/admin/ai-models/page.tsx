@@ -4,6 +4,7 @@ import { api } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { PageHeader } from '../../../components/admin/PageHeader';
 import { Badge } from '../../../components/admin/Badge';
+import { AssignTemplatesModal } from '../../../components/admin/AssignTemplatesModal';
 
 interface AIModel {
   id: string;
@@ -339,6 +340,7 @@ export default function AdminAIModelsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showHelp, setShowHelp] = useState(false);
   const [expandedProvider, setExpandedProvider] = useState<string | null>(null);
+  const [assigningModel, setAssigningModel] = useState<AIModel | null>(null);
 
   const fetchModels = useCallback(async () => {
     try {
@@ -620,6 +622,16 @@ export default function AdminAIModelsPage() {
                             </svg>
                           )}
                         </button>
+                        {/* Assign Templates */}
+                        <button
+                          onClick={() => setAssigningModel(model)}
+                          className="p-1.5 rounded-md hover:bg-white/10 text-gray-400 hover:text-indigo-400 transition-colors"
+                          title="Назначить шаблонам"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                          </svg>
+                        </button>
                         {/* Edit */}
                         <button
                           onClick={() => openEditModal(model)}
@@ -849,6 +861,18 @@ export default function AdminAIModelsPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Assign Templates Modal */}
+      {assigningModel && (
+        <AssignTemplatesModal
+          model={assigningModel}
+          onClose={() => setAssigningModel(null)}
+          onSuccess={() => {
+            setAssigningModel(null);
+            fetchModels();
+          }}
+        />
       )}
     </>
   );

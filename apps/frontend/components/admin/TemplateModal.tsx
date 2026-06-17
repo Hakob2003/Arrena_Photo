@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { templatesApi, TemplateDto } from "@/lib/templates.api";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
 
 interface Category {
   id: string;
@@ -26,6 +27,15 @@ interface TemplateModalProps {
 
 export function TemplateModal({ isOpen, onClose, template, onSave, categories }: TemplateModalProps) {
   const [loading, setLoading] = useState(false);
+  const [aiModels, setAiModels] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      api.get('/admin/ai-models', { params: { limit: 100 } })
+        .then(res => setAiModels(res.data.models.filter((m: any) => m.isActive)))
+        .catch(err => console.error("Failed to load models", err));
+    }
+  }, [isOpen]);
   const [formData, setFormData] = useState<Partial<TemplateDto>>({
     name: "",
     categoryId: "",
@@ -196,11 +206,26 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
             </div>
             <div className="space-y-2">
               <Label>AI Model</Label>
-              <Input 
+              <Select 
                 value={formData.recommendedModels?.[0] || ""} 
-                onChange={(e) => handleChange("recommendedModels", [e.target.value])} 
-                placeholder="sdxl-1.0"
-              />
+                onValueChange={(val) => handleChange("recommendedModels", [val])}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите модель..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {aiModels.map(model => (
+                    <SelectItem key={model.slug} value={model.slug}>
+                      {model.provider?.name || 'Unknown'} - {model.name}
+                    </SelectItem>
+                  ))}
+                  {aiModels.length === 0 && (
+                    <SelectItem value={formData.recommendedModels?.[0] || "sdxl-1.0"}>
+                      {formData.recommendedModels?.[0] || "sdxl-1.0"}
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 

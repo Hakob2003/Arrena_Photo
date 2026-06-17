@@ -208,5 +208,20 @@ export class AdminController {
   deleteAIModel(@Param('id') id: string) {
     return this.adminService.deleteAIModel(id);
   }
+
+  @Get('ai-models/templates')
+  @ApiOperation({ summary: 'Get list of templates for AI model assignment' })
+  getTemplatesForAssignment() {
+    return this.adminService.getTemplatesForAssignment();
+  }
+
+  @Post('ai-models/:id/assign-templates')
+  @ApiOperation({ summary: 'Assign an AI model to specific templates' })
+  assignModelToTemplates(
+    @Param('id') id: string,
+    @Body() body: { templateIds: string[] }
+  ) {
+    return this.adminService.assignModelToTemplates(id, body.templateIds);
+  }
 }
 

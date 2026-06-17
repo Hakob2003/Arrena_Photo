@@ -572,4 +572,70 @@ export class AdminService {
     await this.prisma.aIModel.delete({ where: { id } });
     return { success: true, message: 'AI Model deleted' };
   }
+
+  // --- AI Model & Template Assignment ---
+  
+  async getTemplatesForAssignment() {
+    return this.prisma.template.findMany({
+      select: {
+        id: true,
+        name: true,
+        recommendedModels: true,
+        category: { select: { name: true } }
+      },
+      orderBy: { name: 'asc' }
+    });
+  }
+
+  async assignModelToTemplates(modelId: string, templateIds: string[]) {
+    const model = await this.prisma.aIModel.findUnique({ where: { id: modelId } });
+    if (!model) throw new NotFoundException('AI Model not found');
+
+    const slug = model.slug;
+
+    // Get all templates that currently have this model slug in recommendedModels
+    const currentTemplates = await this.prisma.template.findMany({
+      where: { recommendedModels: { has: slug } },
+      select: { id: true, recommendedModels: true }
+    });
+
+    const currentIds = currentTemplates.map(t => t.id);
+
+    // Templates to add slug to
+    const toAdd = templateIds.filter(id => !currentIds.includes(id));
+    // Templates to remove slug from
+    const toRemove = currentIds.filter(id => !templateIds.includes(id));
+
+    // Update templates to add slug
+    for (const tId of toAdd) {
+      const t = await this.prisma.template.findUnique({ where: { id: tId }, select: { recommendedModels: true } });
+      if (t) {
+        await this.prisma.template.update({
+          where: { id: tId },
+          data: {
+            recommendedModels: {
+              set: [...t.recommendedModels, slug]
+            }
+          }
+        });
+      }
+    }
+
+    // Update templates to remove slug
+    for (const tId of toRemove) {
+      const t = currentTemplates.find(ct => ct.id === tId);
+      if (t) {
+        await this.prisma.template.update({
+          where: { id: tId },
+          data: {
+            recommendedModels: {
+              set: t.recommendedModels.filter(s => s !== slug)
+            }
+          }
+        });
+      }
+    }
+
+    return { success: true, message: 'Model assignments updated' };
+  }
 }
