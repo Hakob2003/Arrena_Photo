@@ -3,7 +3,9 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { useUIStore } from '../../store';
+import { useAuthStore, useUIStore } from '../../store';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 const ADMIN_LINKS = [
   { section: 'Overview', items: [
@@ -32,6 +34,8 @@ const ADMIN_LINKS = [
 export function AdminSidebar() {
   const pathname = usePathname();
   const { isSidebarOpen, setSidebarOpen } = useUIStore();
+  const isMobile = useIsMobile();
+  const showSidebarLogo = !isMobile || isSidebarOpen;
 
   return (
     <>
@@ -50,13 +54,22 @@ export function AdminSidebar() {
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
       {/* Brand Header */}
-      <div className="py-4 flex items-center justify-between px-6 border-b border-white/5">
-        <Link href="/" className="flex items-center gap-2 w-full hover:opacity-80 transition-opacity" title="Вернуться на главную">
-          <Image src="/logo.png" alt="Arrena Photo" width={600} height={200} className="w-40 h-auto object-contain" priority />
-          <span className="font-semibold text-pink-500 tracking-tight text-[10px] uppercase bg-pink-500/10 px-1.5 py-0.5 rounded shrink-0">Admin</span>
-        </Link>
+      <div className="py-4 flex items-center justify-between px-6 border-b border-white/5 h-[80px]">
+        <AnimatePresence>
+          {showSidebarLogo && (
+            <Link href="/" className="flex items-center gap-2 w-full hover:opacity-80 transition-opacity" title="Вернуться на главную">
+              <motion.img 
+                layoutId="app-logo"
+                src="/logo.png" 
+                alt="Arrena Photo" 
+                className="w-40 h-auto object-contain" 
+              />
+              <span className="font-semibold text-pink-500 tracking-tight text-[10px] uppercase bg-pink-500/10 px-1.5 py-0.5 rounded shrink-0">Admin</span>
+            </Link>
+          )}
+        </AnimatePresence>
         <button 
-          className="md:hidden text-gray-400 hover:text-white p-2"
+          className="md:hidden text-gray-400 hover:text-white p-2 absolute right-4 top-5"
           onClick={() => setSidebarOpen(false)}
         >
           ✕

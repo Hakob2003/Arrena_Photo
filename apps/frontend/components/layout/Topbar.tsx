@@ -25,7 +25,7 @@ export function Topbar() {
       </div>
 
       {/* Mobile Logo with Framer Motion layout transition */}
-      <div className="md:hidden absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full">
+      <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-50">
         <AnimatePresence>
           {showMobileLogo && (
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
