@@ -2,8 +2,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore, useAuthStore } from '../../store';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 const MAIN_LINKS = [
   { href: '/', label: 'Главная', icon: '🏠' },
@@ -28,6 +29,8 @@ export function Sidebar() {
   const pathname = usePathname();
   const { isSidebarOpen, setSidebarOpen } = useUIStore();
   const { user } = useAuthStore();
+  const isMobile = useIsMobile();
+  const showSidebarLogo = !isMobile || isSidebarOpen;
 
   const renderLinks = (links: typeof MAIN_LINKS) => (
     <ul className="space-y-1">
@@ -74,9 +77,21 @@ export function Sidebar() {
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="p-4 flex items-center justify-between border-b border-white/5 md:border-none">
-          <Link href="/" className="flex items-center gap-2 w-full hover:opacity-80 transition-opacity">
-            <Image src="/logo.png" alt="Arrena Photo Logo" width={600} height={200} className="w-52 h-auto object-contain" priority />
-          </Link>
+          <div className="flex items-center gap-2 w-full h-[80px]">
+            <AnimatePresence>
+              {showSidebarLogo && (
+                <Link href="/" className="flex items-center hover:opacity-80 transition-opacity w-full">
+                  <motion.img 
+                    layoutId="app-logo"
+                    src="/logo.png" 
+                    alt="Arrena Photo Logo" 
+                    className="w-52 h-auto object-contain" 
+                    priority
+                  />
+                </Link>
+              )}
+            </AnimatePresence>
+          </div>
           {/* Mobile close button (optional but good for UX) */}
           <button 
             className="md:hidden text-gray-400 hover:text-white p-2"

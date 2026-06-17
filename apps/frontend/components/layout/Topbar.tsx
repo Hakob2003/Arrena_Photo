@@ -2,10 +2,14 @@
 import { useAuthStore, useUIStore } from '../../store';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useIsMobile } from '../../hooks/useIsMobile';
 
 export function Topbar() {
   const { user, credits } = useAuthStore();
-  const { setSidebarOpen } = useUIStore();
+  const { isSidebarOpen, setSidebarOpen } = useUIStore();
+  const isMobile = useIsMobile();
+  const showMobileLogo = isMobile && !isSidebarOpen;
 
   return (
     <header className="h-16 border-b border-white/5 bg-black/20 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 sticky top-0 z-20">
@@ -20,11 +24,21 @@ export function Topbar() {
         </button>
       </div>
 
-      {/* Mobile Logo */}
-      <div className="md:hidden absolute left-1/2 -translate-x-1/2">
-        <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-          <Image src="/logo.png" alt="Arrena Photo Logo" width={150} height={40} className="h-6 w-auto object-contain" priority />
-        </Link>
+      {/* Mobile Logo with Framer Motion layout transition */}
+      <div className="md:hidden absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full">
+        <AnimatePresence>
+          {showMobileLogo && (
+            <Link href="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
+              <motion.img 
+                layoutId="app-logo"
+                src="/logo.png" 
+                alt="Arrena Photo Logo" 
+                className="h-6 w-auto object-contain" 
+                priority
+              />
+            </Link>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="flex-1 max-w-xl hidden md:block">
