@@ -74,9 +74,9 @@ export function Sidebar() {
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="p-4 flex items-center justify-between border-b border-white/5 md:border-none">
-          <div className="flex items-center gap-2 w-full">
+          <Link href="/" className="flex items-center gap-2 w-full hover:opacity-80 transition-opacity">
             <Image src="/logo.png" alt="Arrena Photo Logo" width={600} height={200} className="w-52 h-auto object-contain" priority />
-          </div>
+          </Link>
           {/* Mobile close button (optional but good for UX) */}
           <button 
             className="md:hidden text-gray-400 hover:text-white p-2"

@@ -51,10 +51,10 @@ export function AdminSidebar() {
       `}>
       {/* Brand Header */}
       <div className="py-4 flex items-center justify-between px-6 border-b border-white/5">
-        <div className="flex items-center gap-2 w-full">
+        <Link href="/" className="flex items-center gap-2 w-full hover:opacity-80 transition-opacity" title="Вернуться на главную">
           <Image src="/logo.png" alt="Arrena Photo" width={600} height={200} className="w-40 h-auto object-contain" priority />
           <span className="font-semibold text-pink-500 tracking-tight text-[10px] uppercase bg-pink-500/10 px-1.5 py-0.5 rounded shrink-0">Admin</span>
-        </div>
+        </Link>
         <button 
           className="md:hidden text-gray-400 hover:text-white p-2"
           onClick={() => setSidebarOpen(false)}
