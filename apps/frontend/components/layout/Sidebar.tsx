@@ -73,9 +73,9 @@ export function Sidebar() {
         md:relative md:translate-x-0
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="p-5 flex items-center justify-between border-b border-white/5 md:border-none">
-          <div className="flex items-center gap-2">
-            <Image src="/logo.png" alt="Arrena Photo Logo" width={300} height={80} className="w-auto h-10 object-contain" />
+        <div className="p-4 flex items-center justify-between border-b border-white/5 md:border-none">
+          <div className="flex items-center gap-2 w-full">
+            <Image src="/logo.png" alt="Arrena Photo Logo" width={600} height={200} className="w-52 h-auto object-contain" priority />
           </div>
           {/* Mobile close button (optional but good for UX) */}
           <button 
