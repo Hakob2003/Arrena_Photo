@@ -73,8 +73,7 @@ export function Sidebar() {
       <aside className={`
         fixed inset-y-0 left-0 z-50 w-64 border-r border-white/5 bg-black/60 backdrop-blur-xl flex flex-col
         transition-transform duration-300 ease-in-out
-        md:relative md:translate-x-0
-        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        ${!isMobile ? 'relative translate-x-0' : (isSidebarOpen ? 'translate-x-0' : '-translate-x-full')}
       `}>
         <div className="p-4 flex items-center justify-between border-b border-white/5 md:border-none">
           <div className="flex items-center gap-2 w-full h-[80px]">

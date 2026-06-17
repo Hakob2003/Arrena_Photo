@@ -40,16 +40,8 @@ export function Topbar() {
         </AnimatePresence>
       </div>
 
-      <div className="flex-1 max-w-xl hidden md:block">
-        <div className="relative">
-          <input 
-            type="text" 
-            placeholder="Поиск промптов, шаблонов, авторов..." 
-            className="w-full bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
-          />
-          <span className="absolute right-3 top-2.5 text-gray-400">🔍</span>
-        </div>
-      </div>
+      {/* Search Bar Removed Temporarily */}
+      <div className="flex-1 max-w-xl hidden md:block"></div>
 
       <div className="flex items-center gap-2 sm:gap-4 md:gap-6 ml-auto">
         {/* Credits Pill */}
