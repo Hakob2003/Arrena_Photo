@@ -36,6 +36,15 @@ export function AdminSidebar() {
   const { isSidebarOpen, setSidebarOpen } = useUIStore();
   const isMobile = useIsMobile();
   const showSidebarLogo = !isMobile || isSidebarOpen;
+  const { user } = useAuthStore();
+
+  const handleLogout = () => {
+    useAuthStore.getState().logout();
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+  };
 
   return (
     <>
