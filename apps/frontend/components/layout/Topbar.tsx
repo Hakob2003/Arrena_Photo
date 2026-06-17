@@ -1,5 +1,7 @@
 "use client";
 import { useAuthStore, useUIStore } from '../../store';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export function Topbar() {
   const { user, credits } = useAuthStore();
@@ -16,6 +18,13 @@ export function Topbar() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
+      </div>
+
+      {/* Mobile Logo */}
+      <div className="md:hidden absolute left-1/2 -translate-x-1/2">
+        <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
+          <Image src="/logo.png" alt="Arrena Photo Logo" width={150} height={40} className="h-6 w-auto object-contain" priority />
+        </Link>
       </div>
 
       <div className="flex-1 max-w-xl hidden md:block">
