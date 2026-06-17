@@ -47,7 +47,7 @@ import { ScheduleModule } from '@nestjs/schedule';
             connection: new Redis(redisUrl, {
               maxRetriesPerRequest: null,
               tls: tlsConfig,
-            }),
+            }) as any,
           };
         }
         return {
