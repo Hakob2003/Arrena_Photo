@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { 
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow 
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../../components/ui/button";
+import { ConfirmDeleteModal } from "../../../components/ui/ConfirmDeleteModal";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -255,35 +256,22 @@ export default function AdminTemplatesPage() {
         onSuccess={fetchData}
       />
 
-      <Dialog open={!!templateToDelete} onOpenChange={(open) => !open && setTemplateToDelete(null)}>
-        <DialogContent className="bg-[#1a1a1a] border-gray-800 text-white">
-          <DialogHeader>
-            <DialogTitle>Are you sure?</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p className="text-gray-400">This action cannot be undone. This will permanently delete the selected template.</p>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setTemplateToDelete(null)} className="border-gray-700 bg-transparent text-white hover:bg-gray-800">Cancel</Button>
-            <Button variant="destructive" onClick={confirmDelete}>Delete Template</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDeleteModal
+        isOpen={!!templateToDelete}
+        onClose={() => setTemplateToDelete(null)}
+        onConfirm={confirmDelete}
+        title="Удалить шаблон?"
+        itemName="этот шаблон"
+      />
 
-      <Dialog open={!!bulkActionToConfirm} onOpenChange={(open) => !open && setBulkActionToConfirm(null)}>
-        <DialogContent className="bg-[#1a1a1a] border-gray-800 text-white">
-          <DialogHeader>
-            <DialogTitle>Delete {selectedIds.size} templates?</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <p className="text-gray-400">This action cannot be undone. All selected templates will be permanently deleted.</p>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setBulkActionToConfirm(null)} className="border-gray-700 bg-transparent text-white hover:bg-gray-800">Cancel</Button>
-            <Button variant="destructive" onClick={confirmBulkDelete}>Delete All</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDeleteModal
+        isOpen={!!bulkActionToConfirm}
+        onClose={() => setBulkActionToConfirm(null)}
+        onConfirm={confirmBulkDelete}
+        title={`Удалить ${selectedIds.size} шаблонов?`}
+        description="Это действие нельзя отменить. Все выбранные шаблоны будут навсегда удалены."
+        itemName=""
+      />
     </div>
   );
 }

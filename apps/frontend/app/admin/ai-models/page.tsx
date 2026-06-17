@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { PageHeader } from '../../../components/admin/PageHeader';
 import { Badge } from '../../../components/admin/Badge';
 import { AssignTemplatesModal } from '../../../components/admin/AssignTemplatesModal';
+import { ConfirmDeleteModal } from '../../../components/ui/ConfirmDeleteModal';
 
 interface AIModel {
   id: string;
@@ -338,6 +339,7 @@ export default function AdminAIModelsPage() {
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [modelToDelete, setModelToDelete] = useState<{id: string, name: string} | null>(null);
   const [showHelp, setShowHelp] = useState(false);
   const [expandedProvider, setExpandedProvider] = useState<string | null>(null);
   const [assigningModel, setAssigningModel] = useState<AIModel | null>(null);
@@ -425,17 +427,18 @@ export default function AdminAIModelsPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Вы уверены, что хотите удалить эту модель?')) return;
+  const confirmDelete = async () => {
+    if (!modelToDelete) return;
     try {
-      setDeletingId(id);
-      await api.delete(`/admin/ai-models/${id}`);
+      setDeletingId(modelToDelete.id);
+      await api.delete(`/admin/ai-models/${modelToDelete.id}`);
       toast.success('Модель удалена');
       fetchModels();
     } catch (e) {
       toast.error('Ошибка удаления');
     } finally {
       setDeletingId(null);
+      setModelToDelete(null);
     }
   };
 
@@ -644,7 +647,7 @@ export default function AdminAIModelsPage() {
                         </button>
                         {/* Delete */}
                         <button
-                          onClick={() => handleDelete(model.id)}
+                          onClick={() => setModelToDelete({ id: model.id, name: model.name })}
                           disabled={deletingId === model.id}
                           className="p-1.5 rounded-md hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-colors disabled:opacity-50"
                           title="Удалить"
@@ -874,6 +877,13 @@ export default function AdminAIModelsPage() {
           }}
         />
       )}
+      <ConfirmDeleteModal 
+        isOpen={!!modelToDelete}
+        onClose={() => setModelToDelete(null)}
+        onConfirm={confirmDelete}
+        itemName={`модель "${modelToDelete?.name}"`}
+        isLoading={deletingId !== null}
+      />
     </>
   );
 }

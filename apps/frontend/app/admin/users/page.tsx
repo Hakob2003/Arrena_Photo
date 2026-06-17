@@ -8,6 +8,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { ConfirmDeleteModal } from '../../../components/ui/ConfirmDeleteModal';
 
 type User = {
   id: string;
@@ -37,6 +38,8 @@ export default function AdminUsersPage() {
   const [changingPlan, setChangingPlan] = useState<User | null>(null);
   const [importing, setImporting] = useState(false);
   const [importText, setImportText] = useState('');
+  const [userToDelete, setUserToDelete] = useState<{id: string, email: string} | null>(null);
+  const [deletingUser, setDeletingUser] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -103,6 +106,20 @@ export default function AdminUsersPage() {
       loadData();
     } catch (err) {
       alert('Error changing plan');
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (!userToDelete) return;
+    try {
+      setDeletingUser(true);
+      await adminApi.deleteUser(userToDelete.id);
+      loadData();
+    } catch (e) {
+      alert('Error deleting user');
+    } finally {
+      setDeletingUser(false);
+      setUserToDelete(null);
     }
   };
 
@@ -194,11 +211,7 @@ export default function AdminUsersPage() {
               </button>
             )}
             <button 
-              onClick={() => {
-                if (confirm('Are you sure you want to completely DELETE this user? This cannot be undone.')) {
-                  adminApi.deleteUser(user.id).then(loadData);
-                }
-              }}
+              onClick={() => setUserToDelete({ id: user.id, email: user.email })}
               className="text-xs bg-red-900/50 hover:bg-red-800 text-white px-2 py-1 rounded transition-colors"
             >
               Delete
@@ -434,6 +447,15 @@ export default function AdminUsersPage() {
           </div>
         </div>
       )}
+
+      {/* Confirm Delete Modal */}
+      <ConfirmDeleteModal 
+        isOpen={!!userToDelete}
+        onClose={() => setUserToDelete(null)}
+        onConfirm={confirmDelete}
+        itemName={`пользователя ${userToDelete?.email}`}
+        isLoading={deletingUser}
+      />
     </>
   );
 }
