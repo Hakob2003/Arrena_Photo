@@ -57,7 +57,8 @@ services:
         - pnpm-lock.yaml
         - pnpm-workspace.yaml
         - package.json
-    buildCommand: "NODE_ENV=development pnpm install --no-frozen-lockfile && pnpm --filter @arrena-photo/frontend run build"
+        - scripts/render-frontend-build.sh
+    buildCommand: "bash scripts/render-frontend-build.sh"
     startCommand: "cd apps/frontend && npm start"
     envVars:
       - key: NEXT_PUBLIC_API_URL
