@@ -4,6 +4,7 @@ import { Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ModuleRef } from '@nestjs/core';
 import { GoogleDriveService } from '../integrations/google-drive/google-drive.service';
+import { ImageProviderFactory } from './providers/image-provider.factory';
 
 @Processor('generations')
 export class GenerationProcessor extends WorkerHost {
@@ -43,17 +44,35 @@ export class GenerationProcessor extends WorkerHost {
     });
 
     try {
-      // 3. Mock Generation Strategy: Wait 3 seconds and return a fake image URL
-      const mode = initImage ? 'img2img (editing)' : 'txt2img';
-      this.logger.log(`[MOCK] Generating image with provider: ${generation.aiModel.provider.name}, model: ${generation.aiModel.name}, mode: ${mode}...`);
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      // 3. Real Generation Strategy
+      const mode = initImage ? 'img2img' : 'txt2img';
+      this.logger.log(`Generating image with provider: ${generation.aiModel.provider.name}, model: ${generation.aiModel.name}, mode: ${mode}...`);
       
-      const fakeImages = [
-        'https://picsum.photos/seed/gen1/512/512',
-        'https://picsum.photos/seed/gen2/512/512',
-        'https://picsum.photos/seed/gen3/512/512'
-      ];
-      const randomImage = fakeImages[Math.floor(Math.random() * fakeImages.length)];
+      // Fetch API Key
+      const connection = await this.prisma.aIConnection.findFirst({
+        where: { providerId: generation.aiModel.providerId }
+      });
+
+      if (!connection || !connection.encryptedApiKey) {
+        throw new Error(`No API key configured for provider ${generation.aiModel.provider.name}.`);
+      }
+
+      const apiKey = Buffer.from(connection.encryptedApiKey, 'base64').toString('utf8');
+      
+      const providerFactory = ImageProviderFactory.create(generation.aiModel.provider.name, apiKey);
+      
+      const startTime = Date.now();
+      const generatedUrls = await providerFactory.generateImage(job.data.prompt, generation.aiModel.slug, {
+        initImage: initImage,
+        negativePrompt: job.data.negativePrompt
+      });
+      
+      if (!generatedUrls || generatedUrls.length === 0) {
+        throw new Error('Provider returned empty image list');
+      }
+
+      const randomImage = generatedUrls[0];
+      const durationMs = Date.now() - startTime;
 
       // 4. Try saving to Google Drive
       let driveFileId: string | null = null;
@@ -87,7 +106,7 @@ export class GenerationProcessor extends WorkerHost {
           generationId,
           imageUrl: randomImage,
           driveFileId: driveFileId,
-          durationMs: 3000,
+          durationMs: durationMs,
           storageProviderId: storageProvider.id
         }
       });
@@ -114,3 +133,4 @@ export class GenerationProcessor extends WorkerHost {
     }
   }
 }
+
