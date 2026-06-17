@@ -133,6 +133,43 @@ export function Sidebar() {
           )}
         </div>
       </div>
+      
+      {/* User Profile Section */}
+      <div className="p-4 border-t border-white/5 mt-auto">
+        {user ? (
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center text-white font-bold">
+                {user.name?.charAt(0) || 'U'}
+              </div>
+              <div className="truncate text-left">
+                <p className="text-sm font-medium text-white truncate">{user.name}</p>
+                <p className="text-[10px] text-gray-500 truncate uppercase tracking-wider">{user.role}</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => {
+                useAuthStore.getState().logout();
+                localStorage.removeItem('token');
+                window.location.href = '/login';
+              }}
+              className="p-2 text-gray-400 hover:text-white transition-colors ml-2"
+              title="Выйти"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <Link href="/login" className="w-full py-2 text-center text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Войти</Link>
+            <Link href="/register" className="w-full py-2 text-center bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+              Регистрация
+            </Link>
+          </div>
+        )}
+      </div>
       </aside>
     </>
   );
