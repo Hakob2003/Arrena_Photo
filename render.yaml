@@ -19,6 +19,12 @@ services:
     name: arrena-photo-backend
     env: node
     plan: free
+    buildFilter:
+      paths:
+        - apps/backend-api/**
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - package.json
     buildCommand: "NODE_ENV=development pnpm install --no-frozen-lockfile && pnpm run db:generate && pnpm --filter @arrena-photo/backend-api run build"
     startCommand: "pnpm run db:push && cd apps/backend-api && pnpm run start:prod"
     envVars:
@@ -45,6 +51,12 @@ services:
     name: arrena-photo-frontend
     env: node
     plan: free
+    buildFilter:
+      paths:
+        - apps/frontend/**
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - package.json
     buildCommand: "NODE_ENV=development pnpm install --no-frozen-lockfile && pnpm --filter @arrena-photo/frontend run build"
     startCommand: "cd apps/frontend && npm start"
     envVars:
