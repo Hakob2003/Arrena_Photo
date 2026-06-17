@@ -1,5 +1,6 @@
 "use client";
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useUIStore, useAuthStore } from '../../store';
@@ -73,8 +74,8 @@ export function Sidebar() {
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="p-6 flex items-center justify-between">
-          <div className="flex items-center gap-2 font-black text-2xl tracking-tighter neon-text">
-            <span>ARRENA_PHOTO</span>
+          <div className="flex items-center gap-2">
+            <Image src="/logo.png" alt="Arrena Photo Logo" width={160} height={40} className="w-auto h-8" />
           </div>
           {/* Mobile close button (optional but good for UX) */}
           <button 

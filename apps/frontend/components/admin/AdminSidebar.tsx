@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useUIStore } from '../../store';
 
@@ -51,10 +52,8 @@ export function AdminSidebar() {
       {/* Brand Header */}
       <div className="h-14 flex items-center justify-between px-6 border-b border-white/5">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-white text-black rounded flex items-center justify-center font-bold text-xs">
-            ▲
-          </div>
-          <span className="font-semibold text-white tracking-tight">Admin Panel</span>
+          <Image src="/logo.png" alt="Arrena Photo" width={120} height={30} className="w-auto h-6" />
+          <span className="font-semibold text-pink-500 tracking-tight text-xs uppercase bg-pink-500/10 px-1.5 py-0.5 rounded mt-0.5">Admin</span>
         </div>
         <button 
           className="md:hidden text-gray-400 hover:text-white p-2"
