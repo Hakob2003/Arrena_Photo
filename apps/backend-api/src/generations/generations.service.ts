@@ -115,4 +115,21 @@ export class GenerationsService {
 
     return generation;
   }
+
+  async getActiveModels() {
+    return this.prisma.aIModel.findMany({
+      where: { isActive: true },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        costPerToken: true,
+        speed: true,
+        provider: {
+          select: { name: true }
+        }
+      },
+      orderBy: { name: 'asc' }
+    });
+  }
 }

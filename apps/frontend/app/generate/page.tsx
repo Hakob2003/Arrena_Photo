@@ -57,14 +57,32 @@ function GeneratorContent() {
     loadTemplateData();
   }, [templateId, templateName, setPrompt, setModel]);
 
-  // 2. Fetch Models from backend (Simulated or real if endpoint exists)
+  // 2. Fetch Models from backend
   React.useEffect(() => {
-    // For now, hardcode the seeded models since we don't have a GET /models endpoint yet
-    setModels([
-      { id: 'sdxl-1.0', name: 'Stable Diffusion XL 1.0 (Seed)' },
-      { id: 'dall-e-3', name: 'OpenAI DALL-E 3 (Seed)' }
-    ]);
-  }, []);
+    const fetchModels = async () => {
+      try {
+        const res = await api.get('/generations/models');
+        if (res.data && res.data.length > 0) {
+          setModels(res.data);
+          // Set first model as default if none selected
+          setModel((prevModel) => {
+            if (!prevModel || !res.data.find((m: any) => m.id === prevModel)) {
+              return res.data[0].id;
+            }
+            return prevModel;
+          });
+        }
+      } catch (err) {
+        console.error('Failed to fetch AI models', err);
+        // Fallback for development if backend is down
+        setModels([
+          { id: 'sdxl-1.0', name: 'Stable Diffusion XL 1.0 (Fallback)' },
+          { id: 'dall-e-3', name: 'OpenAI DALL-E 3 (Fallback)' }
+        ]);
+      }
+    };
+    fetchModels();
+  }, [setModel]);
 
   const onDrop = React.useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -104,8 +122,9 @@ function GeneratorContent() {
       const res = await api.post('/generations', {
         prompt,
         negativePrompt: '',
-        aiModelId: 'sdxl-1.0',
-        templateId: undefined, // Must be UUID or omitted
+        aiModelId: model,
+        templateId: templateId || undefined,
+
         initImage: initImage
       });
 

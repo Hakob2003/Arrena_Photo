@@ -6,24 +6,32 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('Generations')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('generations')
 export class GenerationsController {
   constructor(private readonly generationsService: GenerationsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Request a new image generation (async)' })
   create(@Req() req: any, @Body() createGenerationDto: CreateGenerationDto) {
     return this.generationsService.create(req.user.id, createGenerationDto);
   }
 
+  @Get('models')
+  @ApiOperation({ summary: 'Get active AI models for generation' })
+  getActiveModels() {
+    return this.generationsService.getActiveModels();
+  }
+
   @Get('history')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get generation history for user' })
   getHistory(@Req() req: any) {
     return this.generationsService.getHistory(req.user.id);
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get generation status and result' })
   getStatus(@Req() req: any, @Param('id') id: string) {
     return this.generationsService.getStatus(id, req.user.id);
