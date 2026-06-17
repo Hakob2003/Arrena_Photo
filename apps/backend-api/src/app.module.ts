@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { BullModule } from '@nestjs/bullmq';
-import Redis from 'ioredis';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
@@ -42,13 +41,13 @@ import { ScheduleModule } from '@nestjs/schedule';
         if (redisUrl) {
           const url = new URL(redisUrl);
           const tlsConfig = url.protocol === 'rediss:' ? { rejectUnauthorized: false } : undefined;
-          
           return {
-            connection: new Redis(redisUrl, {
-              maxRetriesPerRequest: null,
+            connection: {
+              host: url.hostname,
+              port: parseInt(url.port, 10),
+              password: configService.get('REDIS_PASSWORD') || (url.password ? decodeURIComponent(url.password) : undefined),
               tls: tlsConfig,
-              password: configService.get('REDIS_PASSWORD') || undefined,
-            }) as any,
+            } as any,
           };
         }
         return {
