@@ -34,7 +34,6 @@ export function Topbar() {
                 src="/logo.png" 
                 alt="Arrena Photo Logo" 
                 className="h-6 w-auto object-contain" 
-                priority
               />
             </Link>
           )}

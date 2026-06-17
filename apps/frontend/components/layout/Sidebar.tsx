@@ -86,7 +86,6 @@ export function Sidebar() {
                     src="/logo.png" 
                     alt="Arrena Photo Logo" 
                     className="w-52 h-auto object-contain" 
-                    priority
                   />
                 </Link>
               )}
