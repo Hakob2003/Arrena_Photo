@@ -65,12 +65,10 @@ function GeneratorContent() {
         if (res.data && res.data.length > 0) {
           setModels(res.data);
           // Set first model as default if none selected
-          setModel((prevModel) => {
-            if (!prevModel || !res.data.find((m: any) => m.id === prevModel)) {
-              return res.data[0].id;
-            }
-            return prevModel;
-          });
+          const currentModel = useGenerationStore.getState().model;
+          if (!currentModel || !res.data.find((m: any) => m.id === currentModel)) {
+            setModel(res.data[0].id);
+          }
         }
       } catch (err) {
         console.error('Failed to fetch AI models', err);
