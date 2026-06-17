@@ -44,8 +44,8 @@ import { ScheduleModule } from '@nestjs/schedule';
             connection: {
               host: url.hostname,
               port: parseInt(url.port, 10),
-              username: url.username,
-              password: url.password,
+              username: url.username ? decodeURIComponent(url.username) : undefined,
+              password: url.password ? decodeURIComponent(url.password) : undefined,
               tls: url.protocol === 'rediss:' ? {} : undefined,
             },
           };
