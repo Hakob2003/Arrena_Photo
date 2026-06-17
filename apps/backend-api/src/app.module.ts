@@ -17,6 +17,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { MailModule } from './mail/mail.module';
 import { AiModule } from './modules/ai/ai.module';
 import { GoogleDriveModule } from './integrations/google-drive/google-drive.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { GoogleDriveModule } from './integrations/google-drive/google-drive.modu
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
     
     // Rate Limiting
     ThrottlerModule.forRoot([{

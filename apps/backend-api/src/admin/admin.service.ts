@@ -362,17 +362,35 @@ export class AdminService {
       include: {
         connections: {
           where: { userId: adminId },
-          select: { id: true, encryptedApiKey: true }
+          select: { 
+            id: true, 
+            encryptedApiKey: true,
+            status: true,
+            lastCheckedAt: true,
+            balance: true,
+            errorMessage: true,
+            isAutoMonitorOn: true,
+            monitorInterval: true
+          }
         }
       }
     });
 
-    return providers.map(p => ({
-      id: p.id,
-      name: p.name,
-      isGlobal: p.isGlobal,
-      hasKeySet: p.connections.length > 0 && !!p.connections[0].encryptedApiKey
-    }));
+    return providers.map(p => {
+      const conn = p.connections[0];
+      return {
+        id: p.id,
+        name: p.name,
+        isGlobal: p.isGlobal,
+        hasKeySet: !!conn?.encryptedApiKey,
+        status: conn?.status || 'UNKNOWN',
+        lastCheckedAt: conn?.lastCheckedAt || null,
+        balance: conn?.balance || null,
+        errorMessage: conn?.errorMessage || null,
+        isAutoMonitorOn: conn?.isAutoMonitorOn || false,
+        monitorInterval: conn?.monitorInterval || '1h'
+      };
+    });
   }
 
   async updateGlobalApiKey(adminId: string, providerId: string, apiKey: string) {
@@ -396,6 +414,24 @@ export class AdminService {
         userId: adminId,
         providerId,
         encryptedApiKey: encryptedKey
+      }
+    });
+  }
+
+  async toggleAutoMonitor(adminId: string, providerId: string, data: { isAutoMonitorOn: boolean, monitorInterval: string }) {
+    const existingConnection = await this.prisma.aIConnection.findUnique({
+      where: { userId_providerId: { userId: adminId, providerId } }
+    });
+
+    if (!existingConnection) {
+      throw new Error('API key must be set before configuring monitoring');
+    }
+
+    return this.prisma.aIConnection.update({
+      where: { id: existingConnection.id },
+      data: {
+        isAutoMonitorOn: data.isAutoMonitorOn,
+        monitorInterval: data.monitorInterval
       }
     });
   }

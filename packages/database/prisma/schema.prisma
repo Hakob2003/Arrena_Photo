@@ -54,51 +54,51 @@ enum PayoutStatus {
 // -----------------------------------------------------------------------------
 
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
+  id            String     @id @default(uuid())
+  email         String     @unique
   passwordHash  String?
   emailVerified DateTime?
   name          String?
   avatarUrl     String?
-  credits       Int       @default(1500)
+  credits       Int        @default(1500)
   status        UserStatus @default(ACTIVE)
   lastLogin     DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
-  roleId        String
-  role          Role      @relation(fields: [roleId], references: [id])
+  roleId String
+  role   Role   @relation(fields: [roleId], references: [id])
 
-  sessions            Session[]
-  oauthAccounts       OAuthAccount[]
-  verificationTokens  VerificationToken[]
-  templates           Template[]
-  generations         Generation[]
-  purchases           Purchase[]
-  subscription        Subscription?
-  creditTransactions  CreditTransaction[]
-  reviews             Review[]
-  notifications       Notification[]
-  auditLogs           AuditLog[]
-  aiConnections       AIConnection[]
-  storageConnections  StorageConnection[]
-  aiUsages            AIUsage[]
+  sessions           Session[]
+  oauthAccounts      OAuthAccount[]
+  verificationTokens VerificationToken[]
+  templates          Template[]
+  generations        Generation[]
+  purchases          Purchase[]
+  subscription       Subscription?
+  creditTransactions CreditTransaction[]
+  reviews            Review[]
+  notifications      Notification[]
+  auditLogs          AuditLog[]
+  aiConnections      AIConnection[]
+  storageConnections StorageConnection[]
+  aiUsages           AIUsage[]
 
   // Social & Marketplace
-  favorites           TemplateFav[]
-  collections         Collection[]
-  followers           UserFollow[] @relation("Following")
-  following           UserFollow[] @relation("Followers")
-  payouts             Payout[]
-  reports             TemplateReport[]
+  favorites   TemplateFav[]
+  collections Collection[]
+  followers   UserFollow[]     @relation("Following")
+  following   UserFollow[]     @relation("Followers")
+  payouts     Payout[]
+  reports     TemplateReport[]
 
   @@index([email])
 }
 
 model Role {
-  id          String    @id @default(uuid())
-  name        RoleName  @unique
-  permissions Json      // Array of permissions e.g., ["templates:create", "admin:all"]
+  id          String   @id @default(uuid())
+  name        RoleName @unique
+  permissions Json // Array of permissions e.g., ["templates:create", "admin:all"]
   users       User[]
 }
 
@@ -109,7 +109,7 @@ model Session {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([token])
   @@index([userId])
@@ -118,8 +118,8 @@ model Session {
 model OAuthAccount {
   id                String   @id @default(uuid())
   userId            String
-  provider          String   // "google", "vk", "facebook"
-  providerAccountId String   // ID from provider
+  provider          String // "google", "vk", "facebook"
+  providerAccountId String // ID from provider
   accessToken       String?
   refreshToken      String?
   createdAt         DateTime @default(now())
@@ -136,7 +136,7 @@ model VerificationToken {
   token      String   @unique
   expires    DateTime
 
-  user       User?    @relation(fields: [identifier], references: [email], onDelete: Cascade)
+  user User? @relation(fields: [identifier], references: [email], onDelete: Cascade)
 
   @@unique([identifier, token])
 }
@@ -146,10 +146,10 @@ model VerificationToken {
 // -----------------------------------------------------------------------------
 
 model TemplateCategory {
-  id          String     @id @default(uuid())
-  name        String     @unique
-  slug        String     @unique
-  templates   Template[]
+  id        String     @id @default(uuid())
+  name      String     @unique
+  slug      String     @unique
+  templates Template[]
 }
 
 model TemplateTag {
@@ -159,26 +159,26 @@ model TemplateTag {
 }
 
 model Template {
-  id                String   @id @default(uuid())
+  id                String         @id @default(uuid())
   name              String
   description       String?
   coverUrl          String?
   galleryUrls       String[] // JSON string array mapped to pg array
   recommendedModels String[] // e.g. ["sdxl-1.0", "dall-e-3"]
   status            TemplateStatus @default(DRAFT)
-  isPublic          Boolean  @default(false)
-  isApproved        Boolean  @default(false) // Moderation
-  price             Float?   // null means free
-  downloadCount     Int      @default(0)
-  avgRating         Float    @default(0)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  isPublic          Boolean        @default(false)
+  isApproved        Boolean        @default(false) // Moderation
+  price             Float? // null means free
+  downloadCount     Int            @default(0)
+  avgRating         Float          @default(0)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
-  categoryId  String
-  category    TemplateCategory @relation(fields: [categoryId], references: [id])
+  categoryId String
+  category   TemplateCategory @relation(fields: [categoryId], references: [id])
 
-  creatorId   String
-  creator     User             @relation(fields: [creatorId], references: [id])
+  creatorId String
+  creator   User   @relation(fields: [creatorId], references: [id])
 
   tags        TemplateTag[]
   versions    TemplateVersion[]
@@ -200,10 +200,10 @@ model TemplateVersion {
   versionNumber  Int
   prompt         String
   negativePrompt String?
-  settings       Json     // e.g. { steps: 20, guidance_scale: 7.5 }
+  settings       Json // e.g. { steps: 20, guidance_scale: 7.5 }
   createdAt      DateTime @default(now())
 
-  template       Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
   @@unique([templateId, versionNumber])
 }
@@ -213,42 +213,49 @@ model TemplateVersion {
 // -----------------------------------------------------------------------------
 
 model AIProvider {
-  id        String    @id @default(uuid())
-  name      String    @unique // e.g. "HuggingFace", "OpenAI", "ComfyUI"
-  isGlobal  Boolean   @default(true) // If true, uses system-wide API keys
+  id       String  @id @default(uuid())
+  name     String  @unique // e.g. "HuggingFace", "OpenAI", "ComfyUI"
+  isGlobal Boolean @default(true) // If true, uses system-wide API keys
 
   models      AIModel[]
   connections AIConnection[]
 }
 
 model AIModel {
-  id            String     @id @default(uuid())
-  providerId    String
-  name          String     // e.g. "sdxl-1.0", "dall-e-3"
-  slug          String     @unique // e.g. "openrouter/free"
-  endpoint      String?
-  description   String?
-  isFree        Boolean    @default(false)
-  isActive      Boolean    @default(true)
-  costPerToken  Float      @default(0) // Cost per 1k tokens in USD
-  speed         String     @default("medium") // "fast", "medium", "slow"
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt @default(now())
+  id           String   @id @default(uuid())
+  providerId   String
+  name         String // e.g. "sdxl-1.0", "dall-e-3"
+  slug         String   @unique // e.g. "openrouter/free"
+  endpoint     String?
+  description  String?
+  isFree       Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  costPerToken Float    @default(0) // Cost per 1k tokens in USD
+  speed        String   @default("medium") // "fast", "medium", "slow"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
 
-  provider    AIProvider @relation(fields: [providerId], references: [id])
+  provider    AIProvider   @relation(fields: [providerId], references: [id])
   generations Generation[]
 
   @@unique([providerId, name])
 }
 
 model AIConnection {
-  id               String   @id @default(uuid())
-  userId           String
-  providerId       String
-  encryptedApiKey  String
+  id              String @id @default(uuid())
+  userId          String
+  providerId      String
+  encryptedApiKey String
 
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  provider   AIProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  status          String    @default("UNKNOWN") // "CONNECTED", "ERROR", "UNKNOWN"
+  lastCheckedAt   DateTime?
+  balance         Float?
+  errorMessage    String?
+  isAutoMonitorOn Boolean   @default(false)
+  monitorInterval String    @default("1h") // "REALTIME", "1m", "5m", "10m", "30m", "1h"
+
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider AIProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
 
   @@unique([userId, providerId])
 }
@@ -256,30 +263,30 @@ model AIConnection {
 model AIUsage {
   id           String   @id @default(uuid())
   userId       String
-  model        String   // the model slug
+  model        String // the model slug
   inputTokens  Int
   outputTokens Int
   totalTokens  Int
   createdAt    DateTime @default(now())
 
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
 
 model Generation {
-  id          String           @id @default(uuid())
-  userId      String
-  templateId  String?
-  aiModelId   String
-  status      GenerationStatus @default(PENDING)
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  id         String           @id @default(uuid())
+  userId     String
+  templateId String?
+  aiModelId  String
+  status     GenerationStatus @default(PENDING)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
 
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  template    Template?        @relation(fields: [templateId], references: [id], onDelete: SetNull)
-  aiModel     AIModel          @relation(fields: [aiModelId], references: [id])
-  result      GenerationResult?
+  user     User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template Template?         @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  aiModel  AIModel           @relation(fields: [aiModelId], references: [id])
+  result   GenerationResult?
 
   @@index([userId])
   @@index([status])
@@ -294,8 +301,8 @@ model GenerationResult {
   storageProviderId String
   createdAt         DateTime @default(now())
 
-  generation        Generation      @relation(fields: [generationId], references: [id], onDelete: Cascade)
-  storageProvider   StorageProvider @relation(fields: [storageProviderId], references: [id])
+  generation      Generation      @relation(fields: [generationId], references: [id], onDelete: Cascade)
+  storageProvider StorageProvider @relation(fields: [storageProviderId], references: [id])
 }
 
 // -----------------------------------------------------------------------------
@@ -303,19 +310,19 @@ model GenerationResult {
 // -----------------------------------------------------------------------------
 
 model StorageProvider {
-  id        String   @id @default(uuid())
-  name      String   @unique // "S3", "Cloudflare R2"
-  baseUrl   String
+  id      String @id @default(uuid())
+  name    String @unique // "S3", "Cloudflare R2"
+  baseUrl String
 
   connections StorageConnection[]
   results     GenerationResult[]
 }
 
 model StorageConnection {
-  id                   String   @id @default(uuid())
+  id                   String @id @default(uuid())
   userId               String
   storageProviderId    String
-  encryptedCredentials Json     // AES Encrypted { accessKey, secretKey, bucket }
+  encryptedCredentials Json // AES Encrypted { accessKey, secretKey, bucket }
 
   user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   provider StorageProvider @relation(fields: [storageProviderId], references: [id], onDelete: Cascade)
@@ -328,14 +335,14 @@ model StorageConnection {
 // -----------------------------------------------------------------------------
 
 model MarketplaceItem {
-  id          String   @id @default(uuid())
-  templateId  String   @unique
-  price       Float    // USD Price
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
+  id         String   @id @default(uuid())
+  templateId String   @unique
+  price      Float // USD Price
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
 
-  template    Template   @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  purchases   Purchase[]
+  template  Template   @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  purchases Purchase[]
 }
 
 model Purchase {
@@ -345,8 +352,8 @@ model Purchase {
   amount            Float
   purchasedAt       DateTime @default(now())
 
-  user              User            @relation(fields: [userId], references: [id])
-  marketplaceItem   MarketplaceItem @relation(fields: [marketplaceItemId], references: [id])
+  user            User            @relation(fields: [userId], references: [id])
+  marketplaceItem MarketplaceItem @relation(fields: [marketplaceItemId], references: [id])
 
   @@index([userId])
 }
@@ -359,17 +366,17 @@ model Subscription {
   expiresAt      DateTime?
   stripeSubId    String?          @unique
 
-  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model CreditTransaction {
   id        String   @id @default(uuid())
   userId    String
-  amount    Int      // Negative for usage, positive for top-up
-  reason    String   // "Generation", "Monthly Top-up", "Purchase"
+  amount    Int // Negative for usage, positive for top-up
+  reason    String // "Generation", "Monthly Top-up", "Purchase"
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -379,15 +386,15 @@ model CreditTransaction {
 // -----------------------------------------------------------------------------
 
 model Review {
-  id          String   @id @default(uuid())
-  userId      String
-  templateId  String
-  rating      Int      // 1-5
-  comment     String?
-  createdAt   DateTime @default(now())
+  id         String   @id @default(uuid())
+  userId     String
+  templateId String
+  rating     Int // 1-5
+  comment    String?
+  createdAt  DateTime @default(now())
 
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  template    Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
   @@unique([userId, templateId])
 }
@@ -400,19 +407,19 @@ model Notification {
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, isRead])
 }
 
 model AuditLog {
   id        String   @id @default(uuid())
-  userId    String?  // Nullable if system action
-  action    String   // e.g., "TEMPLATE_DELETED"
+  userId    String? // Nullable if system action
+  action    String // e.g., "TEMPLATE_DELETED"
   details   Json
   createdAt DateTime @default(now())
 
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([action])
   @@index([createdAt])
@@ -438,7 +445,7 @@ model Collection {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user      User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   templates CollectionTemplate[]
 }
 
@@ -467,16 +474,16 @@ model UserFollow {
 }
 
 model TemplateReport {
-  id          String   @id @default(uuid())
-  templateId  String
-  userId      String
-  reason      String   // e.g., "SPAM", "NSFW", "COPYRIGHT"
-  details     String?
-  resolved    Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  id         String   @id @default(uuid())
+  templateId String
+  userId     String
+  reason     String // e.g., "SPAM", "NSFW", "COPYRIGHT"
+  details    String?
+  resolved   Boolean  @default(false)
+  createdAt  DateTime @default(now())
 
-  template    Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Payout {
@@ -487,5 +494,5 @@ model Payout {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

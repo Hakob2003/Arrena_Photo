@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Param, Query, UseGuards, Req, Body } from '@nestjs/common';
 import { AdminService } from './admin.service';
+import { ProviderCheckService } from './provider-check.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 
@@ -8,7 +9,10 @@ import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger'
 @UseGuards(JwtAuthGuard)
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly providerCheckService: ProviderCheckService
+  ) {}
 
   @Get('dashboard')
   @ApiOperation({ summary: 'Get overall dashboard statistics' })
@@ -144,6 +148,28 @@ export class AdminController {
     @Body('apiKey') apiKey: string
   ) {
     return this.adminService.updateGlobalApiKey(req.user.id, providerId, apiKey);
+  }
+
+  @Post('api-providers/:providerId/check')
+  @ApiOperation({ summary: 'Check connection for provider' })
+  checkProviderConnection(@Param('providerId') providerId: string) {
+    return this.providerCheckService.checkConnection(providerId);
+  }
+
+  @Post('api-providers/:providerId/test')
+  @ApiOperation({ summary: 'Test generation for provider' })
+  testProviderGeneration(@Param('providerId') providerId: string) {
+    return this.providerCheckService.testGeneration(providerId);
+  }
+
+  @Post('api-providers/:providerId/toggle-monitor')
+  @ApiOperation({ summary: 'Toggle auto-monitor for provider' })
+  toggleMonitor(
+    @Req() req,
+    @Param('providerId') providerId: string,
+    @Body() body: { isAutoMonitorOn: boolean, monitorInterval: string }
+  ) {
+    return this.adminService.toggleAutoMonitor(req.user.id, providerId, body);
   }
 
   // --- Billing ---
