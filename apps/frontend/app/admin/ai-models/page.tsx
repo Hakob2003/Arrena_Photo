@@ -70,6 +70,260 @@ const emptyForm = {
   speed: 'medium',
 };
 
+const PROVIDER_GUIDES: {
+  name: string;
+  icon: string;
+  color: string;
+  apiUrl: string;
+  models: { name: string; slug: string; endpoint: string; cost: string; speed: string; desc: string }[];
+  steps: string[];
+}[] = [
+  {
+    name: 'OpenAI',
+    icon: '🟢',
+    color: 'border-green-500/30 bg-green-500/5',
+    apiUrl: 'https://platform.openai.com/api-keys',
+    models: [
+      { name: 'DALL-E 3', slug: 'openai/dall-e-3', endpoint: 'https://api.openai.com/v1/images/generations', cost: '$0.040', speed: 'medium', desc: 'Высококачественная генерация из текста, 1024×1024' },
+      { name: 'DALL-E 2', slug: 'openai/dall-e-2', endpoint: 'https://api.openai.com/v1/images/generations', cost: '$0.020', speed: 'fast', desc: 'Быстрая генерация, поддерживает edit и variations' },
+      { name: 'GPT-Image-1', slug: 'openai/gpt-image-1', endpoint: 'https://api.openai.com/v1/images/generations', cost: '$0.020', speed: 'medium', desc: 'Новая модель генерации изображений от OpenAI' },
+    ],
+    steps: [
+      'Перейдите на platform.openai.com/api-keys',
+      'Создайте новый API Key → скопируйте его',
+      'В админке: AI Providers → API Keys → вставьте ключ для OpenAI',
+      'Здесь: нажмите "Добавить модель" → выберите OpenAI',
+      'Заполните Name, Slug и Endpoint как в таблице выше',
+    ]
+  },
+  {
+    name: 'Google Gemini',
+    icon: '🔵',
+    color: 'border-blue-500/30 bg-blue-500/5',
+    apiUrl: 'https://aistudio.google.com/app/apikey',
+    models: [
+      { name: 'Imagen 3', slug: 'gemini/imagen-3', endpoint: 'https://generativelanguage.googleapis.com/v1beta', cost: '$0.040', speed: 'medium', desc: 'Фотореалистичная генерация от Google, 1024×1024' },
+      { name: 'Imagen 3 Fast', slug: 'gemini/imagen-3-fast', endpoint: 'https://generativelanguage.googleapis.com/v1beta', cost: '$0.020', speed: 'fast', desc: 'Быстрая версия Imagen 3' },
+    ],
+    steps: [
+      'Перейдите на aistudio.google.com/app/apikey',
+      'Создайте API Key для проекта → скопируйте',
+      'В админке: API Keys → вставьте ключ для Google Gemini',
+      'Здесь: "Добавить модель" → Google Gemini',
+      'Используйте slug gemini/imagen-3, endpoint как в таблице',
+    ]
+  },
+  {
+    name: 'OpenRouter',
+    icon: '🟣',
+    color: 'border-purple-500/30 bg-purple-500/5',
+    apiUrl: 'https://openrouter.ai/keys',
+    models: [
+      { name: 'Free (Auto)', slug: 'openrouter/free', endpoint: 'https://openrouter.ai/api/v1', cost: 'FREE', speed: 'medium', desc: 'Автоматический роутинг на бесплатные модели' },
+      { name: 'SDXL via OR', slug: 'openrouter/sdxl', endpoint: 'https://openrouter.ai/api/v1', cost: '$0.002', speed: 'fast', desc: 'Stable Diffusion XL через OpenRouter' },
+      { name: 'Flux via OR', slug: 'openrouter/flux', endpoint: 'https://openrouter.ai/api/v1', cost: '$0.003', speed: 'medium', desc: 'Black Forest Labs Flux через OpenRouter' },
+    ],
+    steps: [
+      'Перейдите на openrouter.ai/keys',
+      'Создайте API Key → скопируйте',
+      'В админке: API Keys → вставьте для OpenRouter',
+      'Здесь: "Добавить модель" → OpenRouter',
+      'OpenRouter роутит запросы к 100+ моделям автоматически',
+      '💡 Совет: Используйте openrouter/free для тестирования',
+    ]
+  },
+  {
+    name: 'Replicate',
+    icon: '🟠',
+    color: 'border-orange-500/30 bg-orange-500/5',
+    apiUrl: 'https://replicate.com/account/api-tokens',
+    models: [
+      { name: 'SDXL', slug: 'replicate/sdxl', endpoint: 'https://api.replicate.com/v1/predictions', cost: '$0.0023', speed: 'medium', desc: 'Stable Diffusion XL на GPU Replicate' },
+      { name: 'Flux Schnell', slug: 'replicate/flux-schnell', endpoint: 'https://api.replicate.com/v1/predictions', cost: '$0.003', speed: 'fast', desc: 'Быстрый Flux от Black Forest Labs' },
+      { name: 'Flux Pro', slug: 'replicate/flux-pro', endpoint: 'https://api.replicate.com/v1/predictions', cost: '$0.055', speed: 'slow', desc: 'Высококачественный Flux Pro' },
+    ],
+    steps: [
+      'Перейдите на replicate.com/account/api-tokens',
+      'Создайте токен → скопируйте (начинается с r8_)',
+      'В админке: API Keys → вставьте для Replicate',
+      'Здесь: "Добавить модель" → Replicate',
+      'Slug формат: replicate/<имя-модели>',
+      '💡 Совет: Replicate автоматически масштабирует GPU',
+    ]
+  },
+  {
+    name: 'Hugging Face',
+    icon: '🤗',
+    color: 'border-yellow-500/30 bg-yellow-500/5',
+    apiUrl: 'https://huggingface.co/settings/tokens',
+    models: [
+      { name: 'SDXL Base', slug: 'hf/sdxl-base', endpoint: 'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0', cost: 'FREE', speed: 'slow', desc: 'SDXL через Inference API (бесплатно, медленнее)' },
+      { name: 'SD 2.1', slug: 'hf/sd-2-1', endpoint: 'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2-1', cost: 'FREE', speed: 'slow', desc: 'Stable Diffusion 2.1, бесплатный' },
+      { name: 'Flux.1-dev', slug: 'hf/flux-dev', endpoint: 'https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev', cost: 'FREE', speed: 'slow', desc: 'Flux.1 developer model' },
+    ],
+    steps: [
+      'Перейдите на huggingface.co/settings/tokens',
+      'Создайте Read token → скопируйте (начинается с hf_)',
+      'В админке: API Keys → вставьте для Hugging Face',
+      'Здесь: "Добавить модель" → Hugging Face',
+      'Endpoint = URL модели на HF Inference API',
+      '⚠️ Бесплатный тариф: модели засыпают после неактивности (первый запрос ~30 сек)',
+    ]
+  },
+  {
+    name: 'Stability AI',
+    icon: '🎨',
+    color: 'border-pink-500/30 bg-pink-500/5',
+    apiUrl: 'https://platform.stability.ai/account/keys',
+    models: [
+      { name: 'Stable Diffusion 3', slug: 'stability/sd3', endpoint: 'https://api.stability.ai/v2beta/stable-image/generate/sd3', cost: '$0.065', speed: 'medium', desc: 'Новейший SD3 от Stability AI' },
+      { name: 'Stable Image Core', slug: 'stability/core', endpoint: 'https://api.stability.ai/v2beta/stable-image/generate/core', cost: '$0.030', speed: 'fast', desc: 'Быстрая генерация, хорошее качество' },
+      { name: 'SDXL 1.0', slug: 'stability/sdxl-1.0', endpoint: 'https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image', cost: '$0.002', speed: 'fast', desc: 'Классический SDXL через Stability API' },
+    ],
+    steps: [
+      'Перейдите на platform.stability.ai/account/keys',
+      'Создайте API Key → скопируйте (начинается с sk-)',
+      'В админке: API Keys → вставьте для Stability AI',
+      'Здесь: "Добавить модель" → Stability AI',
+      'Endpoint зависит от модели (см. таблицу выше)',
+      '💡 Совет: Новые аккаунты получают $25 бесплатных кредитов',
+    ]
+  },
+  {
+    name: 'Fal AI',
+    icon: '⚡',
+    color: 'border-cyan-500/30 bg-cyan-500/5',
+    apiUrl: 'https://fal.ai/dashboard/keys',
+    models: [
+      { name: 'Flux Pro v1.1', slug: 'fal/flux-pro', endpoint: 'https://fal.run/fal-ai/flux-pro/v1.1', cost: '$0.050', speed: 'fast', desc: 'Быстрый Flux Pro через Fal AI' },
+      { name: 'Flux Schnell', slug: 'fal/flux-schnell', endpoint: 'https://fal.run/fal-ai/flux/schnell', cost: '$0.003', speed: 'fast', desc: 'Ультрабыстрый Flux Schnell' },
+      { name: 'SDXL Lightning', slug: 'fal/sdxl-lightning', endpoint: 'https://fal.run/fal-ai/fast-lightning-sdxl', cost: '$0.002', speed: 'fast', desc: 'SDXL Lightning — генерация за 1-2 сек' },
+    ],
+    steps: [
+      'Перейдите на fal.ai/dashboard/keys',
+      'Создайте API Key → скопируйте',
+      'В админке: API Keys → вставьте для Fal AI',
+      'Здесь: "Добавить модель" → Fal AI',
+      'Endpoint = URL модели на fal.run',
+      '💡 Совет: Fal AI — самый быстрый хостинг для Flux моделей',
+    ]
+  },
+];
+
+function HelpGuide({ expandedProvider, setExpandedProvider }: { expandedProvider: string | null; setExpandedProvider: (v: string | null) => void }) {
+  return (
+    <div className="mb-6 bg-gradient-to-br from-amber-500/5 to-orange-500/5 border border-amber-500/20 rounded-2xl p-5">
+      <div className="flex items-start gap-3 mb-4">
+        <div className="w-8 h-8 bg-amber-500/10 rounded-lg flex items-center justify-center text-amber-400 shrink-0">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+        </div>
+        <div>
+          <h3 className="text-base font-semibold text-white">Как добавить AI модель</h3>
+          <p className="text-xs text-gray-400 mt-1">
+            Нажмите на провайдер ниже, чтобы увидеть пошаговую инструкцию и рекомендуемые модели.
+            Для каждого провайдера сначала нужно получить API ключ, затем добавить модель здесь.
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        {PROVIDER_GUIDES.map(provider => {
+          const isOpen = expandedProvider === provider.name;
+          return (
+            <div key={provider.name} className={`border rounded-xl overflow-hidden transition-colors ${isOpen ? provider.color : 'border-white/10 bg-white/[0.02]'}`}>
+              {/* Header */}
+              <button
+                onClick={() => setExpandedProvider(isOpen ? null : provider.name)}
+                className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-white/5 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">{provider.icon}</span>
+                  <div>
+                    <span className="text-sm font-medium text-white">{provider.name}</span>
+                    <span className="text-xs text-gray-500 ml-2">{provider.models.length} модел{provider.models.length > 1 ? 'ей' : 'ь'}</span>
+                  </div>
+                </div>
+                <svg className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* Content */}
+              {isOpen && (
+                <div className="px-4 pb-4 space-y-4">
+                  {/* Steps */}
+                  <div>
+                    <h4 className="text-xs text-gray-400 uppercase tracking-wider mb-2 font-medium">Пошаговая инструкция</h4>
+                    <ol className="space-y-1.5">
+                      {provider.steps.map((step, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm">
+                          {step.startsWith('💡') || step.startsWith('⚠️') ? (
+                            <span className="text-gray-300 mt-0.5">{step}</span>
+                          ) : (
+                            <>
+                              <span className="w-5 h-5 shrink-0 bg-white/10 rounded-full flex items-center justify-center text-xs text-gray-400 font-mono mt-0.5">{i + 1}</span>
+                              <span className="text-gray-300">{step}</span>
+                            </>
+                          )}
+                        </li>
+                      ))}
+                    </ol>
+                    <a
+                      href={provider.apiUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 mt-2 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                    >
+                      Получить API Key →
+                    </a>
+                  </div>
+
+                  {/* Models Table */}
+                  <div>
+                    <h4 className="text-xs text-gray-400 uppercase tracking-wider mb-2 font-medium">Рекомендуемые модели</h4>
+                    <div className="overflow-x-auto rounded-lg border border-white/10">
+                      <table className="w-full text-xs">
+                        <thead>
+                          <tr className="bg-white/5 text-gray-400">
+                            <th className="text-left px-3 py-2 font-medium">Модель</th>
+                            <th className="text-left px-3 py-2 font-medium">Slug</th>
+                            <th className="text-left px-3 py-2 font-medium">Стоимость</th>
+                            <th className="text-left px-3 py-2 font-medium">Скорость</th>
+                            <th className="text-left px-3 py-2 font-medium">Описание</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5">
+                          {provider.models.map(m => (
+                            <tr key={m.slug} className="hover:bg-white/[0.03]">
+                              <td className="px-3 py-2 text-white font-medium whitespace-nowrap">{m.name}</td>
+                              <td className="px-3 py-2 font-mono text-indigo-400 whitespace-nowrap">{m.slug}</td>
+                              <td className="px-3 py-2 whitespace-nowrap">
+                                <span className={m.cost === 'FREE' ? 'text-green-400 font-medium' : 'text-gray-300'}>{m.cost}</span>
+                              </td>
+                              <td className="px-3 py-2 whitespace-nowrap">
+                                <span className={m.speed === 'fast' ? 'text-green-400' : m.speed === 'slow' ? 'text-red-400' : 'text-yellow-400'}>
+                                  {m.speed === 'fast' ? '⚡ Быстрая' : m.speed === 'slow' ? '🐢 Медленная' : '⏱ Средняя'}
+                                </span>
+                              </td>
+                              <td className="px-3 py-2 text-gray-400 max-w-[200px] truncate">{m.desc}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function AdminAIModelsPage() {
   const [models, setModels] = useState<AIModel[]>([]);
   const [providers, setProviders] = useState<AIProvider[]>([]);
@@ -83,6 +337,8 @@ export default function AdminAIModelsPage() {
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [showHelp, setShowHelp] = useState(false);
+  const [expandedProvider, setExpandedProvider] = useState<string | null>(null);
 
   const fetchModels = useCallback(async () => {
     try {
@@ -189,17 +445,33 @@ export default function AdminAIModelsPage() {
         title="AI Models" 
         description="Управление моделями генерации изображений"
         actions={
-          <button
-            onClick={openCreateModal}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            Добавить модель
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowHelp(h => !h)}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 border ${
+                showHelp ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Справка
+            </button>
+            <button
+              onClick={openCreateModal}
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              Добавить модель
+            </button>
+          </div>
         }
       />
+
+      {/* Help Guide */}
+      {showHelp && <HelpGuide expandedProvider={expandedProvider} setExpandedProvider={setExpandedProvider} />}
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">

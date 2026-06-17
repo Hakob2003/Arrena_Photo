@@ -37,7 +37,7 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": true
               },
               "icon": "lucide-folder-closed",
               "title": "Файловый менеджер"
@@ -178,6 +178,9 @@
   },
   "active": "abeda4909e4e36ed",
   "lastOpenFiles": [
+    "node_modules/tailwindcss/node_modules/picomatch/README.md",
+    "Arrena.md",
+    "README.md",
     "node_modules/posthtml-parser/node_modules/domhandler/readme.md",
     "node_modules/eventemitter3/README.md"
   ]
