@@ -1,6 +1,7 @@
 import { IImageProvider } from './image-provider.interface';
 import { OpenAIImageProvider } from './openai-image.provider';
 import { ReplicateImageProvider } from './replicate-image.provider';
+import { MockImageProvider } from './mock-image.provider';
 
 export class ImageProviderFactory {
   /**
@@ -15,6 +16,10 @@ export class ImageProviderFactory {
     
     if (normalizedName.includes('replicate')) {
       return new ReplicateImageProvider(apiKey);
+    }
+
+    if (normalizedName.includes('mock')) {
+      return new MockImageProvider(apiKey);
     }
 
     // Default to mock or throw error if not supported yet
