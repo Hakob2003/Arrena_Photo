@@ -56,11 +56,22 @@ export function AdminSidebar() {
         />
       )}
 
-      <aside className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-[#0a0a0a] border-r border-white/5 flex flex-col text-sm
-        transition-transform duration-300 ease-in-out
-        ${!isMobile ? 'relative translate-x-0' : (isSidebarOpen ? 'translate-x-0' : '-translate-x-full')}
-      `}>
+      <motion.aside 
+        initial={false}
+        animate={{
+          x: !isMobile ? 0 : (isSidebarOpen ? 0 : '-100%'),
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 30,
+          mass: 0.8
+        }}
+        className={`
+          fixed inset-y-0 left-0 z-50 w-64 bg-[#0a0a0a] border-r border-white/5 flex flex-col text-sm
+          ${!isMobile ? 'relative' : ''}
+        `}
+      >
       {/* Brand Header */}
       <div className="py-4 flex items-center justify-between px-6 border-b border-white/5 h-[80px]">
         <AnimatePresence>
@@ -144,7 +155,7 @@ export function AdminSidebar() {
           </div>
         )}
       </div>
-      </aside>
+      </motion.aside>
     </>
   );
 }

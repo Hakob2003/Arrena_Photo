@@ -70,11 +70,22 @@ export function Sidebar() {
         />
       )}
 
-      <aside className={`
-        fixed inset-y-0 left-0 z-50 w-64 border-r border-white/5 bg-black/60 backdrop-blur-xl flex flex-col
-        transition-transform duration-300 ease-in-out
-        ${!isMobile ? 'relative translate-x-0' : (isSidebarOpen ? 'translate-x-0' : '-translate-x-full')}
-      `}>
+      <motion.aside 
+        initial={false}
+        animate={{
+          x: !isMobile ? 0 : (isSidebarOpen ? 0 : '-100%'),
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 30,
+          mass: 0.8
+        }}
+        className={`
+          fixed inset-y-0 left-0 z-50 w-64 border-r border-white/5 bg-black/60 backdrop-blur-xl flex flex-col
+          ${!isMobile ? 'relative' : ''}
+        `}
+      >
         <div className="p-4 flex items-center justify-between border-b border-white/5 md:border-none">
           <div className="flex items-center gap-2 w-full h-[80px]">
             <AnimatePresence>
@@ -169,7 +180,7 @@ export function Sidebar() {
           </div>
         )}
       </div>
-      </aside>
+      </motion.aside>
     </>
   );
 }
