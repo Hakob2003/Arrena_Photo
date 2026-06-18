@@ -66,9 +66,13 @@ export const useGenerationStore = create<GenerationState>((set) => ({
 interface UIState {
   isSidebarOpen: boolean;
   setSidebarOpen: (v: boolean) => void;
+  isMobile: boolean;
+  setIsMobile: (v: boolean) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
   isSidebarOpen: false,
   setSidebarOpen: (isSidebarOpen) => set({ isSidebarOpen }),
+  isMobile: false,
+  setIsMobile: (isMobile) => set({ isMobile }),
 }));
