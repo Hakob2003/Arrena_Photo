@@ -93,9 +93,9 @@
 @layer base {
   * {
     @apply border-border;
-    /* Плавные переходы для всех элементов при изменении размера окна (0.4s) */
+    /* Плавные переходы для всех элементов при изменении размера окна (0.2s) */
     transition-property: width, height, max-width, max-height, min-width, min-height, margin, padding, flex, flex-basis, grid-template-columns, grid-template-rows, gap, right, left, top, bottom, transform, opacity, background-color, border-color, color;
-    transition-duration: 0.4s;
+    transition-duration: 0.2s;
     transition-timing-function: ease-in-out;
   }
   body {
