@@ -66,6 +66,26 @@ model User {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 
+  // --- Personal Info ---
+  nickname      String?   @unique
+  surname       String?
+  bio           String?   @db.Text
+  socialLinks   Json?     // { telegram: "", instagram: "", twitter: "", linkedin: "", website: "" }
+  
+  // --- Preferences & Appearance ---
+  theme             String  @default("SYSTEM") // "LIGHT", "DARK", "SYSTEM"
+  accentColor       String  @default("INDIGO")
+  fontSize          String  @default("MEDIUM") // "SMALL", "MEDIUM", "LARGE"
+  compactMode       Boolean @default(false)
+  animationsEnabled Boolean @default(true)
+  
+  // --- Notifications ---
+  notifyEmail       Boolean @default(true)
+  notifyGenerations Boolean @default(true)
+  notifyMarketing   Boolean @default(false)
+  notifyNews        Boolean @default(true)
+  notifySystem      Boolean @default(true)
+
   roleId String
   role   Role   @relation(fields: [roleId], references: [id])
 
@@ -108,6 +128,11 @@ model Session {
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
+  
+  ipAddress String?
+  userAgent String?
+  country   String?
+  device    String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 

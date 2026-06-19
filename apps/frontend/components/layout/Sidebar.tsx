@@ -114,16 +114,15 @@ export function Sidebar() {
           <div className="flex items-center gap-2 w-full h-[80px]">
             <AnimatePresence>
               {showSidebarLogo && (
-                <motion.div layoutId="app-logo" className="w-full">
-                  <Link href="/" className="flex items-center hover:opacity-80 transition-opacity w-full">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src="/logo.png" 
-                      alt="Arrena Photo Logo" 
-                      className="w-52 h-auto object-contain" 
-                    />
-                  </Link>
-                </motion.div>
+                <Link href="/" className="flex items-center hover:opacity-80 transition-opacity w-full">
+                  <motion.img 
+                    layoutId="app-logo"
+                    src="/logo.png" 
+                    alt="Arrena Photo Logo" 
+                    className="w-48 h-auto object-contain" 
+                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                  />
+                </Link>
               )}
             </AnimatePresence>
           </div>

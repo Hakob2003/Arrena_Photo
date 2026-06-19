@@ -18,6 +18,7 @@ import { MailModule } from './mail/mail.module';
 import { AiModule } from './modules/ai/ai.module';
 import { GoogleDriveModule } from './integrations/google-drive/google-drive.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -89,6 +90,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     MailModule,
     AiModule,
     GoogleDriveModule,
+    ProfileModule,
   ],
 })
 export class AppModule {}
