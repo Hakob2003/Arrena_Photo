@@ -71,7 +71,7 @@ interface UIState {
 }
 
 export const useUIStore = create<UIState>((set) => ({
-  isSidebarOpen: false,
+  isSidebarOpen: true,
   setSidebarOpen: (isSidebarOpen) => set({ isSidebarOpen }),
   isMobile: false,
   setIsMobile: (isMobile) => set({ isMobile }),

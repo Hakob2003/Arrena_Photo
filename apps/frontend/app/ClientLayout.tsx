@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { Sidebar } from '../components/layout/Sidebar';
 import { useAuthStore, useUIStore } from '../store';
 import { Topbar } from '../components/layout/Topbar';
+import { LayoutGroup } from 'framer-motion';
 
 import { api } from '../lib/api';
 
@@ -87,27 +88,29 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div 
-      className="flex h-screen w-full"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
-      <Sidebar />
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
-        {/* Background Glow for Consumer App */}
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />
-        
-        <div className="flex items-center w-full z-20 relative">
-          <div className="flex-1">
-            <Topbar />
+    <LayoutGroup>
+      <div 
+        className="flex h-screen w-full"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <Sidebar />
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+          {/* Background Glow for Consumer App */}
+          <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />
+          
+          <div className="flex items-center w-full z-20 relative">
+            <div className="flex-1">
+              <Topbar />
+            </div>
           </div>
+          
+          <main className="flex-1 overflow-y-auto relative z-10 custom-scrollbar">
+            {children}
+          </main>
         </div>
-        
-        <main className="flex-1 overflow-y-auto relative z-10 custom-scrollbar">
-          {children}
-        </main>
       </div>
-    </div>
+    </LayoutGroup>
   );
 }

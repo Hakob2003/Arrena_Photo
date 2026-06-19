@@ -30,7 +30,7 @@ export function Sidebar() {
   const { isSidebarOpen, setSidebarOpen } = useUIStore();
   const { user } = useAuthStore();
   const isMobile = useIsMobile();
-  const showSidebarLogo = !isMobile || isSidebarOpen;
+  const showSidebarLogo = isSidebarOpen;
 
   const renderLinks = (links: typeof MAIN_LINKS) => (
     <ul className="space-y-1">
@@ -40,7 +40,7 @@ export function Sidebar() {
           <li key={link.href}>
             <Link 
               href={link.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative ${
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative group ${
                 isActive ? 'text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
             >
@@ -48,11 +48,27 @@ export function Sidebar() {
                 <motion.div 
                   layoutId="sidebar-active" 
                   className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-transparent rounded-lg border-l-2 border-indigo-500"
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
               )}
-              <span className="relative z-10 text-lg">{link.icon}</span>
-              <span className="relative z-10 font-medium">{link.label}</span>
+              <span className="relative z-10 text-xl w-6 flex items-center justify-center">{link.icon}</span>
+              <AnimatePresence mode="wait">
+                {isSidebarOpen && (
+                  <motion.span 
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: 'auto' }}
+                    exit={{ opacity: 0, width: 0 }}
+                    className="relative z-10 font-medium whitespace-nowrap overflow-hidden"
+                  >
+                    {link.label}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+              {!isSidebarOpen && !isMobile && (
+                <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">
+                  {link.label}
+                </div>
+              )}
             </Link>
           </li>
         );
@@ -74,15 +90,16 @@ export function Sidebar() {
         initial={false}
         animate={{
           x: !isMobile ? 0 : (isSidebarOpen ? 0 : '-100%'),
+          width: !isMobile ? (isSidebarOpen ? 256 : 80) : 256,
         }}
         transition={{
           type: "spring",
-          stiffness: 300,
+          stiffness: 350,
           damping: 30,
           mass: 0.8
         }}
         className={`
-          fixed inset-y-0 left-0 z-50 w-64 border-r border-white/5 bg-black/60 backdrop-blur-xl flex flex-col
+          fixed inset-y-0 left-0 z-50 border-r border-white/5 bg-black/60 backdrop-blur-xl flex flex-col overflow-hidden
           ${!isMobile ? 'relative' : ''}
         `}
       >
@@ -101,41 +118,73 @@ export function Sidebar() {
               )}
             </AnimatePresence>
           </div>
-          {/* Mobile close button (optional but good for UX) */}
+          {/* Close / Collapse button */}
           <button 
-            className="md:hidden text-gray-400 hover:text-white p-2"
+            className={`text-gray-400 hover:text-white p-2 transition-opacity ${!isSidebarOpen && !isMobile ? 'hidden' : 'block'}`}
             onClick={() => setSidebarOpen(false)}
           >
-            ✕
+            {isMobile ? (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            )}
           </button>
         </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-8">
+      <div className="flex-1 overflow-y-auto px-2 py-2 space-y-8 custom-scrollbar">
         <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3">Обзор</p>
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
+            {isSidebarOpen ? "Обзор" : "•••"}
+          </p>
           {renderLinks(MAIN_LINKS)}
         </div>
         
         <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3">Студия</p>
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
+            {isSidebarOpen ? "Студия" : "•••"}
+          </p>
           {renderLinks(USER_LINKS)}
         </div>
 
         <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3">Настройки</p>
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
+            {isSidebarOpen ? "Настройки" : "•••"}
+          </p>
           {renderLinks(SETTINGS_LINKS)}
           
           {user?.role === 'ADMIN' && (
             <div className="mt-8">
-              <p className="text-xs font-semibold text-pink-500 uppercase tracking-wider mb-3 px-3">Админ Панель</p>
+              <p className="text-[10px] font-semibold text-pink-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
+                {isSidebarOpen ? "Админ Панель" : "ADM"}
+              </p>
               <ul className="space-y-1">
                 <li>
                   <Link 
                     href="/admin/ai-models"
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-gray-400 hover:text-white hover:bg-white/5"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-gray-400 hover:text-white hover:bg-white/5 group"
                   >
-                    <span className="relative z-10 text-lg">👑</span>
-                    <span className="relative z-10 font-medium">Перейти в Админку</span>
+                    <span className="relative z-10 text-xl w-6 flex justify-center">👑</span>
+                    <AnimatePresence mode="wait">
+                      {isSidebarOpen && (
+                        <motion.span 
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: 'auto' }}
+                          exit={{ opacity: 0, width: 0 }}
+                          className="relative z-10 font-medium whitespace-nowrap overflow-hidden"
+                        >
+                          Перейти в Админку
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                    {!isSidebarOpen && !isMobile && (
+                      <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">
+                        Админка
+                      </div>
+                    )}
                   </Link>
                 </li>
               </ul>
@@ -145,31 +194,48 @@ export function Sidebar() {
       </div>
       
       {/* User Profile Section */}
-      <div className="p-4 border-t border-white/5 mt-auto">
+      <div className="p-4 border-t border-white/5 mt-auto overflow-hidden">
         {user ? (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3 overflow-hidden">
+          <div className={`flex items-center ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
+            <div className="flex items-center gap-3">
               <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center text-white font-bold">
                 {user.name?.charAt(0) || 'U'}
               </div>
-              <div className="truncate text-left">
-                <p className="text-sm font-medium text-white truncate">{user.name}</p>
-                <p className="text-[10px] text-gray-500 truncate uppercase tracking-wider">{user.role}</p>
-              </div>
+              <AnimatePresence mode="wait">
+                {isSidebarOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: 'auto' }}
+                    exit={{ opacity: 0, width: 0 }}
+                    className="truncate text-left whitespace-nowrap overflow-hidden"
+                  >
+                    <p className="text-sm font-medium text-white truncate">{user.name}</p>
+                    <p className="text-[10px] text-gray-500 truncate uppercase tracking-wider">{user.role}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-            <button 
-              onClick={() => {
-                useAuthStore.getState().logout();
-                localStorage.removeItem('token');
-                window.location.href = '/login';
-              }}
-              className="p-2 text-gray-400 hover:text-white transition-colors ml-2"
-              title="Выйти"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
-            </button>
+            
+            <AnimatePresence mode="wait">
+              {isSidebarOpen && (
+                <motion.button 
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0 }}
+                  onClick={() => {
+                    useAuthStore.getState().logout();
+                    localStorage.removeItem('token');
+                    window.location.href = '/login';
+                  }}
+                  className="p-2 text-gray-400 hover:text-white transition-colors shrink-0 ml-2"
+                  title="Выйти"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
         ) : (
           <div className="flex flex-col gap-2">

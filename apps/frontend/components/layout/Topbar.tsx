@@ -9,11 +9,11 @@ export function Topbar() {
   const { user, credits } = useAuthStore();
   const { isSidebarOpen, setSidebarOpen } = useUIStore();
   const isMobile = useIsMobile();
-  const showMobileLogo = isMobile && !isSidebarOpen;
+  const showTopbarLogo = !isSidebarOpen;
 
   return (
     <header className="h-16 border-b border-white/5 bg-black/20 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 sticky top-0 z-20">
-      <div className="flex items-center gap-2 md:hidden">
+      <div className={`flex items-center gap-2 transition-opacity ${!isMobile && isSidebarOpen ? 'opacity-0 pointer-events-none w-0' : 'opacity-100 w-auto'}`}>
         <button 
           className="p-2 -ml-2 text-white hover:text-gray-300"
           onClick={() => setSidebarOpen(true)}
@@ -24,10 +24,10 @@ export function Topbar() {
         </button>
       </div>
 
-      {/* Mobile Logo with Framer Motion layout transition */}
+      {/* Topbar Logo with Framer Motion layout transition */}
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-50">
         <AnimatePresence>
-          {showMobileLogo && (
+          {showTopbarLogo && (
             <Link href="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
               <motion.img 
                 layoutId="app-logo"
