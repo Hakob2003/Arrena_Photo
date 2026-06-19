@@ -7,6 +7,7 @@ import { useDropzone } from 'react-dropzone';
 import { api } from '../../lib/api';
 import { AuthImage } from '@/components/ui/AuthImage';
 import { templatesApi } from '../../lib/templates.api';
+import toast from 'react-hot-toast';
 
 function GeneratorContent() {
   const searchParams = useSearchParams();
@@ -141,7 +142,7 @@ function GeneratorContent() {
         if (elapsed > 60000) {
           clearInterval(poll);
           setGenerating(false);
-          alert('Превышено время ожидания генерации. Попробуйте позже.');
+          toast.error('Превышено время ожидания генерации. Попробуйте позже.');
           return;
         }
         try {
@@ -162,7 +163,7 @@ function GeneratorContent() {
             } catch (_) {}
           } else if (status === 'FAILED') {
             clearInterval(poll);
-            alert('Генерация не удалась!');
+            toast.error('Генерация не удалась!');
             setGenerating(false);
           }
         } catch (pollErr) {
@@ -173,9 +174,9 @@ function GeneratorContent() {
     } catch (err: any) {
       console.error(err);
       if (err.response?.status === 400 && err.response?.data?.message === 'Insufficient credits') {
-        alert('У вас недостаточно кредитов для генерации! (Insufficient credits)');
+        toast.error('У вас недостаточно кредитов для генерации!');
       } else {
-        alert('Failed to submit generation');
+        toast.error('Ошибка при отправке запроса генерации');
       }
       setGenerating(false);
     }
