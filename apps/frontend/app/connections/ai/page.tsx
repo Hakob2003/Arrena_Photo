@@ -11,7 +11,7 @@ export default function AiConnectionsPage() {
   ];
 
   return (
-    <div className="p-4 sm:p-8 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-8 w-full">
       <h1 className="text-3xl sm:text-4xl font-bold mb-2">AI Провайдеры</h1>
       <p className="text-gray-400 mb-10">Подключите свои API-ключи или локальные инстансы для генерации без траты кредитов платформы.</p>
 

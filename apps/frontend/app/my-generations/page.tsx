@@ -53,7 +53,7 @@ export default function MyGenerationsPage() {
 
   if (!user) {
     return (
-      <div className="p-8 max-w-7xl mx-auto h-full flex items-center justify-center">
+      <div className="p-8 w-full h-full flex items-center justify-center">
         <div className="text-center">
           <div className="text-6xl mb-6">🔒</div>
           <h2 className="text-2xl font-bold mb-2">Войдите для просмотра</h2>
@@ -67,7 +67,7 @@ export default function MyGenerationsPage() {
   }
 
   return (
-    <div className="p-4 sm:p-8 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-8 w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-10">
         <div>
           <h1 className="text-3xl sm:text-4xl font-bold">Мои генерации</h1>

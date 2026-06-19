@@ -21,7 +21,7 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 py-6 sm:py-12 px-4 sm:px-8">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
         {/* Left: Image Gallery */}
         <div className="space-y-4">
           <div className="aspect-square w-full rounded-3xl overflow-hidden shadow-2xl">

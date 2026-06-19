@@ -51,7 +51,7 @@ export default function CloudConnectionsPage() {
     }
   };
   return (
-    <div className="p-4 sm:p-8 max-w-5xl mx-auto">
+    <div className="p-4 sm:p-8 w-full">
       <h1 className="text-4xl font-bold mb-2">Облачное хранилище</h1>
       <p className="text-gray-400 mb-10">Подключите S3-хранилище для сохранения сгенерированных изображений.</p>
 

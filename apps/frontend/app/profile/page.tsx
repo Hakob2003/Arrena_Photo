@@ -6,7 +6,7 @@ export default function ProfilePage() {
   const { user, credits } = useAuthStore();
 
   return !user ? (
-    <div className="p-8 max-w-4xl mx-auto flex items-center justify-center h-full">
+    <div className="p-8 w-full flex items-center justify-center h-full">
       <div className="text-center">
         <div className="text-6xl mb-6">🔒</div>
         <h2 className="text-2xl font-bold mb-2">Войдите для просмотра</h2>
@@ -17,7 +17,7 @@ export default function ProfilePage() {
       </div>
     </div>
   ) : (
-    <div className="p-4 sm:p-8 max-w-4xl mx-auto">
+    <div className="p-4 sm:p-8 w-full">
       <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-10">Настройки аккаунта</h1>
 
       <div className="space-y-8">

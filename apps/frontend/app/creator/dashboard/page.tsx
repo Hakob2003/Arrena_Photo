@@ -3,7 +3,7 @@ import React from 'react';
 export default function CreatorDashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 p-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full">
         <h1 className="text-3xl font-bold mb-8">Creator Dashboard</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
