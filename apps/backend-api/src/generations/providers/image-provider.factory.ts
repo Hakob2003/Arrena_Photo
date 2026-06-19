@@ -18,6 +18,10 @@ export class ImageProviderFactory {
       return new ReplicateImageProvider(apiKey);
     }
 
+    if (normalizedName.includes('openrouter')) {
+      return new OpenAIImageProvider(apiKey, 'https://openrouter.ai/api/v1');
+    }
+
     if (normalizedName.includes('mock')) {
       return new MockImageProvider(apiKey);
     }

@@ -2,9 +2,11 @@ import axios from 'axios';
 import { IImageProvider, ImageGenerationOptions } from './image-provider.interface';
 
 export class OpenAIImageProvider implements IImageProvider {
-  private readonly baseUrl = 'https://api.openai.com/v1';
+  private readonly baseUrl: string;
 
-  constructor(private readonly apiKey: string) {}
+  constructor(private readonly apiKey: string, baseUrl?: string) {
+    this.baseUrl = baseUrl || 'https://api.openai.com/v1';
+  }
 
   async generateImage(prompt: string, modelSlug: string, options?: ImageGenerationOptions): Promise<string[]> {
     const url = `${this.baseUrl}/images/generations`;
