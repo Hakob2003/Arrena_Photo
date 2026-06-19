@@ -98,25 +98,31 @@ export function Sidebar() {
           damping: 30,
           mass: 0.8
         }}
+        onClick={(e) => {
+          // If sidebar is closed on desktop, clicking it anywhere opens it.
+          if (!isMobile && !isSidebarOpen) {
+            setSidebarOpen(true);
+          }
+        }}
         className={`
           fixed inset-y-0 left-0 z-50 border-r border-white/5 bg-black/60 backdrop-blur-xl flex flex-col overflow-hidden
-          ${!isMobile ? 'relative' : ''}
+          ${!isMobile ? 'relative cursor-pointer' : ''}
+          ${isSidebarOpen ? 'cursor-default' : ''}
         `}
       >
         <div className="p-4 flex items-center justify-between border-b border-white/5 md:border-none">
           <div className="flex items-center gap-2 w-full h-[80px]">
-            <AnimatePresence>
-              {showSidebarLogo && (
-                <Link href="/" className="flex items-center hover:opacity-80 transition-opacity w-full">
-                  <motion.img 
-                    layoutId="app-logo"
-                    src="/logo.png" 
-                    alt="Arrena Photo Logo" 
-                    className="w-52 h-auto object-contain" 
-                  />
-                </Link>
-              )}
-            </AnimatePresence>
+            {showSidebarLogo && (
+              <Link href="/" className="flex items-center hover:opacity-80 transition-opacity w-full">
+                <motion.img 
+                  layoutId="app-logo"
+                  src="/logo.png" 
+                  alt="Arrena Photo Logo" 
+                  className="w-52 h-auto object-contain" 
+                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                />
+              </Link>
+            )}
           </div>
           {/* Close / Collapse button */}
           <button 
