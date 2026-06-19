@@ -26,17 +26,16 @@ export function Topbar() {
 
       {/* Topbar Logo with Framer Motion layout transition */}
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-50">
-        {showTopbarLogo && (
-          <Link href="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
-            <motion.img 
-              layoutId="app-logo"
-              src="/logo.png" 
-              alt="Arrena Photo Logo" 
-              className="h-6 w-auto object-contain" 
-              transition={{ type: "spring", stiffness: 350, damping: 30 }}
-            />
-          </Link>
-        )}
+        <AnimatePresence>
+          {showTopbarLogo && (
+            <motion.div layoutId="app-logo">
+              <Link href="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logo.png" alt="Arrena Photo Logo" className="h-6 w-auto object-contain" />
+              </Link>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Search Bar Removed Temporarily */}
