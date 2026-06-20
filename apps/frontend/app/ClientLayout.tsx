@@ -12,7 +12,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith('/admin');
   const { login, setCredits } = useAuthStore();
-  const { isSidebarOpen, setSidebarOpen } = useUIStore();
+  const { isSidebarOpen, setSidebarOpen, preferences, setPreferences } = useUIStore();
   const [touchStart, setTouchStart] = useState<number | null>(null);
 
   useEffect(() => {
@@ -44,6 +44,15 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
              if (typeof data.credits === 'number') {
                setCredits(data.credits);
              }
+             if (data.preferences) {
+               setPreferences({
+                 theme: data.preferences.theme || 'DARK',
+                 accentColor: data.preferences.accentColor || 'INDIGO',
+                 fontSize: data.preferences.fontSize || 'MEDIUM',
+                 compactMode: !!data.preferences.compactMode,
+                 animationsEnabled: data.preferences.animationsEnabled !== false,
+               });
+             }
           })
           .catch(err => {
             console.error('Failed to fetch user profile:', err);
@@ -64,6 +73,31 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     // Close sidebar on navigation on mobile
     setSidebarOpen(false);
   }, [pathname, setSidebarOpen]);
+
+  // Apply UI Preferences to HTML
+  useEffect(() => {
+    const root = document.documentElement;
+    // Theme
+    if (preferences.theme === 'DARK' || (preferences.theme === 'SYSTEM' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    
+    // Set custom data attributes for CSS overrides
+    root.setAttribute('data-accent', preferences.accentColor.toLowerCase());
+    root.setAttribute('data-font-size', preferences.fontSize.toLowerCase());
+    if (preferences.compactMode) {
+      root.classList.add('compact-mode');
+    } else {
+      root.classList.remove('compact-mode');
+    }
+    if (!preferences.animationsEnabled) {
+      root.classList.add('disable-animations');
+    } else {
+      root.classList.remove('disable-animations');
+    }
+  }, [preferences]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);

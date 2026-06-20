@@ -26,6 +26,13 @@ export class AuthService {
       name: user.name,
       role: user.role.name,
       credits: user.credits,
+      preferences: {
+        theme: user.theme,
+        accentColor: user.accentColor,
+        fontSize: user.fontSize,
+        compactMode: user.compactMode,
+        animationsEnabled: user.animationsEnabled,
+      }
     };
   }
 

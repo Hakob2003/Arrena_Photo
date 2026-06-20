@@ -138,6 +138,74 @@
     display: none;
   }
 
+  /* --- Appearance Preferences Logic --- */
+
+  /* Theme overrides - By default body has background-color: #050505 in dark mode. 
+     In light mode, we override it. */
+  html:not(.dark) body {
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
+
+  /* Animations */
+  html.disable-animations *, html.disable-animations *::before, html.disable-animations *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* Font Size */
+  html[data-font-size="small"] {
+    font-size: 14px;
+  }
+  html[data-font-size="medium"] {
+    font-size: 16px;
+  }
+  html[data-font-size="large"] {
+    font-size: 18px;
+  }
+
+  /* Accent Colors (override primary and ring, though many elements use hardcoded bg-indigo-600) */
+  /* This is a best-effort approach for Shadcn components */
+  html[data-accent="rose"] {
+    --primary: oklch(0.601 0.203 14.615); /* rose-600 */
+    --ring: oklch(0.601 0.203 14.615);
+    selection:bg-rose-500/30;
+  }
+  html[data-accent="emerald"] {
+    --primary: oklch(0.605 0.148 152.016); /* emerald-600 */
+    --ring: oklch(0.605 0.148 152.016);
+    selection:bg-emerald-500/30;
+  }
+  html[data-accent="amber"] {
+    --primary: oklch(0.706 0.165 67.288); /* amber-600 */
+    --ring: oklch(0.706 0.165 67.288);
+    selection:bg-amber-500/30;
+  }
+  html[data-accent="blue"] {
+    --primary: oklch(0.556 0.218 259.043); /* blue-600 */
+    --ring: oklch(0.556 0.218 259.043);
+    selection:bg-blue-500/30;
+  }
+
+  /* Compact Mode */
+  html.compact-mode body {
+    line-height: 1.4;
+  }
+  html.compact-mode .px-6 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  html.compact-mode .py-6 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  html.compact-mode .gap-6 {
+    gap: 1rem;
+  }
+  html.compact-mode .space-y-6 > * + * {
+    margin-top: 1rem;
+  }
+
   /* Compact utilities for short vertical heights */
   @media (max-height: 740px) {
     .gallery-container-compact {

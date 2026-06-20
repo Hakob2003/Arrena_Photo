@@ -63,11 +63,21 @@ export const useGenerationStore = create<GenerationState>((set) => ({
 }));
 
 // --- UI Store ---
+interface UIPreferences {
+  theme: 'LIGHT' | 'DARK' | 'SYSTEM';
+  accentColor: 'INDIGO' | 'ROSE' | 'EMERALD' | 'AMBER' | 'BLUE';
+  fontSize: 'SMALL' | 'MEDIUM' | 'LARGE';
+  compactMode: boolean;
+  animationsEnabled: boolean;
+}
+
 interface UIState {
   isSidebarOpen: boolean;
   setSidebarOpen: (v: boolean) => void;
   isMobile: boolean;
   setIsMobile: (v: boolean) => void;
+  preferences: UIPreferences;
+  setPreferences: (prefs: Partial<UIPreferences>) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -75,4 +85,12 @@ export const useUIStore = create<UIState>((set) => ({
   setSidebarOpen: (isSidebarOpen) => set({ isSidebarOpen }),
   isMobile: false,
   setIsMobile: (isMobile) => set({ isMobile }),
+  preferences: {
+    theme: 'DARK',
+    accentColor: 'INDIGO',
+    fontSize: 'MEDIUM',
+    compactMode: false,
+    animationsEnabled: true,
+  },
+  setPreferences: (prefs) => set((state) => ({ preferences: { ...state.preferences, ...prefs } })),
 }));

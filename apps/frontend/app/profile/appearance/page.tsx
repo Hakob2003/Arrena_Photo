@@ -7,10 +7,12 @@ import { api } from '@/lib/api';
 import { Switch } from '@headlessui/react';
 import { Monitor, Moon, Sun, Palette, Type, Layout } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useUIStore } from '@/store';
 
 export default function AppearanceProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const { setPreferences } = useUIStore();
 
   const { control, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {
@@ -30,13 +32,15 @@ export default function AppearanceProfilePage() {
     const fetchPreferences = async () => {
       try {
         const { data } = await api.get('/profile/me');
-        reset({
+        const fetchedPrefs = {
           theme: data.theme || 'SYSTEM',
           accentColor: data.accentColor || 'INDIGO',
           fontSize: data.fontSize || 'MEDIUM',
           compactMode: !!data.compactMode,
           animationsEnabled: data.animationsEnabled !== false,
-        });
+        };
+        reset(fetchedPrefs);
+        setPreferences(fetchedPrefs);
       } catch (error) {
         toast.error('Failed to load preferences');
       } finally {
@@ -50,8 +54,8 @@ export default function AppearanceProfilePage() {
     try {
       setIsSaving(true);
       await api.patch('/profile/preferences', values);
+      setPreferences(values);
       toast.success('Appearance updated successfully');
-      // Here you would also update a global store (Zustand) to immediately reflect changes
     } catch (error) {
       toast.error('Failed to update appearance');
     } finally {
