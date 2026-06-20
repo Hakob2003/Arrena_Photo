@@ -135,17 +135,19 @@ export function Sidebar() {
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                     className="overflow-hidden flex items-center justify-start z-10 h-[40px]"
                   >
-                    <div id="sidebar-logo-ref" className="pl-1.5 w-[130px] flex-shrink-0 flex items-center justify-start h-full">
-                      <img 
-                        src="/logo2.png" 
-                        alt="Arrena Photo Text" 
-                        className="h-4 sm:h-5 w-auto object-contain hidden dark:block" 
-                      />
-                      <img 
-                        src="/logo2-light.png" 
-                        alt="Arrena Photo Text" 
-                        className="h-4 sm:h-5 w-auto object-contain block dark:hidden" 
-                      />
+                    <div className="pl-1.5 w-[130px] flex-shrink-0 flex items-center justify-start h-full">
+                      <div id="sidebar-logo-ref" className="flex items-center h-full">
+                        <img 
+                          src="/logo2.png" 
+                          alt="Arrena Photo Text" 
+                          className="h-4 sm:h-5 w-auto object-contain hidden dark:block" 
+                        />
+                        <img 
+                          src="/logo2-light.png" 
+                          alt="Arrena Photo Text" 
+                          className="h-4 sm:h-5 w-auto object-contain block dark:hidden" 
+                        />
+                      </div>
                     </div>
                   </motion.div>
                 )}
