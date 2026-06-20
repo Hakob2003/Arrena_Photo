@@ -23,13 +23,13 @@ export default function MarketplacePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 p-4 sm:p-8">
+    <div className="min-h-screen bg-background dark:bg-background text-foreground dark:text-foreground p-4 sm:p-8">
       <div className="w-full">
         <div className="mb-12 text-center space-y-4">
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent break-words">
             Маркетплейс AI Шаблонов
           </h1>
-          <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto px-2">
+          <p className="text-base sm:text-lg text-muted-foreground dark:text-muted-foreground max-w-2xl mx-auto px-2">
             Открывайте тысячи готовых AI-промптов, созданных лучшими авторами.
           </p>
         </div>
@@ -37,7 +37,7 @@ export default function MarketplacePage() {
         {/* Filters */}
         <div className="flex flex-wrap gap-4 mb-8">
           {['Все', 'Бесплатные', 'Премиум', 'Anime', 'Realistic', 'Cyberpunk'].map(tag => (
-            <button key={tag} className="px-5 py-2 rounded-full border border-gray-200 dark:border-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+            <button key={tag} className="px-5 py-2 rounded-full border border-border dark:border-border hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
               {tag}
             </button>
           ))}

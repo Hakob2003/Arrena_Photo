@@ -62,16 +62,16 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
     <div className="flex items-center gap-6">
       <div 
         {...getRootProps()}
-        className="relative group cursor-pointer w-24 h-24 rounded-full bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0"
+        className="relative group cursor-pointer w-24 h-24 rounded-full bg-muted border border-border flex items-center justify-center overflow-hidden shrink-0"
       >
         <input {...getInputProps()} />
         {currentAvatarUrl ? (
           <img src={currentAvatarUrl} alt="Avatar" className="w-full h-full object-cover" />
         ) : (
-          <Camera className="w-8 h-8 text-gray-500" />
+          <Camera className="w-8 h-8 text-muted-foreground" />
         )}
-        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <Camera className="w-6 h-6 text-white" />
+        <div className="absolute inset-0 bg-background/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <Camera className="w-6 h-6 text-foreground" />
         </div>
       </div>
 
@@ -80,7 +80,7 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
           <button 
             type="button"
             onClick={() => document.querySelector<HTMLInputElement>('input[type="file"]')?.click()}
-            className="px-4 py-2 bg-white text-black font-medium rounded-lg text-sm hover:bg-gray-200 transition"
+            className="px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg text-sm hover:bg-secondary transition"
           >
             Change picture
           </button>
@@ -88,13 +88,13 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
             <button 
               type="button"
               onClick={onRemove}
-              className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition"
+              className="p-2 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-lg transition"
             >
               <Trash2 className="w-5 h-5" />
             </button>
           )}
         </div>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-muted-foreground">
           JPG, PNG or WEBP. Max size of 5MB.
         </p>
       </div>
@@ -106,19 +106,19 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm"
           >
-            <div className="bg-[#111] border border-white/10 rounded-2xl w-full max-w-lg p-6 flex flex-col shadow-2xl relative overflow-hidden">
+            <div className="bg-[#111] border border-border rounded-2xl w-full max-w-lg p-6 flex flex-col shadow-2xl relative overflow-hidden">
               <button 
                 onClick={() => setImageSrc(null)}
-                className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-white/10 rounded-full text-white transition"
+                className="absolute top-4 right-4 z-10 p-2 bg-background/50 hover:bg-muted/50 rounded-full text-foreground transition"
               >
                 <X className="w-5 h-5" />
               </button>
               
               <h3 className="text-xl font-semibold mb-6">Crop your picture</h3>
               
-              <div className="relative w-full h-64 bg-black/50 rounded-xl overflow-hidden mb-6">
+              <div className="relative w-full h-64 bg-background/50 rounded-xl overflow-hidden mb-6">
                 {/* @ts-ignore - TS thinks Cropper is not a valid JSX element in this React version */}
                 <Cropper
                   image={imageSrc}
@@ -137,7 +137,7 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
                 <button
                   type="button"
                   onClick={() => setImageSrc(null)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium hover:bg-white/10 transition"
+                  className="px-4 py-2 rounded-lg text-sm font-medium hover:bg-muted/50 transition"
                   disabled={isUploading}
                 >
                   Cancel
@@ -146,7 +146,7 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
                   type="button"
                   onClick={handleSaveCrop}
                   disabled={isUploading}
-                  className="px-6 py-2 bg-white text-black font-medium rounded-lg text-sm hover:bg-gray-200 transition flex items-center justify-center min-w-[100px]"
+                  className="px-6 py-2 bg-primary text-primary-foreground font-medium rounded-lg text-sm hover:bg-secondary transition flex items-center justify-center min-w-[100px]"
                 >
                   {isUploading ? <span className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></span> : 'Save'}
                 </button>

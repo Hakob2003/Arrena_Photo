@@ -77,58 +77,58 @@ function LoginContent() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-md p-6 sm:p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">Вход</h2>
+      <div className="w-full max-w-md p-6 sm:p-8 bg-primary dark:bg-muted rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
+        <h2 className="text-2xl font-bold mb-6 text-center text-foreground dark:text-foreground">Вход</h2>
         
         {error && <div className="mb-4 p-3 bg-red-100 text-red-600 rounded-md text-sm">{error}</div>}
 
         <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-muted-foreground mb-1">Email</label>
             <input 
               type="email" 
               required
               autoComplete="off"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-foreground"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Пароль</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-muted-foreground mb-1">Пароль</label>
             <input 
               type="password" 
               required
               autoComplete="new-password"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-foreground"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="submit" className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+          <button type="submit" className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-foreground rounded-lg font-medium transition-colors">
             Войти
           </button>
         </form>
 
-        <div className="mt-6 flex items-center justify-center space-x-2 text-sm text-gray-500">
+        <div className="mt-6 flex items-center justify-center space-x-2 text-sm text-muted-foreground">
           <span className="h-px bg-gray-300 flex-1"></span>
           <span>Или войти через</span>
           <span className="h-px bg-gray-300 flex-1"></span>
         </div>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
-          <button onClick={() => handleOAuth('google')} className="py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-center items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition text-sm">
+          <button onClick={() => handleOAuth('google')} className="py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-center items-center hover:bg-background dark:hover:bg-gray-700 transition text-sm">
             Google
           </button>
-          <button onClick={() => handleOAuth('facebook')} className="py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-center items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition text-sm">
+          <button onClick={() => handleOAuth('facebook')} className="py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-center items-center hover:bg-background dark:hover:bg-gray-700 transition text-sm">
             Facebook
           </button>
-          <button onClick={() => handleOAuth('vk')} className="py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-center items-center hover:bg-gray-50 dark:hover:bg-gray-700 transition text-sm">
+          <button onClick={() => handleOAuth('vk')} className="py-2 border border-gray-300 dark:border-gray-600 rounded-lg flex justify-center items-center hover:bg-background dark:hover:bg-gray-700 transition text-sm">
             VK
           </button>
         </div>
 
-        <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-6 text-center text-sm text-muted-foreground dark:text-muted-foreground">
           Нет аккаунта? <Link href="/register" className="text-blue-600 hover:underline">Зарегистрироваться</Link>
         </p>
       </div>

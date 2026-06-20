@@ -83,10 +83,10 @@ export default function PersonalProfilePage() {
 
   if (isLoading) {
     return <div className="animate-pulse space-y-8">
-      <div className="h-24 w-24 bg-white/10 rounded-full" />
-      <div className="h-10 bg-white/10 rounded-lg w-1/2" />
-      <div className="h-10 bg-white/10 rounded-lg w-full" />
-      <div className="h-32 bg-white/10 rounded-lg w-full" />
+      <div className="h-24 w-24 bg-muted/50 rounded-full" />
+      <div className="h-10 bg-muted/50 rounded-lg w-1/2" />
+      <div className="h-10 bg-muted/50 rounded-lg w-full" />
+      <div className="h-32 bg-muted/50 rounded-lg w-full" />
     </div>;
   }
 
@@ -94,11 +94,11 @@ export default function PersonalProfilePage() {
     <div className="space-y-8 max-w-3xl">
       <div>
         <h2 className="text-2xl font-semibold mb-1">Personal Information</h2>
-        <p className="text-gray-400 text-sm">Update your photo and personal details here.</p>
+        <p className="text-muted-foreground text-sm">Update your photo and personal details here.</p>
       </div>
 
-      <div className="pt-6 border-t border-white/10">
-        <h3 className="text-sm font-medium text-gray-300 mb-4">Profile Picture</h3>
+      <div className="pt-6 border-t border-border">
+        <h3 className="text-sm font-medium text-muted-foreground mb-4">Profile Picture</h3>
         <AvatarUpload 
           currentAvatarUrl={avatarUrl} 
           onUpload={handleAvatarUpload} 
@@ -106,73 +106,73 @@ export default function PersonalProfilePage() {
         />
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pt-6 border-t border-white/10">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pt-6 border-t border-border">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">First Name</label>
+            <label className="text-sm font-medium text-muted-foreground">First Name</label>
             <input 
               {...register('name')} 
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-white/30 transition"
+              className="w-full bg-muted border border-border rounded-lg px-4 py-2.5 text-foreground focus:outline-none focus:border-white/30 transition"
               placeholder="e.g. John"
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Last Name</label>
+            <label className="text-sm font-medium text-muted-foreground">Last Name</label>
             <input 
               {...register('surname')} 
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-white/30 transition"
+              className="w-full bg-muted border border-border rounded-lg px-4 py-2.5 text-foreground focus:outline-none focus:border-white/30 transition"
               placeholder="e.g. Doe"
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-300">Nickname</label>
+          <label className="text-sm font-medium text-muted-foreground">Nickname</label>
           <input 
             {...register('nickname')} 
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-white/30 transition"
+            className="w-full bg-muted border border-border rounded-lg px-4 py-2.5 text-foreground focus:outline-none focus:border-white/30 transition"
             placeholder="@johndoe"
           />
           {errors.nickname && <p className="text-red-400 text-xs">{errors.nickname.message}</p>}
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-300">Bio</label>
+          <label className="text-sm font-medium text-muted-foreground">Bio</label>
           <textarea 
             {...register('bio')} 
             rows={4}
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-white/30 transition resize-none"
+            className="w-full bg-muted border border-border rounded-lg px-4 py-2.5 text-foreground focus:outline-none focus:border-white/30 transition resize-none"
             placeholder="Write a few sentences about yourself..."
           />
         </div>
 
-        <div className="pt-6 border-t border-white/10">
-          <h3 className="text-sm font-medium text-gray-300 mb-4">Social Links</h3>
+        <div className="pt-6 border-t border-border">
+          <h3 className="text-sm font-medium text-muted-foreground mb-4">Social Links</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-400">Telegram</label>
-              <input {...register('socialLinks.telegram')} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-white/30" placeholder="t.me/username" />
+              <label className="text-sm font-medium text-muted-foreground">Telegram</label>
+              <input {...register('socialLinks.telegram')} className="w-full bg-muted border border-border rounded-lg px-4 py-2 text-foreground focus:border-white/30" placeholder="t.me/username" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-400">Instagram</label>
-              <input {...register('socialLinks.instagram')} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-white/30" placeholder="instagram.com/username" />
+              <label className="text-sm font-medium text-muted-foreground">Instagram</label>
+              <input {...register('socialLinks.instagram')} className="w-full bg-muted border border-border rounded-lg px-4 py-2 text-foreground focus:border-white/30" placeholder="instagram.com/username" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-400">X (Twitter)</label>
-              <input {...register('socialLinks.twitter')} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-white/30" placeholder="x.com/username" />
+              <label className="text-sm font-medium text-muted-foreground">X (Twitter)</label>
+              <input {...register('socialLinks.twitter')} className="w-full bg-muted border border-border rounded-lg px-4 py-2 text-foreground focus:border-white/30" placeholder="x.com/username" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-400">Website</label>
-              <input {...register('socialLinks.website')} className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-white/30" placeholder="https://yourwebsite.com" />
+              <label className="text-sm font-medium text-muted-foreground">Website</label>
+              <input {...register('socialLinks.website')} className="w-full bg-muted border border-border rounded-lg px-4 py-2 text-foreground focus:border-white/30" placeholder="https://yourwebsite.com" />
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end pt-6 border-t border-white/10">
+        <div className="flex justify-end pt-6 border-t border-border">
           <button 
             type="submit" 
             disabled={isSaving}
-            className="px-6 py-2.5 bg-white text-black font-medium rounded-lg hover:bg-gray-200 transition flex items-center justify-center min-w-[120px]"
+            className="px-6 py-2.5 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-secondary transition flex items-center justify-center min-w-[120px]"
           >
             {isSaving ? <span className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></span> : 'Save Changes'}
           </button>

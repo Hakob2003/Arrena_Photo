@@ -31,12 +31,12 @@ export default function AdminGenerations() {
       />
 
       {loading ? (
-        <div className="text-gray-400 p-8 text-center">Loading generation logs...</div>
+        <div className="text-muted-foreground p-8 text-center">Loading generation logs...</div>
       ) : (
         <DataTable 
           data={generations}
           columns={[
-            { key: 'id', header: 'Job ID', render: (r: any) => <span className="font-mono text-gray-500 text-xs">{r.id}</span> },
+            { key: 'id', header: 'Job ID', render: (r: any) => <span className="font-mono text-muted-foreground text-xs">{r.id}</span> },
             { key: 'user', header: 'User' },
             { key: 'model', header: 'Model', render: (r: any) => <Badge variant="info">{r.model}</Badge> },
             { key: 'duration', header: 'Duration' },

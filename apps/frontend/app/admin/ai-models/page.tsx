@@ -222,8 +222,8 @@ function HelpGuide({ expandedProvider, setExpandedProvider }: { expandedProvider
           </svg>
         </div>
         <div>
-          <h3 className="text-base font-semibold text-white">Как добавить AI модель</h3>
-          <p className="text-xs text-gray-400 mt-1">
+          <h3 className="text-base font-semibold text-foreground">Как добавить AI модель</h3>
+          <p className="text-xs text-muted-foreground mt-1">
             Нажмите на провайдер ниже, чтобы увидеть пошаговую инструкцию и рекомендуемые модели.
             Для каждого провайдера сначала нужно получить API ключ, затем добавить модель здесь.
           </p>
@@ -234,20 +234,20 @@ function HelpGuide({ expandedProvider, setExpandedProvider }: { expandedProvider
         {PROVIDER_GUIDES.map(provider => {
           const isOpen = expandedProvider === provider.name;
           return (
-            <div key={provider.name} className={`border rounded-xl overflow-hidden transition-colors ${isOpen ? provider.color : 'border-white/10 bg-white/[0.02]'}`}>
+            <div key={provider.name} className={`border rounded-xl overflow-hidden transition-colors ${isOpen ? provider.color : 'border-border bg-primary/[0.02]'}`}>
               {/* Header */}
               <button
                 onClick={() => setExpandedProvider(isOpen ? null : provider.name)}
-                className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-white/5 transition-colors"
+                className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-muted transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-xl">{provider.icon}</span>
                   <div>
-                    <span className="text-sm font-medium text-white">{provider.name}</span>
-                    <span className="text-xs text-gray-500 ml-2">{provider.models.length} модел{provider.models.length > 1 ? 'ей' : 'ь'}</span>
+                    <span className="text-sm font-medium text-foreground">{provider.name}</span>
+                    <span className="text-xs text-muted-foreground ml-2">{provider.models.length} модел{provider.models.length > 1 ? 'ей' : 'ь'}</span>
                   </div>
                 </div>
-                <svg className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
@@ -257,16 +257,16 @@ function HelpGuide({ expandedProvider, setExpandedProvider }: { expandedProvider
                 <div className="px-4 pb-4 space-y-4">
                   {/* Steps */}
                   <div>
-                    <h4 className="text-xs text-gray-400 uppercase tracking-wider mb-2 font-medium">Пошаговая инструкция</h4>
+                    <h4 className="text-xs text-muted-foreground uppercase tracking-wider mb-2 font-medium">Пошаговая инструкция</h4>
                     <ol className="space-y-1.5">
                       {provider.steps.map((step, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm">
                           {step.startsWith('💡') || step.startsWith('⚠️') ? (
-                            <span className="text-gray-300 mt-0.5">{step}</span>
+                            <span className="text-muted-foreground mt-0.5">{step}</span>
                           ) : (
                             <>
-                              <span className="w-5 h-5 shrink-0 bg-white/10 rounded-full flex items-center justify-center text-xs text-gray-400 font-mono mt-0.5">{i + 1}</span>
-                              <span className="text-gray-300">{step}</span>
+                              <span className="w-5 h-5 shrink-0 bg-muted/50 rounded-full flex items-center justify-center text-xs text-muted-foreground font-mono mt-0.5">{i + 1}</span>
+                              <span className="text-muted-foreground">{step}</span>
                             </>
                           )}
                         </li>
@@ -284,11 +284,11 @@ function HelpGuide({ expandedProvider, setExpandedProvider }: { expandedProvider
 
                   {/* Models Table */}
                   <div>
-                    <h4 className="text-xs text-gray-400 uppercase tracking-wider mb-2 font-medium">Рекомендуемые модели</h4>
-                    <div className="overflow-x-auto rounded-lg border border-white/10">
+                    <h4 className="text-xs text-muted-foreground uppercase tracking-wider mb-2 font-medium">Рекомендуемые модели</h4>
+                    <div className="overflow-x-auto rounded-lg border border-border">
                       <table className="w-full text-xs">
                         <thead>
-                          <tr className="bg-white/5 text-gray-400">
+                          <tr className="bg-muted text-muted-foreground">
                             <th className="text-left px-3 py-2 font-medium">Модель</th>
                             <th className="text-left px-3 py-2 font-medium">Slug</th>
                             <th className="text-left px-3 py-2 font-medium">Стоимость</th>
@@ -298,18 +298,18 @@ function HelpGuide({ expandedProvider, setExpandedProvider }: { expandedProvider
                         </thead>
                         <tbody className="divide-y divide-white/5">
                           {provider.models.map(m => (
-                            <tr key={m.slug} className="hover:bg-white/[0.03]">
-                              <td className="px-3 py-2 text-white font-medium whitespace-nowrap">{m.name}</td>
+                            <tr key={m.slug} className="hover:bg-primary/[0.03]">
+                              <td className="px-3 py-2 text-foreground font-medium whitespace-nowrap">{m.name}</td>
                               <td className="px-3 py-2 font-mono text-indigo-400 whitespace-nowrap">{m.slug}</td>
                               <td className="px-3 py-2 whitespace-nowrap">
-                                <span className={m.cost === 'FREE' ? 'text-green-400 font-medium' : 'text-gray-300'}>{m.cost}</span>
+                                <span className={m.cost === 'FREE' ? 'text-green-400 font-medium' : 'text-muted-foreground'}>{m.cost}</span>
                               </td>
                               <td className="px-3 py-2 whitespace-nowrap">
                                 <span className={m.speed === 'fast' ? 'text-green-400' : m.speed === 'slow' ? 'text-red-400' : 'text-yellow-400'}>
                                   {m.speed === 'fast' ? '⚡ Быстрая' : m.speed === 'slow' ? '🐢 Медленная' : '⏱ Средняя'}
                                 </span>
                               </td>
-                              <td className="px-3 py-2 text-gray-400 max-w-[200px] truncate">{m.desc}</td>
+                              <td className="px-3 py-2 text-muted-foreground max-w-[200px] truncate">{m.desc}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -454,7 +454,7 @@ export default function AdminAIModelsPage() {
             <button
               onClick={() => setShowHelp(h => !h)}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 border ${
-                showHelp ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/10'
+                showHelp ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' : 'bg-muted border-border text-muted-foreground hover:text-foreground hover:bg-muted/50'
               }`}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -464,7 +464,7 @@ export default function AdminAIModelsPage() {
             </button>
             <button
               onClick={openCreateModal}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-foreground text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -481,7 +481,7 @@ export default function AdminAIModelsPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1 max-w-md">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
@@ -489,13 +489,13 @@ export default function AdminAIModelsPage() {
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(1); }}
             placeholder="Поиск по названию, slug..."
-            className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-colors"
+            className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-foreground text-sm placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-colors"
           />
         </div>
         <select
           value={filterProviderId}
           onChange={e => { setFilterProviderId(e.target.value); setPage(1); }}
-          className="px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors appearance-none cursor-pointer"
+          className="px-3 py-2 bg-muted border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-indigo-500/50 transition-colors appearance-none cursor-pointer"
         >
           <option value="" className="bg-[#111]">Все провайдеры</option>
           {providers.map(p => (
@@ -508,30 +508,30 @@ export default function AdminAIModelsPage() {
 
       {/* Summary Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-          <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Всего моделей</p>
-          <p className="text-2xl font-bold text-white">{total}</p>
+        <div className="bg-muted border border-border rounded-xl p-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Всего моделей</p>
+          <p className="text-2xl font-bold text-foreground">{total}</p>
         </div>
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-          <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Активных</p>
+        <div className="bg-muted border border-border rounded-xl p-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Активных</p>
           <p className="text-2xl font-bold text-green-400">{models.filter(m => m.isActive).length}</p>
         </div>
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-          <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Провайдеров</p>
+        <div className="bg-muted border border-border rounded-xl p-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Провайдеров</p>
           <p className="text-2xl font-bold text-indigo-400">{providers.length}</p>
         </div>
-        <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-          <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Бесплатных</p>
+        <div className="bg-muted border border-border rounded-xl p-4">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Бесплатных</p>
           <p className="text-2xl font-bold text-yellow-400">{models.filter(m => m.isFree).length}</p>
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+      <div className="bg-muted border border-border rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider">
+              <tr className="border-b border-border text-muted-foreground text-xs uppercase tracking-wider">
                 <th className="text-left px-4 py-3 font-medium">Провайдер</th>
                 <th className="text-left px-4 py-3 font-medium">Модель</th>
                 <th className="text-left px-4 py-3 font-medium">Статус</th>
@@ -546,15 +546,15 @@ export default function AdminAIModelsPage() {
                 <tr>
                   <td colSpan={7} className="px-4 py-12 text-center">
                     <div className="flex items-center justify-center gap-3">
-                      <div className="w-5 h-5 border-2 border-white/10 border-t-indigo-500 rounded-full animate-spin" />
-                      <span className="text-gray-400">Загрузка...</span>
+                      <div className="w-5 h-5 border-2 border-border border-t-indigo-500 rounded-full animate-spin" />
+                      <span className="text-muted-foreground">Загрузка...</span>
                     </div>
                   </td>
                 </tr>
               ) : models.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-12 text-center">
-                    <div className="text-gray-500">
+                    <div className="text-muted-foreground">
                       <div className="text-3xl mb-2">🧠</div>
                       <p>Модели не найдены</p>
                       <button onClick={openCreateModal} className="text-indigo-400 hover:text-indigo-300 mt-2 text-sm">
@@ -565,24 +565,24 @@ export default function AdminAIModelsPage() {
                 </tr>
               ) : (
                 models.map(model => (
-                  <tr key={model.id} className="hover:bg-white/[0.02] transition-colors group">
+                  <tr key={model.id} className="hover:bg-primary/[0.02] transition-colors group">
                     {/* Provider */}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <span className="text-base">{PROVIDER_ICONS[model.provider.name] || '🔧'}</span>
-                        <span className="text-gray-300 font-medium">{model.provider.name}</span>
+                        <span className="text-muted-foreground font-medium">{model.provider.name}</span>
                       </div>
                     </td>
                     {/* Model */}
                     <td className="px-4 py-3">
                       <div>
-                        <div className="text-white font-medium flex items-center gap-2">
+                        <div className="text-foreground font-medium flex items-center gap-2">
                           {model.name}
                           {model.isFree && <Badge variant="info">FREE</Badge>}
                         </div>
-                        <div className="text-gray-500 text-xs font-mono mt-0.5">{model.slug}</div>
+                        <div className="text-muted-foreground text-xs font-mono mt-0.5">{model.slug}</div>
                         {model.description && (
-                          <div className="text-gray-500 text-xs mt-0.5 max-w-[250px] truncate">{model.description}</div>
+                          <div className="text-muted-foreground text-xs mt-0.5 max-w-[250px] truncate">{model.description}</div>
                         )}
                       </div>
                     </td>
@@ -594,7 +594,7 @@ export default function AdminAIModelsPage() {
                     </td>
                     {/* Cost */}
                     <td className="px-4 py-3">
-                      <span className="text-gray-300">
+                      <span className="text-muted-foreground">
                         {model.costPerToken > 0 ? `$${model.costPerToken.toFixed(4)}/1k` : '—'}
                       </span>
                     </td>
@@ -604,7 +604,7 @@ export default function AdminAIModelsPage() {
                     </td>
                     {/* Request Count */}
                     <td className="px-4 py-3 text-right">
-                      <span className="text-gray-300 font-mono">{model.requestCount.toLocaleString()}</span>
+                      <span className="text-muted-foreground font-mono">{model.requestCount.toLocaleString()}</span>
                     </td>
                     {/* Actions */}
                     <td className="px-4 py-3 text-right">
@@ -628,7 +628,7 @@ export default function AdminAIModelsPage() {
                         {/* Assign Templates */}
                         <button
                           onClick={() => setAssigningModel(model)}
-                          className="p-1.5 rounded-md hover:bg-white/10 text-gray-400 hover:text-indigo-400 transition-colors"
+                          className="p-1.5 rounded-md hover:bg-muted/50 text-muted-foreground hover:text-indigo-400 transition-colors"
                           title="Назначить шаблонам"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -638,7 +638,7 @@ export default function AdminAIModelsPage() {
                         {/* Edit */}
                         <button
                           onClick={() => openEditModal(model)}
-                          className="p-1.5 rounded-md hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                          className="p-1.5 rounded-md hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors"
                           title="Редактировать"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -649,11 +649,11 @@ export default function AdminAIModelsPage() {
                         <button
                           onClick={() => setModelToDelete({ id: model.id, name: model.name })}
                           disabled={deletingId === model.id}
-                          className="p-1.5 rounded-md hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-colors disabled:opacity-50"
+                          className="p-1.5 rounded-md hover:bg-red-500/10 text-muted-foreground hover:text-red-400 transition-colors disabled:opacity-50"
                           title="Удалить"
                         >
                           {deletingId === model.id ? (
-                            <div className="w-4 h-4 border-2 border-white/10 border-t-red-400 rounded-full animate-spin" />
+                            <div className="w-4 h-4 border-2 border-border border-t-red-400 rounded-full animate-spin" />
                           ) : (
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -671,22 +671,22 @@ export default function AdminAIModelsPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-white/10">
-            <span className="text-xs text-gray-500">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-border">
+            <span className="text-xs text-muted-foreground">
               Страница {page} из {totalPages} · {total} моделей
             </span>
             <div className="flex gap-1">
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-3 py-1 text-xs rounded-md bg-white/5 hover:bg-white/10 text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1 text-xs rounded-md bg-muted hover:bg-muted/50 text-muted-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 ←
               </button>
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="px-3 py-1 text-xs rounded-md bg-white/5 hover:bg-white/10 text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1 text-xs rounded-md bg-muted hover:bg-muted/50 text-muted-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 →
               </button>
@@ -697,17 +697,17 @@ export default function AdminAIModelsPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 bg-background/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
           <div 
-            className="bg-[#111] border border-white/10 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+            className="bg-[#111] border border-border rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-              <h3 className="text-lg font-semibold text-white">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+              <h3 className="text-lg font-semibold text-foreground">
                 {editingModel ? 'Редактировать модель' : 'Добавить модель'}
               </h3>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-white p-1">
+              <button onClick={() => setShowModal(false)} className="text-muted-foreground hover:text-foreground p-1">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -718,11 +718,11 @@ export default function AdminAIModelsPage() {
             <div className="px-6 py-4 space-y-4">
               {/* Provider */}
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 uppercase tracking-wider">Провайдер *</label>
+                <label className="block text-xs text-muted-foreground mb-1.5 uppercase tracking-wider">Провайдер *</label>
                 <select
                   value={form.providerId}
                   onChange={e => setForm(f => ({ ...f, providerId: e.target.value }))}
-                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
+                  className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
                 >
                   <option value="" className="bg-[#111]">Выберите провайдер</option>
                   {providers.map(p => (
@@ -741,71 +741,71 @@ export default function AdminAIModelsPage() {
 
               {/* Name */}
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 uppercase tracking-wider">Название модели *</label>
+                <label className="block text-xs text-muted-foreground mb-1.5 uppercase tracking-wider">Название модели *</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                   placeholder="e.g. DALL-E 3, Stable Diffusion XL"
-                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors"
+                  className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors"
                 />
               </div>
 
               {/* Slug */}
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 uppercase tracking-wider">Slug (уникальный ID) *</label>
+                <label className="block text-xs text-muted-foreground mb-1.5 uppercase tracking-wider">Slug (уникальный ID) *</label>
                 <input
                   type="text"
                   value={form.slug}
                   onChange={e => setForm(f => ({ ...f, slug: e.target.value }))}
                   placeholder="e.g. openai/dall-e-3"
-                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm font-mono placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors"
+                  className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground text-sm font-mono placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 uppercase tracking-wider">Описание</label>
+                <label className="block text-xs text-muted-foreground mb-1.5 uppercase tracking-wider">Описание</label>
                 <textarea
                   value={form.description}
                   onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                   rows={2}
                   placeholder="Краткое описание возможностей модели..."
-                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors resize-none"
+                  className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors resize-none"
                 />
               </div>
 
               {/* Endpoint */}
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 uppercase tracking-wider">Endpoint URL</label>
+                <label className="block text-xs text-muted-foreground mb-1.5 uppercase tracking-wider">Endpoint URL</label>
                 <input
                   type="text"
                   value={form.endpoint}
                   onChange={e => setForm(f => ({ ...f, endpoint: e.target.value }))}
                   placeholder="https://api.openai.com/v1/images/generations"
-                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm font-mono placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors"
+                  className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground text-sm font-mono placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors"
                 />
               </div>
 
               {/* Cost & Speed Row */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1.5 uppercase tracking-wider">Стоимость $/1k токенов</label>
+                  <label className="block text-xs text-muted-foreground mb-1.5 uppercase tracking-wider">Стоимость $/1k токенов</label>
                   <input
                     type="number"
                     step="0.0001"
                     min="0"
                     value={form.costPerToken}
                     onChange={e => setForm(f => ({ ...f, costPerToken: parseFloat(e.target.value) || 0 }))}
-                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
+                    className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1.5 uppercase tracking-wider">Скорость</label>
+                  <label className="block text-xs text-muted-foreground mb-1.5 uppercase tracking-wider">Скорость</label>
                   <select
                     value={form.speed}
                     onChange={e => setForm(f => ({ ...f, speed: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
+                    className="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
                   >
                     {SPEED_OPTIONS.map(s => (
                       <option key={s.value} value={s.value} className="bg-[#111]">{s.label}</option>
@@ -824,10 +824,10 @@ export default function AdminAIModelsPage() {
                       onChange={e => setForm(f => ({ ...f, isActive: e.target.checked }))}
                       className="sr-only peer"
                     />
-                    <div className="w-9 h-5 bg-white/10 rounded-full peer-checked:bg-green-500/70 transition-colors" />
-                    <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-4 transition-transform" />
+                    <div className="w-9 h-5 bg-muted/50 rounded-full peer-checked:bg-green-500/70 transition-colors" />
+                    <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-primary rounded-full shadow peer-checked:translate-x-4 transition-transform" />
                   </div>
-                  <span className="text-sm text-gray-300">Активна</span>
+                  <span className="text-sm text-muted-foreground">Активна</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <div className="relative">
@@ -837,28 +837,28 @@ export default function AdminAIModelsPage() {
                       onChange={e => setForm(f => ({ ...f, isFree: e.target.checked }))}
                       className="sr-only peer"
                     />
-                    <div className="w-9 h-5 bg-white/10 rounded-full peer-checked:bg-blue-500/70 transition-colors" />
-                    <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow peer-checked:translate-x-4 transition-transform" />
+                    <div className="w-9 h-5 bg-muted/50 rounded-full peer-checked:bg-blue-500/70 transition-colors" />
+                    <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-primary rounded-full shadow peer-checked:translate-x-4 transition-transform" />
                   </div>
-                  <span className="text-sm text-gray-300">Бесплатная</span>
+                  <span className="text-sm text-muted-foreground">Бесплатная</span>
                 </label>
               </div>
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-white/10">
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+                className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 Отмена
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+                className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-foreground text-sm font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
               >
-                {saving && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
+                {saving && <div className="w-4 h-4 border-2 border-border border-t-white rounded-full animate-spin" />}
                 {editingModel ? 'Сохранить' : 'Добавить'}
               </button>
             </div>

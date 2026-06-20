@@ -27,17 +27,17 @@ export default function AdminDashboard() {
       <PageHeader 
         title="Dashboard" 
         description="Overview of your platform's performance"
-        actions={<button className="px-3 py-1.5 bg-white text-black text-sm font-medium rounded-md hover:bg-gray-200">Download Report</button>}
+        actions={<button className="px-3 py-1.5 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-secondary">Download Report</button>}
       />
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
         {kpis.map((kpi, i) => (
-          <div key={i} className="p-5 border border-white/10 rounded-lg bg-[#0a0a0a]">
-            <p className="text-sm text-gray-500 mb-1">{kpi.label}</p>
+          <div key={i} className="p-5 border border-border rounded-lg bg-[#0a0a0a]">
+            <p className="text-sm text-muted-foreground mb-1">{kpi.label}</p>
             <div className="flex items-end justify-between">
-              <h3 className="text-2xl font-semibold text-white tracking-tight">{kpi.value}</h3>
-              <span className="text-xs font-medium text-gray-500">
+              <h3 className="text-2xl font-semibold text-foreground tracking-tight">{kpi.value}</h3>
+              <span className="text-xs font-medium text-muted-foreground">
                 {kpi.trend}
               </span>
             </div>
@@ -47,8 +47,8 @@ export default function AdminDashboard() {
 
       {/* Charts Area */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 border border-white/10 rounded-lg bg-[#0a0a0a] p-6 h-[400px] flex flex-col">
-          <h3 className="text-sm font-medium text-gray-400 mb-4">Revenue & Generations Overview (7 Days)</h3>
+        <div className="lg:col-span-2 border border-border rounded-lg bg-[#0a0a0a] p-6 h-[400px] flex flex-col">
+          <h3 className="text-sm font-medium text-muted-foreground mb-4">Revenue & Generations Overview (7 Days)</h3>
           <div className="flex-1 w-full">
             {stats?.chartData ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -76,13 +76,13 @@ export default function AdminDashboard() {
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-600">Loading chart...</div>
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground">Loading chart...</div>
             )}
           </div>
         </div>
 
-        <div className="border border-white/10 rounded-lg bg-[#0a0a0a] p-6 h-[400px] flex flex-col">
-          <h3 className="text-sm font-medium text-gray-400 mb-4">Tokens & Credits Usage</h3>
+        <div className="border border-border rounded-lg bg-[#0a0a0a] p-6 h-[400px] flex flex-col">
+          <h3 className="text-sm font-medium text-muted-foreground mb-4">Tokens & Credits Usage</h3>
           <div className="flex-1 w-full">
             {stats?.chartData ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -100,29 +100,29 @@ export default function AdminDashboard() {
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-600">Loading chart...</div>
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground">Loading chart...</div>
             )}
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div className="border border-white/10 rounded-lg bg-[#0a0a0a] p-6">
-          <h3 className="text-sm font-medium text-gray-400 mb-4">Popular Templates</h3>
+        <div className="border border-border rounded-lg bg-[#0a0a0a] p-6">
+          <h3 className="text-sm font-medium text-muted-foreground mb-4">Popular Templates</h3>
           <div className="space-y-4">
             {stats?.popularTemplates?.length > 0 ? stats.popularTemplates.map((t: any) => (
-              <div key={t.id} className="flex justify-between items-center pb-3 border-b border-white/5 last:border-0 last:pb-0">
-                <span className="text-white font-medium">{t.name}</span>
-                <span className="text-gray-400 text-sm">{t.downloadCount} downloads</span>
+              <div key={t.id} className="flex justify-between items-center pb-3 border-b border-border last:border-0 last:pb-0">
+                <span className="text-foreground font-medium">{t.name}</span>
+                <span className="text-muted-foreground text-sm">{t.downloadCount} downloads</span>
               </div>
             )) : (
-              <div className="text-gray-600">No data available</div>
+              <div className="text-muted-foreground">No data available</div>
             )}
           </div>
         </div>
 
-        <div className="border border-white/10 rounded-lg bg-[#0a0a0a] p-6">
-          <h3 className="text-sm font-medium text-gray-400 mb-4">Generation Status</h3>
+        <div className="border border-border rounded-lg bg-[#0a0a0a] p-6">
+          <h3 className="text-sm font-medium text-muted-foreground mb-4">Generation Status</h3>
           <div className="flex gap-4">
              <div className="flex-1 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-center">
                <div className="text-2xl font-bold text-green-400">{stats?.generations?.success || 0}</div>
@@ -135,8 +135,8 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="border border-white/10 rounded-lg bg-[#0a0a0a] p-6">
-          <h3 className="text-sm font-medium text-gray-400 mb-4">User Activity Growth (7 Days)</h3>
+        <div className="border border-border rounded-lg bg-[#0a0a0a] p-6">
+          <h3 className="text-sm font-medium text-muted-foreground mb-4">User Activity Growth (7 Days)</h3>
           <div className="h-[200px] w-full">
             {stats?.chartData ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -152,7 +152,7 @@ export default function AdminDashboard() {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-600">Loading chart...</div>
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground">Loading chart...</div>
             )}
           </div>
         </div>

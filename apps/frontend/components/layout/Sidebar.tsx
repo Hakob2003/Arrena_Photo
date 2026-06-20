@@ -41,7 +41,7 @@ export function Sidebar() {
             <Link 
               href={link.href}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative group ${
-                isActive ? 'text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'
+                isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-muted'
               }`}
             >
               {isActive && (
@@ -65,7 +65,7 @@ export function Sidebar() {
                 )}
               </AnimatePresence>
               {!isSidebarOpen && !isMobile && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">
+                <div className="absolute left-full ml-2 px-2 py-1 bg-muted text-foreground text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">
                   {link.label}
                 </div>
               )}
@@ -81,7 +81,7 @@ export function Sidebar() {
       {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/60 z-40 md:hidden backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 bg-background/60 z-40 md:hidden backdrop-blur-sm transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -105,12 +105,12 @@ export function Sidebar() {
           }
         }}
         className={`
-          fixed inset-y-0 left-0 z-50 border-r border-white/5 bg-black/60 backdrop-blur-xl flex flex-col overflow-hidden
+          fixed inset-y-0 left-0 z-50 border-r border-border bg-background/60 backdrop-blur-xl flex flex-col overflow-hidden
           ${!isMobile ? 'relative cursor-pointer' : ''}
           ${isSidebarOpen ? 'cursor-default' : ''}
         `}
       >
-        <div className="p-4 flex items-center justify-between border-b border-white/5 md:border-none">
+        <div className="p-4 flex items-center justify-between border-b border-border md:border-none">
           <div className="flex items-center justify-center w-full h-[80px] overflow-hidden">
             <AnimatePresence mode="wait">
               {isSidebarOpen ? (
@@ -124,9 +124,14 @@ export function Sidebar() {
                 >
                   <Link href="/" className="hover:opacity-80 transition-opacity w-full flex justify-center">
                     <img 
-                      src="/logo.png" 
+                      src="/logo-dark.png" 
                       alt="Arrena Photo Logo" 
-                      className="w-48 h-auto max-h-[60px] object-contain" 
+                      className="hidden dark:block w-48 h-auto max-h-[60px] object-contain" 
+                    />
+                    <img 
+                      src="/logo-light.png" 
+                      alt="Arrena Photo Logo" 
+                      className="block dark:hidden w-48 h-auto max-h-[60px] object-contain" 
                     />
                   </Link>
                 </motion.div>
@@ -141,9 +146,14 @@ export function Sidebar() {
                 >
                   <Link href="/" className="hover:opacity-80 transition-opacity">
                     <img 
-                      src="/logo1.png" 
+                      src="/logo1-dark.png" 
                       alt="Arrena Photo Icon" 
-                      className="w-10 h-auto max-h-[40px] object-contain" 
+                      className="hidden dark:block w-10 h-auto max-h-[40px] object-contain" 
+                    />
+                    <img 
+                      src="/logo1-light.png" 
+                      alt="Arrena Photo Icon" 
+                      className="block dark:hidden w-10 h-auto max-h-[40px] object-contain" 
                     />
                   </Link>
                 </motion.div>
@@ -152,7 +162,7 @@ export function Sidebar() {
           </div>
           {/* Close / Collapse button */}
           <button 
-            className={`text-gray-400 hover:text-white p-2 transition-opacity ${!isSidebarOpen && !isMobile ? 'hidden' : 'block'}`}
+            className={`text-muted-foreground hover:text-foreground p-2 transition-opacity ${!isSidebarOpen && !isMobile ? 'hidden' : 'block'}`}
             onClick={() => setSidebarOpen(false)}
           >
             {isMobile ? (
@@ -169,21 +179,21 @@ export function Sidebar() {
 
       <div className="flex-1 overflow-y-auto px-2 py-2 space-y-8 custom-scrollbar">
         <div>
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
             {isSidebarOpen ? "Обзор" : "•••"}
           </p>
           {renderLinks(MAIN_LINKS)}
         </div>
         
         <div>
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
             {isSidebarOpen ? "Студия" : "•••"}
           </p>
           {renderLinks(USER_LINKS)}
         </div>
 
         <div>
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
             {isSidebarOpen ? "Настройки" : "•••"}
           </p>
           {renderLinks(SETTINGS_LINKS)}
@@ -197,7 +207,7 @@ export function Sidebar() {
                 <li>
                   <Link 
                     href="/admin/ai-models"
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-gray-400 hover:text-white hover:bg-white/5 group"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-muted-foreground hover:text-foreground hover:bg-muted group"
                   >
                     <span className="relative z-10 text-xl w-6 flex justify-center">👑</span>
                     <AnimatePresence mode="wait">
@@ -213,7 +223,7 @@ export function Sidebar() {
                       )}
                     </AnimatePresence>
                     {!isSidebarOpen && !isMobile && (
-                      <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">
+                      <div className="absolute left-full ml-2 px-2 py-1 bg-muted text-foreground text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">
                         Админка
                       </div>
                     )}
@@ -226,11 +236,11 @@ export function Sidebar() {
       </div>
       
       {/* User Profile Section */}
-      <div className="p-4 border-t border-white/5 mt-auto overflow-hidden">
+      <div className="p-4 border-t border-border mt-auto overflow-hidden">
         {user ? (
           <div className={`flex items-center ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center text-white font-bold">
+              <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center text-foreground font-bold">
                 {user.name?.charAt(0) || 'U'}
               </div>
               <AnimatePresence mode="wait">
@@ -241,8 +251,8 @@ export function Sidebar() {
                     exit={{ opacity: 0, width: 0 }}
                     className="truncate text-left whitespace-nowrap overflow-hidden"
                   >
-                    <p className="text-sm font-medium text-white truncate">{user.name}</p>
-                    <p className="text-[10px] text-gray-500 truncate uppercase tracking-wider">{user.role}</p>
+                    <p className="text-sm font-medium text-foreground truncate">{user.name}</p>
+                    <p className="text-[10px] text-muted-foreground truncate uppercase tracking-wider">{user.role}</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -259,7 +269,7 @@ export function Sidebar() {
                     localStorage.removeItem('token');
                     window.location.href = '/login';
                   }}
-                  className="p-2 text-gray-400 hover:text-white transition-colors shrink-0 ml-2"
+                  className="p-2 text-muted-foreground hover:text-foreground transition-colors shrink-0 ml-2"
                   title="Выйти"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,8 +281,8 @@ export function Sidebar() {
           </div>
         ) : (
           <div className="flex flex-col gap-2">
-            <Link href="/login" className="w-full py-2 text-center text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Войти</Link>
-            <Link href="/register" className="w-full py-2 text-center bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+            <Link href="/login" className="w-full py-2 text-center text-sm text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors">Войти</Link>
+            <Link href="/register" className="w-full py-2 text-center bg-indigo-600 hover:bg-indigo-700 text-foreground text-sm font-medium rounded-lg transition-colors">
               Регистрация
             </Link>
           </div>

@@ -19,12 +19,12 @@ export default function GalleryPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-6 sm:mb-10">
         <div>
           <h1 className="text-3xl sm:text-4xl font-bold mb-2">Галерея сообщества</h1>
-          <p className="text-gray-400 text-sm sm:text-base">Смотрите, что создают другие пользователи прямо сейчас.</p>
+          <p className="text-muted-foreground text-sm sm:text-base">Смотрите, что создают другие пользователи прямо сейчас.</p>
         </div>
-        <div className="flex bg-white/5 rounded-lg p-1 w-full sm:w-auto overflow-x-auto">
-          <button className="px-4 py-1.5 rounded-md bg-white/10 text-white font-medium shadow-sm">Популярное</button>
-          <button className="px-4 py-1.5 rounded-md text-gray-400 hover:text-white">Новое</button>
-          <button className="px-4 py-1.5 rounded-md text-gray-400 hover:text-white">Лучшее</button>
+        <div className="flex bg-muted rounded-lg p-1 w-full sm:w-auto overflow-x-auto">
+          <button className="px-4 py-1.5 rounded-md bg-muted/50 text-foreground font-medium shadow-sm">Популярное</button>
+          <button className="px-4 py-1.5 rounded-md text-muted-foreground hover:text-foreground">Новое</button>
+          <button className="px-4 py-1.5 rounded-md text-muted-foreground hover:text-foreground">Лучшее</button>
         </div>
       </div>
 
@@ -35,24 +35,24 @@ export default function GalleryPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, delay: i * 0.05 }}
-            className="relative group rounded-2xl overflow-hidden break-inside-avoid bg-white/5"
+            className="relative group rounded-2xl overflow-hidden break-inside-avoid bg-muted"
             style={{ height: item.height }}
           >
             <img 
               src={`https://picsum.photos/seed/${item.seed}/600/${item.height}`}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
             />
-            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+            <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-orange-400" />
-                <span className="text-white font-medium text-sm">{item.author}</span>
+                <span className="text-foreground font-medium text-sm">{item.author}</span>
               </div>
-              <p className="text-white/80 text-sm line-clamp-2">
+              <p className="text-foreground/80 text-sm line-clamp-2">
                 {item.prompt}
               </p>
               <div className="flex gap-2 mt-4">
-                <button className="flex-1 glass text-white text-xs font-bold py-2 rounded-lg hover:bg-white/20">Ремикс</button>
-                <button className="w-10 glass flex items-center justify-center rounded-lg hover:bg-white/20">❤️</button>
+                <button className="flex-1 glass text-foreground text-xs font-bold py-2 rounded-lg hover:bg-primary/20">Ремикс</button>
+                <button className="w-10 glass flex items-center justify-center rounded-lg hover:bg-primary/20">❤️</button>
               </div>
             </div>
           </motion.div>

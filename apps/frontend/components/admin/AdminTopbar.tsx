@@ -11,13 +11,13 @@ export function AdminTopbar() {
   const paths = pathname?.split('/').filter(Boolean) || [];
 
   return (
-    <header className="h-14 border-b border-white/5 bg-[#0a0a0a] flex items-center justify-between px-6 sticky top-0 z-20">
-      <div className="flex items-center gap-2 text-sm text-gray-400">
-        <span className="text-gray-500">Admin</span>
+    <header className="h-14 border-b border-border bg-[#0a0a0a] flex items-center justify-between px-6 sticky top-0 z-20">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <span className="text-muted-foreground">Admin</span>
         {paths.map((p, i) => (
           <React.Fragment key={i}>
-            <span className="text-gray-600">/</span>
-            <span className={i === paths.length - 1 ? 'text-white font-medium capitalize' : 'capitalize'}>
+            <span className="text-muted-foreground">/</span>
+            <span className={i === paths.length - 1 ? 'text-foreground font-medium capitalize' : 'capitalize'}>
               {p.replace('-', ' ')}
             </span>
           </React.Fragment>
@@ -25,19 +25,19 @@ export function AdminTopbar() {
       </div>
 
       <div className="flex items-center gap-4">
-        <button className="text-gray-400 hover:text-white text-sm">Feedback</button>
-        <button className="text-gray-400 hover:text-white text-sm">Docs</button>
+        <button className="text-muted-foreground hover:text-foreground text-sm">Feedback</button>
+        <button className="text-muted-foreground hover:text-foreground text-sm">Docs</button>
         <button 
           onClick={() => {
             logout();
             localStorage.removeItem('token');
             window.location.href = '/login';
           }}
-          className="text-gray-400 hover:text-white text-sm transition-colors"
+          className="text-muted-foreground hover:text-foreground text-sm transition-colors"
         >
           Выйти
         </button>
-        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-700 to-gray-500 flex items-center justify-center text-xs font-bold text-white border border-white/10 cursor-pointer">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-gray-700 to-gray-500 flex items-center justify-center text-xs font-bold text-foreground border border-border cursor-pointer">
           {user?.name?.charAt(0)?.toUpperCase() || 'A'}
         </div>
       </div>

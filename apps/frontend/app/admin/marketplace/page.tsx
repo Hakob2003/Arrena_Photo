@@ -43,36 +43,36 @@ export default function AdminMarketplace() {
       />
 
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="p-4 border border-white/10 rounded-lg bg-[#0a0a0a]">
-           <p className="text-sm text-gray-500">Pending Payouts</p>
-           <p className="text-2xl font-semibold text-white">${metrics.pendingAmount.toFixed(2)}</p>
+        <div className="p-4 border border-border rounded-lg bg-[#0a0a0a]">
+           <p className="text-sm text-muted-foreground">Pending Payouts</p>
+           <p className="text-2xl font-semibold text-foreground">${metrics.pendingAmount.toFixed(2)}</p>
         </div>
-        <div className="p-4 border border-white/10 rounded-lg bg-[#0a0a0a]">
-           <p className="text-sm text-gray-500">Total Paid (All Time)</p>
-           <p className="text-2xl font-semibold text-white">${metrics.totalPaid.toFixed(2)}</p>
+        <div className="p-4 border border-border rounded-lg bg-[#0a0a0a]">
+           <p className="text-sm text-muted-foreground">Total Paid (All Time)</p>
+           <p className="text-2xl font-semibold text-foreground">${metrics.totalPaid.toFixed(2)}</p>
         </div>
-        <div className="p-4 border border-white/10 rounded-lg bg-[#0a0a0a]">
-           <p className="text-sm text-gray-500">Platform Revenue (10% Cut Est.)</p>
+        <div className="p-4 border border-border rounded-lg bg-[#0a0a0a]">
+           <p className="text-sm text-muted-foreground">Platform Revenue (10% Cut Est.)</p>
            <p className="text-2xl font-semibold text-green-400">${(metrics.totalPaid * 0.1).toFixed(2)}</p>
         </div>
       </div>
 
-      <h3 className="text-lg font-medium text-white mb-4">Payout Requests</h3>
+      <h3 className="text-lg font-medium text-foreground mb-4">Payout Requests</h3>
       {loading ? (
-        <div className="text-gray-400 p-8 text-center">Loading payouts...</div>
+        <div className="text-muted-foreground p-8 text-center">Loading payouts...</div>
       ) : (
         <DataTable 
           data={payouts}
           columns={[
             { key: 'user', header: 'Creator Email' },
-            { key: 'amount', header: 'Amount', render: (r: any) => <span className="font-mono text-white">{r.amount}</span> },
+            { key: 'amount', header: 'Amount', render: (r: any) => <span className="font-mono text-foreground">{r.amount}</span> },
             { key: 'date', header: 'Request Date' },
             { key: 'status', header: 'Status', render: (r: any) => (
               <Badge variant={r.status === 'COMPLETED' ? 'success' : 'warning'}>{r.status}</Badge>
             )},
             { key: 'actions', header: '', render: (r: any) => (
                r.status === 'PENDING' && (
-                 <button onClick={() => handleProcessPayment(r.id)} className="text-xs px-2 py-1 bg-white text-black rounded hover:bg-gray-200 font-medium">Process Payment</button>
+                 <button onClick={() => handleProcessPayment(r.id)} className="text-xs px-2 py-1 bg-primary text-primary-foreground rounded hover:bg-secondary font-medium">Process Payment</button>
                )
             )}
           ]}

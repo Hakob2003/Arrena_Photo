@@ -16,21 +16,21 @@ export default function AdminCloudProviders() {
       <PageHeader 
         title="Cloud Storage" 
         description="Manage S3-compatible storage buckets."
-        actions={<button className="px-3 py-1.5 bg-white text-black text-sm font-medium rounded-md hover:bg-gray-200">Connect Bucket</button>}
+        actions={<button className="px-3 py-1.5 bg-primary text-primary-foreground text-sm font-medium rounded-md hover:bg-secondary">Connect Bucket</button>}
       />
 
       <DataTable 
         data={buckets}
         columns={[
-          { key: 'name', header: 'Bucket Name', render: (r) => <span className="font-semibold text-white">{r.name}</span> },
+          { key: 'name', header: 'Bucket Name', render: (r) => <span className="font-semibold text-foreground">{r.name}</span> },
           { key: 'provider', header: 'Provider' },
-          { key: 'region', header: 'Region', render: (r) => <span className="font-mono text-gray-500 text-xs">{r.region}</span> },
+          { key: 'region', header: 'Region', render: (r) => <span className="font-mono text-muted-foreground text-xs">{r.region}</span> },
           { key: 'size', header: 'Storage Used' },
           { key: 'status', header: 'Status', render: (r) => {
             const v = r.status === 'ACTIVE' ? 'success' : r.status === 'OFFLINE' ? 'error' : 'warning';
             return <Badge variant={v}>{r.status}</Badge>;
           }},
-          { key: 'actions', header: '', render: () => <button className="text-sm text-gray-400 hover:text-white border border-white/10 px-3 py-1 rounded">Configure</button> }
+          { key: 'actions', header: '', render: () => <button className="text-sm text-muted-foreground hover:text-foreground border border-border px-3 py-1 rounded">Configure</button> }
         ]}
       />
     </>

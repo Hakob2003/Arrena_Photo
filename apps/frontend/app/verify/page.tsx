@@ -40,15 +40,15 @@ function VerifyContent() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 text-center">
-        <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Подтверждение Email</h2>
+      <div className="w-full max-w-md p-8 bg-primary dark:bg-muted rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 text-center">
+        <h2 className="text-2xl font-bold mb-6 text-foreground dark:text-foreground">Подтверждение Email</h2>
         
         {status === 'loading' && <div className="text-blue-600">Загрузка...</div>}
         
         {status === 'success' && (
           <div className="text-green-600">
             <p className="mb-4">{message}</p>
-            <Link href="/login" className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 inline-block">
+            <Link href="/login" className="px-6 py-2 bg-blue-600 text-foreground rounded-lg hover:bg-blue-700 inline-block">
               Войти
             </Link>
           </div>

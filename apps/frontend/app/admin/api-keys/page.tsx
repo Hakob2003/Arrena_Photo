@@ -96,7 +96,7 @@ export default function ApiKeysAdminPage() {
   };
 
   const formatBalance = (balance: number | null) => {
-    if (balance === null) return <span className="text-gray-500">Н/Д</span>;
+    if (balance === null) return <span className="text-muted-foreground">Н/Д</span>;
     return <span className="text-green-400 font-mono">${balance.toFixed(4)}</span>;
   };
 
@@ -128,11 +128,11 @@ export default function ApiKeysAdminPage() {
         description="Управление глобальными ключами доступа к AI провайдерам, проверка статусов и баланса."
       />
 
-      <div className="bg-[#111] border border-white/10 rounded-2xl overflow-hidden flex flex-col min-h-0 flex-1">
+      <div className="bg-[#111] border border-border rounded-2xl overflow-hidden flex flex-col min-h-0 flex-1">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-white/10 text-sm text-gray-400 bg-white/[0.02]">
+              <tr className="border-b border-border text-sm text-muted-foreground bg-primary/[0.02]">
                 <th className="px-6 py-4 font-medium">Провайдер</th>
                 <th className="px-6 py-4 font-medium">API Ключ</th>
                 <th className="px-6 py-4 font-medium">Статус</th>
@@ -144,27 +144,27 @@ export default function ApiKeysAdminPage() {
             <tbody className="divide-y divide-white/10">
               {loading && providers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
                     <div className="flex flex-col items-center gap-3">
-                      <div className="w-6 h-6 border-2 border-white/10 border-t-indigo-500 rounded-full animate-spin" />
+                      <div className="w-6 h-6 border-2 border-border border-t-indigo-500 rounded-full animate-spin" />
                       Загрузка провайдеров...
                     </div>
                   </td>
                 </tr>
               ) : providers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={6} className="px-6 py-12 text-center text-muted-foreground">
                     Нет доступных провайдеров
                   </td>
                 </tr>
               ) : (
                 providers.map(p => (
-                  <tr key={p.id} className="hover:bg-white/[0.02] transition-colors group">
+                  <tr key={p.id} className="hover:bg-primary/[0.02] transition-colors group">
                     {/* Provider Name */}
                     <td className="px-6 py-4">
-                      <div className="font-medium text-white flex items-center gap-2">
+                      <div className="font-medium text-foreground flex items-center gap-2">
                         {p.name}
-                        {p.isGlobal && <span className="text-[10px] uppercase tracking-wider bg-white/10 text-gray-300 px-1.5 py-0.5 rounded">Global</span>}
+                        {p.isGlobal && <span className="text-[10px] uppercase tracking-wider bg-muted/50 text-muted-foreground px-1.5 py-0.5 rounded">Global</span>}
                       </div>
                     </td>
 
@@ -177,7 +177,7 @@ export default function ApiKeysAdminPage() {
                             value={keyValue}
                             onChange={e => setKeyValue(e.target.value)}
                             placeholder="sk-..."
-                            className="w-full px-3 py-1.5 bg-black border border-white/20 rounded-md text-sm text-white focus:outline-none focus:border-indigo-500"
+                            className="w-full px-3 py-1.5 bg-background border border-border rounded-md text-sm text-foreground focus:outline-none focus:border-indigo-500"
                             autoFocus
                             onKeyDown={e => e.key === 'Enter' && handleSaveKey(p.id)}
                           />
@@ -186,7 +186,7 @@ export default function ApiKeysAdminPage() {
                               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                           </button>
-                          <button onClick={() => setEditingId(null)} className="p-1.5 text-gray-400 hover:bg-white/10 rounded">
+                          <button onClick={() => setEditingId(null)} className="p-1.5 text-muted-foreground hover:bg-muted/50 rounded">
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                             </svg>
@@ -195,7 +195,7 @@ export default function ApiKeysAdminPage() {
                       ) : (
                         <div className="flex items-center gap-3">
                           {p.hasKeySet ? (
-                            <div className="flex items-center gap-2 text-sm text-gray-400 font-mono">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground font-mono">
                               <span>••••••••••••••••</span>
                               <button 
                                 onClick={() => { setEditingId(p.id); setKeyValue(''); }}
@@ -226,7 +226,7 @@ export default function ApiKeysAdminPage() {
                             {p.errorMessage}
                           </div>
                         )}
-                        <div className="text-[10px] text-gray-500">
+                        <div className="text-[10px] text-muted-foreground">
                           {formatDate(p.lastCheckedAt)}
                         </div>
                       </div>
@@ -251,12 +251,12 @@ export default function ApiKeysAdminPage() {
                         ) : (
                           <div className="flex items-center gap-1.5">
                             <span className="h-2.5 w-2.5 rounded-full bg-gray-600"></span>
-                            <span className="text-xs text-gray-500">Выкл</span>
+                            <span className="text-xs text-muted-foreground">Выкл</span>
                           </div>
                         )}
                         <button 
                           onClick={() => setMonitorConfigProvider(p)}
-                          className="ml-2 p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors opacity-0 group-hover:opacity-100"
+                          className="ml-2 p-1 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded transition-colors opacity-0 group-hover:opacity-100"
                           title="Настройки мониторинга"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -273,11 +273,11 @@ export default function ApiKeysAdminPage() {
                         <button
                           onClick={() => handleCheckConnection(p.id)}
                           disabled={!p.hasKeySet || checkingId === p.id}
-                          className="p-1.5 rounded-md hover:bg-white/10 text-gray-400 hover:text-indigo-400 transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+                          className="p-1.5 rounded-md hover:bg-muted/50 text-muted-foreground hover:text-indigo-400 transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
                           title="Проверить соединение"
                         >
                           {checkingId === p.id ? (
-                            <div className="w-4 h-4 border-2 border-white/10 border-t-indigo-400 rounded-full animate-spin" />
+                            <div className="w-4 h-4 border-2 border-border border-t-indigo-400 rounded-full animate-spin" />
                           ) : (
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -287,11 +287,11 @@ export default function ApiKeysAdminPage() {
                         <button
                           onClick={() => handleTestGeneration(p.id)}
                           disabled={!p.hasKeySet || p.status !== 'CONNECTED' || testingId === p.id}
-                          className="p-1.5 rounded-md hover:bg-white/10 text-gray-400 hover:text-green-400 transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
+                          className="p-1.5 rounded-md hover:bg-muted/50 text-muted-foreground hover:text-green-400 transition-colors disabled:opacity-50 disabled:hover:bg-transparent"
                           title="Тестовый запрос"
                         >
                           {testingId === p.id ? (
-                            <div className="w-4 h-4 border-2 border-white/10 border-t-green-400 rounded-full animate-spin" />
+                            <div className="w-4 h-4 border-2 border-border border-t-green-400 rounded-full animate-spin" />
                           ) : (
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
