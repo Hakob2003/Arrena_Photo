@@ -20,37 +20,26 @@ export function Topbar() {
 
   useEffect(() => {
     const calc = () => {
-      const topbarWrapperEl = topbarWrapperRef.current;
-      const topbarEl = topbarRef.current;
-      const sidebarEl = document.getElementById('sidebar-logo-ref');
+      // Calculate the EXACT mathematical distance from the Topbar center to the Sidebar logo.
+      // We do this mathematically to avoid DOM measurement issues while the Sidebar is animating its width!
       
-      if (!topbarWrapperEl || !topbarEl || !sidebarEl) return;
+      // 1. Sidebar is 256px wide when open. The logo inside sits around 135px from the left edge.
+      const expectedSidebarLogoX = 135; 
       
-      const topbarWrapperRect = topbarWrapperEl.getBoundingClientRect();
-      const sidebarRect = sidebarEl.getBoundingClientRect();
-
-      // topbarWrapperRect is the static wrapper, so its center never moves, avoiding feedback loops!
-      const topbarCenterX = topbarWrapperRect.left + topbarWrapperRect.width / 2;
-      const sidebarCenterX = sidebarRect.left + sidebarRect.width / 2;
+      // 2. The Topbar sits next to the 256px Sidebar, so it spans from 256px to window.innerWidth.
+      // Its center is 256 + (window.innerWidth - 256) / 2
+      const openTopbarCenterX = 256 + (window.innerWidth - 256) / 2;
       
-      const targetDelta = sidebarCenterX - topbarCenterX;
-
+      const targetDelta = expectedSidebarLogoX - openTopbarCenterX;
       setTargetX(targetDelta);
     };
 
     // Calculate immediately and also on window resize
     calc();
     
-    // We also run calc periodically while sidebar is open to capture its final resting position
-    let interval: NodeJS.Timeout;
-    if (isSidebarOpen) {
-      interval = setInterval(calc, 50);
-    }
-    
     window.addEventListener('resize', calc);
     return () => {
       window.removeEventListener('resize', calc);
-      clearInterval(interval);
     };
   }, [isSidebarOpen]);
 
