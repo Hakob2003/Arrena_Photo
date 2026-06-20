@@ -33,8 +33,7 @@ export function Topbar() {
       const topbarCenterX = topbarWrapperRect.left + topbarWrapperRect.width / 2;
       const sidebarCenterX = sidebarRect.left + sidebarRect.width / 2;
       
-      // The user explicitly requested to move it left by 2000px
-      const targetDelta = -2000;
+      const targetDelta = sidebarCenterX - topbarCenterX;
 
       setTargetX(targetDelta);
     };
@@ -42,9 +41,16 @@ export function Topbar() {
     // Calculate immediately and also on window resize
     calc();
     
+    // We also run calc periodically while sidebar is open to capture its final resting position
+    let interval: NodeJS.Timeout;
+    if (isSidebarOpen) {
+      interval = setInterval(calc, 50);
+    }
+    
     window.addEventListener('resize', calc);
     return () => {
       window.removeEventListener('resize', calc);
+      clearInterval(interval);
     };
   }, [isSidebarOpen]);
 
