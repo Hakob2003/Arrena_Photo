@@ -129,7 +129,10 @@ export function Sidebar() {
               <AnimatePresence>
                 {isSidebarOpen && (
                   <motion.div
-                    layoutId="logo-text-anim"
+                    initial={{ width: 0, opacity: 0, x: -10 }}
+                    animate={{ width: '130px', opacity: 1, x: 0 }}
+                    exit={{ width: 0, opacity: 0, x: -10 }}
+                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
                     className="overflow-hidden flex items-center justify-start z-10 h-[40px]"
                   >
                     <div className="pl-1.5 w-[130px] flex-shrink-0 flex items-center justify-start h-full">

@@ -25,14 +25,21 @@ export function Topbar() {
       </div>
 
       {/* Topbar Logo Text */}
-      <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-[60]">
-        <AnimatePresence>
-          {!isSidebarOpen && (
-            <motion.div
-              layoutId="logo-text-anim"
-              className="pointer-events-auto"
-            >
-              <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
+      <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-50">
+        <motion.div
+          initial={false}
+          animate={{ 
+            opacity: isSidebarOpen ? 0 : 1, 
+            x: isSidebarOpen ? "-42vw" : 0, 
+            scale: isSidebarOpen ? 0.3 : 1 
+          }}
+          transition={{ 
+            duration: 1.7, 
+            ease: "easeInOut",
+            opacity: { delay: isSidebarOpen ? 1.5 : 0, duration: 0.2 } 
+          }}
+        >
+          <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen ? 'pointer-events-none' : 'pointer-events-auto'}`}>
                 <img 
                   src="/logo2.png" 
                   alt="Arrena Photo Text" 
@@ -45,8 +52,6 @@ export function Topbar() {
                 />
               </Link>
             </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
       {/* Search Bar Removed Temporarily */}
