@@ -16,24 +16,23 @@ export function Topbar() {
   const topbarWrapperRef = useRef<HTMLDivElement>(null);
   const topbarRef = useRef<HTMLDivElement>(null);
 
-  const [topbarCenter, setTopbarCenter] = useState(1000); // Default fallback
+  const [targetX, setTargetX] = useState(0);
 
   useEffect(() => {
     const calc = () => {
-      // Calculate the EXACT physical center of the Topbar when the sidebar is CLOSED
-      // On mobile, Topbar is full width. On desktop, it is window width - 80px.
-      const isMobileLocal = window.innerWidth < 768;
-      if (isMobileLocal) {
-        setTopbarCenter(window.innerWidth / 2);
-      } else {
-        setTopbarCenter(80 + (window.innerWidth - 80) / 2);
-      }
+      // Sidebar is 256px. The logo sits perfectly at ~124px from the left edge.
+      const expectedSidebarLogoX = 124; 
+      // Topbar center when open is 256 + (window.innerWidth - 256) / 2
+      const openTopbarCenterX = 256 + (window.innerWidth - 256) / 2;
+      
+      const targetDelta = expectedSidebarLogoX - openTopbarCenterX;
+      setTargetX(targetDelta);
     };
 
     calc();
     window.addEventListener('resize', calc);
     return () => window.removeEventListener('resize', calc);
-  }, []);
+  }, [isSidebarOpen]);
 
   return (
     <header className="h-16 border-b border-black/10 dark:border-white/5 bg-[rgba(255,255,255,0.75)] dark:bg-black/20 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 sticky top-0 z-[60] shadow-sm dark:shadow-none">
@@ -48,15 +47,15 @@ export function Topbar() {
         </button>
       </div>
 
-      {/* Topbar Logo Text - Fixed Absolute Screen Coordinates */}
-      <div className="fixed top-0 left-0 w-full h-16 pointer-events-none z-[60] flex items-center">
+      {/* Topbar Logo Text */}
+      <div ref={topbarWrapperRef} className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-[60]">
         <motion.div
-          className="absolute left-0 -translate-x-1/2"
+          layout
+          ref={topbarRef}
           initial={false}
           animate={{ 
             opacity: isSidebarOpen ? 0 : 1, 
-            // 110px is exactly next to logo1 in the sidebar!
-            x: isSidebarOpen ? 110 : topbarCenter, 
+            x: isSidebarOpen ? targetX : 0, 
             scale: isSidebarOpen ? 0.1 : 1 
           }}
           transition={{ 
