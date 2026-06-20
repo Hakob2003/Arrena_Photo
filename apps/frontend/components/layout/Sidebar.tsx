@@ -111,18 +111,42 @@ export function Sidebar() {
         `}
       >
         <div className="p-4 flex items-center justify-between border-b border-white/5 md:border-none">
-          <div className="flex items-center gap-2 w-full h-[80px]">
-            <AnimatePresence>
-              {showSidebarLogo && (
-                <Link href="/" className="flex items-center hover:opacity-80 transition-opacity w-full">
-                  <motion.img 
-                    layoutId="app-logo"
-                    src="/logo.png" 
-                    alt="Arrena Photo Logo" 
-                    className="w-48 h-auto object-contain" 
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  />
-                </Link>
+          <div className="flex items-center justify-center w-full h-[80px] overflow-hidden">
+            <AnimatePresence mode="wait">
+              {isSidebarOpen ? (
+                <motion.div
+                  key="full-logo"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="w-full flex justify-center px-4"
+                >
+                  <Link href="/" className="hover:opacity-80 transition-opacity w-full flex justify-center">
+                    <img 
+                      src="/logo.png" 
+                      alt="Arrena Photo Logo" 
+                      className="w-48 h-auto max-h-[60px] object-contain" 
+                    />
+                  </Link>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="icon-logo"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.2 }}
+                  className="w-full flex justify-center"
+                >
+                  <Link href="/" className="hover:opacity-80 transition-opacity">
+                    <img 
+                      src="/logo1.png" 
+                      alt="Arrena Photo Icon" 
+                      className="w-10 h-auto max-h-[40px] object-contain" 
+                    />
+                  </Link>
+                </motion.div>
               )}
             </AnimatePresence>
           </div>

@@ -24,19 +24,24 @@ export function Topbar() {
         </button>
       </div>
 
-      {/* Topbar Logo with Framer Motion layout transition */}
+      {/* Topbar Logo Text */}
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-50">
         <AnimatePresence>
-          {showTopbarLogo && (
-            <Link href="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
-              <motion.img 
-                layoutId="app-logo"
-                src="/logo.png" 
-                alt="Arrena Photo Logo" 
-                className="h-6 w-auto object-contain" 
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              />
-            </Link>
+          {!isSidebarOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <Link href="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
+                <img 
+                  src="/logo2.png" 
+                  alt="Arrena Photo Text" 
+                  className="h-5 sm:h-6 w-auto object-contain" 
+                />
+              </Link>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
