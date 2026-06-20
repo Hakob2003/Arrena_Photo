@@ -35,6 +35,7 @@ export function Topbar() {
                 opacity: 0, 
                 x: "-42vw", 
                 scale: 0.3,
+                transition: { opacity: { delay: 1.3, duration: 0.2 }, duration: 1.5 }
               }}
               transition={{ duration: 1.5, ease: "easeInOut" }}
             >
