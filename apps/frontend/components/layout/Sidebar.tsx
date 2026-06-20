@@ -112,9 +112,8 @@ export function Sidebar() {
       >
         <div className={`flex items-center justify-between border-b border-black/10 dark:border-white/5 md:border-none ${isSidebarOpen ? 'p-4' : 'pt-4 pb-2 px-0'}`}>
           <div className={`flex items-center justify-center w-full overflow-hidden ${isSidebarOpen ? 'h-[80px]' : 'h-[50px]'}`}>
-            <Link href="/" className="flex items-center justify-center hover:opacity-80 transition-opacity w-full h-full">
-              {/* Icon (logo1) always visible, smoothly moves as sidebar expands */}
-              <motion.div layout className="flex-shrink-0 z-20">
+            <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity w-full h-full max-w-[180px] ${isSidebarOpen ? 'justify-start' : 'justify-center'}`}>
+              <motion.div layout className="flex-shrink-0 z-20 flex justify-center">
                 <img 
                   src="/logo1.png" 
                   alt="Arrena Photo Icon" 
@@ -127,26 +126,25 @@ export function Sidebar() {
                 />
               </motion.div>
 
-              {/* Text (logo2) smoothly slides towards the icon */}
               <AnimatePresence>
                 {isSidebarOpen && (
                   <motion.div
-                    initial={{ width: 0, opacity: 0, x: 20 }}
-                    animate={{ width: 'auto', opacity: 1, x: 0 }}
-                    exit={{ width: 0, opacity: 0, x: 10 }}
+                    initial={{ width: 0, opacity: 0, x: -10 }}
+                    animate={{ width: '130px', opacity: 1, x: 0 }}
+                    exit={{ width: 0, opacity: 0, x: -10 }}
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    className="overflow-hidden flex items-center z-10"
+                    className="overflow-hidden flex items-center justify-start z-10 h-[40px]"
                   >
-                    <div className="pl-3 flex-shrink-0">
+                    <div className="pl-3 w-[130px] flex-shrink-0 flex items-center justify-start h-full">
                       <img 
                         src="/logo2.png" 
                         alt="Arrena Photo Text" 
-                        className="h-4 sm:h-5 w-auto object-contain hidden dark:block max-w-none" 
+                        className="h-4 sm:h-5 w-auto object-contain hidden dark:block" 
                       />
                       <img 
                         src="/logo2-light.png" 
                         alt="Arrena Photo Text" 
-                        className="h-4 sm:h-5 w-auto object-contain block dark:hidden max-w-none" 
+                        className="h-4 sm:h-5 w-auto object-contain block dark:hidden" 
                       />
                     </div>
                   </motion.div>
