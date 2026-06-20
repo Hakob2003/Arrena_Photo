@@ -129,7 +129,7 @@ export function Sidebar() {
                       className="w-48 h-auto max-h-[60px] object-contain hidden dark:block" 
                     />
                     <img 
-                      src="/logo2-light.png" 
+                      src="/logo-light.png" 
                       alt="Arrena Photo Logo" 
                       className="w-48 h-auto max-h-[60px] object-contain block dark:hidden" 
                     />
