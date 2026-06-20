@@ -29,12 +29,12 @@ export function Topbar() {
         <AnimatePresence>
           {!isSidebarOpen && (
             <motion.div
-              initial={{ opacity: 0, x: "-40vw", scale: 0.2 }}
+              initial={{ opacity: 0, x: "calc(-50vw + 149px)", scale: 0.3 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ 
                 opacity: 0, 
-                x: "-40vw", 
-                scale: 0.2,
+                x: "calc(-50vw + 149px)", 
+                scale: 0.3,
                 transition: { opacity: { duration: 0.2, delay: 1.5 }, duration: 1.7 }
               }}
               transition={{ duration: 1.7, ease: "easeInOut" }}
