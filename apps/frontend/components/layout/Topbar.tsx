@@ -59,10 +59,10 @@ export function Topbar() {
             scale: isSidebarOpen ? 0.1 : 1 
           }}
           transition={{ 
-            layout: { duration: 1.7, ease: "easeInOut" },
-            x: { duration: 1.7, ease: "easeInOut" },
-            scale: { duration: 1.7, ease: "easeInOut" },
-            opacity: { delay: isSidebarOpen ? 1.5 : 0, duration: 0.2 } 
+            layout: { duration: 3.4, ease: "easeInOut" },
+            x: { duration: 3.4, ease: "easeInOut" },
+            scale: { duration: 3.4, ease: "easeInOut" },
+            opacity: { delay: isSidebarOpen ? 3.0 : 0, duration: 0.4 } 
           }}
         >
           <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen ? 'pointer-events-none' : 'pointer-events-auto'}`}>
