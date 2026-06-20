@@ -12,27 +12,39 @@ export function Topbar() {
   const isMobile = useIsMobile();
   const showTopbarLogo = !isSidebarOpen;
 
+  // We use a ref on the static wrapper to get the true absolute center on screen without feedback loops!
+  const topbarWrapperRef = useRef<HTMLDivElement>(null);
   const topbarRef = useRef<HTMLDivElement>(null);
 
   const [targetX, setTargetX] = useState(0);
+  const [targetScale, setTargetScale] = useState(0.3); // default fallback
 
   useEffect(() => {
     const calc = () => {
+      const topbarWrapperEl = topbarWrapperRef.current;
       const topbarEl = topbarRef.current;
       const sidebarEl = document.getElementById('sidebar-logo-ref');
       
-      if (!topbarEl || !sidebarEl) return;
+      if (!topbarWrapperEl || !topbarEl || !sidebarEl) return;
       
+      const topbarWrapperRect = topbarWrapperEl.getBoundingClientRect();
       const topbarRect = topbarEl.getBoundingClientRect();
       const sidebarRect = sidebarEl.getBoundingClientRect();
 
+      // topbarWrapperRect is the static wrapper, so its center never moves, avoiding feedback loops!
+      const topbarCenterX = topbarWrapperRect.left + topbarWrapperRect.width / 2;
       const sidebarCenterX = sidebarRect.left + sidebarRect.width / 2;
-      const windowCenterX = window.innerWidth / 2;
+      
+      const targetDelta = sidebarCenterX - topbarCenterX;
+      
+      // Calculate exact scale factor based on natural heights! 
+      // We must use unscaled height of topbar. Since we might measure it while scaled, 
+      // it's safer to use a fixed ratio based on Tailwind classes, or measure the actual DOM element
+      // offsetHeight (which ignores CSS scale).
+      const scale = sidebarEl.offsetHeight / topbarEl.offsetHeight;
 
-      // When opening, if it's currently at 0, this records the exact required travel distance!
-      // We must compare against windowCenterX, NOT topbarRect, because topbarRect moves during animation
-      // which creates a feedback loop!
-      setTargetX(sidebarCenterX - windowCenterX);
+      setTargetX(targetDelta);
+      setTargetScale(scale || 0.625); // use calculated or fallback
     };
 
     // Calculate immediately and also on window resize
@@ -65,14 +77,14 @@ export function Topbar() {
       </div>
 
       {/* Topbar Logo Text */}
-      <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-[60]">
+      <div ref={topbarWrapperRef} className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-[60]">
         <motion.div
           ref={topbarRef}
           initial={false}
           animate={{ 
             opacity: isSidebarOpen ? 0 : 1, 
             x: isSidebarOpen ? targetX : 0, 
-            scale: isSidebarOpen ? 0.3 : 1 
+            scale: isSidebarOpen ? targetScale : 1 
           }}
           transition={{ 
             duration: 1.7, 
