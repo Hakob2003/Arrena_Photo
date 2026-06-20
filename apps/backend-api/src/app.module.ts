@@ -37,7 +37,7 @@ import { ProfileModule } from './profile/profile.module';
     // Redis & BullMQ
     BullModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
+      useFactory: async (configService: ConfigService): Promise<any> => {
         const redisUrl = configService.get('REDIS_URL');
         if (redisUrl) {
           const url = new URL(redisUrl);
