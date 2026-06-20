@@ -35,9 +35,9 @@ export function Topbar() {
                 opacity: 0, 
                 x: "-42vw", 
                 scale: 0.3,
-                transition: { opacity: { delay: 1.3, duration: 0.2 }, duration: 1.5 }
+                transition: { opacity: { delay: 1.5, duration: 0.2 }, duration: 1.7 }
               }}
-              transition={{ duration: 1.5, ease: "easeInOut" }}
+              transition={{ duration: 1.7, ease: "easeInOut" }}
             >
               <Link href="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
                 <img 
