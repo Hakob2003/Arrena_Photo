@@ -33,8 +33,8 @@ export function Topbar() {
       const topbarCenterX = topbarWrapperRect.left + topbarWrapperRect.width / 2;
       const sidebarCenterX = sidebarRect.left + sidebarRect.width / 2;
       
-      // The user explicitly requested to move it left by 1200px
-      const targetDelta = -1200;
+      // The user explicitly requested to move it left by 1500px
+      const targetDelta = -1500;
 
       setTargetX(targetDelta);
     };
@@ -77,7 +77,7 @@ export function Topbar() {
           animate={{ 
             opacity: isSidebarOpen ? 0 : 1, 
             x: isSidebarOpen ? targetX : 0, 
-            scale: isSidebarOpen ? 0.3 : 1 
+            scale: isSidebarOpen ? 0.1 : 1 
           }}
           transition={{ 
             layout: { duration: 1.7, ease: "easeInOut" },
