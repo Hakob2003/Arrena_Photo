@@ -112,53 +112,47 @@ export function Sidebar() {
       >
         <div className={`flex items-center justify-between border-b border-black/10 dark:border-white/5 md:border-none ${isSidebarOpen ? 'p-4' : 'pt-4 pb-2 px-0'}`}>
           <div className={`flex items-center justify-center w-full overflow-hidden ${isSidebarOpen ? 'h-[80px]' : 'h-[50px]'}`}>
-            <AnimatePresence mode="wait">
-              {isSidebarOpen ? (
-                <motion.div
-                  key="full-logo"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.2 }}
-                  className="w-full flex justify-center px-4"
-                >
-                  <Link href="/" className="hover:opacity-80 transition-opacity w-full flex justify-center">
-                    <img 
-                      src="/logo.png" 
-                      alt="Arrena Photo Logo" 
-                      className="w-48 h-auto max-h-[60px] object-contain hidden dark:block" 
-                    />
-                    <img 
-                      src="/logo-light.png" 
-                      alt="Arrena Photo Logo" 
-                      className="w-48 h-auto max-h-[60px] object-contain block dark:hidden" 
-                    />
-                  </Link>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="icon-logo"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.2 }}
-                  className="w-full flex justify-center"
-                >
-                  <Link href="/" className="hover:opacity-80 transition-opacity">
-                    <img 
-                      src="/logo1.png" 
-                      alt="Arrena Photo Icon" 
-                      className="w-10 h-auto max-h-[40px] object-contain hidden dark:block" 
-                    />
-                    <img 
-                      src="/logo1-light.png" 
-                      alt="Arrena Photo Icon" 
-                      className="w-10 h-auto max-h-[40px] object-contain block dark:hidden" 
-                    />
-                  </Link>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <Link href="/" className="flex items-center justify-center hover:opacity-80 transition-opacity w-full h-full">
+              {/* Icon (logo1) always visible, smoothly moves as sidebar expands */}
+              <motion.div layout className="flex-shrink-0 z-20">
+                <img 
+                  src="/logo1.png" 
+                  alt="Arrena Photo Icon" 
+                  className="w-10 h-auto max-h-[40px] object-contain hidden dark:block" 
+                />
+                <img 
+                  src="/logo1-light.png" 
+                  alt="Arrena Photo Icon" 
+                  className="w-10 h-auto max-h-[40px] object-contain block dark:hidden" 
+                />
+              </motion.div>
+
+              {/* Text (logo2) smoothly slides towards the icon */}
+              <AnimatePresence>
+                {isSidebarOpen && (
+                  <motion.div
+                    initial={{ width: 0, opacity: 0, x: 20 }}
+                    animate={{ width: 'auto', opacity: 1, x: 0 }}
+                    exit={{ width: 0, opacity: 0, x: 10 }}
+                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                    className="overflow-hidden flex items-center z-10"
+                  >
+                    <div className="pl-3 flex-shrink-0">
+                      <img 
+                        src="/logo2.png" 
+                        alt="Arrena Photo Text" 
+                        className="h-4 sm:h-5 w-auto object-contain hidden dark:block max-w-none" 
+                      />
+                      <img 
+                        src="/logo2-light.png" 
+                        alt="Arrena Photo Text" 
+                        className="h-4 sm:h-5 w-auto object-contain block dark:hidden max-w-none" 
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Link>
           </div>
           {/* Close / Collapse button */}
           <button 
