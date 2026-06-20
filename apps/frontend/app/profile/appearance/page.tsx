@@ -28,6 +28,20 @@ export default function AppearanceProfilePage() {
   const watchAccent = watch('accentColor');
   const watchFont = watch('fontSize');
 
+  // Instantly apply changes to the UI store for real-time preview
+  useEffect(() => {
+    const subscription = watch((value) => {
+      setPreferences({
+        theme: value.theme as any,
+        accentColor: value.accentColor as any,
+        fontSize: value.fontSize as any,
+        compactMode: value.compactMode,
+        animationsEnabled: value.animationsEnabled,
+      });
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, setPreferences]);
+
   useEffect(() => {
     const fetchPreferences = async () => {
       try {
