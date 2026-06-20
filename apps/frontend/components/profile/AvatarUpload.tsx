@@ -119,6 +119,7 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
               <h3 className="text-xl font-semibold mb-6">Crop your picture</h3>
               
               <div className="relative w-full h-64 bg-black/50 rounded-xl overflow-hidden mb-6">
+                {/* @ts-ignore - TS thinks Cropper is not a valid JSX element in this React version */}
                 <Cropper
                   image={imageSrc}
                   crop={crop}
