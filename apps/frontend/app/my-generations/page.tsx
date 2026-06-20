@@ -57,8 +57,8 @@ export default function MyGenerationsPage() {
         <div className="text-center">
           <div className="text-6xl mb-6">🔒</div>
           <h2 className="text-2xl font-bold mb-2">Войдите для просмотра</h2>
-          <p className="text-muted-foreground mb-6">Войдите в аккаунт, чтобы увидеть историю генераций.</p>
-          <a href="/login" className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-foreground font-bold rounded-xl transition-colors">
+          <p className="text-gray-400 mb-6">Войдите в аккаунт, чтобы увидеть историю генераций.</p>
+          <a href="/login" className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-colors">
             Войти
           </a>
         </div>
@@ -71,11 +71,11 @@ export default function MyGenerationsPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-10">
         <div>
           <h1 className="text-3xl sm:text-4xl font-bold">Мои генерации</h1>
-          <p className="text-muted-foreground mt-1 text-sm sm:text-base">Все ваши сгенерированные изображения</p>
+          <p className="text-gray-400 mt-1 text-sm sm:text-base">Все ваши сгенерированные изображения</p>
         </div>
         <button 
           onClick={fetchGenerations}
-          className="w-full sm:w-auto px-5 py-2 glass rounded-lg hover:bg-muted/50 text-sm font-bold min-h-[44px]"
+          className="w-full sm:w-auto px-5 py-2 glass rounded-lg hover:bg-white/10 text-sm font-bold min-h-[44px]"
         >
           Обновить
         </button>
@@ -83,16 +83,16 @@ export default function MyGenerationsPage() {
 
       {loading ? (
         <div className="flex items-center justify-center h-64">
-          <div className="w-12 h-12 border-4 border-border border-t-indigo-500 rounded-full animate-spin" />
+          <div className="w-12 h-12 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin" />
         </div>
       ) : generations.length === 0 ? (
-        <div className="flex-1 border border-border rounded-2xl bg-background/40 backdrop-blur-md p-10 flex flex-col items-center justify-center text-center">
-          <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center text-4xl mb-6">🎨</div>
+        <div className="flex-1 border border-white/10 rounded-2xl bg-black/40 backdrop-blur-md p-10 flex flex-col items-center justify-center text-center">
+          <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center text-4xl mb-6">🎨</div>
           <h2 className="text-2xl font-bold mb-2">Ещё нет генераций</h2>
-          <p className="text-muted-foreground max-w-md mb-8">
+          <p className="text-gray-400 max-w-md mb-8">
             Вы ещё не создали ни одного изображения. Перейдите в Генератор и создайте своё первое!
           </p>
-          <a href="/generate" className="px-6 py-3 glass rounded-xl font-bold text-indigo-400 hover:text-indigo-300 hover:bg-muted/50 transition-colors">
+          <a href="/generate" className="px-6 py-3 glass rounded-xl font-bold text-indigo-400 hover:text-indigo-300 hover:bg-white/10 transition-colors">
             Перейти в Генератор
           </a>
         </div>
@@ -101,16 +101,16 @@ export default function MyGenerationsPage() {
           {generations.map(gen => (
             <div key={gen.id} className="group relative aspect-square rounded-xl overflow-hidden glass-card cursor-pointer">
               <AuthImage driveFileId={gen.driveFileId !== 'saved' ? gen.driveFileId : undefined} fallbackUrl={gen.imageUrl} alt="Generated" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-              <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-between">
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-between">
                 <div className="flex justify-end">
                   <button 
                     onClick={(e) => saveToDrive(e, gen.id, gen.imageUrl)}
                     disabled={savingId === gen.id || !!gen.driveFileId}
-                    className={`${gen.driveFileId ? 'bg-green-500/50 text-green-200' : 'bg-background/50 hover:bg-background/80 text-foreground'} p-2 rounded-lg backdrop-blur-md transition-colors`}
+                    className={`${gen.driveFileId ? 'bg-green-500/50 text-green-200' : 'bg-black/50 hover:bg-black/80 text-white'} p-2 rounded-lg backdrop-blur-md transition-colors`}
                     title={gen.driveFileId ? "Уже сохранено" : "Сохранить на Google Drive"}
                   >
                     {savingId === gen.id ? (
-                      <div className="w-4 h-4 border-2 border-border border-t-white rounded-full animate-spin" />
+                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                     ) : gen.driveFileId ? (
                       <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg>
                     ) : (
@@ -120,8 +120,8 @@ export default function MyGenerationsPage() {
                 </div>
                 <div>
                   <span className="text-xs text-indigo-400 font-bold mb-1 block">{gen.model}</span>
-                  {gen.template && <span className="text-xs text-muted-foreground block">Шаблон: {gen.template}</span>}
-                  <span className="text-xs text-muted-foreground block mt-1">{new Date(gen.createdAt).toLocaleDateString('ru-RU')}</span>
+                  {gen.template && <span className="text-xs text-gray-300 block">Шаблон: {gen.template}</span>}
+                  <span className="text-xs text-gray-500 block mt-1">{new Date(gen.createdAt).toLocaleDateString('ru-RU')}</span>
                 </div>
               </div>
             </div>

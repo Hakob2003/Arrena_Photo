@@ -53,7 +53,7 @@ export default function CloudConnectionsPage() {
   return (
     <div className="p-4 sm:p-8 w-full">
       <h1 className="text-4xl font-bold mb-2">Облачное хранилище</h1>
-      <p className="text-muted-foreground mb-10">Подключите S3-хранилище для сохранения сгенерированных изображений.</p>
+      <p className="text-gray-400 mb-10">Подключите S3-хранилище для сохранения сгенерированных изображений.</p>
 
       <div className="glass-card p-6 sm:p-8 rounded-2xl border-t-2 border-t-blue-500 mb-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -62,15 +62,15 @@ export default function CloudConnectionsPage() {
             Google Drive
           </h3>
           {loading ? (
-            <span className="text-muted-foreground text-sm">Загрузка...</span>
+            <span className="text-gray-400 text-sm">Загрузка...</span>
           ) : driveConnected ? (
             <span className="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full text-sm font-medium">Подключено</span>
           ) : (
-            <span className="px-3 py-1 bg-gray-500/10 text-muted-foreground border border-gray-500/20 rounded-full text-sm font-medium">Не подключено</span>
+            <span className="px-3 py-1 bg-gray-500/10 text-gray-400 border border-gray-500/20 rounded-full text-sm font-medium">Не подключено</span>
           )}
         </div>
         
-        <p className="text-muted-foreground mb-6 text-sm">
+        <p className="text-gray-400 mb-6 text-sm">
           Привяжите свой аккаунт Google Drive, чтобы сохранять сгенерированные изображения прямо в свое облако одним кликом.
         </p>
 
@@ -80,7 +80,7 @@ export default function CloudConnectionsPage() {
               Отключить
             </button>
           ) : (
-            <button onClick={connectDrive} className="w-full sm:w-auto px-6 py-3 sm:py-2 bg-primary text-primary-foreground hover:bg-muted rounded-lg font-bold shadow-lg transition-colors">
+            <button onClick={connectDrive} className="w-full sm:w-auto px-6 py-3 sm:py-2 bg-white text-black hover:bg-gray-100 rounded-lg font-bold shadow-lg transition-colors">
               Привязать Google Drive
             </button>
           )}
@@ -92,42 +92,42 @@ export default function CloudConnectionsPage() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="text-xs text-muted-foreground uppercase font-semibold mb-1 block">Endpoint URL</label>
+            <label className="text-xs text-gray-500 uppercase font-semibold mb-1 block">Endpoint URL</label>
             <input 
               type="text" 
               placeholder="https://s3.amazonaws.com or https://<id>.r2.cloudflarestorage.com"
-              className="w-full bg-background/50 border border-border rounded-lg p-2.5 text-sm text-foreground focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
           <div>
-            <label className="text-xs text-muted-foreground uppercase font-semibold mb-1 block">Bucket Name</label>
+            <label className="text-xs text-gray-500 uppercase font-semibold mb-1 block">Bucket Name</label>
             <input 
               type="text" 
               placeholder="my-ai-studio-bucket"
-              className="w-full bg-background/50 border border-border rounded-lg p-2.5 text-sm text-foreground focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
           <div>
-            <label className="text-xs text-muted-foreground uppercase font-semibold mb-1 block">Access Key ID</label>
+            <label className="text-xs text-gray-500 uppercase font-semibold mb-1 block">Access Key ID</label>
             <input 
               type="text" 
               placeholder="AKIAIOSFODNN7EXAMPLE"
-              className="w-full bg-background/50 border border-border rounded-lg p-2.5 text-sm text-foreground focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
           <div>
-            <label className="text-xs text-muted-foreground uppercase font-semibold mb-1 block">Secret Access Key</label>
+            <label className="text-xs text-gray-500 uppercase font-semibold mb-1 block">Secret Access Key</label>
             <input 
               type="password" 
               placeholder="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-              className="w-full bg-background/50 border border-border rounded-lg p-2.5 text-sm text-foreground focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-black/50 border border-white/10 rounded-lg p-2.5 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
-          <button className="w-full sm:w-auto px-6 py-3 sm:py-2 glass rounded-lg text-foreground font-medium hover:bg-muted/50">Тест соединения</button>
-          <button className="w-full sm:w-auto px-6 py-3 sm:py-2 bg-blue-600 hover:bg-blue-700 text-foreground rounded-lg font-bold shadow-[0_0_15px_rgba(37,99,235,0.4)]">Сохранить</button>
+          <button className="w-full sm:w-auto px-6 py-3 sm:py-2 glass rounded-lg text-white font-medium hover:bg-white/10">Тест соединения</button>
+          <button className="w-full sm:w-auto px-6 py-3 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold shadow-[0_0_15px_rgba(37,99,235,0.4)]">Сохранить</button>
         </div>
       </div>
     </div>

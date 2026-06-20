@@ -12,10 +12,10 @@ export function Topbar() {
   const showTopbarLogo = !isSidebarOpen;
 
   return (
-    <header className="h-16 border-b border-border bg-background/20 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 sticky top-0 z-20">
+    <header className="h-16 border-b border-white/5 bg-black/20 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 sticky top-0 z-20">
       <div className="flex items-center gap-2 md:hidden">
         <button 
-          className="p-2 -ml-2 text-foreground hover:text-muted-foreground"
+          className="p-2 -ml-2 text-white hover:text-gray-300"
           onClick={() => setSidebarOpen(true)}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,14 +36,9 @@ export function Topbar() {
             >
               <Link href="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
                 <img 
-                  src="/logo2-dark.png" 
+                  src="/logo2.png" 
                   alt="Arrena Photo Text" 
-                  className="hidden dark:block h-5 sm:h-6 w-auto object-contain" 
-                />
-                <img 
-                  src="/logo2-light.png" 
-                  alt="Arrena Photo Text" 
-                  className="block dark:hidden h-5 sm:h-6 w-auto object-contain" 
+                  className="h-5 sm:h-6 w-auto object-contain" 
                 />
               </Link>
             </motion.div>

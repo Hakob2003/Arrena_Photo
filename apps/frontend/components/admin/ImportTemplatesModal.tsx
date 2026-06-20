@@ -128,10 +128,10 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-[#1a1a1a] border-border text-foreground">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-[#1a1a1a] border-gray-800 text-white">
         <DialogHeader>
           <DialogTitle>Import Templates</DialogTitle>
-          <DialogDescription className="text-muted-foreground">
+          <DialogDescription className="text-gray-400">
             Paste a JSON array or a TSV/CSV (from Excel/Google Sheets).
             Required headers: <strong>Name, Category, Prompt</strong>.
             Optional: <strong>Description, Preview URL (Cover Image), Negative Prompt, Price, Status, Recommended Models</strong>.
@@ -145,7 +145,7 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
               type="file" 
               accept=".csv,.json,.tsv,.txt" 
               onChange={handleFileUpload} 
-              className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-foreground hover:file:bg-indigo-700 cursor-pointer"
+              className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-700 cursor-pointer"
             />
           </div>
           <div className="grid gap-2">
@@ -153,7 +153,7 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
             <Textarea
               id="data"
               placeholder={'[\n  {\n    "name": "Template 1",\n    "categoryName": "Business",\n    "prompt": "A professional portrait..."\n  }\n]\n\nOR\n\nName,Category,Prompt,Price (Credits)\nTemp1,Business,Portrait of...,10'}
-              className="bg-background border-border font-mono text-xs"
+              className="bg-black border-gray-800 font-mono text-xs"
               rows={15}
               value={rawData}
               onChange={(e) => setRawData(e.target.value)}
@@ -162,10 +162,10 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose} disabled={loading} className="text-muted-foreground hover:text-foreground">
+          <Button variant="ghost" onClick={onClose} disabled={loading} className="text-gray-400 hover:text-white">
             Cancel
           </Button>
-          <Button onClick={handleImport} disabled={loading} className="bg-indigo-600 hover:bg-indigo-700 text-foreground">
+          <Button onClick={handleImport} disabled={loading} className="bg-indigo-600 hover:bg-indigo-700 text-white">
             {loading ? "Importing..." : "Import"}
           </Button>
         </DialogFooter>

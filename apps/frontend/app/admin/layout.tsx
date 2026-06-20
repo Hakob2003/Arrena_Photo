@@ -57,15 +57,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div 
-      className="flex h-screen w-full bg-[#050505] text-foreground"
+      className="flex h-screen w-full bg-[#050505] text-gray-200"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
       <AdminSidebar />
       <div className="flex-1 flex flex-col min-w-0">
-        <div className="flex items-center w-full z-20 bg-[#0a0a0a] border-b border-border md:border-none">
+        <div className="flex items-center w-full z-20 bg-[#0a0a0a] border-b border-white/5 md:border-none">
           <button 
-            className="md:hidden p-4 text-foreground hover:text-muted-foreground"
+            className="md:hidden p-4 text-white hover:text-gray-300"
             onClick={() => setSidebarOpen(true)}
           >
             ☰

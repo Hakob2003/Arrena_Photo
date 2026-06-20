@@ -28,20 +28,20 @@ export default function AdminAuditLogs() {
       <PageHeader 
         title="Audit Logs" 
         description="Immutable record of administrative actions."
-        actions={<button className="px-3 py-1.5 border border-border text-foreground text-sm rounded-md hover:bg-muted/50">Export CSV</button>}
+        actions={<button className="px-3 py-1.5 border border-white/10 text-white text-sm rounded-md hover:bg-white/10">Export CSV</button>}
       />
 
       {loading ? (
-        <div className="text-muted-foreground p-8 text-center">Loading audit logs...</div>
+        <div className="text-gray-400 p-8 text-center">Loading audit logs...</div>
       ) : (
         <DataTable 
           data={logs}
           columns={[
-            { key: 'timestamp', header: 'Timestamp', render: (r: any) => <span className="font-mono text-muted-foreground text-xs">{r.timestamp}</span> },
-            { key: 'admin', header: 'Actor', render: (r: any) => <span className="font-semibold text-foreground">{r.admin}</span> },
-            { key: 'action', header: 'Action', render: (r: any) => <span className="px-2 py-1 bg-muted border border-border rounded text-xs font-mono text-muted-foreground">{r.action}</span> },
-            { key: 'target', header: 'Details', render: (r: any) => <span className="text-muted-foreground text-xs truncate max-w-xs block">{r.target}</span> },
-            { key: 'ip', header: 'IP', render: (r: any) => <span className="font-mono text-muted-foreground text-xs">{r.ip}</span> },
+            { key: 'timestamp', header: 'Timestamp', render: (r: any) => <span className="font-mono text-gray-500 text-xs">{r.timestamp}</span> },
+            { key: 'admin', header: 'Actor', render: (r: any) => <span className="font-semibold text-white">{r.admin}</span> },
+            { key: 'action', header: 'Action', render: (r: any) => <span className="px-2 py-1 bg-white/5 border border-white/10 rounded text-xs font-mono text-gray-300">{r.action}</span> },
+            { key: 'target', header: 'Details', render: (r: any) => <span className="text-gray-400 text-xs truncate max-w-xs block">{r.target}</span> },
+            { key: 'ip', header: 'IP', render: (r: any) => <span className="font-mono text-gray-500 text-xs">{r.ip}</span> },
           ]}
         />
       )}

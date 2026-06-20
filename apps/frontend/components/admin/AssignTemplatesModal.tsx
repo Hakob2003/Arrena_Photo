@@ -94,20 +94,20 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
   };
 
   return (
-    <div className="fixed inset-0 bg-background/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div 
-        className="bg-[#111] border border-border rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
+        className="bg-[#111] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 shrink-0">
           <div>
-            <h3 className="text-lg font-semibold text-foreground">Назначение шаблонам</h3>
-            <p className="text-xs text-muted-foreground mt-1">
+            <h3 className="text-lg font-semibold text-white">Назначение шаблонам</h3>
+            <p className="text-xs text-gray-400 mt-1">
               Модель: <span className="text-indigo-400 font-medium">{model.provider.name} - {model.name}</span>
             </p>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground p-1">
+          <button onClick={onClose} className="text-gray-400 hover:text-white p-1">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -119,7 +119,7 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
           {/* Search & Actions */}
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input
@@ -127,7 +127,7 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Поиск по названию шаблона или категории..."
-                className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-lg text-foreground text-sm placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
+                className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
               />
             </div>
             <button
@@ -142,31 +142,31 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
           </div>
 
           {/* List */}
-          <div className="flex-1 overflow-y-auto min-h-0 border border-border rounded-xl bg-muted">
+          <div className="flex-1 overflow-y-auto min-h-0 border border-white/10 rounded-xl bg-white/5">
             {loading ? (
               <div className="h-full flex items-center justify-center">
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 border-2 border-border border-t-indigo-500 rounded-full animate-spin" />
-                  <span className="text-muted-foreground text-sm">Загрузка шаблонов...</span>
+                  <div className="w-5 h-5 border-2 border-white/10 border-t-indigo-500 rounded-full animate-spin" />
+                  <span className="text-gray-400 text-sm">Загрузка шаблонов...</span>
                 </div>
               </div>
             ) : filteredTemplates.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
+              <div className="h-full flex items-center justify-center text-gray-500 text-sm">
                 Шаблоны не найдены
               </div>
             ) : (
               <div className="divide-y divide-white/5">
                 {filteredTemplates.map(t => (
-                  <label key={t.id} className="flex items-center gap-3 p-3 hover:bg-primary/[0.03] cursor-pointer transition-colors group">
+                  <label key={t.id} className="flex items-center gap-3 p-3 hover:bg-white/[0.03] cursor-pointer transition-colors group">
                     <div className="relative flex items-center justify-center">
                       <input
                         type="checkbox"
                         checked={selectedIds.has(t.id)}
                         onChange={() => toggleSelection(t.id)}
-                        className="peer appearance-none w-5 h-5 border border-border rounded bg-background/20 checked:bg-indigo-500 checked:border-indigo-500 transition-colors cursor-pointer"
+                        className="peer appearance-none w-5 h-5 border border-white/20 rounded bg-black/20 checked:bg-indigo-500 checked:border-indigo-500 transition-colors cursor-pointer"
                       />
                       <svg 
-                        className="absolute w-3.5 h-3.5 text-foreground opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" 
+                        className="absolute w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" 
                         fill="none" 
                         viewBox="0 0 24 24" 
                         stroke="currentColor" 
@@ -176,11 +176,11 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
                       </svg>
                     </div>
                     <div>
-                      <div className="text-sm font-medium text-foreground group-hover:text-indigo-300 transition-colors">
+                      <div className="text-sm font-medium text-white group-hover:text-indigo-300 transition-colors">
                         {t.name}
                       </div>
-                      <div className="text-xs text-muted-foreground mt-0.5">
-                        Категория: <span className="text-muted-foreground">{t.category?.name || 'Без категории'}</span>
+                      <div className="text-xs text-gray-500 mt-0.5">
+                        Категория: <span className="text-gray-400">{t.category?.name || 'Без категории'}</span>
                       </div>
                     </div>
                   </label>
@@ -189,25 +189,25 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
             )}
           </div>
           
-          <div className="text-xs text-muted-foreground">
+          <div className="text-xs text-gray-500">
             Выбрано {selectedIds.size} из {templates.length} шаблонов
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border shrink-0">
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-white/10 shrink-0">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
           >
             Отмена
           </button>
           <button
             onClick={handleSave}
             disabled={saving || loading}
-            className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-foreground text-sm font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+            className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
           >
-            {saving && <div className="w-4 h-4 border-2 border-border border-t-white rounded-full animate-spin" />}
+            {saving && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
             Сохранить привязки
           </button>
         </div>

@@ -32,13 +32,13 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
               href={tab.href}
               className={cn(
                 "relative flex items-center gap-3 px-4 py-3 rounded-xl transition-colors whitespace-nowrap",
-                isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                isActive ? "text-white" : "text-gray-400 hover:text-gray-200 hover:bg-white/5"
               )}
             >
               {isActive && (
                 <motion.div
                   layoutId="profile-tab-active"
-                  className="absolute inset-0 bg-muted/50 border border-border rounded-xl"
+                  className="absolute inset-0 bg-white/10 border border-white/20 rounded-xl"
                   initial={false}
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
@@ -52,7 +52,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
 
       {/* Main Content Area */}
       <main className="flex-1 min-w-0">
-        <div className="bg-muted border border-border rounded-2xl p-6 md:p-8 backdrop-blur-xl">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl">
           {children}
         </div>
       </main>

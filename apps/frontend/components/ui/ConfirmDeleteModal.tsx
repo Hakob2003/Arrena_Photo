@@ -34,14 +34,14 @@ export function ConfirmDeleteModal({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            {description} <span className="font-semibold text-foreground">{itemName}</span>?
+            {description} <span className="font-semibold text-white">{itemName}</span>?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="mt-4">
-          <Button variant="outline" onClick={onClose} disabled={isLoading} className="border-border hover:bg-muted">
+          <Button variant="outline" onClick={onClose} disabled={isLoading} className="border-white/10 hover:bg-white/5">
             Отмена
           </Button>
-          <Button onClick={onConfirm} disabled={isLoading} className="bg-red-600 hover:bg-red-700 text-foreground">
+          <Button onClick={onConfirm} disabled={isLoading} className="bg-red-600 hover:bg-red-700 text-white">
             {isLoading ? 'Удаление...' : 'Удалить'}
           </Button>
         </DialogFooter>

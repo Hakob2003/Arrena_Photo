@@ -87,34 +87,34 @@ export default function NotificationsProfilePage() {
   ];
 
   if (isLoading) {
-    return <div className="animate-pulse space-y-8"><div className="h-40 bg-muted/50 rounded-xl"></div></div>;
+    return <div className="animate-pulse space-y-8"><div className="h-40 bg-white/10 rounded-xl"></div></div>;
   }
 
   return (
     <div className="space-y-8 max-w-3xl">
       <div>
         <h2 className="text-2xl font-semibold mb-1">Notifications</h2>
-        <p className="text-muted-foreground text-sm">Choose what we notify you about and how we communicate.</p>
+        <p className="text-gray-400 text-sm">Choose what we notify you about and how we communicate.</p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pt-6 border-t border-border">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pt-6 border-t border-white/10">
         {toggles.map((item, idx) => (
           <Controller
             key={item.name}
             control={control}
             name={item.name as any}
             render={({ field }) => (
-              <div className={cn("flex items-center justify-between", idx !== 0 && "pt-6 border-t border-border")}>
+              <div className={cn("flex items-center justify-between", idx !== 0 && "pt-6 border-t border-white/5")}>
                 <div className="pr-8">
-                  <h3 className={cn("text-base font-medium mb-1", item.disabled ? "text-muted-foreground" : "text-foreground")}>{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                  <h3 className={cn("text-base font-medium mb-1", item.disabled ? "text-gray-400" : "text-white")}>{item.title}</h3>
+                  <p className="text-sm text-gray-400">{item.description}</p>
                 </div>
                 <Switch
                   checked={field.value}
                   onChange={field.onChange}
                   disabled={item.disabled}
                   className={cn(
-                    field.value ? 'bg-primary' : 'bg-gray-600',
+                    field.value ? 'bg-white' : 'bg-gray-600',
                     item.disabled && 'opacity-50 cursor-not-allowed',
                     'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out'
                   )}
@@ -123,7 +123,7 @@ export default function NotificationsProfilePage() {
                     aria-hidden="true"
                     className={cn(
                       field.value ? 'translate-x-5' : 'translate-x-0',
-                      'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-background shadow ring-0 transition duration-200 ease-in-out mt-0.5 ml-0.5'
+                      'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-black shadow ring-0 transition duration-200 ease-in-out mt-0.5 ml-0.5'
                     )}
                   />
                 </Switch>
@@ -132,11 +132,11 @@ export default function NotificationsProfilePage() {
           />
         ))}
 
-        <div className="flex justify-end pt-6 border-t border-border">
+        <div className="flex justify-end pt-6 border-t border-white/10">
           <button 
             type="submit" 
             disabled={isSaving}
-            className="px-6 py-2.5 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-secondary transition flex items-center justify-center min-w-[120px]"
+            className="px-6 py-2.5 bg-white text-black font-medium rounded-lg hover:bg-gray-200 transition flex items-center justify-center min-w-[120px]"
           >
             {isSaving ? <span className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></span> : 'Save Preferences'}
           </button>

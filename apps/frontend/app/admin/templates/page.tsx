@@ -143,50 +143,50 @@ export default function AdminTemplatesPage() {
           description="Manage AI generation templates, categories and visibility."
         />
         <div className="flex items-center gap-4">
-          <Button onClick={() => setIsImportModalOpen(true)} variant="outline" className="bg-transparent border-border hover:bg-muted text-foreground">
+          <Button onClick={() => setIsImportModalOpen(true)} variant="outline" className="bg-transparent border-gray-800 hover:bg-gray-800 text-white">
             Import CSV/JSON
           </Button>
-          <Button onClick={openCreate} className="bg-indigo-600 hover:bg-indigo-700 text-foreground">
+          <Button onClick={openCreate} className="bg-indigo-600 hover:bg-indigo-700 text-white">
             <Plus className="mr-2 h-4 w-4" /> Create Template
           </Button>
         </div>
       </div>
 
       {selectedIds.size > 0 && (
-        <div className="flex items-center gap-2 p-2 bg-[#1a1a1a] rounded-md border border-border">
-          <span className="text-sm font-medium ml-2 mr-4 text-foreground">{selectedIds.size} selected</span>
-          <Button size="sm" variant="outline" className="bg-transparent text-foreground border-gray-700" onClick={() => handleBulkAction('PUBLISH')}>Publish</Button>
-          <Button size="sm" variant="outline" className="bg-transparent text-foreground border-gray-700" onClick={() => handleBulkAction('DRAFT')}>Set Draft</Button>
+        <div className="flex items-center gap-2 p-2 bg-[#1a1a1a] rounded-md border border-gray-800">
+          <span className="text-sm font-medium ml-2 mr-4 text-white">{selectedIds.size} selected</span>
+          <Button size="sm" variant="outline" className="bg-transparent text-white border-gray-700" onClick={() => handleBulkAction('PUBLISH')}>Publish</Button>
+          <Button size="sm" variant="outline" className="bg-transparent text-white border-gray-700" onClick={() => handleBulkAction('DRAFT')}>Set Draft</Button>
           <Button size="sm" variant="destructive" onClick={() => handleBulkAction('DELETE')}>Delete</Button>
         </div>
       )}
 
-      <div className="border border-border rounded-md overflow-hidden bg-[#111]">
+      <div className="border border-gray-800 rounded-md overflow-hidden bg-[#111]">
         <Table>
           <TableHeader className="bg-[#1a1a1a]">
-            <TableRow className="border-border">
+            <TableRow className="border-gray-800">
               <TableHead className="w-[50px]">
                 <Checkbox 
                   checked={templates.length > 0 && selectedIds.size === templates.length}
                   onCheckedChange={(c) => handleSelectAll(c as boolean)}
                 />
               </TableHead>
-              <TableHead className="text-muted-foreground">Preview</TableHead>
-              <TableHead className="text-muted-foreground">Name</TableHead>
-              <TableHead className="text-muted-foreground">Category</TableHead>
-              <TableHead className="text-muted-foreground">Cost</TableHead>
-              <TableHead className="text-muted-foreground">Status</TableHead>
-              <TableHead className="text-right text-muted-foreground">Actions</TableHead>
+              <TableHead className="text-gray-400">Preview</TableHead>
+              <TableHead className="text-gray-400">Name</TableHead>
+              <TableHead className="text-gray-400">Category</TableHead>
+              <TableHead className="text-gray-400">Cost</TableHead>
+              <TableHead className="text-gray-400">Status</TableHead>
+              <TableHead className="text-right text-gray-400">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableRow><TableCell colSpan={7} className="text-center py-10 text-muted-foreground">Loading...</TableCell></TableRow>
+              <TableRow><TableCell colSpan={7} className="text-center py-10 text-gray-500">Loading...</TableCell></TableRow>
             ) : templates.length === 0 ? (
-              <TableRow><TableCell colSpan={7} className="text-center py-10 text-muted-foreground">No templates found</TableCell></TableRow>
+              <TableRow><TableCell colSpan={7} className="text-center py-10 text-gray-500">No templates found</TableCell></TableRow>
             ) : (
               templates.map((template) => (
-                <TableRow key={template.id} className="border-border">
+                <TableRow key={template.id} className="border-gray-800">
                   <TableCell>
                     <Checkbox 
                       checked={selectedIds.has(template.id)}
@@ -195,41 +195,41 @@ export default function AdminTemplatesPage() {
                   </TableCell>
                   <TableCell>
                     {template.coverUrl ? (
-                      <img src={template.coverUrl} alt="Cover" className="w-12 h-12 object-cover rounded-md border border-border" />
+                      <img src={template.coverUrl} alt="Cover" className="w-12 h-12 object-cover rounded-md border border-gray-800" />
                     ) : (
-                      <div className="w-12 h-12 bg-[#1a1a1a] flex items-center justify-center rounded-md text-muted-foreground border border-border">
+                      <div className="w-12 h-12 bg-[#1a1a1a] flex items-center justify-center rounded-md text-gray-600 border border-gray-800">
                         <ImageIcon className="h-5 w-5" />
                       </div>
                     )}
                   </TableCell>
-                  <TableCell className="font-medium text-foreground">
+                  <TableCell className="font-medium text-white">
                     {template.name}
-                    <div className="text-xs text-muted-foreground mt-1">
+                    <div className="text-xs text-gray-500 mt-1">
                       {template.recommendedModels?.[0] || 'Any Model'}
                     </div>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{template.category?.name || "Uncategorized"}</TableCell>
-                  <TableCell className="text-muted-foreground">{template.price || 0} cr.</TableCell>
+                  <TableCell className="text-gray-300">{template.category?.name || "Uncategorized"}</TableCell>
+                  <TableCell className="text-gray-300">{template.price || 0} cr.</TableCell>
                   <TableCell>
-                    <Badge variant={template.status === 'PUBLISHED' ? 'default' : 'secondary'} className={template.status === 'PUBLISHED' ? 'bg-green-500/20 text-green-400' : 'bg-muted text-muted-foreground'}>
+                    <Badge variant={template.status === 'PUBLISHED' ? 'default' : 'secondary'} className={template.status === 'PUBLISHED' ? 'bg-green-500/20 text-green-400' : 'bg-gray-800 text-gray-400'}>
                       {template.status}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
-                      <DropdownMenuTrigger className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground flex items-center justify-center rounded-md hover:bg-muted">
+                      <DropdownMenuTrigger className="h-8 w-8 p-0 text-gray-400 hover:text-white flex items-center justify-center rounded-md hover:bg-gray-800">
                         <MoreHorizontal className="h-4 w-4" />
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-[#1a1a1a] border-border text-foreground">
-                        <DropdownMenuLabel className="text-muted-foreground">Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); openEdit(template); }} className="focus:bg-muted focus:text-foreground cursor-pointer">
+                      <DropdownMenuContent align="end" className="bg-[#1a1a1a] border-gray-800 text-white">
+                        <DropdownMenuLabel className="text-gray-400">Actions</DropdownMenuLabel>
+                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); openEdit(template); }} className="focus:bg-gray-800 focus:text-white cursor-pointer">
                           <Edit className="mr-2 h-4 w-4" /> Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); handleClone(template.id); }} className="focus:bg-muted focus:text-foreground cursor-pointer">
+                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); handleClone(template.id); }} className="focus:bg-gray-800 focus:text-white cursor-pointer">
                           <Copy className="mr-2 h-4 w-4" /> Clone
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator className="bg-muted" />
-                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setTemplateToDelete(template.id); }} className="text-red-500 focus:bg-muted focus:text-red-500 cursor-pointer">
+                        <DropdownMenuSeparator className="bg-gray-800" />
+                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setTemplateToDelete(template.id); }} className="text-red-500 focus:bg-gray-800 focus:text-red-500 cursor-pointer">
                           <Trash className="mr-2 h-4 w-4" /> Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>

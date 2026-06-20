@@ -20,7 +20,7 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background dark:bg-background text-foreground dark:text-foreground py-6 sm:py-12 px-4 sm:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 py-6 sm:py-12 px-4 sm:px-8">
       <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
         {/* Left: Image Gallery */}
         <div className="space-y-4">
@@ -30,7 +30,7 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
           <div className="flex gap-4 overflow-x-auto pb-4">
             {/* Additional gallery images would go here */}
             {[1,2,3].map(i => (
-              <div key={i} className="w-24 h-24 flex-shrink-0 bg-secondary dark:bg-muted rounded-xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-500 transition-all">
+              <div key={i} className="w-24 h-24 flex-shrink-0 bg-gray-200 dark:bg-gray-800 rounded-xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-500 transition-all">
                 <img src={template.coverUrl} className="w-full h-full object-cover opacity-60 hover:opacity-100" />
               </div>
             ))}
@@ -41,41 +41,41 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
         <div className="flex flex-col justify-center space-y-6">
           <div>
             <h1 className="text-3xl sm:text-4xl font-extrabold mb-2 break-words">{template.name}</h1>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center gap-4 text-sm text-gray-500">
               <span className="flex items-center text-yellow-500">
                 ⭐ <span className="ml-1 font-bold">{template.avgRating}</span>
-                <span className="text-muted-foreground ml-1">({template.reviewsCount} reviews)</span>
+                <span className="text-gray-400 ml-1">({template.reviewsCount} reviews)</span>
               </span>
               <span>•</span>
               <span>{template.downloads.toLocaleString('en-US')} downloads</span>
             </div>
           </div>
 
-          <div className="bg-primary dark:bg-card p-6 rounded-2xl border border-border dark:border-border shadow-sm flex justify-between items-center">
+          <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm flex justify-between items-center">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">Created by</p>
+              <p className="text-sm text-gray-500 mb-1">Created by</p>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full"></div>
                 <div>
                   <p className="font-bold">{template.author.name}</p>
-                  <p className="text-xs text-muted-foreground">{template.author.followers} followers</p>
+                  <p className="text-xs text-gray-400">{template.author.followers} followers</p>
                 </div>
               </div>
             </div>
-            <button className="px-4 py-2 bg-muted dark:bg-muted hover:bg-secondary dark:hover:bg-gray-700 rounded-lg font-medium transition-colors">
+            <button className="px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg font-medium transition-colors">
               Follow
             </button>
           </div>
 
-          <p className="text-lg leading-relaxed text-muted-foreground dark:text-muted-foreground">
+          <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-300">
             {template.description}
           </p>
 
-          <div className="pt-6 border-t border-border dark:border-border flex gap-2 sm:gap-4 sticky bottom-4 z-10 bg-background/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none p-4 sm:p-0 rounded-2xl sm:rounded-none">
-            <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-foreground py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1">
+          <div className="pt-6 border-t border-gray-200 dark:border-gray-800 flex gap-2 sm:gap-4 sticky bottom-4 z-10 bg-black/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none p-4 sm:p-0 rounded-2xl sm:rounded-none">
+            <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1">
               Buy Prompt • ${template.price}
             </button>
-            <button className="px-4 sm:px-6 border border-border dark:border-border rounded-xl hover:bg-muted dark:hover:bg-muted transition-colors">
+            <button className="px-4 sm:px-6 border border-gray-200 dark:border-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
               ❤️
             </button>
           </div>

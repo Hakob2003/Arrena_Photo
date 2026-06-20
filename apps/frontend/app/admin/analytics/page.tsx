@@ -11,19 +11,19 @@ export default function AdminAnalytics() {
       />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="border border-border rounded-lg bg-[#0a0a0a] p-6 h-96 flex flex-col items-center justify-center text-muted-foreground">
+        <div className="border border-white/10 rounded-lg bg-[#0a0a0a] p-6 h-96 flex flex-col items-center justify-center text-gray-500">
            <span className="text-4xl mb-4">📈</span>
            <p>Generations over Time (Chart Placeholder)</p>
         </div>
-        <div className="border border-border rounded-lg bg-[#0a0a0a] p-6 h-96 flex flex-col items-center justify-center text-muted-foreground">
+        <div className="border border-white/10 rounded-lg bg-[#0a0a0a] p-6 h-96 flex flex-col items-center justify-center text-gray-500">
            <span className="text-4xl mb-4">🥧</span>
            <p>Model Distribution (Chart Placeholder)</p>
         </div>
-        <div className="border border-border rounded-lg bg-[#0a0a0a] p-6 h-96 flex flex-col items-center justify-center text-muted-foreground">
+        <div className="border border-white/10 rounded-lg bg-[#0a0a0a] p-6 h-96 flex flex-col items-center justify-center text-gray-500">
            <span className="text-4xl mb-4">🗺️</span>
            <p>User Geography (Chart Placeholder)</p>
         </div>
-        <div className="border border-border rounded-lg bg-[#0a0a0a] p-6 h-96 flex flex-col items-center justify-center text-muted-foreground">
+        <div className="border border-white/10 rounded-lg bg-[#0a0a0a] p-6 h-96 flex flex-col items-center justify-center text-gray-500">
            <span className="text-4xl mb-4">📊</span>
            <p>Revenue by Category (Chart Placeholder)</p>
         </div>
