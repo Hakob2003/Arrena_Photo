@@ -30,14 +30,22 @@ export function Topbar() {
           {!isSidebarOpen && (
             <motion.div
               initial={{ opacity: 0, x: "-42vw", scale: 0.3 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
+              animate={{ 
+                opacity: 1, 
+                x: 0, 
+                scale: 1,
+                transition: { duration: 1.7, ease: "easeInOut" }
+              }}
               exit={{ 
                 opacity: 0, 
                 x: "-42vw", 
                 scale: 0.3,
-                transition: { opacity: { delay: 1.5, duration: 0.2 }, duration: 1.7 }
+                transition: { 
+                  duration: 1.7, 
+                  ease: "easeInOut",
+                  opacity: { delay: 1.5, duration: 0.2 } 
+                }
               }}
-              transition={{ duration: 1.7, ease: "easeInOut" }}
             >
               <Link href="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
                 <img 
