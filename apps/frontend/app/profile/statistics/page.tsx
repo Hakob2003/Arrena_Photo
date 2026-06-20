@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import api from '@/lib/api';
+import { api } from '@/lib/api';
 import { Image as ImageIcon, Zap, Coins, TrendingUp, Calendar, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
 

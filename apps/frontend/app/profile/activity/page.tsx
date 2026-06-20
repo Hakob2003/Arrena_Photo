@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import api from '@/lib/api';
+import { api } from '@/lib/api';
 import { format } from 'date-fns';
 import { MonitorPlay, LogIn, Image as ImageIcon, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';

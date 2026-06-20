@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import api from '@/lib/api';
+import { api } from '@/lib/api';
 import { Switch } from '@headlessui/react';
 import { Monitor, Moon, Sun, Palette, Type, Layout } from 'lucide-react';
 import { cn } from '@/lib/utils';

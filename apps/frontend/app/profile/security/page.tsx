@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { toast } from 'react-hot-toast';
-import api from '@/lib/api';
+import { api } from '@/lib/api';
 import { Monitor, Smartphone, Globe, LogOut } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
