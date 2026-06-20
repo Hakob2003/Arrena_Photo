@@ -17,7 +17,6 @@ export function Topbar() {
   const topbarRef = useRef<HTMLDivElement>(null);
 
   const [targetX, setTargetX] = useState(0);
-  const [targetScale, setTargetScale] = useState(0.3); // default fallback
 
   useEffect(() => {
     const calc = () => {
@@ -28,7 +27,6 @@ export function Topbar() {
       if (!topbarWrapperEl || !topbarEl || !sidebarEl) return;
       
       const topbarWrapperRect = topbarWrapperEl.getBoundingClientRect();
-      const topbarRect = topbarEl.getBoundingClientRect();
       const sidebarRect = sidebarEl.getBoundingClientRect();
 
       // topbarWrapperRect is the static wrapper, so its center never moves, avoiding feedback loops!
@@ -36,15 +34,8 @@ export function Topbar() {
       const sidebarCenterX = sidebarRect.left + sidebarRect.width / 2;
       
       const targetDelta = sidebarCenterX - topbarCenterX;
-      
-      // Calculate exact scale factor based on natural heights! 
-      // We must use unscaled height of topbar. Since we might measure it while scaled, 
-      // it's safer to use a fixed ratio based on Tailwind classes, or measure the actual DOM element
-      // offsetHeight (which ignores CSS scale).
-      const scale = sidebarEl.offsetHeight / topbarEl.offsetHeight;
 
       setTargetX(targetDelta);
-      setTargetScale(scale || 0.625); // use calculated or fallback
     };
 
     // Calculate immediately and also on window resize
@@ -79,16 +70,18 @@ export function Topbar() {
       {/* Topbar Logo Text */}
       <div ref={topbarWrapperRef} className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-[60]">
         <motion.div
+          layout
           ref={topbarRef}
           initial={false}
           animate={{ 
             opacity: isSidebarOpen ? 0 : 1, 
             x: isSidebarOpen ? targetX : 0, 
-            scale: isSidebarOpen ? targetScale : 1 
+            scale: isSidebarOpen ? 0.3 : 1 
           }}
           transition={{ 
-            duration: 1.7, 
-            ease: "easeInOut",
+            layout: { duration: 1.7, ease: "easeInOut" },
+            x: { duration: 1.7, ease: "easeInOut" },
+            scale: { duration: 1.7, ease: "easeInOut" },
             opacity: { delay: isSidebarOpen ? 1.5 : 0, duration: 0.2 } 
           }}
         >
