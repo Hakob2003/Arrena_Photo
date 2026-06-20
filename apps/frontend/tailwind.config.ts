@@ -17,6 +17,13 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        indigo: {
+          300: 'rgb(var(--color-accent-300) / <alpha-value>)',
+          400: 'rgb(var(--color-accent-400) / <alpha-value>)',
+          500: 'rgb(var(--color-accent-500) / <alpha-value>)',
+          600: 'rgb(var(--color-accent-600) / <alpha-value>)',
+          700: 'rgb(var(--color-accent-700) / <alpha-value>)',
+        },
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

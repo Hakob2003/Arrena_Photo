@@ -39,6 +39,13 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+
+    /* Default Accent (Indigo) */
+    --color-accent-300: 165 180 252;
+    --color-accent-400: 129 140 248;
+    --color-accent-500: 99 102 241;
+    --color-accent-600: 79 70 229;
+    --color-accent-700: 67 56 202;
   }
 
   .dark {
@@ -170,21 +177,41 @@
     --primary: oklch(0.601 0.203 14.615); /* rose-600 */
     --ring: oklch(0.601 0.203 14.615);
     selection:bg-rose-500/30;
+    --color-accent-300: 253 164 175;
+    --color-accent-400: 251 113 133;
+    --color-accent-500: 244 63 94;
+    --color-accent-600: 225 29 72;
+    --color-accent-700: 190 18 60;
   }
   html[data-accent="emerald"] {
     --primary: oklch(0.605 0.148 152.016); /* emerald-600 */
     --ring: oklch(0.605 0.148 152.016);
     selection:bg-emerald-500/30;
+    --color-accent-300: 110 231 183;
+    --color-accent-400: 52 211 153;
+    --color-accent-500: 16 185 129;
+    --color-accent-600: 5 150 105;
+    --color-accent-700: 4 120 87;
   }
   html[data-accent="amber"] {
     --primary: oklch(0.706 0.165 67.288); /* amber-600 */
     --ring: oklch(0.706 0.165 67.288);
     selection:bg-amber-500/30;
+    --color-accent-300: 252 211 77;
+    --color-accent-400: 251 191 36;
+    --color-accent-500: 245 158 11;
+    --color-accent-600: 217 119 6;
+    --color-accent-700: 180 83 9;
   }
   html[data-accent="blue"] {
     --primary: oklch(0.556 0.218 259.043); /* blue-600 */
     --ring: oklch(0.556 0.218 259.043);
     selection:bg-blue-500/30;
+    --color-accent-300: 147 197 253;
+    --color-accent-400: 96 165 250;
+    --color-accent-500: 59 130 246;
+    --color-accent-600: 37 99 235;
+    --color-accent-700: 29 78 216;
   }
 
   /* Compact Mode */
