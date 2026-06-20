@@ -21,11 +21,11 @@ export const TemplateCard: React.FC<{ template: TemplateProps }> = ({ template }
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="flex items-center justify-center w-full h-full text-gray-400">
+          <div className="flex items-center justify-center w-full h-full text-slate-500 dark:text-gray-400">
             No Image
           </div>
         )}
-        <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full">
+        <div className="absolute top-3 right-3 bg-[#fafafa] dark:bg-black/60 backdrop-blur-md text-slate-900 dark:text-white text-xs font-bold px-3 py-1 rounded-full">
           {template.price == null || template.price === 0 ? 'FREE' : `$${template.price.toFixed(2)}`}
         </div>
       </div>
@@ -33,7 +33,7 @@ export const TemplateCard: React.FC<{ template: TemplateProps }> = ({ template }
       <div className="p-4">
         <h3 className="font-semibold text-lg text-gray-900 dark:text-white truncate">{template.name}</h3>
         <div className="flex items-center justify-between mt-2">
-          <p className="text-sm text-gray-500 dark:text-gray-400">by {template.author.name}</p>
+          <p className="text-sm text-slate-400 dark:text-gray-500 dark:text-gray-400">by {template.author.name}</p>
           <div className="flex items-center text-yellow-500 text-sm">
             <span>⭐</span>
             <span className="ml-1 font-medium">{template.avgRating.toFixed(1)}</span>

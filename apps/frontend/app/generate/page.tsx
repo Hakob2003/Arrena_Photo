@@ -198,7 +198,7 @@ function GeneratorContent() {
           <div 
             {...getRootProps()} 
             className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-colors ${
-              isDragActive ? 'border-indigo-500 bg-indigo-500/10' : 'border-white/20 hover:border-white/40 bg-black/30'
+              isDragActive ? 'border-indigo-500 bg-indigo-500/10' : 'border-black/20 dark:border-white/20 hover:border-white/40 bg-[#fafafa] dark:bg-black/30'
             }`}
           >
             <input {...getInputProps()} />
@@ -206,16 +206,16 @@ function GeneratorContent() {
               <div className="relative group">
                 <img src={initImage} alt="Initial" className="w-full h-32 object-contain rounded-lg" />
                 <div 
-                  className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute inset-0 bg-[#fafafa] dark:bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => { e.stopPropagation(); setInitImage(null); }}
                 >
-                  <span className="text-white font-bold text-sm bg-red-500/80 px-3 py-1 rounded-full cursor-pointer">Удалить</span>
+                  <span className="text-slate-900 dark:text-white font-bold text-sm bg-red-500/80 px-3 py-1 rounded-full cursor-pointer">Удалить</span>
                 </div>
               </div>
             ) : (
-              <div className="text-gray-400 py-6">
+              <div className="text-slate-500 dark:text-gray-400 py-6">
                 <p>Перетащите фото сюда или нажмите для выбора</p>
-                <p className="text-xs mt-2 text-gray-500">Поддерживаются форматы JPG, PNG</p>
+                <p className="text-xs mt-2 text-slate-400 dark:text-gray-500">Поддерживаются форматы JPG, PNG</p>
               </div>
             )}
           </div>
@@ -227,7 +227,7 @@ function GeneratorContent() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Футуристический киберпанк город ночью, неоновые огни отражаются в лужах..."
-            className="w-full h-40 bg-black/50 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+            className="w-full h-40 bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-xl p-4 text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
           />
         </div>
 
@@ -236,7 +236,7 @@ function GeneratorContent() {
           <select 
             value={model}
             onChange={(e) => setModel(e.target.value)}
-            className="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-white mb-4 outline-none"
+            className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-xl p-3 text-slate-900 dark:text-white mb-4 outline-none"
           >
             {models.map(m => (
               <option key={m.id} value={m.id}>{m.name}</option>
@@ -246,11 +246,11 @@ function GeneratorContent() {
           {/* Fake settings sliders */}
           <div className="space-y-4">
             <div>
-              <div className="flex justify-between text-xs text-gray-400 mb-1">
+              <div className="flex justify-between text-xs text-slate-500 dark:text-gray-400 mb-1">
                 <span>Соотношение сторон (Aspect Ratio)</span>
                 <span>16:9</span>
               </div>
-              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-2 bg-black/[0.05] dark:bg-white/10 rounded-full overflow-hidden">
                 <div className="w-[70%] h-full bg-indigo-500 rounded-full" />
               </div>
             </div>
@@ -262,7 +262,7 @@ function GeneratorContent() {
           disabled={isGenerating || !prompt}
           className={`shrink-0 mt-auto py-4 rounded-xl font-bold text-lg transition-all ${
             isGenerating || !prompt 
-            ? 'bg-white/10 text-gray-500 cursor-not-allowed' 
+            ? 'bg-black/[0.05] dark:bg-white/10 text-slate-400 dark:text-gray-500 cursor-not-allowed' 
             : 'bg-white text-black hover:bg-gray-200 hover:scale-[1.02] neon-glow'
           }`}
         >
@@ -286,7 +286,7 @@ function GeneratorContent() {
         <div className="flex-1 flex items-center justify-center p-3 sm:p-4 lg:p-6 preview-area-compact bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/[0.02] to-transparent">
           {isGenerating ? (
             <div className="flex flex-col items-center gap-4 sm:gap-6">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-white/10 border-t-indigo-500 rounded-full animate-spin" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-black/10 dark:border-white/10 border-t-indigo-500 rounded-full animate-spin" />
               <motion.p 
                 key={loadingText}
                 initial={{ opacity: 0, y: 10 }}
@@ -313,17 +313,17 @@ function GeneratorContent() {
         </div>
         
         {/* History Gallery */}
-        <div className="h-32 sm:h-36 lg:h-40 xl:h-44 shrink-0 gallery-container-compact border-t border-white/10 bg-black/40 p-3 sm:p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-hide">
-          <h3 className="text-[10px] sm:text-xs font-bold gallery-title-compact text-gray-400 mb-2 uppercase tracking-wider">Мои генерации (Google Drive)</h3>
+        <div className="h-32 sm:h-36 lg:h-40 xl:h-44 shrink-0 gallery-container-compact border-t border-black/10 dark:border-white/10 bg-[#fafafa] dark:bg-black/40 p-3 sm:p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-hide">
+          <h3 className="text-[10px] sm:text-xs font-bold gallery-title-compact text-slate-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Мои генерации (Google Drive)</h3>
           <div className="flex w-max gap-2 sm:gap-4 h-[60px] sm:h-[70px] lg:h-[80px] xl:h-[90px] gallery-items-compact">
             {history.length === 0 ? (
-              <div className="text-gray-500 text-sm flex items-center h-full">История пуста. Создайте свою первую картинку!</div>
+              <div className="text-slate-400 dark:text-gray-500 text-sm flex items-center h-full">История пуста. Создайте свою первую картинку!</div>
             ) : (
               history.map((item) => (
                 <div key={item.id} className="relative aspect-square h-full shrink-0 rounded-lg overflow-hidden group cursor-pointer" onClick={() => setResult(item.imageUrl)}>
                   <AuthImage driveFileId={item.driveFileId} fallbackUrl={item.imageUrl} alt={item.prompt} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
-                    <span className="text-white text-[10px] font-bold truncate">{item.template || item.model}</span>
+                  <div className="absolute inset-0 bg-[#fafafa] dark:bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
+                    <span className="text-slate-900 dark:text-white text-[10px] font-bold truncate">{item.template || item.model}</span>
                   </div>
                 </div>
               ))
@@ -338,7 +338,7 @@ function GeneratorContent() {
 
 export default function GeneratorPage() {
   return (
-    <React.Suspense fallback={<div className="h-full flex items-center justify-center text-white">Loading...</div>}>
+    <React.Suspense fallback={<div className="h-full flex items-center justify-center text-slate-900 dark:text-white">Loading...</div>}>
       <GeneratorContent />
     </React.Suspense>
   );

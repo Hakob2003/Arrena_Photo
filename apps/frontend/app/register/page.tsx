@@ -70,12 +70,12 @@ export default function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="submit" className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+          <button type="submit" className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-white rounded-lg font-medium transition-colors">
             Зарегистрироваться
           </button>
         </form>
 
-        <div className="mt-6 flex items-center justify-center space-x-2 text-sm text-gray-500">
+        <div className="mt-6 flex items-center justify-center space-x-2 text-sm text-slate-400 dark:text-gray-500">
           <span className="h-px bg-gray-300 flex-1"></span>
           <span>Или войти через</span>
           <span className="h-px bg-gray-300 flex-1"></span>

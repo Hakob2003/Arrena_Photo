@@ -78,7 +78,7 @@ export default function SecurityProfilePage() {
       <div>
         <div className="mb-6">
           <h2 className="text-xl font-semibold mb-1">Change Password</h2>
-          <p className="text-gray-400 text-sm">Ensure your account is using a long, random password to stay secure.</p>
+          <p className="text-slate-500 dark:text-gray-400 text-sm">Ensure your account is using a long, random password to stay secure.</p>
         </div>
 
         <form onSubmit={handleSubmit(onPasswordSubmit)} className="space-y-4">
@@ -87,7 +87,7 @@ export default function SecurityProfilePage() {
             <input 
               type="password"
               {...register('currentPassword')} 
-              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-white/30 transition"
+              className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
             />
             {errors.currentPassword && <p className="text-red-400 text-xs">{errors.currentPassword.message}</p>}
           </div>
@@ -98,7 +98,7 @@ export default function SecurityProfilePage() {
               <input 
                 type="password"
                 {...register('newPassword')} 
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-white/30 transition"
+                className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
               />
               {errors.newPassword && <p className="text-red-400 text-xs">{errors.newPassword.message}</p>}
             </div>
@@ -107,7 +107,7 @@ export default function SecurityProfilePage() {
               <input 
                 type="password"
                 {...register('confirmPassword')} 
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-white/30 transition"
+                className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
               />
               {errors.confirmPassword && <p className="text-red-400 text-xs">{errors.confirmPassword.message}</p>}
             </div>
@@ -126,11 +126,11 @@ export default function SecurityProfilePage() {
       </div>
 
       {/* Sessions */}
-      <div className="pt-10 border-t border-white/10">
+      <div className="pt-10 border-t border-black/10 dark:border-white/10">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
           <div>
             <h2 className="text-xl font-semibold mb-1">Active Sessions</h2>
-            <p className="text-gray-400 text-sm">Manage your active sessions across different devices.</p>
+            <p className="text-slate-500 dark:text-gray-400 text-sm">Manage your active sessions across different devices.</p>
           </div>
           <button 
             onClick={handleLogoutAll}
@@ -143,27 +143,27 @@ export default function SecurityProfilePage() {
 
         {isLoadingSessions ? (
           <div className="space-y-4">
-            <div className="h-16 bg-white/5 rounded-xl animate-pulse" />
-            <div className="h-16 bg-white/5 rounded-xl animate-pulse" />
+            <div className="h-16 bg-black/[0.03] dark:bg-white/5 rounded-xl animate-pulse" />
+            <div className="h-16 bg-black/[0.03] dark:bg-white/5 rounded-xl animate-pulse" />
           </div>
         ) : (
           <div className="space-y-3">
             {sessions.map((session, idx) => (
-              <div key={session.id || idx} className="flex items-center gap-4 p-4 bg-white/5 border border-white/10 rounded-xl">
-                <div className="p-3 bg-white/5 rounded-lg shrink-0">
+              <div key={session.id || idx} className="flex items-center gap-4 p-4 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl">
+                <div className="p-3 bg-black/[0.03] dark:bg-white/5 rounded-lg shrink-0">
                   {session.device?.toLowerCase().includes('phone') || session.device?.toLowerCase().includes('mobile') 
-                    ? <Smartphone className="w-6 h-6 text-gray-400" />
-                    : <Monitor className="w-6 h-6 text-gray-400" />
+                    ? <Smartphone className="w-6 h-6 text-slate-500 dark:text-gray-400" />
+                    : <Monitor className="w-6 h-6 text-slate-500 dark:text-gray-400" />
                   }
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="font-medium text-white truncate">{session.device || session.userAgent || 'Unknown Device'}</p>
+                    <p className="font-medium text-slate-900 dark:text-white truncate">{session.device || session.userAgent || 'Unknown Device'}</p>
                     {idx === 0 && (
                       <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-[10px] uppercase font-bold rounded-full">Current</span>
                     )}
                   </div>
-                  <div className="flex items-center gap-3 text-sm text-gray-400 mt-1">
+                  <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-gray-400 mt-1">
                     <span className="flex items-center gap-1"><Globe className="w-3 h-3" /> {session.ipAddress || 'Unknown IP'}</span>
                     <span>•</span>
                     <span>{session.country || 'Unknown Location'}</span>
@@ -175,7 +175,7 @@ export default function SecurityProfilePage() {
             ))}
             
             {sessions.length === 0 && (
-              <p className="text-center text-gray-500 py-4">No active sessions found.</p>
+              <p className="text-center text-slate-400 dark:text-gray-500 py-4">No active sessions found.</p>
             )}
           </div>
         )}

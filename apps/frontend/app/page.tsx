@@ -18,7 +18,7 @@ export default function HomePage() {
           ВООБРАЖЕНИЕ <br />
           <span className="neon-text">ВНЕ РЕАЛЬНОСТИ</span>
         </h1>
-        <p className="text-lg sm:text-xl md:text-2xl text-gray-400 mb-8 sm:mb-10 max-w-2xl mx-auto font-light leading-relaxed px-4">
+        <p className="text-lg sm:text-xl md:text-2xl text-slate-500 dark:text-gray-400 mb-8 sm:mb-10 max-w-2xl mx-auto font-light leading-relaxed px-4">
           Ультимативная AI-студия. Объединяйте модели, используйте профессиональные промпты и создавайте идеальные изображения.
         </p>
 
@@ -29,7 +29,7 @@ export default function HomePage() {
             </button>
           </Link>
           <Link href="/marketplace" className="w-full sm:w-auto">
-            <button className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 glass text-white font-bold rounded-full text-base sm:text-lg hover:bg-white/10 transition-all border border-white/20">
+            <button className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 glass text-slate-900 dark:text-white font-bold rounded-full text-base sm:text-lg hover:bg-black/[0.05] dark:bg-white/10 transition-all border border-black/20 dark:border-white/20">
               Перейти в Маркетплейс
             </button>
           </Link>

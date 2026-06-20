@@ -27,11 +27,11 @@ export default function StatisticsProfilePage() {
   if (isLoading) {
     return (
       <div className="space-y-6 animate-pulse max-w-4xl">
-        <div className="h-8 w-48 bg-white/10 rounded-lg" />
+        <div className="h-8 w-48 bg-black/[0.05] dark:bg-white/10 rounded-lg" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="h-32 bg-white/10 rounded-2xl" />
-          <div className="h-32 bg-white/10 rounded-2xl" />
-          <div className="h-32 bg-white/10 rounded-2xl" />
+          <div className="h-32 bg-black/[0.05] dark:bg-white/10 rounded-2xl" />
+          <div className="h-32 bg-black/[0.05] dark:bg-white/10 rounded-2xl" />
+          <div className="h-32 bg-black/[0.05] dark:bg-white/10 rounded-2xl" />
         </div>
       </div>
     );
@@ -86,21 +86,21 @@ export default function StatisticsProfilePage() {
     <div className="space-y-8 max-w-4xl">
       <div>
         <h2 className="text-2xl font-semibold mb-1">Statistics</h2>
-        <p className="text-gray-400 text-sm">Overview of your activity and usage.</p>
+        <p className="text-slate-500 dark:text-gray-400 text-sm">Overview of your activity and usage.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {statCards.map((card, idx) => {
           const Icon = card.icon;
           return (
-            <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col gap-4 hover:bg-white/10 transition-colors">
+            <div key={idx} className="bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl p-6 flex flex-col gap-4 hover:bg-black/[0.05] dark:bg-white/10 transition-colors">
               <div className="flex items-center gap-4">
                 <div className={`p-3 rounded-xl ${card.bg}`}>
                   <Icon className={`w-6 h-6 ${card.color}`} />
                 </div>
-                <h3 className="text-sm font-medium text-gray-400">{card.title}</h3>
+                <h3 className="text-sm font-medium text-slate-500 dark:text-gray-400">{card.title}</h3>
               </div>
-              <p className="text-3xl font-semibold text-white truncate">
+              <p className="text-3xl font-semibold text-slate-900 dark:text-white truncate">
                 {card.value}
               </p>
             </div>

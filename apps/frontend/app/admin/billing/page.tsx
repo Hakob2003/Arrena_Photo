@@ -21,32 +21,32 @@ export default function AdminBilling() {
       />
 
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <div className="p-4 border border-white/10 rounded-lg bg-[#0a0a0a]">
-           <p className="text-sm text-gray-500">MRR (Monthly Recurring Revenue)</p>
-           <p className="text-2xl font-semibold text-white">$43,350.00</p>
+        <div className="p-4 border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a]">
+           <p className="text-sm text-slate-400 dark:text-gray-500">MRR (Monthly Recurring Revenue)</p>
+           <p className="text-2xl font-semibold text-slate-900 dark:text-white">$43,350.00</p>
         </div>
-        <div className="p-4 border border-white/10 rounded-lg bg-[#0a0a0a]">
-           <p className="text-sm text-gray-500">Active Subscriptions</p>
-           <p className="text-2xl font-semibold text-white">2,550</p>
+        <div className="p-4 border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a]">
+           <p className="text-sm text-slate-400 dark:text-gray-500">Active Subscriptions</p>
+           <p className="text-2xl font-semibold text-slate-900 dark:text-white">2,550</p>
         </div>
-        <div className="p-4 border border-white/10 rounded-lg bg-[#0a0a0a]">
-           <p className="text-sm text-gray-500">Churn Rate</p>
+        <div className="p-4 border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a]">
+           <p className="text-sm text-slate-400 dark:text-gray-500">Churn Rate</p>
            <p className="text-2xl font-semibold text-red-400">2.1%</p>
         </div>
       </div>
 
-      <h3 className="text-lg font-medium text-white mb-4">Subscription Tiers</h3>
+      <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-4">Subscription Tiers</h3>
       <DataTable 
         data={plans}
         columns={[
-          { key: 'name', header: 'Plan Name', render: (r) => <span className="font-semibold text-white">{r.name}</span> },
+          { key: 'name', header: 'Plan Name', render: (r) => <span className="font-semibold text-slate-900 dark:text-white">{r.name}</span> },
           { key: 'price', header: 'Price' },
           { key: 'users', header: 'Active Users', render: (r) => <span className="text-gray-300">{r.users.toLocaleString('en-US')}</span> },
           { key: 'status', header: 'Status', render: (r) => {
             const v = r.status === 'ACTIVE' ? 'success' : 'default';
             return <Badge variant={v}>{r.status}</Badge>;
           }},
-          { key: 'actions', header: '', render: () => <button className="text-sm text-gray-400 hover:text-white border border-white/10 px-3 py-1 rounded">Edit</button> }
+          { key: 'actions', header: '', render: () => <button className="text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white border border-black/10 dark:border-white/10 px-3 py-1 rounded">Edit</button> }
         ]}
       />
     </>

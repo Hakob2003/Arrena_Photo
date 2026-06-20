@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={cn("dark", "font-sans", inter.variable)}>
-      <body className="flex h-screen overflow-hidden bg-black text-gray-100 antialiased">
+      <body className="flex h-screen overflow-hidden bg-[#fafafa] dark:bg-black text-gray-100 antialiased">
         <Providers>
           <ClientLayout>
             {children}

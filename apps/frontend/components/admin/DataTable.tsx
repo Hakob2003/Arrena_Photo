@@ -37,21 +37,21 @@ export function DataTable<T extends { id: string }>({ data, columns, onSelection
   };
 
   return (
-    <div className="border border-white/10 rounded-lg bg-[#0a0a0a] overflow-hidden">
+    <div className="border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a] overflow-hidden">
       {/* Toolbar */}
-      <div className="p-4 border-b border-white/10 flex justify-between items-center bg-[#050505]">
+      <div className="p-4 border-b border-black/10 dark:border-white/10 flex justify-between items-center bg-[#050505]">
         <div className="flex items-center gap-2">
           <input 
             type="text" 
             placeholder="Search..." 
-            className="bg-black border border-white/10 rounded-md px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/20"
+            className="bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-1.5 text-sm text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/20"
           />
-          <button className="px-3 py-1.5 border border-white/10 rounded-md text-sm text-gray-300 hover:bg-white/5 transition-colors">
+          <button className="px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-md text-sm text-gray-300 hover:bg-black/[0.03] dark:bg-white/5 transition-colors">
             Filter
           </button>
         </div>
         <div className="flex items-center gap-2">
-          {selected.size > 0 && <span className="text-sm text-gray-500">{selected.size} selected</span>}
+          {selected.size > 0 && <span className="text-sm text-slate-400 dark:text-gray-500">{selected.size} selected</span>}
           {actions}
         </div>
       </div>
@@ -59,12 +59,12 @@ export function DataTable<T extends { id: string }>({ data, columns, onSelection
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="bg-[#050505] border-b border-white/10 text-gray-400">
+          <thead className="bg-[#050505] border-b border-black/10 dark:border-white/10 text-slate-500 dark:text-gray-400">
             <tr>
               <th className="px-4 py-3 w-10">
                 <input 
                   type="checkbox" 
-                  className="rounded border-white/20 bg-black checked:bg-white checked:border-white focus:ring-0"
+                  className="rounded border-black/20 dark:border-white/20 bg-[#fafafa] dark:bg-black checked:bg-white checked:border-white focus:ring-0"
                   checked={selected.size === data.length && data.length > 0}
                   onChange={handleSelectAll}
                 />
@@ -80,7 +80,7 @@ export function DataTable<T extends { id: string }>({ data, columns, onSelection
                 <td className="px-4 py-3">
                   <input 
                     type="checkbox" 
-                    className="rounded border-white/20 bg-black checked:bg-white checked:border-white focus:ring-0"
+                    className="rounded border-black/20 dark:border-white/20 bg-[#fafafa] dark:bg-black checked:bg-white checked:border-white focus:ring-0"
                     checked={selected.has(row.id)}
                     onChange={(e) => handleSelectRow(row.id, e.target.checked)}
                   />
@@ -94,7 +94,7 @@ export function DataTable<T extends { id: string }>({ data, columns, onSelection
             ))}
             {data.length === 0 && (
               <tr>
-                <td colSpan={columns.length + 1} className="px-4 py-8 text-center text-gray-500">
+                <td colSpan={columns.length + 1} className="px-4 py-8 text-center text-slate-400 dark:text-gray-500">
                   No data found
                 </td>
               </tr>
@@ -104,11 +104,11 @@ export function DataTable<T extends { id: string }>({ data, columns, onSelection
       </div>
       
       {/* Pagination (Mock) */}
-      <div className="p-4 border-t border-white/10 flex justify-between items-center text-sm text-gray-500 bg-[#050505]">
+      <div className="p-4 border-t border-black/10 dark:border-white/10 flex justify-between items-center text-sm text-slate-400 dark:text-gray-500 bg-[#050505]">
         <span>Showing 1 to {data.length} of {data.length} entries</span>
         <div className="flex gap-1">
-          <button className="px-3 py-1 border border-white/10 rounded-md hover:bg-white/5 disabled:opacity-50" disabled>Previous</button>
-          <button className="px-3 py-1 border border-white/10 rounded-md hover:bg-white/5 disabled:opacity-50" disabled>Next</button>
+          <button className="px-3 py-1 border border-black/10 dark:border-white/10 rounded-md hover:bg-black/[0.03] dark:bg-white/5 disabled:opacity-50" disabled>Previous</button>
+          <button className="px-3 py-1 border border-black/10 dark:border-white/10 rounded-md hover:bg-black/[0.03] dark:bg-white/5 disabled:opacity-50" disabled>Next</button>
         </div>
       </div>
     </div>

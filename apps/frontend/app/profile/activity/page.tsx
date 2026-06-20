@@ -28,8 +28,8 @@ export default function ActivityProfilePage() {
   if (isLoading) {
     return (
       <div className="space-y-6 animate-pulse max-w-4xl">
-        <div className="h-8 w-48 bg-white/10 rounded-lg" />
-        <div className="h-64 bg-white/10 rounded-2xl" />
+        <div className="h-8 w-48 bg-black/[0.05] dark:bg-white/10 rounded-lg" />
+        <div className="h-64 bg-black/[0.05] dark:bg-white/10 rounded-2xl" />
       </div>
     );
   }
@@ -38,7 +38,7 @@ export default function ActivityProfilePage() {
     switch (type) {
       case 'GENERATION': return <ImageIcon className="w-5 h-5 text-blue-400" />;
       case 'LOGIN': return <LogIn className="w-5 h-5 text-green-400" />;
-      default: return <MonitorPlay className="w-5 h-5 text-gray-400" />;
+      default: return <MonitorPlay className="w-5 h-5 text-slate-500 dark:text-gray-400" />;
     }
   };
 
@@ -59,32 +59,32 @@ export default function ActivityProfilePage() {
     <div className="space-y-8 max-w-4xl">
       <div>
         <h2 className="text-2xl font-semibold mb-1">Activity History</h2>
-        <p className="text-gray-400 text-sm">Review your recent actions and logins.</p>
+        <p className="text-slate-500 dark:text-gray-400 text-sm">Review your recent actions and logins.</p>
       </div>
 
-      <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+      <div className="bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl overflow-hidden">
         {activity.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
+          <div className="p-8 text-center text-slate-400 dark:text-gray-500">
             No recent activity found.
           </div>
         ) : (
           <div className="divide-y divide-white/5">
             {activity.map((item, idx) => (
-              <div key={item.id || idx} className="p-4 hover:bg-white/5 transition-colors flex items-center gap-4">
-                <div className="p-3 bg-white/5 rounded-xl shrink-0">
+              <div key={item.id || idx} className="p-4 hover:bg-black/[0.03] dark:bg-white/5 transition-colors flex items-center gap-4">
+                <div className="p-3 bg-black/[0.03] dark:bg-white/5 rounded-xl shrink-0">
                   {getIcon(item.type)}
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-white truncate">
+                  <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
                     {item.action}
                   </p>
-                  <p className="text-xs text-gray-400 mt-1">
+                  <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
                     {format(new Date(item.date), 'MMM d, yyyy • HH:mm')}
                   </p>
                 </div>
 
-                <div className="shrink-0 flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full text-xs font-medium">
+                <div className="shrink-0 flex items-center gap-2 px-3 py-1 bg-black/[0.03] dark:bg-white/5 rounded-full text-xs font-medium">
                   {getStatusIcon(item.status)}
                   <span className={cn(
                     item.status === 'DONE' || item.status === 'SUCCESS' ? 'text-green-500' :

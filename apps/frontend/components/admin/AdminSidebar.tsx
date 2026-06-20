@@ -51,7 +51,7 @@ export function AdminSidebar() {
       {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div 
-          className="fixed inset-0 bg-black/60 z-40 md:hidden backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 bg-[#fafafa] dark:bg-black/60 z-40 md:hidden backdrop-blur-sm transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -68,12 +68,12 @@ export function AdminSidebar() {
           mass: 0.8
         }}
         className={`
-          fixed inset-y-0 left-0 z-50 w-64 bg-[#0a0a0a] border-r border-white/5 flex flex-col text-sm
+          fixed inset-y-0 left-0 z-50 w-64 bg-[#0a0a0a] border-r border-black/5 dark:border-white/5 flex flex-col text-sm
           ${!isMobile ? 'relative' : ''}
         `}
       >
       {/* Brand Header */}
-      <div className="py-4 flex items-center justify-between px-6 border-b border-white/5 h-[80px]">
+      <div className="py-4 flex items-center justify-between px-6 border-b border-black/5 dark:border-white/5 h-[80px]">
         <AnimatePresence>
           {showSidebarLogo && (
             <Link href="/" className="flex items-center gap-2 w-full hover:opacity-80 transition-opacity" title="Вернуться на главную">
@@ -88,7 +88,7 @@ export function AdminSidebar() {
           )}
         </AnimatePresence>
         <button 
-          className="md:hidden text-gray-400 hover:text-white p-2 absolute right-4 top-5"
+          className="md:hidden text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white p-2 absolute right-4 top-5"
           onClick={() => setSidebarOpen(false)}
         >
           ✕
@@ -99,7 +99,7 @@ export function AdminSidebar() {
       <div className="flex-1 overflow-y-auto py-4 px-3 space-y-6 custom-scrollbar">
         {ADMIN_LINKS.map((group, i) => (
           <div key={i}>
-            <h4 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            <h4 className="px-3 text-xs font-semibold text-slate-400 dark:text-gray-500 uppercase tracking-wider mb-2">
               {group.section}
             </h4>
             <div className="space-y-0.5">
@@ -111,8 +111,8 @@ export function AdminSidebar() {
                     href={link.href}
                     className={`flex items-center gap-3 px-3 py-1.5 rounded-md transition-colors ${
                       isActive 
-                        ? 'bg-white/10 text-white font-medium' 
-                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                        ? 'bg-black/[0.05] dark:bg-white/10 text-white font-medium' 
+                        : 'text-slate-500 dark:text-gray-400 hover:text-white hover:bg-black/[0.03] dark:bg-white/5'
                     }`}
                   >
                     <span className="text-base">{link.icon}</span>
@@ -126,8 +126,8 @@ export function AdminSidebar() {
       </div>
 
       {/* User Section */}
-      <div className="p-4 border-t border-white/5 mt-auto flex flex-col gap-4">
-        <Link href="/" className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors px-2 py-1.5 rounded-md hover:bg-white/5 text-sm">
+      <div className="p-4 border-t border-black/5 dark:border-white/5 mt-auto flex flex-col gap-4">
+        <Link href="/" className="flex items-center gap-2 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white transition-colors px-2 py-1.5 rounded-md hover:bg-black/[0.03] dark:bg-white/5 text-sm">
           <span className="text-base">⬅️</span>
           <span className="font-medium">В приложение</span>
         </Link>
@@ -139,13 +139,13 @@ export function AdminSidebar() {
                 {user.name?.charAt(0) || 'U'}
               </div>
               <div className="truncate text-left">
-                <p className="text-sm font-medium text-white truncate">{user.name}</p>
-                <p className="text-[10px] text-gray-500 truncate uppercase tracking-wider">{user.role}</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user.name}</p>
+                <p className="text-[10px] text-slate-400 dark:text-gray-500 truncate uppercase tracking-wider">{user.role}</p>
               </div>
             </div>
             <button 
               onClick={handleLogout}
-              className="p-2 text-gray-400 hover:text-white transition-colors ml-2"
+              className="p-2 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white transition-colors ml-2"
               title="Выйти"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

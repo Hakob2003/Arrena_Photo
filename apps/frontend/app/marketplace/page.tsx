@@ -29,7 +29,7 @@ export default function MarketplacePage() {
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent break-words">
             Маркетплейс AI Шаблонов
           </h1>
-          <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto px-2">
+          <p className="text-base sm:text-lg text-slate-400 dark:text-gray-500 dark:text-gray-400 max-w-2xl mx-auto px-2">
             Открывайте тысячи готовых AI-промптов, созданных лучшими авторами.
           </p>
         </div>

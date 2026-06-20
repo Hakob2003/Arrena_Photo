@@ -48,7 +48,7 @@ function VerifyContent() {
         {status === 'success' && (
           <div className="text-green-600">
             <p className="mb-4">{message}</p>
-            <Link href="/login" className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 inline-block">
+            <Link href="/login" className="px-6 py-2 bg-blue-600 text-slate-900 dark:text-white rounded-lg hover:bg-blue-700 inline-block">
               Войти
             </Link>
           </div>

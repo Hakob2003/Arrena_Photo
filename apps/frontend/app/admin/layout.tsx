@@ -63,9 +63,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     >
       <AdminSidebar />
       <div className="flex-1 flex flex-col min-w-0">
-        <div className="flex items-center w-full z-20 bg-[#0a0a0a] border-b border-white/5 md:border-none">
+        <div className="flex items-center w-full z-20 bg-[#0a0a0a] border-b border-black/5 dark:border-white/5 md:border-none">
           <button 
-            className="md:hidden p-4 text-white hover:text-gray-300"
+            className="md:hidden p-4 text-slate-900 dark:text-white hover:text-gray-300"
             onClick={() => setSidebarOpen(true)}
           >
             ☰

@@ -98,22 +98,22 @@ export default function AppearanceProfilePage() {
   ];
 
   if (isLoading) {
-    return <div className="animate-pulse space-y-8"><div className="h-40 bg-white/10 rounded-xl"></div></div>;
+    return <div className="animate-pulse space-y-8"><div className="h-40 bg-black/[0.05] dark:bg-white/10 rounded-xl"></div></div>;
   }
 
   return (
     <div className="space-y-8 max-w-3xl">
       <div>
         <h2 className="text-2xl font-semibold mb-1">Appearance</h2>
-        <p className="text-gray-400 text-sm">Customize how the application looks and feels.</p>
+        <p className="text-slate-500 dark:text-gray-400 text-sm">Customize how the application looks and feels.</p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-6 border-t border-white/10">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-6 border-t border-black/10 dark:border-white/10">
         {/* Theme */}
         <div className="space-y-4">
           <div>
-            <h3 className="text-base font-medium text-white mb-1">Theme</h3>
-            <p className="text-sm text-gray-400">Select or customize your UI theme.</p>
+            <h3 className="text-base font-medium text-slate-900 dark:text-white mb-1">Theme</h3>
+            <p className="text-sm text-slate-500 dark:text-gray-400">Select or customize your UI theme.</p>
           </div>
           <div className="grid grid-cols-3 gap-4">
             {themes.map((t) => {
@@ -127,8 +127,8 @@ export default function AppearanceProfilePage() {
                   className={cn(
                     "flex flex-col items-center justify-center gap-3 p-4 rounded-xl border transition-all",
                     isActive 
-                      ? "border-white bg-white/10" 
-                      : "border-white/10 hover:border-white/30 bg-transparent text-gray-400 hover:text-white"
+                      ? "border-white bg-black/[0.05] dark:bg-white/10" 
+                      : "border-black/10 dark:border-white/10 hover:border-white/30 bg-transparent text-slate-500 dark:text-gray-400 hover:text-white"
                   )}
                 >
                   <Icon className="w-6 h-6" />
@@ -140,10 +140,10 @@ export default function AppearanceProfilePage() {
         </div>
 
         {/* Accent Color */}
-        <div className="space-y-4 pt-6 border-t border-white/10">
+        <div className="space-y-4 pt-6 border-t border-black/10 dark:border-white/10">
           <div>
-            <h3 className="text-base font-medium text-white mb-1">Accent Color</h3>
-            <p className="text-sm text-gray-400">Choose your primary brand color.</p>
+            <h3 className="text-base font-medium text-slate-900 dark:text-white mb-1">Accent Color</h3>
+            <p className="text-sm text-slate-500 dark:text-gray-400">Choose your primary brand color.</p>
           </div>
           <div className="flex items-center gap-4">
             {colors.map((c) => (
@@ -162,12 +162,12 @@ export default function AppearanceProfilePage() {
         </div>
 
         {/* Font Size */}
-        <div className="space-y-4 pt-6 border-t border-white/10">
+        <div className="space-y-4 pt-6 border-t border-black/10 dark:border-white/10">
           <div>
-            <h3 className="text-base font-medium text-white mb-1">Font Size</h3>
-            <p className="text-sm text-gray-400">Adjust the interface text size.</p>
+            <h3 className="text-base font-medium text-slate-900 dark:text-white mb-1">Font Size</h3>
+            <p className="text-sm text-slate-500 dark:text-gray-400">Adjust the interface text size.</p>
           </div>
-          <div className="flex bg-white/5 border border-white/10 rounded-lg p-1 w-fit">
+          <div className="flex bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg p-1 w-fit">
             {fonts.map((f) => (
               <button
                 key={f.id}
@@ -175,7 +175,7 @@ export default function AppearanceProfilePage() {
                 onClick={() => setValue('fontSize', f.id, { shouldDirty: true })}
                 className={cn(
                   "px-6 py-2 rounded-md transition-colors",
-                  watchFont === f.id ? "bg-white text-black font-medium" : "text-gray-400 hover:text-white",
+                  watchFont === f.id ? "bg-white text-black font-medium" : "text-slate-500 dark:text-gray-400 hover:text-white",
                   f.class
                 )}
               >
@@ -186,15 +186,15 @@ export default function AppearanceProfilePage() {
         </div>
 
         {/* Toggles */}
-        <div className="space-y-6 pt-6 border-t border-white/10">
+        <div className="space-y-6 pt-6 border-t border-black/10 dark:border-white/10">
           <Controller
             control={control}
             name="compactMode"
             render={({ field }) => (
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-medium text-white">Compact Mode</h3>
-                  <p className="text-sm text-gray-400">Decrease spacing to fit more content on screen.</p>
+                  <h3 className="text-base font-medium text-slate-900 dark:text-white">Compact Mode</h3>
+                  <p className="text-sm text-slate-500 dark:text-gray-400">Decrease spacing to fit more content on screen.</p>
                 </div>
                 <Switch
                   checked={field.value}
@@ -208,7 +208,7 @@ export default function AppearanceProfilePage() {
                     aria-hidden="true"
                     className={cn(
                       field.value ? 'translate-x-5' : 'translate-x-0',
-                      'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-black shadow ring-0 transition duration-200 ease-in-out mt-0.5 ml-0.5'
+                      'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-[#fafafa] dark:bg-black shadow ring-0 transition duration-200 ease-in-out mt-0.5 ml-0.5'
                     )}
                   />
                 </Switch>
@@ -222,8 +222,8 @@ export default function AppearanceProfilePage() {
             render={({ field }) => (
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-medium text-white">Interface Animations</h3>
-                  <p className="text-sm text-gray-400">Enable smooth transitions and micro-interactions.</p>
+                  <h3 className="text-base font-medium text-slate-900 dark:text-white">Interface Animations</h3>
+                  <p className="text-sm text-slate-500 dark:text-gray-400">Enable smooth transitions and micro-interactions.</p>
                 </div>
                 <Switch
                   checked={field.value}
@@ -237,7 +237,7 @@ export default function AppearanceProfilePage() {
                     aria-hidden="true"
                     className={cn(
                       field.value ? 'translate-x-5' : 'translate-x-0',
-                      'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-black shadow ring-0 transition duration-200 ease-in-out mt-0.5 ml-0.5'
+                      'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-[#fafafa] dark:bg-black shadow ring-0 transition duration-200 ease-in-out mt-0.5 ml-0.5'
                     )}
                   />
                 </Switch>
@@ -246,7 +246,7 @@ export default function AppearanceProfilePage() {
           />
         </div>
 
-        <div className="flex justify-end pt-6 border-t border-white/10">
+        <div className="flex justify-end pt-6 border-t border-black/10 dark:border-white/10">
           <button 
             type="submit" 
             disabled={isSaving}
