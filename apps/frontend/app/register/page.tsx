@@ -31,7 +31,7 @@ export default function RegisterPage() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md p-6 sm:p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">Регистрация</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-slate-900 dark:text-white">Регистрация</h2>
         
         {error && <div className="mb-4 p-3 bg-red-100 text-red-600 rounded-md text-sm">{error}</div>}
         {message && <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md text-sm">{message}</div>}
@@ -43,7 +43,7 @@ export default function RegisterPage() {
               type="text" 
               required
               autoComplete="off"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-slate-900 dark:text-white"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -54,7 +54,7 @@ export default function RegisterPage() {
               type="email" 
               required
               autoComplete="off"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-slate-900 dark:text-white"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -65,12 +65,12 @@ export default function RegisterPage() {
               type="password" 
               required
               autoComplete="new-password"
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-slate-900 dark:text-white"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button type="submit" className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-white rounded-lg font-medium transition-colors">
+          <button type="submit" className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-slate-900 dark:text-white rounded-lg font-medium transition-colors">
             Зарегистрироваться
           </button>
         </form>

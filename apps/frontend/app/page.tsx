@@ -29,7 +29,7 @@ export default function HomePage() {
             </button>
           </Link>
           <Link href="/marketplace" className="w-full sm:w-auto">
-            <button className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 glass text-slate-900 dark:text-white font-bold rounded-full text-base sm:text-lg hover:bg-black/[0.05] dark:bg-white/10 transition-all border border-black/20 dark:border-white/20">
+            <button className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 glass text-slate-900 dark:text-slate-900 dark:text-white font-bold rounded-full text-base sm:text-lg hover:bg-black/[0.05] dark:bg-white/10 transition-all border border-black/20 dark:border-white/20">
               Перейти в Маркетплейс
             </button>
           </Link>

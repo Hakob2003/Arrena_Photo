@@ -227,7 +227,7 @@ function GeneratorContent() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Футуристический киберпанк город ночью, неоновые огни отражаются в лужах..."
-            className="w-full h-40 bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-xl p-4 text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+            className="w-full h-40 bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-xl p-4 text-slate-900 dark:text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
           />
         </div>
 
@@ -236,7 +236,7 @@ function GeneratorContent() {
           <select 
             value={model}
             onChange={(e) => setModel(e.target.value)}
-            className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-xl p-3 text-slate-900 dark:text-white mb-4 outline-none"
+            className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-xl p-3 text-slate-900 dark:text-slate-900 dark:text-white mb-4 outline-none"
           >
             {models.map(m => (
               <option key={m.id} value={m.id}>{m.name}</option>
@@ -323,7 +323,7 @@ function GeneratorContent() {
                 <div key={item.id} className="relative aspect-square h-full shrink-0 rounded-lg overflow-hidden group cursor-pointer" onClick={() => setResult(item.imageUrl)}>
                   <AuthImage driveFileId={item.driveFileId} fallbackUrl={item.imageUrl} alt={item.prompt} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                   <div className="absolute inset-0 bg-[#fafafa] dark:bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
-                    <span className="text-slate-900 dark:text-white text-[10px] font-bold truncate">{item.template || item.model}</span>
+                    <span className="text-slate-900 dark:text-slate-900 dark:text-white text-[10px] font-bold truncate">{item.template || item.model}</span>
                   </div>
                 </div>
               ))
@@ -338,7 +338,7 @@ function GeneratorContent() {
 
 export default function GeneratorPage() {
   return (
-    <React.Suspense fallback={<div className="h-full flex items-center justify-center text-slate-900 dark:text-white">Loading...</div>}>
+    <React.Suspense fallback={<div className="h-full flex items-center justify-center text-slate-900 dark:text-slate-900 dark:text-white">Loading...</div>}>
       <GeneratorContent />
     </React.Suspense>
   );

@@ -22,9 +22,9 @@ export default function GalleryPage() {
           <p className="text-slate-500 dark:text-gray-400 text-sm sm:text-base">Смотрите, что создают другие пользователи прямо сейчас.</p>
         </div>
         <div className="flex bg-black/[0.03] dark:bg-white/5 rounded-lg p-1 w-full sm:w-auto overflow-x-auto">
-          <button className="px-4 py-1.5 rounded-md bg-black/[0.05] dark:bg-white/10 text-slate-900 dark:text-white font-medium shadow-sm">Популярное</button>
-          <button className="px-4 py-1.5 rounded-md text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white">Новое</button>
-          <button className="px-4 py-1.5 rounded-md text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white">Лучшее</button>
+          <button className="px-4 py-1.5 rounded-md bg-black/[0.05] dark:bg-white/10 text-slate-900 dark:text-slate-900 dark:text-white font-medium shadow-sm">Популярное</button>
+          <button className="px-4 py-1.5 rounded-md text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white">Новое</button>
+          <button className="px-4 py-1.5 rounded-md text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white">Лучшее</button>
         </div>
       </div>
 
@@ -45,13 +45,13 @@ export default function GalleryPage() {
             <div className="absolute inset-0 bg-[#fafafa] dark:bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-orange-400" />
-                <span className="text-slate-900 dark:text-white font-medium text-sm">{item.author}</span>
+                <span className="text-slate-900 dark:text-slate-900 dark:text-white font-medium text-sm">{item.author}</span>
               </div>
               <p className="text-slate-900 dark:text-white/80 text-sm line-clamp-2">
                 {item.prompt}
               </p>
               <div className="flex gap-2 mt-4">
-                <button className="flex-1 glass text-slate-900 dark:text-white text-xs font-bold py-2 rounded-lg hover:bg-white/20">Ремикс</button>
+                <button className="flex-1 glass text-slate-900 dark:text-slate-900 dark:text-white text-xs font-bold py-2 rounded-lg hover:bg-white/20">Ремикс</button>
                 <button className="w-10 glass flex items-center justify-center rounded-lg hover:bg-white/20">❤️</button>
               </div>
             </div>

@@ -130,7 +130,7 @@ export default function AdminUsersPage() {
     }),
     columnHelper.accessor('email', {
       header: 'Email',
-      cell: info => <span className="text-slate-900 dark:text-white">{info.getValue()}</span>,
+      cell: info => <span className="text-slate-900 dark:text-slate-900 dark:text-white">{info.getValue()}</span>,
     }),
     columnHelper.accessor('createdAt', {
       header: 'Registered / Last Login',
@@ -181,7 +181,7 @@ export default function AdminUsersPage() {
           <div className="flex flex-wrap gap-2">
             <button 
               onClick={() => setEditingCredits(user)}
-              className="text-xs bg-black/[0.05] dark:bg-white/10 hover:bg-white/20 text-slate-900 dark:text-white px-2 py-1 rounded transition-colors"
+              className="text-xs bg-black/[0.05] dark:bg-white/10 hover:bg-white/20 text-slate-900 dark:text-slate-900 dark:text-white px-2 py-1 rounded transition-colors"
             >
               Credits
             </button>
@@ -245,12 +245,12 @@ export default function AdminUsersPage() {
           <input 
             type="text" 
             placeholder="Search by email or name..." 
-            className="flex-1 bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+            className="flex-1 bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
           <select 
-            className="bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+            className="bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
             value={roleFilter}
             onChange={e => setRoleFilter(e.target.value)}
           >
@@ -330,7 +330,7 @@ export default function AdminUsersPage() {
       {editingCredits && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#fafafa] dark:bg-black/80 p-4">
           <div className="bg-[#111] border border-black/10 dark:border-white/10 rounded-xl p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Manage Credits</h3>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-900 dark:text-white mb-2">Manage Credits</h3>
             <p className="text-sm text-slate-500 dark:text-gray-400 mb-6">Editing balance for {editingCredits.email}</p>
             
             <form onSubmit={handleAddCredits} className="space-y-4">
@@ -340,7 +340,7 @@ export default function AdminUsersPage() {
                   type="number" 
                   name="amount" 
                   required
-                  className="w-full bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+                  className="w-full bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
                   placeholder="e.g. 100 or -50"
                 />
               </div>
@@ -350,7 +350,7 @@ export default function AdminUsersPage() {
                   type="text" 
                   name="reason" 
                   required
-                  className="w-full bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+                  className="w-full bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
                   placeholder="e.g. Bonus for reporting a bug"
                 />
               </div>
@@ -358,7 +358,7 @@ export default function AdminUsersPage() {
                 <button 
                   type="button" 
                   onClick={() => setEditingCredits(null)}
-                  className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white"
+                  className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white"
                 >
                   Cancel
                 </button>
@@ -378,7 +378,7 @@ export default function AdminUsersPage() {
       {changingPlan && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#fafafa] dark:bg-black/80 p-4">
           <div className="bg-[#111] border border-black/10 dark:border-white/10 rounded-xl p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Change Subscription Plan</h3>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-900 dark:text-white mb-2">Change Subscription Plan</h3>
             <p className="text-sm text-slate-500 dark:text-gray-400 mb-6">Updating plan for {changingPlan.email}</p>
             
             <form onSubmit={handleChangePlan} className="space-y-4">
@@ -387,7 +387,7 @@ export default function AdminUsersPage() {
                 <select 
                   name="plan" 
                   defaultValue={changingPlan.plan}
-                  className="w-full bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+                  className="w-full bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
                 >
                   <option value="FREE">Free</option>
                   <option value="PRO">Pro</option>
@@ -398,7 +398,7 @@ export default function AdminUsersPage() {
                 <button 
                   type="button" 
                   onClick={() => setChangingPlan(null)}
-                  className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white"
+                  className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white"
                 >
                   Cancel
                 </button>
@@ -418,21 +418,21 @@ export default function AdminUsersPage() {
       {importing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#fafafa] dark:bg-black/80 p-4">
           <div className="bg-[#111] border border-black/10 dark:border-white/10 rounded-xl p-6 w-full max-w-2xl">
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Import Users (CSV)</h3>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-900 dark:text-white mb-2">Import Users (CSV)</h3>
             <p className="text-sm text-slate-500 dark:text-gray-400 mb-6">Paste your CSV contents below. Only the first column (Email) will be parsed.</p>
             
             <div className="space-y-4">
               <textarea 
                 value={importText}
                 onChange={e => setImportText(e.target.value)}
-                className="w-full h-64 bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md p-3 text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:border-white/30 custom-scrollbar"
+                className="w-full h-64 bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md p-3 text-slate-900 dark:text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:border-white/30 custom-scrollbar"
                 placeholder="user1@example.com, ...&#10;user2@example.com, ..."
               />
               <div className="flex justify-end gap-3 pt-2">
                 <button 
                   type="button" 
                   onClick={() => { setImporting(false); setImportText(''); }}
-                  className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white"
+                  className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white"
                 >
                   Cancel
                 </button>

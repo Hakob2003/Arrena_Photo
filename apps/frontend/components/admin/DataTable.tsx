@@ -44,7 +44,7 @@ export function DataTable<T extends { id: string }>({ data, columns, onSelection
           <input 
             type="text" 
             placeholder="Search..." 
-            className="bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-1.5 text-sm text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/20"
+            className="bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-1.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/20"
           />
           <button className="px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-md text-sm text-gray-300 hover:bg-black/[0.03] dark:bg-white/5 transition-colors">
             Filter

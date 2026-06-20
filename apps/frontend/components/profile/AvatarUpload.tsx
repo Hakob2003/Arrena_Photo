@@ -71,7 +71,7 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
           <Camera className="w-8 h-8 text-slate-400 dark:text-gray-500" />
         )}
         <div className="absolute inset-0 bg-[#fafafa] dark:bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <Camera className="w-6 h-6 text-slate-900 dark:text-white" />
+          <Camera className="w-6 h-6 text-slate-900 dark:text-slate-900 dark:text-white" />
         </div>
       </div>
 
@@ -111,7 +111,7 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
             <div className="bg-[#111] border border-black/10 dark:border-white/10 rounded-2xl w-full max-w-lg p-6 flex flex-col shadow-2xl relative overflow-hidden">
               <button 
                 onClick={() => setImageSrc(null)}
-                className="absolute top-4 right-4 z-10 p-2 bg-[#fafafa] dark:bg-black/50 hover:bg-black/[0.05] dark:bg-white/10 rounded-full text-slate-900 dark:text-white transition"
+                className="absolute top-4 right-4 z-10 p-2 bg-[#fafafa] dark:bg-black/50 hover:bg-black/[0.05] dark:bg-white/10 rounded-full text-slate-900 dark:text-slate-900 dark:text-white transition"
               >
                 <X className="w-5 h-5" />
               </button>

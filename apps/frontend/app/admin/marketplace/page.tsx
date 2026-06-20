@@ -45,11 +45,11 @@ export default function AdminMarketplace() {
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="p-4 border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a]">
            <p className="text-sm text-slate-400 dark:text-gray-500">Pending Payouts</p>
-           <p className="text-2xl font-semibold text-slate-900 dark:text-white">${metrics.pendingAmount.toFixed(2)}</p>
+           <p className="text-2xl font-semibold text-slate-900 dark:text-slate-900 dark:text-white">${metrics.pendingAmount.toFixed(2)}</p>
         </div>
         <div className="p-4 border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a]">
            <p className="text-sm text-slate-400 dark:text-gray-500">Total Paid (All Time)</p>
-           <p className="text-2xl font-semibold text-slate-900 dark:text-white">${metrics.totalPaid.toFixed(2)}</p>
+           <p className="text-2xl font-semibold text-slate-900 dark:text-slate-900 dark:text-white">${metrics.totalPaid.toFixed(2)}</p>
         </div>
         <div className="p-4 border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a]">
            <p className="text-sm text-slate-400 dark:text-gray-500">Platform Revenue (10% Cut Est.)</p>
@@ -57,7 +57,7 @@ export default function AdminMarketplace() {
         </div>
       </div>
 
-      <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-4">Payout Requests</h3>
+      <h3 className="text-lg font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-4">Payout Requests</h3>
       {loading ? (
         <div className="text-slate-500 dark:text-gray-400 p-8 text-center">Loading payouts...</div>
       ) : (
@@ -65,7 +65,7 @@ export default function AdminMarketplace() {
           data={payouts}
           columns={[
             { key: 'user', header: 'Creator Email' },
-            { key: 'amount', header: 'Amount', render: (r: any) => <span className="font-mono text-slate-900 dark:text-white">{r.amount}</span> },
+            { key: 'amount', header: 'Amount', render: (r: any) => <span className="font-mono text-slate-900 dark:text-slate-900 dark:text-white">{r.amount}</span> },
             { key: 'date', header: 'Request Date' },
             { key: 'status', header: 'Status', render: (r: any) => (
               <Badge variant={r.status === 'COMPLETED' ? 'success' : 'warning'}>{r.status}</Badge>

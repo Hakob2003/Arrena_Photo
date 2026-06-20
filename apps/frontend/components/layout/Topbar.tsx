@@ -15,7 +15,7 @@ export function Topbar() {
     <header className="h-16 border-b border-[rgba(0,0,0,0.05)] dark:border-white/5 bg-[rgba(255,255,255,0.65)] dark:bg-black/20 backdrop-blur-[20px] flex items-center justify-between px-4 sm:px-6 sticky top-0 z-20">
       <div className="flex items-center gap-2 md:hidden">
         <button 
-          className="p-2 -ml-2 text-slate-900 hover:text-slate-500 dark:text-white dark:hover:text-gray-300"
+          className="p-2 -ml-2 text-slate-900 hover:text-slate-500 dark:text-slate-900 dark:text-white dark:hover:text-slate-900 dark:hover:text-gray-300"
           onClick={() => setSidebarOpen(true)}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

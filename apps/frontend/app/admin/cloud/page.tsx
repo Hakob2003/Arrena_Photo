@@ -22,7 +22,7 @@ export default function AdminCloudProviders() {
       <DataTable 
         data={buckets}
         columns={[
-          { key: 'name', header: 'Bucket Name', render: (r) => <span className="font-semibold text-slate-900 dark:text-white">{r.name}</span> },
+          { key: 'name', header: 'Bucket Name', render: (r) => <span className="font-semibold text-slate-900 dark:text-slate-900 dark:text-white">{r.name}</span> },
           { key: 'provider', header: 'Provider' },
           { key: 'region', header: 'Region', render: (r) => <span className="font-mono text-slate-400 dark:text-gray-500 text-xs">{r.region}</span> },
           { key: 'size', header: 'Storage Used' },
@@ -30,7 +30,7 @@ export default function AdminCloudProviders() {
             const v = r.status === 'ACTIVE' ? 'success' : r.status === 'OFFLINE' ? 'error' : 'warning';
             return <Badge variant={v}>{r.status}</Badge>;
           }},
-          { key: 'actions', header: '', render: () => <button className="text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white border border-black/10 dark:border-white/10 px-3 py-1 rounded">Configure</button> }
+          { key: 'actions', header: '', render: () => <button className="text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white border border-black/10 dark:border-white/10 px-3 py-1 rounded">Configure</button> }
         ]}
       />
     </>

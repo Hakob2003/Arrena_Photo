@@ -34,7 +34,7 @@ export function ConfirmDeleteModal({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
-            {description} <span className="font-semibold text-slate-900 dark:text-white">{itemName}</span>?
+            {description} <span className="font-semibold text-slate-900 dark:text-slate-900 dark:text-white">{itemName}</span>?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="mt-4">

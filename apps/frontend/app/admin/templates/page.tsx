@@ -143,7 +143,7 @@ export default function AdminTemplatesPage() {
           description="Manage AI generation templates, categories and visibility."
         />
         <div className="flex items-center gap-4">
-          <Button onClick={() => setIsImportModalOpen(true)} variant="outline" className="bg-transparent border-black/10 dark:border-gray-800 hover:bg-white dark:bg-gray-800 text-slate-900 dark:text-white">
+          <Button onClick={() => setIsImportModalOpen(true)} variant="outline" className="bg-transparent border-black/10 dark:border-gray-800 hover:bg-white dark:bg-gray-800 text-slate-900 dark:text-slate-900 dark:text-white">
             Import CSV/JSON
           </Button>
           <Button onClick={openCreate} className="bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none hover:bg-indigo-700 text-white">
@@ -154,9 +154,9 @@ export default function AdminTemplatesPage() {
 
       {selectedIds.size > 0 && (
         <div className="flex items-center gap-2 p-2 bg-[#1a1a1a] rounded-md border border-black/10 dark:border-gray-800">
-          <span className="text-sm font-medium ml-2 mr-4 text-slate-900 dark:text-white">{selectedIds.size} selected</span>
-          <Button size="sm" variant="outline" className="bg-transparent text-slate-900 dark:text-white border-gray-700" onClick={() => handleBulkAction('PUBLISH')}>Publish</Button>
-          <Button size="sm" variant="outline" className="bg-transparent text-slate-900 dark:text-white border-gray-700" onClick={() => handleBulkAction('DRAFT')}>Set Draft</Button>
+          <span className="text-sm font-medium ml-2 mr-4 text-slate-900 dark:text-slate-900 dark:text-white">{selectedIds.size} selected</span>
+          <Button size="sm" variant="outline" className="bg-transparent text-slate-900 dark:text-slate-900 dark:text-white border-gray-700" onClick={() => handleBulkAction('PUBLISH')}>Publish</Button>
+          <Button size="sm" variant="outline" className="bg-transparent text-slate-900 dark:text-slate-900 dark:text-white border-gray-700" onClick={() => handleBulkAction('DRAFT')}>Set Draft</Button>
           <Button size="sm" variant="destructive" onClick={() => handleBulkAction('DELETE')}>Delete</Button>
         </div>
       )}
@@ -202,7 +202,7 @@ export default function AdminTemplatesPage() {
                       </div>
                     )}
                   </TableCell>
-                  <TableCell className="font-medium text-slate-900 dark:text-white">
+                  <TableCell className="font-medium text-slate-900 dark:text-slate-900 dark:text-white">
                     {template.name}
                     <div className="text-xs text-slate-400 dark:text-gray-500 mt-1">
                       {template.recommendedModels?.[0] || 'Any Model'}
@@ -217,15 +217,15 @@ export default function AdminTemplatesPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
-                      <DropdownMenuTrigger className="h-8 w-8 p-0 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white flex items-center justify-center rounded-md hover:bg-white dark:bg-gray-800">
+                      <DropdownMenuTrigger className="h-8 w-8 p-0 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white flex items-center justify-center rounded-md hover:bg-white dark:bg-gray-800">
                         <MoreHorizontal className="h-4 w-4" />
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="bg-[#1a1a1a] border-black/10 dark:border-gray-800 text-slate-900 dark:text-white">
+                      <DropdownMenuContent align="end" className="bg-[#1a1a1a] border-black/10 dark:border-gray-800 text-slate-900 dark:text-slate-900 dark:text-white">
                         <DropdownMenuLabel className="text-slate-500 dark:text-gray-400">Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); openEdit(template); }} className="focus:bg-white dark:bg-gray-800 focus:text-slate-900 dark:text-white cursor-pointer">
+                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); openEdit(template); }} className="focus:bg-white dark:bg-gray-800 focus:text-slate-900 dark:text-slate-900 dark:text-white cursor-pointer">
                           <Edit className="mr-2 h-4 w-4" /> Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); handleClone(template.id); }} className="focus:bg-white dark:bg-gray-800 focus:text-slate-900 dark:text-white cursor-pointer">
+                        <DropdownMenuItem onSelect={(e) => { e.preventDefault(); handleClone(template.id); }} className="focus:bg-white dark:bg-gray-800 focus:text-slate-900 dark:text-slate-900 dark:text-white cursor-pointer">
                           <Copy className="mr-2 h-4 w-4" /> Clone
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-white dark:bg-gray-800" />

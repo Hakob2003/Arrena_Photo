@@ -72,7 +72,7 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
           </p>
 
           <div className="pt-6 border-t border-gray-200 dark:border-gray-800 flex gap-2 sm:gap-4 sticky bottom-4 z-10 bg-[#fafafa] dark:bg-black/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none p-4 sm:p-0 rounded-2xl sm:rounded-none">
-            <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1">
+            <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-slate-900 dark:text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1">
               Buy Prompt • ${template.price}
             </button>
             <button className="px-4 sm:px-6 border border-gray-200 dark:border-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-white dark:bg-gray-800 transition-colors">

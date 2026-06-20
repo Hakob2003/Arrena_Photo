@@ -32,7 +32,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
               href={tab.href}
               className={cn(
                 "relative flex items-center gap-3 px-4 py-3 rounded-xl transition-colors whitespace-nowrap",
-                isActive ? "text-white" : "text-slate-500 dark:text-gray-400 hover:text-gray-200 hover:bg-black/[0.03] dark:bg-white/5"
+                isActive ? "text-slate-900 dark:text-white" : "text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200 hover:bg-black/[0.03] dark:bg-white/5"
               )}
             >
               {isActive && (

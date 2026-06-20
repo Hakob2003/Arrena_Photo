@@ -96,7 +96,7 @@ export default function CloudConnectionsPage() {
             <input 
               type="text" 
               placeholder="https://s3.amazonaws.com or https://<id>.r2.cloudflarestorage.com"
-              className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
           <div>
@@ -104,7 +104,7 @@ export default function CloudConnectionsPage() {
             <input 
               type="text" 
               placeholder="my-ai-studio-bucket"
-              className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
           <div>
@@ -112,7 +112,7 @@ export default function CloudConnectionsPage() {
             <input 
               type="text" 
               placeholder="AKIAIOSFODNN7EXAMPLE"
-              className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
           <div>
@@ -120,14 +120,14 @@ export default function CloudConnectionsPage() {
             <input 
               type="password" 
               placeholder="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-              className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
-          <button className="w-full sm:w-auto px-6 py-3 sm:py-2 glass rounded-lg text-slate-900 dark:text-white font-medium hover:bg-black/[0.05] dark:bg-white/10">Тест соединения</button>
-          <button className="w-full sm:w-auto px-6 py-3 sm:py-2 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-white rounded-lg font-bold shadow-[0_0_15px_rgba(37,99,235,0.4)]">Сохранить</button>
+          <button className="w-full sm:w-auto px-6 py-3 sm:py-2 glass rounded-lg text-slate-900 dark:text-slate-900 dark:text-white font-medium hover:bg-black/[0.05] dark:bg-white/10">Тест соединения</button>
+          <button className="w-full sm:w-auto px-6 py-3 sm:py-2 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-slate-900 dark:text-white rounded-lg font-bold shadow-[0_0_15px_rgba(37,99,235,0.4)]">Сохранить</button>
         </div>
       </div>
     </div>

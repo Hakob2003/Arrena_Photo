@@ -128,7 +128,7 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-[#1a1a1a] border-black/10 dark:border-gray-800 text-slate-900 dark:text-white">
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-[#1a1a1a] border-black/10 dark:border-gray-800 text-slate-900 dark:text-slate-900 dark:text-white">
         <DialogHeader>
           <DialogTitle>Import Templates</DialogTitle>
           <DialogDescription className="text-slate-500 dark:text-gray-400">
@@ -162,7 +162,7 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" onClick={onClose} disabled={loading} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white">
+          <Button variant="ghost" onClick={onClose} disabled={loading} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white">
             Cancel
           </Button>
           <Button onClick={handleImport} disabled={loading} className="bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none hover:bg-indigo-700 text-white">

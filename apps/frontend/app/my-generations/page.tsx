@@ -106,7 +106,7 @@ export default function MyGenerationsPage() {
                   <button 
                     onClick={(e) => saveToDrive(e, gen.id, gen.imageUrl)}
                     disabled={savingId === gen.id || !!gen.driveFileId}
-                    className={`${gen.driveFileId ? 'bg-green-500/50 text-green-200' : 'bg-[#fafafa] dark:bg-black/50 hover:bg-[#fafafa] dark:bg-black/80 text-white'} p-2 rounded-lg backdrop-blur-md transition-colors`}
+                    className={`${gen.driveFileId ? 'bg-green-500/50 text-green-200' : 'bg-[#fafafa] dark:bg-black/50 hover:bg-[#fafafa] dark:bg-black/80 text-slate-900 dark:text-white'} p-2 rounded-lg backdrop-blur-md transition-colors`}
                     title={gen.driveFileId ? "Уже сохранено" : "Сохранить на Google Drive"}
                   >
                     {savingId === gen.id ? (

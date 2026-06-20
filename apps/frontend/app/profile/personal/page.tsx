@@ -112,7 +112,7 @@ export default function PersonalProfilePage() {
             <label className="text-sm font-medium text-gray-300">First Name</label>
             <input 
               {...register('name')} 
-              className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
+              className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
               placeholder="e.g. John"
             />
           </div>
@@ -120,7 +120,7 @@ export default function PersonalProfilePage() {
             <label className="text-sm font-medium text-gray-300">Last Name</label>
             <input 
               {...register('surname')} 
-              className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
+              className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
               placeholder="e.g. Doe"
             />
           </div>
@@ -130,7 +130,7 @@ export default function PersonalProfilePage() {
           <label className="text-sm font-medium text-gray-300">Nickname</label>
           <input 
             {...register('nickname')} 
-            className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
+            className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
             placeholder="@johndoe"
           />
           {errors.nickname && <p className="text-red-400 text-xs">{errors.nickname.message}</p>}
@@ -141,7 +141,7 @@ export default function PersonalProfilePage() {
           <textarea 
             {...register('bio')} 
             rows={4}
-            className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition resize-none"
+            className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition resize-none"
             placeholder="Write a few sentences about yourself..."
           />
         </div>
@@ -151,19 +151,19 @@ export default function PersonalProfilePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-500 dark:text-gray-400">Telegram</label>
-              <input {...register('socialLinks.telegram')} className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-white/30" placeholder="t.me/username" />
+              <input {...register('socialLinks.telegram')} className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:border-white/30" placeholder="t.me/username" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-500 dark:text-gray-400">Instagram</label>
-              <input {...register('socialLinks.instagram')} className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-white/30" placeholder="instagram.com/username" />
+              <input {...register('socialLinks.instagram')} className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:border-white/30" placeholder="instagram.com/username" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-500 dark:text-gray-400">X (Twitter)</label>
-              <input {...register('socialLinks.twitter')} className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-white/30" placeholder="x.com/username" />
+              <input {...register('socialLinks.twitter')} className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:border-white/30" placeholder="x.com/username" />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-500 dark:text-gray-400">Website</label>
-              <input {...register('socialLinks.website')} className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:border-white/30" placeholder="https://yourwebsite.com" />
+              <input {...register('socialLinks.website')} className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:border-white/30" placeholder="https://yourwebsite.com" />
             </div>
           </div>
         </div>

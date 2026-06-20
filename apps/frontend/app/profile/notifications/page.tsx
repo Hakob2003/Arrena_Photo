@@ -106,7 +106,7 @@ export default function NotificationsProfilePage() {
             render={({ field }) => (
               <div className={cn("flex items-center justify-between", idx !== 0 && "pt-6 border-t border-black/5 dark:border-white/5")}>
                 <div className="pr-8">
-                  <h3 className={cn("text-base font-medium mb-1", item.disabled ? "text-slate-500 dark:text-gray-400" : "text-white")}>{item.title}</h3>
+                  <h3 className={cn("text-base font-medium mb-1", item.disabled ? "text-slate-500 dark:text-gray-400" : "text-slate-900 dark:text-white")}>{item.title}</h3>
                   <p className="text-sm text-slate-500 dark:text-gray-400">{item.description}</p>
                 </div>
                 <Switch

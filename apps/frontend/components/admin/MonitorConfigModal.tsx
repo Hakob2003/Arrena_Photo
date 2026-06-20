@@ -36,8 +36,8 @@ export function MonitorConfigModal({ provider, onClose, onSuccess }: MonitorConf
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-black/10 dark:border-white/10">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Автомониторинг: {provider.name}</h3>
-          <button onClick={onClose} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white p-1">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-900 dark:text-white">Автомониторинг: {provider.name}</h3>
+          <button onClick={onClose} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white p-1">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -47,7 +47,7 @@ export function MonitorConfigModal({ provider, onClose, onSuccess }: MonitorConf
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-900 dark:text-white">Включить автопроверку</p>
+              <p className="text-sm font-medium text-slate-900 dark:text-slate-900 dark:text-white">Включить автопроверку</p>
               <p className="text-xs text-slate-400 dark:text-gray-500 mt-1">Регулярно проверять доступность API и баланс</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
@@ -61,7 +61,7 @@ export function MonitorConfigModal({ provider, onClose, onSuccess }: MonitorConf
             <select 
               value={interval}
               onChange={e => setIntervalVal(e.target.value)}
-              className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+              className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
             >
               <option value="REALTIME" className="bg-[#111]">Real-time (каждые 10 сек)</option>
               <option value="1m" className="bg-[#111]">Каждую минуту</option>
@@ -76,7 +76,7 @@ export function MonitorConfigModal({ provider, onClose, onSuccess }: MonitorConf
         <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-black/10 dark:border-white/10">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white transition-colors"
+            className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white transition-colors"
           >
             Отмена
           </button>

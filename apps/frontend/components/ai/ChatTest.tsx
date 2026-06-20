@@ -122,7 +122,7 @@ export function ChatTest() {
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             disabled={isStreaming}
             placeholder="Type a message to test the AI..."
-            className="flex-1 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-primary-500"
+            className="flex-1 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded px-3 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-primary-500"
           />
           <button 
             onClick={handleSend} 

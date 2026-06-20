@@ -120,7 +120,7 @@ export default function TemplatesPage() {
                   />
                   <div className="absolute bottom-4 left-4 right-4 z-20">
                     <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">{t.category?.name || 'Uncategorized'}</span>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-1">{t.name}</h3>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-900 dark:text-white mt-1">{t.name}</h3>
                   </div>
                 </div>
               </motion.div>

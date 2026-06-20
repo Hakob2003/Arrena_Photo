@@ -36,7 +36,7 @@ export default function AdminDashboard() {
           <div key={i} className="p-5 border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a]">
             <p className="text-sm text-slate-400 dark:text-gray-500 mb-1">{kpi.label}</p>
             <div className="flex items-end justify-between">
-              <h3 className="text-2xl font-semibold text-slate-900 dark:text-white tracking-tight">{kpi.value}</h3>
+              <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-900 dark:text-white tracking-tight">{kpi.value}</h3>
               <span className="text-xs font-medium text-slate-400 dark:text-gray-500">
                 {kpi.trend}
               </span>
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
           <div className="space-y-4">
             {stats?.popularTemplates?.length > 0 ? stats.popularTemplates.map((t: any) => (
               <div key={t.id} className="flex justify-between items-center pb-3 border-b border-black/5 dark:border-white/5 last:border-0 last:pb-0">
-                <span className="text-slate-900 dark:text-white font-medium">{t.name}</span>
+                <span className="text-slate-900 dark:text-slate-900 dark:text-white font-medium">{t.name}</span>
                 <span className="text-slate-500 dark:text-gray-400 text-sm">{t.downloadCount} downloads</span>
               </div>
             )) : (

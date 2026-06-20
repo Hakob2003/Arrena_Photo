@@ -222,7 +222,7 @@ function HelpGuide({ expandedProvider, setExpandedProvider }: { expandedProvider
           </svg>
         </div>
         <div>
-          <h3 className="text-base font-semibold text-slate-900 dark:text-white">Как добавить AI модель</h3>
+          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-900 dark:text-white">Как добавить AI модель</h3>
           <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
             Нажмите на провайдер ниже, чтобы увидеть пошаговую инструкцию и рекомендуемые модели.
             Для каждого провайдера сначала нужно получить API ключ, затем добавить модель здесь.
@@ -243,7 +243,7 @@ function HelpGuide({ expandedProvider, setExpandedProvider }: { expandedProvider
                 <div className="flex items-center gap-3">
                   <span className="text-xl">{provider.icon}</span>
                   <div>
-                    <span className="text-sm font-medium text-slate-900 dark:text-white">{provider.name}</span>
+                    <span className="text-sm font-medium text-slate-900 dark:text-slate-900 dark:text-white">{provider.name}</span>
                     <span className="text-xs text-slate-400 dark:text-gray-500 ml-2">{provider.models.length} модел{provider.models.length > 1 ? 'ей' : 'ь'}</span>
                   </div>
                 </div>
@@ -299,7 +299,7 @@ function HelpGuide({ expandedProvider, setExpandedProvider }: { expandedProvider
                         <tbody className="divide-y divide-white/5">
                           {provider.models.map(m => (
                             <tr key={m.slug} className="hover:bg-white/[0.03]">
-                              <td className="px-3 py-2 text-slate-900 dark:text-white font-medium whitespace-nowrap">{m.name}</td>
+                              <td className="px-3 py-2 text-slate-900 dark:text-slate-900 dark:text-white font-medium whitespace-nowrap">{m.name}</td>
                               <td className="px-3 py-2 font-mono text-indigo-400 whitespace-nowrap">{m.slug}</td>
                               <td className="px-3 py-2 whitespace-nowrap">
                                 <span className={m.cost === 'FREE' ? 'text-green-400 font-medium' : 'text-gray-300'}>{m.cost}</span>
@@ -489,13 +489,13 @@ export default function AdminAIModelsPage() {
             value={search}
             onChange={e => { setSearch(e.target.value); setPage(1); }}
             placeholder="Поиск по названию, slug..."
-            className="w-full pl-10 pr-4 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-white text-sm placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-colors"
+            className="w-full pl-10 pr-4 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-900 dark:text-white text-sm placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-colors"
           />
         </div>
         <select
           value={filterProviderId}
           onChange={e => { setFilterProviderId(e.target.value); setPage(1); }}
-          className="px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors appearance-none cursor-pointer"
+          className="px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors appearance-none cursor-pointer"
         >
           <option value="" className="bg-[#111]">Все провайдеры</option>
           {providers.map(p => (
@@ -510,7 +510,7 @@ export default function AdminAIModelsPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <div className="bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-4">
           <p className="text-xs text-slate-400 dark:text-gray-500 uppercase tracking-wider mb-1">Всего моделей</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-white">{total}</p>
+          <p className="text-2xl font-bold text-slate-900 dark:text-slate-900 dark:text-white">{total}</p>
         </div>
         <div className="bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl p-4">
           <p className="text-xs text-slate-400 dark:text-gray-500 uppercase tracking-wider mb-1">Активных</p>
@@ -576,7 +576,7 @@ export default function AdminAIModelsPage() {
                     {/* Model */}
                     <td className="px-4 py-3">
                       <div>
-                        <div className="text-slate-900 dark:text-white font-medium flex items-center gap-2">
+                        <div className="text-slate-900 dark:text-slate-900 dark:text-white font-medium flex items-center gap-2">
                           {model.name}
                           {model.isFree && <Badge variant="info">FREE</Badge>}
                         </div>
@@ -638,7 +638,7 @@ export default function AdminAIModelsPage() {
                         {/* Edit */}
                         <button
                           onClick={() => openEditModal(model)}
-                          className="p-1.5 rounded-md hover:bg-black/[0.05] dark:bg-white/10 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white transition-colors"
+                          className="p-1.5 rounded-md hover:bg-black/[0.05] dark:bg-white/10 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white transition-colors"
                           title="Редактировать"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -704,10 +704,10 @@ export default function AdminAIModelsPage() {
           >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-black/10 dark:border-white/10">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-900 dark:text-white">
                 {editingModel ? 'Редактировать модель' : 'Добавить модель'}
               </h3>
-              <button onClick={() => setShowModal(false)} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white p-1">
+              <button onClick={() => setShowModal(false)} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white p-1">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -722,7 +722,7 @@ export default function AdminAIModelsPage() {
                 <select
                   value={form.providerId}
                   onChange={e => setForm(f => ({ ...f, providerId: e.target.value }))}
-                  className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
+                  className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
                 >
                   <option value="" className="bg-[#111]">Выберите провайдер</option>
                   {providers.map(p => (
@@ -747,7 +747,7 @@ export default function AdminAIModelsPage() {
                   value={form.name}
                   onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                   placeholder="e.g. DALL-E 3, Stable Diffusion XL"
-                  className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors"
+                  className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-900 dark:text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors"
                 />
               </div>
 
@@ -759,7 +759,7 @@ export default function AdminAIModelsPage() {
                   value={form.slug}
                   onChange={e => setForm(f => ({ ...f, slug: e.target.value }))}
                   placeholder="e.g. openai/dall-e-3"
-                  className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-white text-sm font-mono placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors"
+                  className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-900 dark:text-white text-sm font-mono placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors"
                 />
               </div>
 
@@ -771,7 +771,7 @@ export default function AdminAIModelsPage() {
                   onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                   rows={2}
                   placeholder="Краткое описание возможностей модели..."
-                  className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors resize-none"
+                  className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-900 dark:text-white text-sm placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors resize-none"
                 />
               </div>
 
@@ -783,7 +783,7 @@ export default function AdminAIModelsPage() {
                   value={form.endpoint}
                   onChange={e => setForm(f => ({ ...f, endpoint: e.target.value }))}
                   placeholder="https://api.openai.com/v1/images/generations"
-                  className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-white text-sm font-mono placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors"
+                  className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-900 dark:text-white text-sm font-mono placeholder-gray-600 focus:outline-none focus:border-indigo-500/50 transition-colors"
                 />
               </div>
 
@@ -797,7 +797,7 @@ export default function AdminAIModelsPage() {
                     min="0"
                     value={form.costPerToken}
                     onChange={e => setForm(f => ({ ...f, costPerToken: parseFloat(e.target.value) || 0 }))}
-                    className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
+                    className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
                   />
                 </div>
                 <div>
@@ -805,7 +805,7 @@ export default function AdminAIModelsPage() {
                   <select
                     value={form.speed}
                     onChange={e => setForm(f => ({ ...f, speed: e.target.value }))}
-                    className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
+                    className="w-full px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
                   >
                     {SPEED_OPTIONS.map(s => (
                       <option key={s.value} value={s.value} className="bg-[#111]">{s.label}</option>
@@ -849,7 +849,7 @@ export default function AdminAIModelsPage() {
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-black/10 dark:border-white/10">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white transition-colors"
+                className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white transition-colors"
               >
                 Отмена
               </button>

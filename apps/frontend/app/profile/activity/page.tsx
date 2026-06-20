@@ -76,7 +76,7 @@ export default function ActivityProfilePage() {
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                  <p className="text-sm font-medium text-slate-900 dark:text-slate-900 dark:text-white truncate">
                     {item.action}
                   </p>
                   <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">

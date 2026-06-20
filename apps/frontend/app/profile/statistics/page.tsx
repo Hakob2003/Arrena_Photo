@@ -100,7 +100,7 @@ export default function StatisticsProfilePage() {
                 </div>
                 <h3 className="text-sm font-medium text-slate-500 dark:text-gray-400">{card.title}</h3>
               </div>
-              <p className="text-3xl font-semibold text-slate-900 dark:text-white truncate">
+              <p className="text-3xl font-semibold text-slate-900 dark:text-slate-900 dark:text-white truncate">
                 {card.value}
               </p>
             </div>

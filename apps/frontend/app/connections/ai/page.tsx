@@ -40,7 +40,7 @@ export default function AiConnectionsPage() {
                 <input 
                   type="password" 
                   placeholder={p.status === 'connected' ? '••••••••••••••••' : 'sk-...'}
-                  className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                  className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
                 />
               </div>
               
@@ -50,7 +50,7 @@ export default function AiConnectionsPage() {
                   <input 
                     type="text" 
                     placeholder="http://127.0.0.1:8188"
-                    className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+                    className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
                   />
                 </div>
               )}

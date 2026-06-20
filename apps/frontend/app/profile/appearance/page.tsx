@@ -112,7 +112,7 @@ export default function AppearanceProfilePage() {
         {/* Theme */}
         <div className="space-y-4">
           <div>
-            <h3 className="text-base font-medium text-slate-900 dark:text-white mb-1">Theme</h3>
+            <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">Theme</h3>
             <p className="text-sm text-slate-500 dark:text-gray-400">Select or customize your UI theme.</p>
           </div>
           <div className="grid grid-cols-3 gap-4">
@@ -128,7 +128,7 @@ export default function AppearanceProfilePage() {
                     "flex flex-col items-center justify-center gap-3 p-4 rounded-xl border transition-all",
                     isActive 
                       ? "border-white bg-black/[0.05] dark:bg-white/10" 
-                      : "border-black/10 dark:border-white/10 hover:border-white/30 bg-transparent text-slate-500 dark:text-gray-400 hover:text-white"
+                      : "border-black/10 dark:border-white/10 hover:border-white/30 bg-transparent text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white"
                   )}
                 >
                   <Icon className="w-6 h-6" />
@@ -142,7 +142,7 @@ export default function AppearanceProfilePage() {
         {/* Accent Color */}
         <div className="space-y-4 pt-6 border-t border-black/10 dark:border-white/10">
           <div>
-            <h3 className="text-base font-medium text-slate-900 dark:text-white mb-1">Accent Color</h3>
+            <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">Accent Color</h3>
             <p className="text-sm text-slate-500 dark:text-gray-400">Choose your primary brand color.</p>
           </div>
           <div className="flex items-center gap-4">
@@ -164,7 +164,7 @@ export default function AppearanceProfilePage() {
         {/* Font Size */}
         <div className="space-y-4 pt-6 border-t border-black/10 dark:border-white/10">
           <div>
-            <h3 className="text-base font-medium text-slate-900 dark:text-white mb-1">Font Size</h3>
+            <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">Font Size</h3>
             <p className="text-sm text-slate-500 dark:text-gray-400">Adjust the interface text size.</p>
           </div>
           <div className="flex bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg p-1 w-fit">
@@ -175,7 +175,7 @@ export default function AppearanceProfilePage() {
                 onClick={() => setValue('fontSize', f.id, { shouldDirty: true })}
                 className={cn(
                   "px-6 py-2 rounded-md transition-colors",
-                  watchFont === f.id ? "bg-white text-black font-medium" : "text-slate-500 dark:text-gray-400 hover:text-white",
+                  watchFont === f.id ? "bg-white text-black font-medium" : "text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white",
                   f.class
                 )}
               >
@@ -193,7 +193,7 @@ export default function AppearanceProfilePage() {
             render={({ field }) => (
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-medium text-slate-900 dark:text-white">Compact Mode</h3>
+                  <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white">Compact Mode</h3>
                   <p className="text-sm text-slate-500 dark:text-gray-400">Decrease spacing to fit more content on screen.</p>
                 </div>
                 <Switch
@@ -222,7 +222,7 @@ export default function AppearanceProfilePage() {
             render={({ field }) => (
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-medium text-slate-900 dark:text-white">Interface Animations</h3>
+                  <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white">Interface Animations</h3>
                   <p className="text-sm text-slate-500 dark:text-gray-400">Enable smooth transitions and micro-interactions.</p>
                 </div>
                 <Switch

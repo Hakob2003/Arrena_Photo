@@ -162,7 +162,7 @@ export default function ApiKeysAdminPage() {
                   <tr key={p.id} className="hover:bg-white/[0.02] transition-colors group">
                     {/* Provider Name */}
                     <td className="px-6 py-4">
-                      <div className="font-medium text-slate-900 dark:text-white flex items-center gap-2">
+                      <div className="font-medium text-slate-900 dark:text-slate-900 dark:text-white flex items-center gap-2">
                         {p.name}
                         {p.isGlobal && <span className="text-[10px] uppercase tracking-wider bg-black/[0.05] dark:bg-white/10 text-gray-300 px-1.5 py-0.5 rounded">Global</span>}
                       </div>
@@ -177,7 +177,7 @@ export default function ApiKeysAdminPage() {
                             value={keyValue}
                             onChange={e => setKeyValue(e.target.value)}
                             placeholder="sk-..."
-                            className="w-full px-3 py-1.5 bg-[#fafafa] dark:bg-black border border-black/20 dark:border-white/20 rounded-md text-sm text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+                            className="w-full px-3 py-1.5 bg-[#fafafa] dark:bg-black border border-black/20 dark:border-white/20 rounded-md text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
                             autoFocus
                             onKeyDown={e => e.key === 'Enter' && handleSaveKey(p.id)}
                           />
@@ -256,7 +256,7 @@ export default function ApiKeysAdminPage() {
                         )}
                         <button 
                           onClick={() => setMonitorConfigProvider(p)}
-                          className="ml-2 p-1 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white hover:bg-black/[0.05] dark:bg-white/10 rounded transition-colors opacity-0 group-hover:opacity-100"
+                          className="ml-2 p-1 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white hover:bg-black/[0.05] dark:bg-white/10 rounded transition-colors opacity-0 group-hover:opacity-100"
                           title="Настройки мониторинга"
                         >
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

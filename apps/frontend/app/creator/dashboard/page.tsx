@@ -24,7 +24,7 @@ export default function CreatorDashboardPage() {
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold">My Templates</h2>
-            <button className="bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-white px-4 py-2 rounded-lg font-medium transition-colors">
+            <button className="bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-slate-900 dark:text-white px-4 py-2 rounded-lg font-medium transition-colors">
               + New Template
             </button>
           </div>

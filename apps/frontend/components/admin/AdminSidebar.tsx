@@ -88,7 +88,7 @@ export function AdminSidebar() {
           )}
         </AnimatePresence>
         <button 
-          className="md:hidden text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white p-2 absolute right-4 top-5"
+          className="md:hidden text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white p-2 absolute right-4 top-5"
           onClick={() => setSidebarOpen(false)}
         >
           ✕
@@ -111,8 +111,8 @@ export function AdminSidebar() {
                     href={link.href}
                     className={`flex items-center gap-3 px-3 py-1.5 rounded-md transition-colors ${
                       isActive 
-                        ? 'bg-black/[0.05] dark:bg-white/10 text-white font-medium' 
-                        : 'text-slate-500 dark:text-gray-400 hover:text-white hover:bg-black/[0.03] dark:bg-white/5'
+                        ? 'bg-black/[0.05] dark:bg-white/10 text-slate-900 dark:text-white font-medium' 
+                        : 'text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white hover:bg-black/[0.03] dark:bg-white/5'
                     }`}
                   >
                     <span className="text-base">{link.icon}</span>
@@ -127,7 +127,7 @@ export function AdminSidebar() {
 
       {/* User Section */}
       <div className="p-4 border-t border-black/5 dark:border-white/5 mt-auto flex flex-col gap-4">
-        <Link href="/" className="flex items-center gap-2 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white transition-colors px-2 py-1.5 rounded-md hover:bg-black/[0.03] dark:bg-white/5 text-sm">
+        <Link href="/" className="flex items-center gap-2 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white transition-colors px-2 py-1.5 rounded-md hover:bg-black/[0.03] dark:bg-white/5 text-sm">
           <span className="text-base">⬅️</span>
           <span className="font-medium">В приложение</span>
         </Link>
@@ -135,17 +135,17 @@ export function AdminSidebar() {
         {user && (
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center text-white font-bold">
+              <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center text-slate-900 dark:text-white font-bold">
                 {user.name?.charAt(0) || 'U'}
               </div>
               <div className="truncate text-left">
-                <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user.name}</p>
+                <p className="text-sm font-medium text-slate-900 dark:text-slate-900 dark:text-white truncate">{user.name}</p>
                 <p className="text-[10px] text-slate-400 dark:text-gray-500 truncate uppercase tracking-wider">{user.role}</p>
               </div>
             </div>
             <button 
               onClick={handleLogout}
-              className="p-2 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white transition-colors ml-2"
+              className="p-2 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white transition-colors ml-2"
               title="Выйти"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

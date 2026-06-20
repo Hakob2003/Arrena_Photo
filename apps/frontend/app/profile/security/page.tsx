@@ -87,7 +87,7 @@ export default function SecurityProfilePage() {
             <input 
               type="password"
               {...register('currentPassword')} 
-              className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
+              className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
             />
             {errors.currentPassword && <p className="text-red-400 text-xs">{errors.currentPassword.message}</p>}
           </div>
@@ -98,7 +98,7 @@ export default function SecurityProfilePage() {
               <input 
                 type="password"
                 {...register('newPassword')} 
-                className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
+                className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
               />
               {errors.newPassword && <p className="text-red-400 text-xs">{errors.newPassword.message}</p>}
             </div>
@@ -107,7 +107,7 @@ export default function SecurityProfilePage() {
               <input 
                 type="password"
                 {...register('confirmPassword')} 
-                className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
+                className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
               />
               {errors.confirmPassword && <p className="text-red-400 text-xs">{errors.confirmPassword.message}</p>}
             </div>
@@ -158,7 +158,7 @@ export default function SecurityProfilePage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="font-medium text-slate-900 dark:text-white truncate">{session.device || session.userAgent || 'Unknown Device'}</p>
+                    <p className="font-medium text-slate-900 dark:text-slate-900 dark:text-white truncate">{session.device || session.userAgent || 'Unknown Device'}</p>
                     {idx === 0 && (
                       <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-[10px] uppercase font-bold rounded-full">Current</span>
                     )}
