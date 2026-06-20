@@ -29,15 +29,15 @@ export function Topbar() {
         <AnimatePresence>
           {!isSidebarOpen && (
             <motion.div
-              initial={{ opacity: 0, x: "-40vw", scale: 0.5 }}
+              initial={{ opacity: 0, x: "-40vw", scale: 0.8 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ 
                 opacity: 0, 
                 x: "-40vw", 
-                scale: 0.5,
-                transition: { opacity: { duration: 0.2, delay: 0.15 }, duration: 0.4 }
+                scale: 0.8,
+                transition: { opacity: { duration: 0.2, delay: 0.6 }, duration: 0.8 }
               }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
             >
               <Link href="/" className="flex items-center hover:opacity-80 transition-opacity pointer-events-auto">
                 <img 
