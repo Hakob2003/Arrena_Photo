@@ -20,12 +20,18 @@ export function Topbar() {
 
   useEffect(() => {
     const calc = () => {
-      // Sidebar is 256px. The logo sits perfectly at ~124px from the left edge.
-      const expectedSidebarLogoX = 124; 
-      // Topbar center when open is 256 + (window.innerWidth - 256) / 2
-      const openTopbarCenterX = 256 + (window.innerWidth - 256) / 2;
+      // The user wants the logo to reach the LEFT EDGE of the Topbar.
+      const isMobileLocal = window.innerWidth < 768;
       
-      const targetDelta = expectedSidebarLogoX - openTopbarCenterX;
+      // On desktop, the Topbar starts at 256px. On mobile, it starts at 0px.
+      const topbarLeftEdge = isMobileLocal ? 0 : 256;
+      
+      // Topbar center when open
+      const openTopbarCenterX = isMobileLocal 
+        ? window.innerWidth / 2 
+        : 256 + (window.innerWidth - 256) / 2;
+      
+      const targetDelta = topbarLeftEdge - openTopbarCenterX;
       setTargetX(targetDelta);
     };
 
@@ -59,10 +65,10 @@ export function Topbar() {
             scale: isSidebarOpen ? 0.1 : 1 
           }}
           transition={{ 
-            layout: { duration: 3.4, ease: "easeInOut" },
-            x: { duration: 3.4, ease: "easeInOut" },
-            scale: { duration: 3.4, ease: "easeInOut" },
-            opacity: { delay: isSidebarOpen ? 3.0 : 0, duration: 0.4 } 
+            layout: { duration: 1.7, ease: "easeInOut" },
+            x: { duration: 1.7, ease: "easeInOut" },
+            scale: { duration: 1.7, ease: "easeInOut" },
+            opacity: { delay: isSidebarOpen ? 1.5 : 0, duration: 0.2 } 
           }}
         >
           <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen ? 'pointer-events-none' : 'pointer-events-auto'}`}>
