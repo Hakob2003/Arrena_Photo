@@ -20,8 +20,8 @@ export function Topbar() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 120px is approximately the center of the logo text in the sidebar
-  const targetX = windowWidth ? 120 - windowWidth / 2 : 0;
+  // 155px accurately aligns the center of the scaled-down Topbar text with the Sidebar text location
+  const targetX = windowWidth ? 155 - windowWidth / 2 : 0;
 
   return (
     <header className="h-16 border-b border-black/10 dark:border-white/5 bg-[rgba(255,255,255,0.75)] dark:bg-black/20 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 sticky top-0 z-[60] shadow-sm dark:shadow-none">
