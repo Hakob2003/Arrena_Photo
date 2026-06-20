@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from 'react';
 import { useAuthStore, useUIStore } from '../../store';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,6 +11,17 @@ export function Topbar() {
   const { isSidebarOpen, setSidebarOpen } = useUIStore();
   const isMobile = useIsMobile();
   const showTopbarLogo = !isSidebarOpen;
+
+  const [windowWidth, setWindowWidth] = useState(0);
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // 120px is approximately the center of the logo text in the sidebar
+  const targetX = windowWidth ? 120 - windowWidth / 2 : 0;
 
   return (
     <header className="h-16 border-b border-black/10 dark:border-white/5 bg-[rgba(255,255,255,0.75)] dark:bg-black/20 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 sticky top-0 z-[60] shadow-sm dark:shadow-none">
@@ -25,12 +37,12 @@ export function Topbar() {
       </div>
 
       {/* Topbar Logo Text */}
-      <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-50">
+      <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-[60]">
         <motion.div
           initial={false}
           animate={{ 
             opacity: isSidebarOpen ? 0 : 1, 
-            x: isSidebarOpen ? "-42vw" : 0, 
+            x: isSidebarOpen ? targetX : 0, 
             scale: isSidebarOpen ? 0.3 : 1 
           }}
           transition={{ 
