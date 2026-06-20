@@ -124,12 +124,12 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
     <LayoutGroup>
       <div 
-        className="flex h-screen w-full"
+        className="flex h-screen w-full overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
         <Sidebar />
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+        <div className="flex-1 flex flex-col min-w-0 relative">
           {/* Background Glow for Consumer App */}
           <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
           <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />
