@@ -26,12 +26,13 @@ export function Topbar() {
       const topbarRect = topbarEl.getBoundingClientRect();
       const sidebarRect = sidebarEl.getBoundingClientRect();
 
-      const topbarCenterX = topbarRect.left + topbarRect.width / 2;
       const sidebarCenterX = sidebarRect.left + sidebarRect.width / 2;
+      const windowCenterX = window.innerWidth / 2;
 
       // When opening, if it's currently at 0, this records the exact required travel distance!
-      // The user specified: sidebarCenterX - topbarCenterX
-      setTargetX(sidebarCenterX - topbarCenterX);
+      // We must compare against windowCenterX, NOT topbarRect, because topbarRect moves during animation
+      // which creates a feedback loop!
+      setTargetX(sidebarCenterX - windowCenterX);
     };
 
     // Calculate immediately and also on window resize
