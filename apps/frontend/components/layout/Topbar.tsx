@@ -33,8 +33,8 @@ export function Topbar() {
       const topbarCenterX = topbarWrapperRect.left + topbarWrapperRect.width / 2;
       const sidebarCenterX = sidebarRect.left + sidebarRect.width / 2;
       
-      // The user explicitly requested to move it left by 1500px
-      const targetDelta = -1500;
+      // The user explicitly requested to move it left by 2000px
+      const targetDelta = -2000;
 
       setTargetX(targetDelta);
     };
