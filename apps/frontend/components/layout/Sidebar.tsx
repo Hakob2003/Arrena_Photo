@@ -42,7 +42,7 @@ export function Sidebar() {
               href={link.href}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative group ${
                 isActive ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[#fafafa] dark:hover:bg-white/5'
-              }`}
+              } ${!isSidebarOpen ? 'justify-center !px-0' : ''}`}
             >
               {isActive && (
                 <motion.div 
@@ -110,8 +110,8 @@ export function Sidebar() {
           ${isSidebarOpen ? 'cursor-default' : ''}
         `}
       >
-        <div className="p-4 flex items-center justify-between border-b border-black/10 dark:border-white/5 md:border-none">
-          <div className="flex items-center justify-center w-full h-[80px] overflow-hidden">
+        <div className={`flex items-center justify-between border-b border-black/10 dark:border-white/5 md:border-none ${isSidebarOpen ? 'p-4' : 'pt-4 pb-2 px-0'}`}>
+          <div className={`flex items-center justify-center w-full overflow-hidden ${isSidebarOpen ? 'h-[80px]' : 'h-[50px]'}`}>
             <AnimatePresence mode="wait">
               {isSidebarOpen ? (
                 <motion.div
@@ -207,7 +207,7 @@ export function Sidebar() {
                 <li>
                   <Link 
                     href="/admin/ai-models"
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-gray-400 hover:text-white hover:bg-white/5 group"
+                    className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-slate-500 hover:text-slate-900 hover:bg-[#fafafa] dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5 group ${!isSidebarOpen ? 'justify-center !px-0' : ''}`}
                   >
                     <span className="relative z-10 text-xl w-6 flex justify-center">👑</span>
                     <AnimatePresence mode="wait">
@@ -223,7 +223,7 @@ export function Sidebar() {
                       )}
                     </AnimatePresence>
                     {!isSidebarOpen && !isMobile && (
-                      <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none">
+                      <div className="absolute left-full ml-2 px-2 py-1 bg-[#fafafa] dark:bg-gray-800 text-slate-900 dark:text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-sm dark:shadow-none">
                         Админка
                       </div>
                     )}
@@ -236,10 +236,10 @@ export function Sidebar() {
       </div>
       
       {/* User Profile Section */}
-      <div className="p-4 border-t border-white/5 mt-auto overflow-hidden">
+      <div className={`p-4 border-t border-black/10 dark:border-white/5 mt-auto overflow-hidden ${!isSidebarOpen ? 'flex justify-center px-0' : ''}`}>
         {user ? (
-          <div className={`flex items-center ${isSidebarOpen ? 'justify-between' : 'justify-center'}`}>
-            <div className="flex items-center gap-3">
+          <div className={`flex items-center ${isSidebarOpen ? 'justify-between w-full' : 'justify-center w-full'}`}>
+            <div className={`flex items-center ${isSidebarOpen ? 'gap-3' : 'justify-center'}`}>
               <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center text-white font-bold">
                 {user.name?.charAt(0) || 'U'}
               </div>
@@ -251,8 +251,8 @@ export function Sidebar() {
                     exit={{ opacity: 0, width: 0 }}
                     className="truncate text-left whitespace-nowrap overflow-hidden"
                   >
-                    <p className="text-sm font-medium text-white truncate">{user.name}</p>
-                    <p className="text-[10px] text-gray-500 truncate uppercase tracking-wider">{user.role}</p>
+                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user.name}</p>
+                    <p className="text-[10px] text-slate-500 dark:text-gray-500 truncate uppercase tracking-wider">{user.role}</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -269,7 +269,7 @@ export function Sidebar() {
                     localStorage.removeItem('token');
                     window.location.href = '/login';
                   }}
-                  className="p-2 text-gray-400 hover:text-white transition-colors shrink-0 ml-2"
+                  className="p-2 text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-colors shrink-0 ml-2"
                   title="Выйти"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -280,8 +280,8 @@ export function Sidebar() {
             </AnimatePresence>
           </div>
         ) : (
-          <div className="flex flex-col gap-2">
-            <Link href="/login" className="w-full py-2 text-center text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors">Войти</Link>
+          <div className="flex flex-col gap-2 w-full">
+            <Link href="/login" className="w-full py-2 text-center text-sm text-slate-500 hover:text-slate-900 hover:bg-[#fafafa] dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/5 rounded-lg transition-colors">Войти</Link>
             <Link href="/register" className="w-full py-2 text-center bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
               Регистрация
             </Link>
