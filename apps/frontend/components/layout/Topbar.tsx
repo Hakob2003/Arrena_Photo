@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuthStore, useUIStore } from '../../store';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -12,18 +12,43 @@ export function Topbar() {
   const isMobile = useIsMobile();
   const showTopbarLogo = !isSidebarOpen;
 
-  const [windowWidth, setWindowWidth] = useState(0);
-  useEffect(() => {
-    setWindowWidth(window.innerWidth);
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const topbarRef = useRef<HTMLDivElement>(null);
 
-  // The Sidebar text starts at ~73px from the left screen edge.
-  // When Topbar logo scales down by 0.3, its width becomes ~38px.
-  // To align the left edges: 73px + (38/2) = ~92px center position.
-  const targetX = windowWidth ? 92 - windowWidth / 2 : 0;
+  const [targetX, setTargetX] = useState(0);
+
+  useEffect(() => {
+    const calc = () => {
+      const topbarEl = topbarRef.current;
+      const sidebarEl = document.getElementById('sidebar-logo-ref');
+      
+      if (!topbarEl || !sidebarEl) return;
+      
+      const topbarRect = topbarEl.getBoundingClientRect();
+      const sidebarRect = sidebarEl.getBoundingClientRect();
+
+      const topbarCenterX = topbarRect.left + topbarRect.width / 2;
+      const sidebarCenterX = sidebarRect.left + sidebarRect.width / 2;
+
+      // When opening, if it's currently at 0, this records the exact required travel distance!
+      // The user specified: sidebarCenterX - topbarCenterX
+      setTargetX(sidebarCenterX - topbarCenterX);
+    };
+
+    // Calculate immediately and also on window resize
+    calc();
+    
+    // We also run calc periodically while sidebar is open to capture its final resting position
+    let interval: NodeJS.Timeout;
+    if (isSidebarOpen) {
+      interval = setInterval(calc, 50);
+    }
+    
+    window.addEventListener('resize', calc);
+    return () => {
+      window.removeEventListener('resize', calc);
+      clearInterval(interval);
+    };
+  }, [isSidebarOpen]);
 
   return (
     <header className="h-16 border-b border-black/10 dark:border-white/5 bg-[rgba(255,255,255,0.75)] dark:bg-black/20 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 sticky top-0 z-[60] shadow-sm dark:shadow-none">
@@ -41,6 +66,7 @@ export function Topbar() {
       {/* Topbar Logo Text */}
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-[60]">
         <motion.div
+          ref={topbarRef}
           initial={false}
           animate={{ 
             opacity: isSidebarOpen ? 0 : 1, 

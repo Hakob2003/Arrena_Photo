@@ -135,7 +135,7 @@ export function Sidebar() {
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                     className="overflow-hidden flex items-center justify-start z-10 h-[40px]"
                   >
-                    <div className="pl-1.5 w-[130px] flex-shrink-0 flex items-center justify-start h-full">
+                    <div id="sidebar-logo-ref" className="pl-1.5 w-[130px] flex-shrink-0 flex items-center justify-start h-full">
                       <img 
                         src="/logo2.png" 
                         alt="Arrena Photo Text" 
