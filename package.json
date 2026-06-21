@@ -36,6 +36,7 @@
     ]
   },
   "dependencies": {
+    "immer": "^11.1.8",
     "papaparse": "^5.5.3"
   }
 }

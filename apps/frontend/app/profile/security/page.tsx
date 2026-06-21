@@ -26,7 +26,7 @@ export default function SecurityProfilePage() {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<PasswordFormValues>({
-    resolver: zodResolver(passwordSchema),
+    resolver: zodResolver(passwordSchema as any),
   });
 
   useEffect(() => {

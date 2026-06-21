@@ -30,7 +30,7 @@ export default function PersonalProfilePage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<PersonalFormValues>({
-    resolver: zodResolver(personalSchema),
+    resolver: zodResolver(personalSchema as any),
   });
 
   useEffect(() => {
