@@ -23,7 +23,11 @@ const ADMIN_LINKS = [
     { name: 'AI Providers', href: '/admin/ai-providers', icon: '🤖' },
     { name: 'API Keys', href: '/admin/api-keys', icon: '🔑' },
     { name: 'Cloud Storage', href: '/admin/cloud', icon: '☁️' },
-    { name: 'Billing', href: '/admin/billing', icon: '💳' },
+  ]},
+  { section: 'Подписки и платежи', items: [
+    { name: 'Тарифы и лимиты', href: '/admin/billing/tariffs', icon: '💳' },
+    { name: 'История платежей', href: '/admin/billing/history', icon: '📜' },
+    { name: 'Промокоды и купоны', href: '/admin/billing/promocodes', icon: '🎟️' },
   ]},
   { section: 'System', items: [
     { name: 'Audit Logs', href: '/admin/audit-logs', icon: '📋' },
