@@ -15,6 +15,7 @@ interface AuthState {
   setCredits: (amount: number) => void;
   setPlanId: (planId: string) => void;
   setPaymentMethods: (methods: any[]) => void;
+  chargeDefaultCard: (amount: number) => boolean;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -35,6 +36,23 @@ export const useAuthStore = create<AuthState>()(
       setCredits: (amount) => set({ credits: amount }),
       setPlanId: (planId) => set({ planId }),
       setPaymentMethods: (methods) => set({ paymentMethods: methods }),
+      chargeDefaultCard: (amount) => {
+        let success = false;
+        set((state) => {
+          const defaultCard = state.paymentMethods.find(m => m.isDefault);
+          if (!defaultCard || defaultCard.limit < amount) {
+            success = false;
+            return state;
+          }
+          success = true;
+          return {
+            paymentMethods: state.paymentMethods.map(m => 
+              m.id === defaultCard.id ? { ...m, limit: m.limit - amount } : m
+            )
+          };
+        });
+        return success;
+      },
     }),
     {
       name: 'auth-storage', // name of item in the storage (must be unique)

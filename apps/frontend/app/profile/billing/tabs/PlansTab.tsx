@@ -4,7 +4,7 @@ import { useAuthStore } from '../../../../store';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function PlansTab() {
-  const { planId, setPlanId, addCredits, paymentMethods } = useAuthStore();
+  const { planId, setPlanId, addCredits, chargeDefaultCard } = useAuthStore();
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoError, setPromoError] = useState(false);
@@ -23,15 +23,9 @@ export function PlansTab() {
     }
   };
 
-  const getDefaultCardLimit = () => {
-    const defaultCard = paymentMethods.find(m => m.isDefault);
-    return defaultCard ? defaultCard.limit : 0;
-  };
-
   const handleUpgrade = (planId: string, price: number) => {
-    const limit = getDefaultCardLimit();
-    if (price > limit) {
-      alert(`Оплата отклонена: Сумма ($${price}) превышает лимит вашей карты ($${limit}). Пожалуйста, увеличьте лимит карты или добавьте новую.`);
+    if (price > 0 && !chargeDefaultCard(price)) {
+      alert(`Оплата отклонена: Недостаточно лимита на вашей основной карте для списания $${price}. Пожалуйста, увеличьте лимит карты или добавьте новую.`);
       return;
     }
     setPlanId(planId);
@@ -39,9 +33,8 @@ export function PlansTab() {
   };
 
   const handleBuyCredits = (amount: number, price: number) => {
-    const limit = getDefaultCardLimit();
-    if (price > limit) {
-      alert(`Оплата отклонена: Сумма ($${price}) превышает лимит вашей карты ($${limit}). Пожалуйста, увеличьте лимит карты или добавьте новую.`);
+    if (!chargeDefaultCard(price)) {
+      alert(`Оплата отклонена: Недостаточно лимита на вашей основной карте для списания $${price}. Пожалуйста, увеличьте лимит карты или добавьте новую.`);
       return;
     }
     addCredits(amount);
