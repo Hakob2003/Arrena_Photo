@@ -22,7 +22,8 @@ const USER_LINKS = [
 const SETTINGS_LINKS = [
   { href: '/connections/ai', label: 'AI Провайдеры', icon: '🔌' },
   { href: '/connections/cloud', label: 'Облако', icon: '☁️' },
-  { href: '/profile', label: 'Профиль и Баланс', icon: '⚙️' },
+  { href: '/profile', label: 'Профиль', icon: '⚙️' },
+  { href: '/profile/billing', label: 'Подписки и платежи', icon: '💳' },
 ];
 
 export function Sidebar() {
