@@ -112,11 +112,6 @@ function GeneratorContent() {
     }
     if (!prompt) return;
 
-    if (!initImage) {
-      open();
-      return;
-    }
-
     setGenerating(true);
     setLoadingText('Отправка промпта...');
     
