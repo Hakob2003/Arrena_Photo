@@ -5,20 +5,26 @@ interface AuthState {
   user: { id: string; name: string; email: string; role: string } | null;
   token: string | null;
   credits: number;
+  planId: string;
   login: (user: any, token: string) => void;
   logout: () => void;
   deductCredits: (amount: number) => void;
+  addCredits: (amount: number) => void;
   setCredits: (amount: number) => void;
+  setPlanId: (planId: string) => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   token: null,
   credits: 0,
-  login: (user, token) => set({ user, token, credits: user.credits ?? 0 }),
-  logout: () => set({ user: null, token: null }),
+  planId: 'free',
+  login: (user, token) => set({ user, token, credits: user.credits ?? 0, planId: user.planId ?? 'free' }),
+  logout: () => set({ user: null, token: null, planId: 'free' }),
   deductCredits: (amount) => set((state) => ({ credits: Math.max(0, state.credits - amount) })),
+  addCredits: (amount) => set((state) => ({ credits: state.credits + amount })),
   setCredits: (amount) => set({ credits: amount }),
+  setPlanId: (planId) => set({ planId }),
 }));
 
 // --- Generation Store ---

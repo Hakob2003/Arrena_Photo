@@ -1,8 +1,27 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
+import { useAuthStore } from '../../../../store';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function PlansTab() {
-  const currentPlanId = 'pro';
+  const { planId, setPlanId, addCredits } = useAuthStore();
+  const [promoCode, setPromoCode] = useState('');
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [promoError, setPromoError] = useState(false);
+
+  const handleApplyPromo = () => {
+    if (promoCode.trim().toUpperCase() === 'PROMOCODE20') {
+      setPromoApplied(true);
+      setPromoError(false);
+    } else if (promoCode.trim().toUpperCase() === 'FREE100') {
+      addCredits(100);
+      setPromoCode('');
+      alert('Вам начислено 100 кредитов!');
+    } else {
+      setPromoError(true);
+      setPromoApplied(false);
+    }
+  };
 
   const plans = [
     { id: 'free', name: 'Free', price: '$0', credits: '100 / мес', models: 'Базовые', features: ['До 1 задачи', 'Стандартная скорость', 'Водяной знак'] },
@@ -26,7 +45,7 @@ export function PlansTab() {
         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Доступные тарифы</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {plans.map(plan => {
-            const isCurrent = plan.id === currentPlanId;
+            const isCurrent = plan.id === planId;
             return (
               <div 
                 key={plan.id} 
@@ -66,7 +85,7 @@ export function PlansTab() {
                       Текущий план
                     </button>
                   ) : (
-                    <button className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+                    <button onClick={() => setPlanId(plan.id)} className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
                       {plan.price === '$0' ? 'Downgrade' : 'Upgrade'}
                     </button>
                   )}
@@ -91,7 +110,7 @@ export function PlansTab() {
                   <p className="font-bold text-slate-900 dark:text-white">{pkg.credits}</p>
                   <p className="text-xs text-slate-500">кредитов</p>
                 </div>
-                <button className="px-4 py-2 bg-slate-100 dark:bg-white/10 hover:bg-indigo-500 hover:text-white text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">
+                <button onClick={() => addCredits(pkg.credits)} className="px-4 py-2 bg-slate-100 dark:bg-white/10 hover:bg-indigo-500 hover:text-white text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">
                   {pkg.price}
                 </button>
               </div>
@@ -108,22 +127,29 @@ export function PlansTab() {
             <div className="flex gap-3">
               <input 
                 type="text" 
-                placeholder="PROMOCODE20" 
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value)}
+                placeholder="PROMOCODE20 или FREE100" 
                 className="flex-1 bg-transparent border border-black/20 dark:border-white/20 rounded-lg p-2.5 text-slate-900 dark:text-white font-mono uppercase focus:outline-none focus:border-indigo-500" 
               />
-              <button className="px-6 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+              <button onClick={handleApplyPromo} className="px-6 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
                 Применить
               </button>
             </div>
             
-            {/* Mock valid promo applied */}
-            <div className="mt-4 p-3 bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 rounded-lg flex justify-between items-center">
-              <div>
-                <p className="text-sm font-medium text-green-800 dark:text-green-400">Скидка 20% применена!</p>
-                <p className="text-xs text-green-700 dark:text-green-500 mt-0.5">Будет применена к следующему списанию 21 Июля.</p>
-              </div>
-              <span className="text-lg">🎉</span>
-            </div>
+            {promoError && <p className="text-sm text-red-500 mt-3">Неверный или истекший промокод.</p>}
+
+            <AnimatePresence>
+              {promoApplied && (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-4 p-3 bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 rounded-lg flex justify-between items-center overflow-hidden">
+                  <div>
+                    <p className="text-sm font-medium text-green-800 dark:text-green-400">Скидка 20% применена!</p>
+                    <p className="text-xs text-green-700 dark:text-green-500 mt-0.5">Будет применена к следующему списанию.</p>
+                  </div>
+                  <span className="text-lg">🎉</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
