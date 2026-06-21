@@ -2,11 +2,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { useAuthStore } from '../../../../store';
+
 export function PaymentTab() {
-  const [paymentMethods, setPaymentMethods] = useState([
-    { id: '1', type: 'Visa', last4: '4242', expiry: '12/26', isDefault: true, limit: 100 },
-    { id: '2', type: 'Mastercard', last4: '5555', expiry: '08/25', isDefault: false, limit: 50 },
-  ]);
+  const { paymentMethods, setPaymentMethods } = useAuthStore();
 
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);

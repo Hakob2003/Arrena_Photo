@@ -4,7 +4,7 @@ import { useAuthStore } from '../../../../store';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function PlansTab() {
-  const { planId, setPlanId, addCredits } = useAuthStore();
+  const { planId, setPlanId, addCredits, paymentMethods } = useAuthStore();
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoError, setPromoError] = useState(false);
@@ -23,18 +23,42 @@ export function PlansTab() {
     }
   };
 
+  const getDefaultCardLimit = () => {
+    const defaultCard = paymentMethods.find(m => m.isDefault);
+    return defaultCard ? defaultCard.limit : 0;
+  };
+
+  const handleUpgrade = (planId: string, price: number) => {
+    const limit = getDefaultCardLimit();
+    if (price > limit) {
+      alert(`Оплата отклонена: Сумма ($${price}) превышает лимит вашей карты ($${limit}). Пожалуйста, увеличьте лимит карты или добавьте новую.`);
+      return;
+    }
+    setPlanId(planId);
+    alert('Тариф успешно изменен!');
+  };
+
+  const handleBuyCredits = (amount: number, price: number) => {
+    const limit = getDefaultCardLimit();
+    if (price > limit) {
+      alert(`Оплата отклонена: Сумма ($${price}) превышает лимит вашей карты ($${limit}). Пожалуйста, увеличьте лимит карты или добавьте новую.`);
+      return;
+    }
+    addCredits(amount);
+    alert('Кредиты успешно начислены!');
+  };
+
   const plans = [
-    { id: 'free', name: 'Free', price: '$0', credits: '100 / мес', models: 'Базовые', features: ['До 1 задачи', 'Стандартная скорость', 'Водяной знак'] },
-    { id: 'starter', name: 'Starter', price: '$9', credits: '1,000 / мес', models: 'Все модели', features: ['До 2 задач', 'Стандартная скорость', 'Без водяного знака'] },
-    { id: 'pro', name: 'Pro Creator', price: '$29', credits: '5,000 / мес', models: 'Все + Приоритет', features: ['До 5 задач', 'Высокая скорость', 'Коммерческая лицензия'] },
-    { id: 'business', name: 'Business', price: '$99', credits: 'Безлимит*', models: 'Все + Выделенные', features: ['До 20 задач', 'Макс. скорость', 'API доступ'] },
+    { id: 'free', name: 'Free', price: '$0', priceNum: 0, credits: '100 / мес', models: 'Базовые', features: ['До 1 задачи', 'Стандартная скорость', 'Водяной знак'] },
+    { id: 'starter', name: 'Starter', price: '$9', priceNum: 9, credits: '1000 / мес', models: 'Все', features: ['До 2 задач', 'Стандартная скорость', 'Без водяного знака'] },
+    { id: 'pro', name: 'Pro Creator', price: '$29', priceNum: 29, credits: '5000 / мес', models: 'Все + Эксклюзив', features: ['До 5 задач', 'Высокая скорость', 'Коммерческая лицензия'] },
+    { id: 'business', name: 'Business', price: '$99', priceNum: 99, credits: 'Безлимит', models: 'Все + Эксклюзив', features: ['До 20 задач', 'Макс. скорость', 'API доступ'] },
   ];
 
   const creditPackages = [
-    { id: 'c100', credits: 100, price: '$2' },
-    { id: 'c500', credits: 500, price: '$8' },
-    { id: 'c1000', credits: 1000, price: '$15' },
-    { id: 'c5000', credits: 5000, price: '$60' },
+    { id: 'c500', credits: 500, price: '$8', priceNum: 8 },
+    { id: 'c2000', credits: 2000, price: '$25', priceNum: 25 },
+    { id: 'c5000', credits: 5000, price: '$60', priceNum: 60 },
   ];
 
   return (
@@ -85,7 +109,7 @@ export function PlansTab() {
                       Текущий план
                     </button>
                   ) : (
-                    <button onClick={() => setPlanId(plan.id)} className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+                    <button onClick={() => handleUpgrade(plan.id, plan.priceNum)} className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
                       {plan.price === '$0' ? 'Downgrade' : 'Upgrade'}
                     </button>
                   )}
@@ -110,7 +134,7 @@ export function PlansTab() {
                   <p className="font-bold text-slate-900 dark:text-white">{pkg.credits}</p>
                   <p className="text-xs text-slate-500">кредитов</p>
                 </div>
-                <button onClick={() => addCredits(pkg.credits)} className="px-4 py-2 bg-slate-100 dark:bg-white/10 hover:bg-indigo-500 hover:text-white text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">
+                <button onClick={() => handleBuyCredits(pkg.credits, pkg.priceNum)} className="px-4 py-2 bg-slate-100 dark:bg-white/10 hover:bg-indigo-500 hover:text-white text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">
                   {pkg.price}
                 </button>
               </div>

@@ -7,12 +7,14 @@ interface AuthState {
   token: string | null;
   credits: number;
   planId: string;
+  paymentMethods: any[];
   login: (user: any, token: string) => void;
   logout: () => void;
   deductCredits: (amount: number) => void;
   addCredits: (amount: number) => void;
   setCredits: (amount: number) => void;
   setPlanId: (planId: string) => void;
+  setPaymentMethods: (methods: any[]) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -22,16 +24,21 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       credits: 0,
       planId: 'free',
+      paymentMethods: [
+        { id: '1', type: 'Visa', last4: '4242', expiry: '12/26', isDefault: true, limit: 100 },
+        { id: '2', type: 'Mastercard', last4: '5555', expiry: '08/25', isDefault: false, limit: 50 },
+      ],
       login: (user, token) => set({ user, token, credits: user.credits ?? 0, planId: user.planId ?? 'free' }),
       logout: () => set({ user: null, token: null, planId: 'free' }),
       deductCredits: (amount) => set((state) => ({ credits: Math.max(0, state.credits - amount) })),
       addCredits: (amount) => set((state) => ({ credits: state.credits + amount })),
       setCredits: (amount) => set({ credits: amount }),
       setPlanId: (planId) => set({ planId }),
+      setPaymentMethods: (methods) => set({ paymentMethods: methods }),
     }),
     {
       name: 'auth-storage', // name of item in the storage (must be unique)
-      partialize: (state) => ({ credits: state.credits, planId: state.planId, user: state.user }), // only save these fields
+      partialize: (state) => ({ credits: state.credits, planId: state.planId, user: state.user, paymentMethods: state.paymentMethods }), // only save these fields
     }
   )
 );
