@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>()(
       setPlanId: (planId) => set({ planId }),
       setPaymentMethods: (methods) => set({ paymentMethods: methods }),
       chargeDefaultCard: (amount) => {
-        let result = { success: false, error: '' };
+        let result: { success: boolean; error?: string } = { success: false, error: '' };
         set((state) => {
           const defaultCard = state.paymentMethods.find(m => m.isDefault);
           if (!defaultCard) {
