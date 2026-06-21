@@ -15,6 +15,7 @@ interface AuthState {
   setCredits: (amount: number) => void;
   setPlanId: (planId: string) => void;
   setPaymentMethods: (methods: any[]) => void;
+  setDefaultPaymentMethod: (id: string) => void;
   chargeDefaultCard: (amount: number) => { success: boolean; error?: string };
 }
 
@@ -36,6 +37,11 @@ export const useAuthStore = create<AuthState>()(
       setCredits: (amount) => set({ credits: amount }),
       setPlanId: (planId) => set({ planId }),
       setPaymentMethods: (methods) => set({ paymentMethods: methods }),
+      setDefaultPaymentMethod: (id) => set((state) => ({
+        paymentMethods: state.paymentMethods.map(m => 
+          m.id === id ? { ...m, isDefault: true } : { ...m, isDefault: false }
+        )
+      })),
       chargeDefaultCard: (amount) => {
         let result: { success: boolean; error?: string } = { success: false, error: '' };
         set((state) => {

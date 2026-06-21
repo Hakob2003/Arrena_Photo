@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '../../../../store';
 
 export function PaymentTab() {
-  const { paymentMethods, setPaymentMethods } = useAuthStore();
+  const { paymentMethods, setPaymentMethods, setDefaultPaymentMethod } = useAuthStore();
 
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -63,39 +63,44 @@ export function PaymentTab() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           {paymentMethods.map(pm => (
-            <div key={pm.id} className="relative p-5 border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-2xl shadow-sm flex flex-col justify-between h-32">
-              <div className="flex justify-between items-start">
-                <div className="flex items-center gap-2">
-                  {/* Mock Card Icon */}
-                  <div className="w-10 h-6 bg-slate-200 dark:bg-white/20 rounded flex items-center justify-center text-[10px] font-bold text-slate-600 dark:text-white">
+            <div key={pm.id} className="p-4 sm:p-5 border border-black/10 dark:border-white/10 bg-slate-50 dark:bg-white/5 rounded-2xl flex flex-col justify-between min-h-[140px] relative">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex gap-2 items-center flex-wrap pr-2">
+                  <div className="w-10 h-6 bg-slate-200 dark:bg-white/10 rounded-md flex items-center justify-center text-xs font-bold text-slate-700 dark:text-white shrink-0">
                     {pm.type}
                   </div>
-                  {pm.isDefault && <span className="text-[10px] bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 px-2 py-0.5 rounded-full font-medium">Основной</span>}
-                  <span className="text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-0.5 rounded-full font-medium">Лимит: ${pm.limit}</span>
-                  <span className="text-[10px] bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400 px-2 py-0.5 rounded-full font-medium">Баланс: ${pm.balance}</span>
+                  {pm.isDefault ? (
+                    <span className="text-[10px] bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 px-2 py-0.5 rounded-full font-medium shrink-0">Основной</span>
+                  ) : (
+                    <button onClick={() => setDefaultPaymentMethod(pm.id)} className="text-[10px] bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-white px-2 py-0.5 rounded-full font-medium hover:bg-slate-300 dark:hover:bg-white/20 transition-colors shrink-0">Сделать основным</button>
+                  )}
+                  <span className="text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-0.5 rounded-full font-medium shrink-0">Лимит: ${pm.limit}</span>
+                  <span className="text-[10px] bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400 px-2 py-0.5 rounded-full font-medium shrink-0">Баланс: ${pm.balance}</span>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 shrink-0">
                   <button onClick={() => { setEditingCard(pm); setEditModalOpen(true); }} className="text-slate-400 hover:text-indigo-500 transition-colors" title="Изменить лимит">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                   </button>
-                  <button onClick={() => handleRemoveCard(pm.id)} className="text-slate-400 hover:text-red-500 transition-colors" title="Удалить карту">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                  </button>
+                  {!pm.isDefault && (
+                    <button onClick={() => handleRemoveCard(pm.id)} className="text-slate-400 hover:text-red-500 transition-colors" title="Удалить карту">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                    </button>
+                  )}
                 </div>
               </div>
-              <div className="flex justify-between items-end">
+              <div className="flex justify-between items-end mt-auto">
                 <div>
-                  <p className="text-sm font-mono text-slate-600 dark:text-gray-300">•••• •••• •••• {pm.last4}</p>
+                  <p className="text-xl font-mono text-slate-900 dark:text-white tracking-widest mt-1">•••• •••• •••• {pm.last4}</p>
                 </div>
-                <div>
-                  <p className="text-xs text-slate-400">Expires</p>
-                  <p className="text-sm font-medium text-slate-700 dark:text-gray-300">{pm.expiry}</p>
+                <div className="text-right">
+                  <p className="text-xs text-slate-500 dark:text-gray-400 mb-0.5">Expires</p>
+                  <p className="text-sm font-medium text-slate-900 dark:text-white">{pm.expiry}</p>
                 </div>
               </div>
             </div>
           ))}
           
-          <div onClick={() => setAddModalOpen(true)} className="p-5 border-2 border-dashed border-black/10 dark:border-white/10 bg-transparent rounded-2xl flex items-center justify-center h-32 cursor-pointer hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-white/5 transition-all group">
+          <div onClick={() => setAddModalOpen(true)} className="p-5 border-2 border-dashed border-black/10 dark:border-white/10 bg-transparent rounded-2xl flex items-center justify-center min-h-[140px] cursor-pointer hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-white/5 transition-all group">
             <div className="text-center">
               <p className="text-sm font-medium text-slate-500 dark:text-gray-400 group-hover:text-indigo-500">+ Добавить новый метод</p>
             </div>
