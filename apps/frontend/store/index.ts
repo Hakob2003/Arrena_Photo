@@ -15,7 +15,7 @@ interface AuthState {
   setCredits: (amount: number) => void;
   setPlanId: (planId: string) => void;
   setPaymentMethods: (methods: any[]) => void;
-  chargeDefaultCard: (amount: number) => boolean;
+  chargeDefaultCard: (amount: number) => { success: boolean; error?: string };
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -26,8 +26,8 @@ export const useAuthStore = create<AuthState>()(
       credits: 0,
       planId: 'free',
       paymentMethods: [
-        { id: '1', type: 'Visa', last4: '4242', expiry: '12/26', isDefault: true, limit: 100 },
-        { id: '2', type: 'Mastercard', last4: '5555', expiry: '08/25', isDefault: false, limit: 50 },
+        { id: '1', type: 'Visa', last4: '4242', expiry: '12/26', isDefault: true, limit: 100, balance: 250 },
+        { id: '2', type: 'Mastercard', last4: '5555', expiry: '08/25', isDefault: false, limit: 50, balance: 10 },
       ],
       login: (user, token) => set({ user, token, credits: user.credits ?? 0, planId: user.planId ?? 'free' }),
       logout: () => set({ user: null, token: null, planId: 'free' }),
@@ -37,21 +37,30 @@ export const useAuthStore = create<AuthState>()(
       setPlanId: (planId) => set({ planId }),
       setPaymentMethods: (methods) => set({ paymentMethods: methods }),
       chargeDefaultCard: (amount) => {
-        let success = false;
+        let result = { success: false, error: '' };
         set((state) => {
           const defaultCard = state.paymentMethods.find(m => m.isDefault);
-          if (!defaultCard || defaultCard.limit < amount) {
-            success = false;
+          if (!defaultCard) {
+            result = { success: false, error: 'Оплата отклонена: Нет основной карты для списания.' };
             return state;
           }
-          success = true;
+          if (amount > defaultCard.limit) {
+            result = { success: false, error: `Оплата отклонена: Сумма ($${amount}) превышает доступный лимит карты ($${defaultCard.limit}).` };
+            return state;
+          }
+          if (amount > defaultCard.balance) {
+            result = { success: false, error: `Оплата отклонена: Недостаточно средств на балансе карты (Доступно: $${defaultCard.balance}).` };
+            return state;
+          }
+          
+          result = { success: true };
           return {
             paymentMethods: state.paymentMethods.map(m => 
-              m.id === defaultCard.id ? { ...m, limit: m.limit - amount } : m
+              m.id === defaultCard.id ? { ...m, limit: m.limit - amount, balance: m.balance - amount } : m
             )
           };
         });
-        return success;
+        return result;
       },
     }),
     {

@@ -24,17 +24,21 @@ export function PlansTab() {
   };
 
   const handleUpgrade = (planId: string, price: number) => {
-    if (price > 0 && !chargeDefaultCard(price)) {
-      alert(`Оплата отклонена: Недостаточно лимита на вашей основной карте для списания $${price}. Пожалуйста, увеличьте лимит карты или добавьте новую.`);
-      return;
+    if (price > 0) {
+      const res = chargeDefaultCard(price);
+      if (!res.success) {
+        alert(res.error);
+        return;
+      }
     }
     setPlanId(planId);
     alert('Тариф успешно изменен!');
   };
 
   const handleBuyCredits = (amount: number, price: number) => {
-    if (!chargeDefaultCard(price)) {
-      alert(`Оплата отклонена: Недостаточно лимита на вашей основной карте для списания $${price}. Пожалуйста, увеличьте лимит карты или добавьте новую.`);
+    const res = chargeDefaultCard(price);
+    if (!res.success) {
+      alert(res.error);
       return;
     }
     addCredits(amount);

@@ -10,7 +10,7 @@ export function PaymentTab() {
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   
-  const [newCard, setNewCard] = useState({ number: '', expiry: '', cvv: '', limit: 100 });
+  const [newCard, setNewCard] = useState({ number: '', expiry: '', cvv: '', limit: 100, balance: 250 });
   const [editingCard, setEditingCard] = useState<any>(null);
 
   const handleAddCardSubmit = (e: React.FormEvent) => {
@@ -24,10 +24,11 @@ export function PaymentTab() {
       last4,
       expiry: newCard.expiry || '12/28',
       isDefault: paymentMethods.length === 0,
-      limit: Number(newCard.limit)
+      limit: Number(newCard.limit),
+      balance: Number(newCard.balance)
     }]);
     setAddModalOpen(false);
-    setNewCard({ number: '', expiry: '', cvv: '', limit: 100 });
+    setNewCard({ number: '', expiry: '', cvv: '', limit: 100, balance: 250 });
   };
 
   const handleEditLimitSubmit = (e: React.FormEvent) => {
@@ -71,6 +72,7 @@ export function PaymentTab() {
                   </div>
                   {pm.isDefault && <span className="text-[10px] bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 px-2 py-0.5 rounded-full font-medium">Основной</span>}
                   <span className="text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-0.5 rounded-full font-medium">Лимит: ${pm.limit}</span>
+                  <span className="text-[10px] bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400 px-2 py-0.5 rounded-full font-medium">Баланс: ${pm.balance}</span>
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => { setEditingCard(pm); setEditModalOpen(true); }} className="text-slate-400 hover:text-indigo-500 transition-colors" title="Изменить лимит">
@@ -182,11 +184,17 @@ export function PaymentTab() {
                     <input required type="text" value={newCard.cvv} onChange={e => setNewCard({...newCard, cvv: e.target.value})} placeholder="123" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
                   </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Максимальный лимит списания ($)</label>
-                  <input required type="number" min="0" value={newCard.limit} onChange={e => setNewCard({...newCard, limit: Number(e.target.value)})} placeholder="100" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
-                  <p className="text-xs text-slate-500 mt-1">Система не сможет списать с этой карты больше указанной суммы.</p>
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Макс. лимит ($)</label>
+                    <input required type="number" min="0" value={newCard.limit} onChange={e => setNewCard({...newCard, limit: Number(e.target.value)})} placeholder="100" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Баланс карты ($)</label>
+                    <input required type="number" min="0" value={newCard.balance} onChange={e => setNewCard({...newCard, balance: Number(e.target.value)})} placeholder="250" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                  </div>
                 </div>
+                <p className="text-xs text-slate-500 mt-1">Система не сможет списать с этой карты больше указанного лимита или при недостатке средств.</p>
                 <div className="flex gap-3 mt-4">
                   <button type="submit" className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">Сохранить</button>
                   <button type="button" onClick={() => setAddModalOpen(false)} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">Отмена</button>
