@@ -30,7 +30,7 @@ export function PlansTab() {
     if (price > 0) {
       const res = chargeDefaultCard(price);
       if (!res.success) {
-        toast.error(res.error);
+        toast.error(res.error || 'Ошибка оплаты');
         return;
       }
     }
@@ -41,7 +41,7 @@ export function PlansTab() {
   const handleBuyCredits = (amount: number, price: number) => {
     const res = chargeDefaultCard(price);
     if (!res.success) {
-      toast.error(res.error);
+      toast.error(res.error || 'Ошибка оплаты');
       return;
     }
     addCredits(amount);
