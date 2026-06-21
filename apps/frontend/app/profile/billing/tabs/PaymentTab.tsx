@@ -1,22 +1,41 @@
 "use client";
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function PaymentTab() {
   const [paymentMethods, setPaymentMethods] = useState([
-    { id: '1', type: 'Visa', last4: '4242', expiry: '12/26', isDefault: true },
-    { id: '2', type: 'Mastercard', last4: '5555', expiry: '08/25', isDefault: false },
+    { id: '1', type: 'Visa', last4: '4242', expiry: '12/26', isDefault: true, limit: 100 },
+    { id: '2', type: 'Mastercard', last4: '5555', expiry: '08/25', isDefault: false, limit: 50 },
   ]);
 
-  const handleAddCard = () => {
-    const types = ['Visa', 'Mastercard', 'Amex'];
-    const newCard = {
+  const [isAddModalOpen, setAddModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  
+  const [newCard, setNewCard] = useState({ number: '', expiry: '', cvv: '', limit: 100 });
+  const [editingCard, setEditingCard] = useState<any>(null);
+
+  const handleAddCardSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const type = newCard.number.startsWith('4') ? 'Visa' : 'Mastercard';
+    const last4 = newCard.number.slice(-4) || '1234';
+    
+    setPaymentMethods([...paymentMethods, {
       id: Date.now().toString(),
-      type: types[Math.floor(Math.random() * types.length)],
-      last4: Math.floor(1000 + Math.random() * 9000).toString(),
-      expiry: `12/${Math.floor(25 + Math.random() * 5)}`,
+      type,
+      last4,
+      expiry: newCard.expiry || '12/28',
       isDefault: paymentMethods.length === 0,
-    };
-    setPaymentMethods([...paymentMethods, newCard]);
+      limit: Number(newCard.limit)
+    }]);
+    setAddModalOpen(false);
+    setNewCard({ number: '', expiry: '', cvv: '', limit: 100 });
+  };
+
+  const handleEditLimitSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPaymentMethods(paymentMethods.map(pm => pm.id === editingCard.id ? { ...pm, limit: Number(editingCard.limit) } : pm));
+    setEditModalOpen(false);
+    setEditingCard(null);
   };
 
   const handleRemoveCard = (id: string) => {
@@ -37,7 +56,7 @@ export function PaymentTab() {
       <div>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">Способы оплаты</h2>
-          <button onClick={handleAddCard} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+          <button onClick={() => setAddModalOpen(true)} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
             + Добавить карту
           </button>
         </div>
@@ -52,10 +71,16 @@ export function PaymentTab() {
                     {pm.type}
                   </div>
                   {pm.isDefault && <span className="text-[10px] bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 px-2 py-0.5 rounded-full font-medium">Основной</span>}
+                  <span className="text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-0.5 rounded-full font-medium">Лимит: ${pm.limit}</span>
                 </div>
-                <button onClick={() => handleRemoveCard(pm.id)} className="text-slate-400 hover:text-red-500 transition-colors">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                </button>
+                <div className="flex gap-2">
+                  <button onClick={() => { setEditingCard(pm); setEditModalOpen(true); }} className="text-slate-400 hover:text-indigo-500 transition-colors" title="Изменить лимит">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                  </button>
+                  <button onClick={() => handleRemoveCard(pm.id)} className="text-slate-400 hover:text-red-500 transition-colors" title="Удалить карту">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                  </button>
+                </div>
               </div>
               <div className="flex justify-between items-end">
                 <div>
@@ -69,7 +94,7 @@ export function PaymentTab() {
             </div>
           ))}
           
-          <div onClick={handleAddCard} className="p-5 border-2 border-dashed border-black/10 dark:border-white/10 bg-transparent rounded-2xl flex items-center justify-center h-32 cursor-pointer hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-white/5 transition-all group">
+          <div onClick={() => setAddModalOpen(true)} className="p-5 border-2 border-dashed border-black/10 dark:border-white/10 bg-transparent rounded-2xl flex items-center justify-center h-32 cursor-pointer hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-white/5 transition-all group">
             <div className="text-center">
               <p className="text-sm font-medium text-slate-500 dark:text-gray-400 group-hover:text-indigo-500">+ Добавить новый метод</p>
             </div>
@@ -136,6 +161,65 @@ export function PaymentTab() {
         </div>
       </div>
 
+      {/* Add Card Modal */}
+      <AnimatePresence>
+        {isAddModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setAddModalOpen(false)} />
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl p-6 w-full max-w-md relative z-10 border border-black/10 dark:border-white/10">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Добавить карту</h2>
+              <form onSubmit={handleAddCardSubmit} className="flex flex-col gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Номер карты</label>
+                  <input required type="text" value={newCard.number} onChange={e => setNewCard({...newCard, number: e.target.value})} placeholder="0000 0000 0000 0000" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Срок действия</label>
+                    <input required type="text" value={newCard.expiry} onChange={e => setNewCard({...newCard, expiry: e.target.value})} placeholder="MM/YY" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">CVV</label>
+                    <input required type="text" value={newCard.cvv} onChange={e => setNewCard({...newCard, cvv: e.target.value})} placeholder="123" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Максимальный лимит списания ($)</label>
+                  <input required type="number" min="0" value={newCard.limit} onChange={e => setNewCard({...newCard, limit: Number(e.target.value)})} placeholder="100" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                  <p className="text-xs text-slate-500 mt-1">Система не сможет списать с этой карты больше указанной суммы.</p>
+                </div>
+                <div className="flex gap-3 mt-4">
+                  <button type="submit" className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">Сохранить</button>
+                  <button type="button" onClick={() => setAddModalOpen(false)} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">Отмена</button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Edit Limit Modal */}
+      <AnimatePresence>
+        {isEditModalOpen && editingCard && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => { setEditModalOpen(false); setEditingCard(null); }} />
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl p-6 w-full max-w-md relative z-10 border border-black/10 dark:border-white/10">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Изменить лимит</h2>
+              <p className="text-sm text-slate-600 dark:text-gray-300 mb-4">Карта: {editingCard.type} •••• {editingCard.last4}</p>
+              <form onSubmit={handleEditLimitSubmit} className="flex flex-col gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Новый лимит ($)</label>
+                  <input required type="number" min="0" value={editingCard.limit} onChange={e => setEditingCard({...editingCard, limit: Number(e.target.value)})} className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                </div>
+                <div className="flex gap-3 mt-4">
+                  <button type="submit" className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">Сохранить</button>
+                  <button type="button" onClick={() => { setEditModalOpen(false); setEditingCard(null); }} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">Отмена</button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

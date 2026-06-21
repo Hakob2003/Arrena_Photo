@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 // --- Auth Store ---
 interface AuthState {
@@ -14,18 +15,26 @@ interface AuthState {
   setPlanId: (planId: string) => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  token: null,
-  credits: 0,
-  planId: 'free',
-  login: (user, token) => set({ user, token, credits: user.credits ?? 0, planId: user.planId ?? 'free' }),
-  logout: () => set({ user: null, token: null, planId: 'free' }),
-  deductCredits: (amount) => set((state) => ({ credits: Math.max(0, state.credits - amount) })),
-  addCredits: (amount) => set((state) => ({ credits: state.credits + amount })),
-  setCredits: (amount) => set({ credits: amount }),
-  setPlanId: (planId) => set({ planId }),
-}));
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      credits: 0,
+      planId: 'free',
+      login: (user, token) => set({ user, token, credits: user.credits ?? 0, planId: user.planId ?? 'free' }),
+      logout: () => set({ user: null, token: null, planId: 'free' }),
+      deductCredits: (amount) => set((state) => ({ credits: Math.max(0, state.credits - amount) })),
+      addCredits: (amount) => set((state) => ({ credits: state.credits + amount })),
+      setCredits: (amount) => set({ credits: amount }),
+      setPlanId: (planId) => set({ planId }),
+    }),
+    {
+      name: 'auth-storage', // name of item in the storage (must be unique)
+      partialize: (state) => ({ credits: state.credits, planId: state.planId, user: state.user }), // only save these fields
+    }
+  )
+);
 
 // --- Generation Store ---
 interface GenerationState {
