@@ -1,11 +1,27 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 
 export function PaymentTab() {
-  const paymentMethods = [
+  const [paymentMethods, setPaymentMethods] = useState([
     { id: '1', type: 'Visa', last4: '4242', expiry: '12/26', isDefault: true },
     { id: '2', type: 'Mastercard', last4: '5555', expiry: '08/25', isDefault: false },
-  ];
+  ]);
+
+  const handleAddCard = () => {
+    const types = ['Visa', 'Mastercard', 'Amex'];
+    const newCard = {
+      id: Date.now().toString(),
+      type: types[Math.floor(Math.random() * types.length)],
+      last4: Math.floor(1000 + Math.random() * 9000).toString(),
+      expiry: `12/${Math.floor(25 + Math.random() * 5)}`,
+      isDefault: paymentMethods.length === 0,
+    };
+    setPaymentMethods([...paymentMethods, newCard]);
+  };
+
+  const handleRemoveCard = (id: string) => {
+    setPaymentMethods(paymentMethods.filter(pm => pm.id !== id));
+  };
 
   const transactions = [
     { id: '#INV-001', date: '21 Jun 2026', amount: '$29.00', method: 'Visa •••• 4242', status: 'Success', plan: 'Pro Creator' },
@@ -21,7 +37,7 @@ export function PaymentTab() {
       <div>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">Способы оплаты</h2>
-          <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+          <button onClick={handleAddCard} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
             + Добавить карту
           </button>
         </div>
@@ -37,7 +53,7 @@ export function PaymentTab() {
                   </div>
                   {pm.isDefault && <span className="text-[10px] bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 px-2 py-0.5 rounded-full font-medium">Основной</span>}
                 </div>
-                <button className="text-slate-400 hover:text-red-500 transition-colors">
+                <button onClick={() => handleRemoveCard(pm.id)} className="text-slate-400 hover:text-red-500 transition-colors">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                 </button>
               </div>
@@ -53,7 +69,7 @@ export function PaymentTab() {
             </div>
           ))}
           
-          <div className="p-5 border-2 border-dashed border-black/10 dark:border-white/10 bg-transparent rounded-2xl flex items-center justify-center h-32 cursor-pointer hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-white/5 transition-all group">
+          <div onClick={handleAddCard} className="p-5 border-2 border-dashed border-black/10 dark:border-white/10 bg-transparent rounded-2xl flex items-center justify-center h-32 cursor-pointer hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-white/5 transition-all group">
             <div className="text-center">
               <p className="text-sm font-medium text-slate-500 dark:text-gray-400 group-hover:text-indigo-500">+ Добавить новый метод</p>
             </div>
@@ -62,11 +78,11 @@ export function PaymentTab() {
 
         {/* Digital Wallets */}
         <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-black/10 dark:border-white/10">
-          <button className="flex-1 flex items-center justify-center gap-2 py-3 bg-black hover:bg-black/80 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black font-semibold rounded-xl transition-colors">
+          <button onClick={() => alert('Открывается Apple Pay...')} className="flex-1 flex items-center justify-center gap-2 py-3 bg-black hover:bg-black/80 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black font-semibold rounded-xl transition-colors">
             <svg viewBox="0 0 384 512" className="w-4 h-4 fill-current"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
             Pay
           </button>
-          <button className="flex-1 flex items-center justify-center gap-2 py-3 bg-white hover:bg-gray-50 text-slate-700 border border-black/20 font-semibold rounded-xl transition-colors shadow-sm">
+          <button onClick={() => alert('Открывается Google Pay...')} className="flex-1 flex items-center justify-center gap-2 py-3 bg-white hover:bg-gray-50 text-slate-700 border border-black/20 font-semibold rounded-xl transition-colors shadow-sm">
             <svg viewBox="0 0 488 512" className="w-4 h-4 fill-current text-[#4285F4]"><path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/></svg>
             Google Pay
           </button>

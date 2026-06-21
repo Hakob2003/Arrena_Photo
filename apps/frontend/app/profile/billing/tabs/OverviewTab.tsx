@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '../../../../store';
 
-const PLAN_DETAILS: Record<string, { name: string, limit: number }> = {
-  free: { name: 'Free', limit: 100 },
-  starter: { name: 'Starter', limit: 1000 },
-  pro: { name: 'Pro Creator', limit: 5000 },
-  business: { name: 'Business', limit: 999999 },
+const PLAN_DETAILS: Record<string, { name: string, limit: number, price: string, features: string[] }> = {
+  free: { name: 'Free', limit: 100, price: '$0.00', features: ['До 1 задачи', 'Стандартная скорость', 'Водяной знак'] },
+  starter: { name: 'Starter', limit: 1000, price: '$9.00', features: ['До 2 задач', 'Стандартная скорость', 'Без водяного знака'] },
+  pro: { name: 'Pro Creator', limit: 5000, price: '$29.00', features: ['До 5 задач', 'Высокая скорость', 'Коммерческая лицензия'] },
+  business: { name: 'Business', limit: 999999, price: '$99.00', features: ['До 20 задач', 'Макс. скорость', 'API доступ'] },
 };
 
 export function OverviewTab() {
@@ -40,7 +40,7 @@ export function OverviewTab() {
               {isActive && <p className="text-slate-500 dark:text-gray-400 text-sm mt-1">Подписка активна до 21 Июля 2026</p>}
             </div>
             <div className="text-left sm:text-right">
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">$29.00 <span className="text-sm font-normal text-slate-500">/ мес</span></p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">{currentPlan.price} <span className="text-sm font-normal text-slate-500">/ мес</span></p>
             </div>
           </div>
 
@@ -58,10 +58,9 @@ export function OverviewTab() {
           <div className="border-t border-black/10 dark:border-white/10 pt-4">
             <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Доступные функции тарифа:</h4>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-slate-600 dark:text-gray-300">
-              <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Доступ ко всем AI-моделям</li>
-              <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Приоритетная генерация</li>
-              <li className="flex items-center gap-2"><span className="text-green-500">✓</span> Коммерческая лицензия</li>
-              <li className="flex items-center gap-2"><span className="text-green-500">✓</span> До 5 параллельных задач</li>
+              {currentPlan.features.map((feature, idx) => (
+                <li key={idx} className="flex items-center gap-2"><span className="text-green-500">✓</span> {feature}</li>
+              ))}
             </ul>
           </div>
         </div>
