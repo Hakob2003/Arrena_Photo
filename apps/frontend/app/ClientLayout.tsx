@@ -5,6 +5,7 @@ import { Sidebar } from '../components/layout/Sidebar';
 import { useAuthStore, useUIStore } from '../store';
 import { Topbar } from '../components/layout/Topbar';
 import { LayoutGroup } from 'framer-motion';
+import { Toaster } from 'react-hot-toast';
 
 import { api } from '../lib/api';
 
@@ -145,6 +146,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
           </main>
         </div>
       </div>
+      <Toaster position="bottom-right" />
     </LayoutGroup>
   );
 }

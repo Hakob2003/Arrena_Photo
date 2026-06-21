@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../../../../store';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-hot-toast';
 
 export function PlansTab() {
   const { planId, setPlanId, addCredits, chargeDefaultCard } = useAuthStore();
@@ -13,13 +14,15 @@ export function PlansTab() {
     if (promoCode.trim().toUpperCase() === 'PROMOCODE20') {
       setPromoApplied(true);
       setPromoError(false);
+      toast.success('Промокод применен!');
     } else if (promoCode.trim().toUpperCase() === 'FREE100') {
       addCredits(100);
       setPromoCode('');
-      alert('Вам начислено 100 кредитов!');
+      toast.success('Вам начислено 100 кредитов!');
     } else {
       setPromoError(true);
       setPromoApplied(false);
+      toast.error('Неверный или истекший промокод.');
     }
   };
 
@@ -27,22 +30,22 @@ export function PlansTab() {
     if (price > 0) {
       const res = chargeDefaultCard(price);
       if (!res.success) {
-        alert(res.error);
+        toast.error(res.error);
         return;
       }
     }
     setPlanId(planId);
-    alert('Тариф успешно изменен!');
+    toast.success('Тариф успешно изменен!');
   };
 
   const handleBuyCredits = (amount: number, price: number) => {
     const res = chargeDefaultCard(price);
     if (!res.success) {
-      alert(res.error);
+      toast.error(res.error);
       return;
     }
     addCredits(amount);
-    alert('Кредиты успешно начислены!');
+    toast.success('Кредиты успешно начислены!');
   };
 
   const plans = [
