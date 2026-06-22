@@ -116,7 +116,7 @@ function GeneratorContent() {
       window.location.href = '/login';
       return;
     }
-    if (!prompt) return;
+    if (!prompt || !initImage) return;
 
     setGenerating(true);
     setLoadingText('Отправка промпта...');
@@ -260,9 +260,9 @@ function GeneratorContent() {
 
         <button 
           onClick={handleGenerate}
-          disabled={isGenerating || !prompt}
+          disabled={isGenerating || !prompt || !initImage}
           className={`shrink-0 mt-auto py-4 rounded-xl font-bold text-lg transition-all ${
-            isGenerating || !prompt 
+            isGenerating || !prompt || !initImage
             ? 'bg-black/[0.05] dark:bg-white/10 text-slate-400 dark:text-gray-500 cursor-not-allowed' 
             : 'bg-white text-black hover:bg-gray-200 hover:scale-[1.02] neon-glow'
           }`}
