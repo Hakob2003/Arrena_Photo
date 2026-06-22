@@ -410,7 +410,7 @@ model CreditTransaction {
 model PaymentMethod {
   id             String   @id @default(uuid())
   userId         String
-  last4          String
+  last4          String   @default("0000")
   brand          String   @default("visa")
   expiry         String
   cardholderName String
