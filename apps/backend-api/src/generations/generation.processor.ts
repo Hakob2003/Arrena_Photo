@@ -65,9 +65,9 @@ export class GenerationProcessor extends WorkerHost {
       } else {
         const apiKey = connection?.encryptedApiKey 
           ? Buffer.from(connection.encryptedApiKey, 'base64').toString('utf8')
-          : 'mock-key';
-        
-        providerFactory = ImageProviderFactory.create(generation.aiModel.provider.name, apiKey);
+          : '';
+        const usePicsumMock = (global as any).usePicsumMock === true;
+        providerFactory = ImageProviderFactory.create(generation.aiModel.provider.name, apiKey, { usePicsumMock });
       }
       
       const startTime = Date.now();
