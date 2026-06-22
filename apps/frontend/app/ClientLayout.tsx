@@ -168,7 +168,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <Sidebar />
+        {user && <Sidebar />}
         <div className="flex-1 flex flex-col min-w-0 relative">
           {/* Background Glow for Consumer App */}
           <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
