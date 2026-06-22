@@ -161,11 +161,7 @@ interface UIState {
 }
 
 const getInitialLocale = (): 'ru' | 'en' => {
-  if (typeof window !== 'undefined') {
-    const saved = localStorage.getItem('locale');
-    if (saved === 'en' || saved === 'ru') return saved;
-  }
-  return 'ru';
+  return 'ru'; // Always return 'ru' initially to prevent hydration mismatch
 };
 
 export const useUIStore = create<UIState>((set) => ({

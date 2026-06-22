@@ -135,6 +135,14 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     setSidebarOpen(false);
   }, [pathname, setSidebarOpen]);
 
+  // Hydrate locale from localStorage
+  useEffect(() => {
+    const savedLocale = localStorage.getItem('locale');
+    if (savedLocale === 'en' || savedLocale === 'ru') {
+      useUIStore.getState().setLocale(savedLocale);
+    }
+  }, []);
+
   // Apply UI Preferences to HTML
   useEffect(() => {
     const root = document.documentElement;
