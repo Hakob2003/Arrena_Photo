@@ -26,6 +26,7 @@ import { SettingsModule } from './settings/settings.module';
   imports: [
     // Configuration
     ConfigModule.forRoot({
+      envFilePath: '../../.env',
       isGlobal: true,
     }),
     ScheduleModule.forRoot(),
