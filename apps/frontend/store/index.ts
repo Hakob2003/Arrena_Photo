@@ -128,7 +128,7 @@ export const useGenerationStore = create<GenerationState>((set) => ({
   updateSetting: (key, value) => set((state) => ({ settings: { ...state.settings, [key]: value } })),
   setGenerating: (isGenerating) => set({ isGenerating }),
   setProgress: (progress) => set({ progress }),
-  setResult: (resultImage, resultDriveFileId = null) => set({ resultImage, resultDriveFileId }),
+  setResult: (resultImage, resultDriveFileId = undefined) => set({ resultImage, resultDriveFileId: resultDriveFileId ?? null }),
   setInitImage: (initImage) => set({ initImage }),
 }));
 
