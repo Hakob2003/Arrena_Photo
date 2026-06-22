@@ -14,7 +14,7 @@ function GeneratorContent() {
   const templateId = searchParams.get('templateId');
   const templateName = searchParams.get('template');
 
-  const { prompt, setPrompt, model, setModel, isGenerating, setGenerating, resultImage, setResult, initImage, setInitImage } = useGenerationStore();
+  const { prompt, setPrompt, model, setModel, isGenerating, setGenerating, resultImage, resultDriveFileId, setResult, initImage, setInitImage } = useGenerationStore();
   const { user, deductCredits, setCredits } = useAuthStore();
   const [loadingText, setLoadingText] = useState('Initializing AI...');
   const [models, setModels] = useState<any[]>([]);
@@ -305,7 +305,7 @@ function GeneratorContent() {
               className="max-w-full max-h-full flex justify-center items-center"
             >
               <AuthImage 
-                driveFileId={useGenerationStore.getState().resultDriveFileId || undefined}
+                driveFileId={resultDriveFileId || undefined}
                 fallbackUrl={resultImage} 
                 alt="Generated" 
                 className="max-w-full max-h-full object-contain rounded-xl shadow-2xl" 
