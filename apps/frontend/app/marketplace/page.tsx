@@ -1,7 +1,11 @@
+"use client";
 import React from 'react';
 import { TemplateCard } from '../../components/marketplace/TemplateCard';
+import { useTranslation } from '../../lib/i18n';
 
 export default function MarketplacePage() {
+  const { t } = useTranslation();
+
   // Mock data for display, in reality fetch from /api/templates
   const mockTemplates = [
     {
@@ -27,16 +31,16 @@ export default function MarketplacePage() {
       <div className="w-full">
         <div className="mb-12 text-center space-y-4">
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent break-words">
-            Маркетплейс AI Шаблонов
+            {t('market.title')}
           </h1>
           <p className="text-base sm:text-lg text-slate-400 dark:text-gray-500 dark:text-gray-400 max-w-2xl mx-auto px-2">
-            Открывайте тысячи готовых AI-промптов, созданных лучшими авторами.
+            {t('market.description')}
           </p>
         </div>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-4 mb-8">
-          {['Все', 'Бесплатные', 'Премиум', 'Anime', 'Realistic', 'Cyberpunk'].map(tag => (
+          {[t('market.all'), t('market.free'), t('market.premium'), 'Anime', 'Realistic', 'Cyberpunk'].map(tag => (
             <button key={tag} className="px-5 py-2 rounded-full border border-gray-200 dark:border-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
               {tag}
             </button>

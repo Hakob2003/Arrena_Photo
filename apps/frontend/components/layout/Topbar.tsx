@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import { useAuthStore, useUIStore } from '../../store';
+import { useTranslation } from '../../lib/i18n';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,7 +9,8 @@ import { useIsMobile } from '../../hooks/useIsMobile';
 
 export function Topbar() {
   const { user, credits } = useAuthStore();
-  const { isSidebarOpen, setSidebarOpen } = useUIStore();
+  const { isSidebarOpen, setSidebarOpen, locale, setLocale } = useUIStore();
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
   const showTopbarLogo = !isSidebarOpen;
 
@@ -39,6 +41,10 @@ export function Topbar() {
     window.addEventListener('resize', calc);
     return () => window.removeEventListener('resize', calc);
   }, [isSidebarOpen]);
+
+  const toggleLocale = () => {
+    setLocale(locale === 'ru' ? 'en' : 'ru');
+  };
 
   return (
     <header className="h-16 border-b border-black/10 dark:border-white/5 bg-[rgba(255,255,255,0.75)] dark:bg-black/20 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 sticky top-0 z-[60] shadow-sm dark:shadow-none">
@@ -109,19 +115,30 @@ export function Topbar() {
       <div className="flex-1 max-w-xl hidden md:block"></div>
 
       <div className="flex items-center gap-2 sm:gap-4 md:gap-6 ml-auto">
+        {/* Language Toggle */}
+        <button
+          onClick={toggleLocale}
+          className="flex items-center gap-1.5 bg-black/[0.05] dark:bg-white/10 border border-black/10 dark:border-white/10 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/20 transition-colors"
+          title={locale === 'ru' ? 'Switch to English' : 'Переключить на русский'}
+        >
+          <span className={`text-xs sm:text-sm font-bold transition-colors ${locale === 'ru' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-gray-500'}`}>RU</span>
+          <span className="text-slate-300 dark:text-gray-600 text-xs">/</span>
+          <span className={`text-xs sm:text-sm font-bold transition-colors ${locale === 'en' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-gray-500'}`}>EN</span>
+        </button>
+
         {user ? (
           /* Credits Pill */
           <div className="flex items-center gap-1 sm:gap-2 bg-indigo-500/10 border border-indigo-500/20 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full">
             <span className="text-indigo-600 dark:text-indigo-400 text-xs sm:text-sm font-bold">⚡ {credits?.toLocaleString('en-US') || 0}</span>
-            <span className="text-[10px] sm:text-xs text-indigo-500/70 dark:text-indigo-300/70 uppercase hidden sm:inline">Кредиты</span>
+            <span className="text-[10px] sm:text-xs text-indigo-500/70 dark:text-indigo-300/70 uppercase hidden sm:inline">{t('auth.credits')}</span>
           </div>
         ) : (
           <div className="flex items-center gap-3">
             <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white transition-colors">
-              Войти
+              {t('auth.login')}
             </Link>
             <Link href="/register" className="text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors">
-              Регистрация
+              {t('auth.register')}
             </Link>
           </div>
         )}

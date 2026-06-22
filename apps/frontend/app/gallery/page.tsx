@@ -1,8 +1,11 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../lib/i18n';
 
 export default function GalleryPage() {
+  const { t } = useTranslation();
+
   const mockGalleryItems = [
     { id: 1, height: 300, author: '@cyber_ninja', prompt: '"A stunning hyper-realistic portrait of a cyberpunk character in rain..."', seed: 'cyberpunk_char' },
     { id: 2, height: 400, author: '@fantasy_art', prompt: '"Epic dragon breathing fire over a medieval castle, fantasy concept art..."', seed: 'dragon_castle' },
@@ -18,13 +21,13 @@ export default function GalleryPage() {
     <div className="p-4 sm:p-8 max-w-screen-2xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-6 sm:mb-10">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-bold mb-2">Галерея сообщества</h1>
-          <p className="text-slate-500 dark:text-gray-400 text-sm sm:text-base">Смотрите, что создают другие пользователи прямо сейчас.</p>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2">{t('gallery.title')}</h1>
+          <p className="text-slate-500 dark:text-gray-400 text-sm sm:text-base">{t('gallery.description')}</p>
         </div>
         <div className="flex bg-black/[0.03] dark:bg-white/5 rounded-lg p-1 w-full sm:w-auto overflow-x-auto">
-          <button className="px-4 py-1.5 rounded-md bg-black/[0.05] dark:bg-white/10 text-slate-900 dark:text-slate-900 dark:text-white font-medium shadow-sm">Популярное</button>
-          <button className="px-4 py-1.5 rounded-md text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white">Новое</button>
-          <button className="px-4 py-1.5 rounded-md text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white">Лучшее</button>
+          <button className="px-4 py-1.5 rounded-md bg-black/[0.05] dark:bg-white/10 text-slate-900 dark:text-slate-900 dark:text-white font-medium shadow-sm">{t('gallery.popular')}</button>
+          <button className="px-4 py-1.5 rounded-md text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white">{t('gallery.new')}</button>
+          <button className="px-4 py-1.5 rounded-md text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white">{t('gallery.best')}</button>
         </div>
       </div>
 
@@ -51,7 +54,7 @@ export default function GalleryPage() {
                 {item.prompt}
               </p>
               <div className="flex gap-2 mt-4">
-                <button className="flex-1 glass text-slate-900 dark:text-slate-900 dark:text-white text-xs font-bold py-2 rounded-lg hover:bg-white/20">Ремикс</button>
+                <button className="flex-1 glass text-slate-900 dark:text-slate-900 dark:text-white text-xs font-bold py-2 rounded-lg hover:bg-white/20">{t('gallery.remix')}</button>
                 <button className="w-10 glass flex items-center justify-center rounded-lg hover:bg-white/20">❤️</button>
               </div>
             </div>

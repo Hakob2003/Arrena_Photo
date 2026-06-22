@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, Maximize2, X } from 'lucide-react';
 import { useGenerationStore, useAuthStore } from '../../store';
+import { useTranslation } from '../../lib/i18n';
 import { useSearchParams } from 'next/navigation';
 import { useDropzone } from 'react-dropzone';
 import { api } from '../../lib/api';
@@ -18,7 +19,8 @@ function GeneratorContent() {
 
   const { prompt, setPrompt, model, setModel, aspectRatio, setAspectRatio, resolution, setResolution, isGenerating, setGenerating, resultImage, resultDriveFileId, setResult, initImage, setInitImage } = useGenerationStore();
   const { user, deductCredits, setCredits } = useAuthStore();
-  const [loadingText, setLoadingText] = useState('Initializing AI...');
+  const { t } = useTranslation();
+  const [loadingText, setLoadingText] = useState('');
   const [models, setModels] = useState<any[]>([]);
   const [history, setHistory] = useState<any[]>([]);
   const [cost, setCost] = useState(5);
@@ -127,7 +129,7 @@ function GeneratorContent() {
     if (!prompt || !initImage) return;
 
     setGenerating(true);
-    setLoadingText('Отправка промпта...');
+    setLoadingText(t('gen.sendingPrompt'));
     
     try {
       // Note: We're mapping 'sdxl-1.0' to the actual DB ID. Since we seeded it, we need the UUID.
@@ -143,7 +145,7 @@ function GeneratorContent() {
 
       const generationId = res.data.id;
       deductCredits(cost); // Deduct only after backend accepted the request
-      setLoadingText('В очереди...');
+      setLoadingText(t('gen.inQueue'));
 
       // Poll every 1.5 seconds, max 60 seconds
       let elapsed = 0;
@@ -152,7 +154,7 @@ function GeneratorContent() {
         if (elapsed > 60000) {
           clearInterval(poll);
           setGenerating(false);
-          toast.error('Превышено время ожидания генерации. Попробуйте позже.');
+          toast.error(t('gen.timeoutError'));
           return;
         }
         try {
@@ -160,7 +162,7 @@ function GeneratorContent() {
           const status = statusRes.data.status;
           
           if (status === 'PROCESSING') {
-            setLoadingText('Генерация...');
+            setLoadingText(t('gen.generatingStatus'));
           } else if (status === 'DONE') {
             clearInterval(poll);
             setResult(statusRes.data.result.imageUrl, statusRes.data.result.driveFileId);
@@ -173,7 +175,7 @@ function GeneratorContent() {
             } catch (_) {}
           } else if (status === 'FAILED') {
             clearInterval(poll);
-            toast.error('Генерация не удалась!');
+            toast.error(t('gen.failedError'));
             setGenerating(false);
           }
         } catch (pollErr) {
@@ -184,9 +186,9 @@ function GeneratorContent() {
     } catch (err: any) {
       console.error(err);
       if (err.response?.status === 400 && err.response?.data?.message === 'Insufficient credits') {
-        toast.error('У вас недостаточно кредитов для генерации!');
+        toast.error(t('gen.creditsError'));
       } else {
-        toast.error('Ошибка при отправке запроса генерации');
+        toast.error(t('gen.requestError'));
       }
       setGenerating(false);
     }
@@ -206,7 +208,7 @@ function GeneratorContent() {
         
         {/* Image Upload Zone */}
         <div className="glass-card p-5 rounded-2xl shrink-0">
-          <h2 className="text-lg font-bold mb-4">Исходное фото (Опционально)</h2>
+          <h2 className="text-lg font-bold mb-4">{t('gen.sourcePhoto')}</h2>
           <div 
             {...getRootProps()} 
             className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-colors ${
@@ -221,30 +223,30 @@ function GeneratorContent() {
                   className="absolute inset-0 bg-[#fafafa] dark:bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => { e.stopPropagation(); setInitImage(null); }}
                 >
-                  <span className="text-slate-900 dark:text-white font-bold text-sm bg-red-500/80 px-3 py-1 rounded-full cursor-pointer">Удалить</span>
+                  <span className="text-slate-900 dark:text-white font-bold text-sm bg-red-500/80 px-3 py-1 rounded-full cursor-pointer">{t('gen.remove')}</span>
                 </div>
               </div>
             ) : (
               <div className="text-slate-500 dark:text-gray-400 py-6">
-                <p>Перетащите фото сюда или нажмите для выбора</p>
-                <p className="text-xs mt-2 text-slate-400 dark:text-gray-500">Поддерживаются форматы JPG, PNG</p>
+                <p>{t('gen.dropzone')}</p>
+                <p className="text-xs mt-2 text-slate-400 dark:text-gray-500">{t('gen.dropzoneFormats')}</p>
               </div>
             )}
           </div>
         </div>
 
         <div className="glass-card p-5 rounded-2xl shrink-0">
-          <h2 className="text-lg font-bold mb-4">Промпт (Описание)</h2>
+          <h2 className="text-lg font-bold mb-4">{t('gen.promptTitle')}</h2>
           <textarea 
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Футуристический киберпанк город ночью, неоновые огни отражаются в лужах..."
+            placeholder={t('gen.promptPlaceholder')}
             className="w-full h-40 bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-xl p-4 text-slate-900 dark:text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
           />
         </div>
 
         <div className="glass-card p-5 rounded-2xl shrink-0">
-          <h2 className="text-lg font-bold mb-4">Модель и Настройки</h2>
+          <h2 className="text-lg font-bold mb-4">{t('gen.modelTitle')}</h2>
           <select 
             value={model}
             onChange={(e) => setModel(e.target.value)}
@@ -259,7 +261,7 @@ function GeneratorContent() {
           <div className="space-y-4">
             <div>
               <div className="flex justify-between text-xs text-slate-500 dark:text-gray-400 mb-2">
-                <span>Соотношение сторон (Aspect Ratio)</span>
+                <span>{t('gen.aspectRatio')}</span>
                 <span>{aspectRatio}</span>
               </div>
               <div className="flex gap-2 flex-wrap">
@@ -282,7 +284,7 @@ function GeneratorContent() {
             {/* Resolution Selection */}
             <div>
               <div className="flex justify-between text-xs text-slate-500 dark:text-gray-400 mb-2">
-                <span>Разрешение (Quality)</span>
+                <span>{t('gen.resolution')}</span>
                 <span>{resolution}</span>
               </div>
               <div className="flex gap-2 flex-wrap">
@@ -313,7 +315,7 @@ function GeneratorContent() {
             : 'bg-white text-black hover:bg-gray-200 hover:scale-[1.02] neon-glow'
           }`}
         >
-          {isGenerating ? 'Генерация...' : `Создать ⚡ ${cost} Кредитов`}
+          {isGenerating ? t('gen.generating') : `${t('gen.createButton')} ⚡ ${cost} ${t('gen.creditsUnit')}`}
         </button>
       </div>
 
@@ -405,17 +407,17 @@ function GeneratorContent() {
             </motion.div>
           ) : (
             <div className="text-gray-600 text-lg">
-              Ожидание вашего промпта...
+              {t('gen.waitingPrompt')}
             </div>
           )}
         </div>
         
         {/* History Gallery */}
         <div className="h-32 sm:h-36 lg:h-40 xl:h-44 shrink-0 gallery-container-compact border-t border-black/10 dark:border-white/10 bg-[#fafafa] dark:bg-black/40 p-3 sm:p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap">
-          <h3 className="text-[10px] sm:text-xs font-bold gallery-title-compact text-slate-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Мои генерации (Google Drive)</h3>
+          <h3 className="text-[10px] sm:text-xs font-bold gallery-title-compact text-slate-500 dark:text-gray-400 mb-2 uppercase tracking-wider">{t('gen.galleryTitle')}</h3>
           <div className="flex w-max gap-2 sm:gap-4 h-[60px] sm:h-[70px] lg:h-[80px] xl:h-[90px] gallery-items-compact">
             {history.length === 0 ? (
-              <div className="text-slate-400 dark:text-gray-500 text-sm flex items-center h-full">История пуста. Создайте свою первую картинку!</div>
+              <div className="text-slate-400 dark:text-gray-500 text-sm flex items-center h-full">{t('gen.galleryEmpty')}</div>
             ) : (
               history.map((item) => (
                 <div key={item.id} className="relative aspect-square h-full shrink-0 rounded-lg overflow-hidden group cursor-pointer" onClick={() => setResult(item.imageUrl, item.driveFileId)}>

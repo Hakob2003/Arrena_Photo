@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { useTranslation } from '@/lib/i18n';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
@@ -11,12 +12,13 @@ export default function RegisterPage() {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const { t } = useTranslation();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const res = await api.post('/auth/register', { email, password, name });
-      setMessage(res.data.message || 'Регистрация успешна! Проверьте вашу почту.');
+      setMessage(res.data.message || t('auth.registerSuccess'));
       setError('');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Registration failed');
@@ -31,14 +33,14 @@ export default function RegisterPage() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md p-6 sm:p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-slate-900 dark:text-white">Регистрация</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-slate-900 dark:text-white">{t('auth.register')}</h2>
         
         {error && <div className="mb-4 p-3 bg-red-100 text-red-600 rounded-md text-sm">{error}</div>}
         {message && <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md text-sm">{message}</div>}
 
         <form onSubmit={handleRegister} className="space-y-4" autoComplete="off">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Имя</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('auth.name')}</label>
             <input 
               type="text" 
               required
@@ -60,7 +62,7 @@ export default function RegisterPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Пароль</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('auth.password')}</label>
             <input 
               type="password" 
               required
@@ -71,13 +73,13 @@ export default function RegisterPage() {
             />
           </div>
           <button type="submit" className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-slate-900 dark:text-white rounded-lg font-medium transition-colors">
-            Зарегистрироваться
+            {t('auth.registerLink')}
           </button>
         </form>
 
         <div className="mt-6 flex items-center justify-center space-x-2 text-sm text-slate-400 dark:text-gray-500">
           <span className="h-px bg-gray-300 flex-1"></span>
-          <span>Или войти через</span>
+          <span>{t('auth.orLoginWith')}</span>
           <span className="h-px bg-gray-300 flex-1"></span>
         </div>
 
@@ -94,7 +96,7 @@ export default function RegisterPage() {
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-          Уже есть аккаунт? <Link href="/login" className="text-blue-600 hover:underline">Войти</Link>
+          {t('auth.hasAccount')} <Link href="/login" className="text-blue-600 hover:underline">{t('auth.loginLink')}</Link>
         </p>
       </div>
     </div>

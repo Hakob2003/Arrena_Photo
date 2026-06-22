@@ -154,15 +154,30 @@ interface UIState {
   setSidebarOpen: (v: boolean) => void;
   isMobile: boolean;
   setIsMobile: (v: boolean) => void;
+  locale: 'ru' | 'en';
+  setLocale: (v: 'ru' | 'en') => void;
   preferences: UIPreferences;
   setPreferences: (prefs: Partial<UIPreferences>) => void;
 }
+
+const getInitialLocale = (): 'ru' | 'en' => {
+  if (typeof window !== 'undefined') {
+    const saved = localStorage.getItem('locale');
+    if (saved === 'en' || saved === 'ru') return saved;
+  }
+  return 'ru';
+};
 
 export const useUIStore = create<UIState>((set) => ({
   isSidebarOpen: true,
   setSidebarOpen: (isSidebarOpen) => set({ isSidebarOpen }),
   isMobile: false,
   setIsMobile: (isMobile) => set({ isMobile }),
+  locale: getInitialLocale(),
+  setLocale: (locale) => {
+    if (typeof window !== 'undefined') localStorage.setItem('locale', locale);
+    set({ locale });
+  },
   preferences: {
     theme: 'DARK',
     accentColor: 'INDIGO',

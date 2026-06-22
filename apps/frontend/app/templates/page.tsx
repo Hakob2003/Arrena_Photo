@@ -2,9 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { templatesApi } from '../../lib/templates.api';
+import { useTranslation } from '../../lib/i18n';
 
 export default function TemplatesPage() {
-  const [selectedCategory, setSelectedCategory] = useState('Все');
+  const { t } = useTranslation();
+  const [selectedCategory, setSelectedCategory] = useState('__all__');
   const [categories, setCategories] = useState<any[]>([]);
   const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,7 +30,7 @@ export default function TemplatesPage() {
     fetchData();
   }, []);
 
-  const filteredTemplates = selectedCategory === 'Все'
+  const filteredTemplates = selectedCategory === '__all__'
     ? templates
     : templates.filter(t => t.categoryId === selectedCategory);
 
@@ -36,7 +38,7 @@ export default function TemplatesPage() {
     return (
       <div className="p-8 w-full animate-fade-in">
         <div className="mb-10">
-          <h1 className="text-4xl font-bold mb-4">Шаблоны промптов</h1>
+          <h1 className="text-4xl font-bold mb-4">{t('templates.title')}</h1>
           <div className="h-6 w-64 bg-black/[0.03] dark:bg-white/5 animate-pulse rounded mb-2" />
         </div>
 
@@ -58,20 +60,20 @@ export default function TemplatesPage() {
   return (
     <div className="p-8 w-full">
       <div className="mb-10">
-        <h1 className="text-4xl font-bold mb-4">Шаблоны промптов</h1>
-        <p className="text-slate-500 dark:text-gray-400 text-lg">Начните создание с идеально составленных промптов.</p>
+        <h1 className="text-4xl font-bold mb-4">{t('templates.title')}</h1>
+        <p className="text-slate-500 dark:text-gray-400 text-lg">{t('templates.description')}</p>
       </div>
 
       <div className="flex gap-4 overflow-x-auto pb-4 mb-8 custom-scrollbar">
         <button 
-          onClick={() => setSelectedCategory('Все')}
+          onClick={() => setSelectedCategory('__all__')}
           className={`px-5 py-2 rounded-full whitespace-nowrap transition-colors ${
-            selectedCategory === 'Все' 
+            selectedCategory === '__all__' 
               ? 'bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none text-white' 
               : 'glass hover:bg-black/[0.05] dark:bg-white/10'
           }`}
         >
-          Все
+          {t('templates.all')}
         </button>
         {categories.map(c => (
           <button 
@@ -90,37 +92,37 @@ export default function TemplatesPage() {
 
       {filteredTemplates.length === 0 ? (
         <div className="text-center py-20 text-slate-400 dark:text-gray-500 glass-card rounded-2xl p-8">
-          Шаблоны в этой категории пока отсутствуют.
+          {t('templates.emptyCategory')}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredTemplates.map((t, i) => {
+          {filteredTemplates.map((tpl, i) => {
             const fallbackCover = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80";
             return (
               <motion.div 
-                key={t.id}
+                key={tpl.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                onClick={() => window.location.href = `/generate?templateId=${t.id}`}
+                onClick={() => window.location.href = `/generate?templateId=${tpl.id}`}
                 className="group glass-card rounded-2xl overflow-hidden cursor-pointer relative"
               >
-                {t.price !== undefined && t.price !== null && (
+                {tpl.price !== undefined && tpl.price !== null && (
                   <div className="absolute top-4 right-4 z-20 bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1 shadow-lg">
-                    <span>⚡ {t.price}</span>
+                    <span>⚡ {tpl.price}</span>
                   </div>
                 )}
                 
                 <div className="aspect-[4/5] relative overflow-hidden bg-black/[0.03] dark:bg-white/5">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
                   <img 
-                    src={t.coverUrl || fallbackCover} 
-                    alt={t.name} 
+                    src={tpl.coverUrl || fallbackCover} 
+                    alt={tpl.name} 
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                   />
                   <div className="absolute bottom-4 left-4 right-4 z-20">
-                    <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">{t.category?.name || 'Uncategorized'}</span>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-900 dark:text-white mt-1">{t.name}</h3>
+                    <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">{tpl.category?.name || 'Uncategorized'}</span>
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-900 dark:text-white mt-1">{tpl.name}</h3>
                   </div>
                 </div>
               </motion.div>

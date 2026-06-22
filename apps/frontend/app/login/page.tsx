@@ -5,12 +5,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/store';
+import { useTranslation } from '@/lib/i18n';
 
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
   const { login } = useAuthStore();
+  const { t } = useTranslation();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,7 +40,7 @@ function LoginContent() {
         }
       } catch (err) {
         console.error('Failed to parse token', err);
-        setError('Неверный токен авторизации');
+        setError(t('auth.invalidToken'));
       }
     }
   }, [token, login, router]);
@@ -78,7 +80,7 @@ function LoginContent() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-md p-6 sm:p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-slate-900 dark:text-white">Вход</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-slate-900 dark:text-white">{t('auth.loginTitle')}</h2>
         
         {error && <div className="mb-4 p-3 bg-red-100 text-red-600 rounded-md text-sm">{error}</div>}
 
@@ -95,7 +97,7 @@ function LoginContent() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Пароль</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('auth.password')}</label>
             <input 
               type="password" 
               required
@@ -106,13 +108,13 @@ function LoginContent() {
             />
           </div>
           <button type="submit" className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-slate-900 dark:text-white rounded-lg font-medium transition-colors">
-            Войти
+            {t('auth.login')}
           </button>
         </form>
 
         <div className="mt-6 flex items-center justify-center space-x-2 text-sm text-slate-400 dark:text-gray-500">
           <span className="h-px bg-gray-300 flex-1"></span>
-          <span>Или войти через</span>
+          <span>{t('auth.orLoginWith')}</span>
           <span className="h-px bg-gray-300 flex-1"></span>
         </div>
 
@@ -129,7 +131,7 @@ function LoginContent() {
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-          Нет аккаунта? <Link href="/register" className="text-blue-600 hover:underline">Зарегистрироваться</Link>
+          {t('auth.noAccount')} <Link href="/register" className="text-blue-600 hover:underline">{t('auth.registerLink')}</Link>
         </p>
       </div>
     </div>
@@ -138,7 +140,7 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Загрузка...</div>}>
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
       <LoginContent />
     </Suspense>
   );

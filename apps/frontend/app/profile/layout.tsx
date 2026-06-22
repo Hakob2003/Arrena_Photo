@@ -6,22 +6,24 @@ import { motion } from 'framer-motion';
 import { User, Shield, Palette, Bell, Activity, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '../../store';
+import { useTranslation } from '../../lib/i18n';
 import { useEffect } from 'react';
-
-const profileTabs = [
-  { id: 'personal', label: 'Personal Information', icon: User, href: '/profile/personal' },
-  { id: 'security', label: 'Security & Access', icon: Shield, href: '/profile/security' },
-  { id: 'appearance', label: 'Appearance', icon: Palette, href: '/profile/appearance' },
-  { id: 'billing', label: 'Billing & Plans', icon: Activity, href: '/profile/billing' },
-  { id: 'notifications', label: 'Notifications', icon: Bell, href: '/profile/notifications' },
-  { id: 'statistics', label: 'Statistics', icon: Activity, href: '/profile/statistics' },
-  { id: 'activity', label: 'Activity History', icon: Clock, href: '/profile/activity' },
-];
 
 export default function ProfileLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useAuthStore();
+  const { t } = useTranslation();
+
+  const profileTabs = [
+    { id: 'personal', label: t('profile.personal'), icon: User, href: '/profile/personal' },
+    { id: 'security', label: t('profile.security'), icon: Shield, href: '/profile/security' },
+    { id: 'appearance', label: t('profile.appearance'), icon: Palette, href: '/profile/appearance' },
+    { id: 'billing', label: t('profile.billing'), icon: Activity, href: '/profile/billing' },
+    { id: 'notifications', label: t('profile.notifications'), icon: Bell, href: '/profile/notifications' },
+    { id: 'statistics', label: t('profile.statistics'), icon: Activity, href: '/profile/statistics' },
+    { id: 'activity', label: t('profile.activity'), icon: Clock, href: '/profile/activity' },
+  ];
 
   useEffect(() => {
     if (!user) {

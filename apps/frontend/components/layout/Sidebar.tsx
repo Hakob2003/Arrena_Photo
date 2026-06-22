@@ -4,34 +4,36 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore, useAuthStore } from '../../store';
+import { useTranslation } from '../../lib/i18n';
 import { useIsMobile } from '../../hooks/useIsMobile';
-
-const MAIN_LINKS = [
-  { href: '/', label: 'Главная', icon: '🏠' },
-  { href: '/generate', label: 'Генератор', icon: '✨' },
-  { href: '/templates', label: 'Шаблоны', icon: '📁' },
-  { href: '/marketplace', label: 'Маркетплейс', icon: '🛒' },
-  { href: '/gallery', label: 'Галерея', icon: '🖼️' },
-];
-
-const USER_LINKS = [
-  { href: '/my-generations', label: 'Мои генерации', icon: '⏱️' },
-  { href: '/my-templates', label: 'Мои шаблоны', icon: '🎨' },
-];
-
-const SETTINGS_LINKS = [
-  { href: '/connections/ai', label: 'AI Провайдеры', icon: '🔌' },
-  { href: '/connections/cloud', label: 'Облако', icon: '☁️' },
-  { href: '/profile', label: 'Профиль', icon: '⚙️' },
-  { href: '/profile/billing', label: 'Подписки и платежи', icon: '💳' },
-];
 
 export function Sidebar() {
   const pathname = usePathname();
   const { isSidebarOpen, setSidebarOpen } = useUIStore();
   const { user } = useAuthStore();
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
   const showSidebarLogo = isSidebarOpen;
+
+  const MAIN_LINKS = [
+    { href: '/', label: t('nav.home'), icon: '🏠' },
+    { href: '/generate', label: t('nav.generator'), icon: '✨' },
+    { href: '/templates', label: t('nav.templates'), icon: '📁' },
+    { href: '/marketplace', label: t('nav.marketplace'), icon: '🛒' },
+    { href: '/gallery', label: t('nav.gallery'), icon: '🖼️' },
+  ];
+
+  const USER_LINKS = [
+    { href: '/my-generations', label: t('nav.myGenerations'), icon: '⏱️' },
+    { href: '/my-templates', label: t('nav.myTemplates'), icon: '🎨' },
+  ];
+
+  const SETTINGS_LINKS = [
+    { href: '/connections/ai', label: t('nav.aiProviders'), icon: '🔌' },
+    { href: '/connections/cloud', label: t('nav.cloud'), icon: '☁️' },
+    { href: '/profile', label: t('nav.profile'), icon: '⚙️' },
+    { href: '/profile/billing', label: t('nav.billing'), icon: '💳' },
+  ];
 
   const renderLinks = (links: typeof MAIN_LINKS) => (
     <ul className="space-y-1">
@@ -175,28 +177,28 @@ export function Sidebar() {
       <div className="flex-1 overflow-y-auto px-2 py-2 space-y-8 custom-scrollbar">
         <div>
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
-            {isSidebarOpen ? "Обзор" : "•••"}
+            {isSidebarOpen ? t('nav.sectionOverview') : "•••"}
           </p>
           {renderLinks(MAIN_LINKS)}
         </div>
         
         <div>
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
-            {isSidebarOpen ? "Студия" : "•••"}
+            {isSidebarOpen ? t('nav.sectionStudio') : "•••"}
           </p>
           {renderLinks(USER_LINKS)}
         </div>
 
         <div>
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
-            {isSidebarOpen ? "Настройки" : "•••"}
+            {isSidebarOpen ? t('nav.sectionSettings') : "•••"}
           </p>
           {renderLinks(SETTINGS_LINKS)}
           
           {user?.role === 'ADMIN' && (
             <div className="mt-8">
               <p className="text-[10px] font-semibold text-pink-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
-                {isSidebarOpen ? "Админ Панель" : "ADM"}
+                {isSidebarOpen ? t('nav.adminPanel') : "ADM"}
               </p>
               <ul className="space-y-1">
                 <li>
@@ -213,13 +215,13 @@ export function Sidebar() {
                           exit={{ opacity: 0, width: 0 }}
                           className="relative z-10 font-medium whitespace-nowrap overflow-hidden"
                         >
-                          Перейти в Админку
+                          {t('nav.goToAdmin')}
                         </motion.span>
                       )}
                     </AnimatePresence>
                     {!isSidebarOpen && !isMobile && (
                       <div className="absolute left-full ml-2 px-2 py-1 bg-[#fafafa] dark:bg-gray-800 text-slate-900 dark:text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-sm dark:shadow-none">
-                        Админка
+                        {t('nav.admin')}
                       </div>
                     )}
                   </Link>
@@ -265,7 +267,7 @@ export function Sidebar() {
                     window.location.href = '/login';
                   }}
                   className="p-2 text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-colors shrink-0 ml-2"
-                  title="Выйти"
+                  title={t('auth.logout')}
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -276,9 +278,9 @@ export function Sidebar() {
           </div>
         ) : (
           <div className="flex flex-col gap-2 w-full">
-            <Link href="/login" className="w-full py-2 text-center text-sm text-slate-500 hover:text-slate-900 hover:bg-[#fafafa] dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/5 rounded-lg transition-colors">Войти</Link>
+            <Link href="/login" className="w-full py-2 text-center text-sm text-slate-500 hover:text-slate-900 hover:bg-[#fafafa] dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/5 rounded-lg transition-colors">{t('auth.login')}</Link>
             <Link href="/register" className="w-full py-2 text-center bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
-              Регистрация
+              {t('auth.register')}
             </Link>
           </div>
         )}
