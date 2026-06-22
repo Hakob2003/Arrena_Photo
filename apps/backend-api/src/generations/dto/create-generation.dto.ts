@@ -24,4 +24,9 @@ export class CreateGenerationDto {
   @IsOptional()
   @IsString()
   negativePrompt?: string;
+
+  @ApiPropertyOptional({ description: 'Aspect ratio, e.g. 1:1, 16:9' })
+  @IsOptional()
+  @IsString()
+  aspectRatio?: string;
 }

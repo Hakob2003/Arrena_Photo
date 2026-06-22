@@ -94,6 +94,7 @@ interface GenerationState {
   prompt: string;
   negativePrompt: string;
   model: string;
+  aspectRatio: string;
   settings: { width: number; height: number; steps: number; cfg: number };
   isGenerating: boolean;
   progress: number;
@@ -104,6 +105,7 @@ interface GenerationState {
   setPrompt: (v: string) => void;
   setNegativePrompt: (v: string) => void;
   setModel: (v: string) => void;
+  setAspectRatio: (v: string) => void;
   updateSetting: (key: string, value: number) => void;
   setGenerating: (isGenerating: boolean) => void;
   setProgress: (v: number) => void;
@@ -115,6 +117,7 @@ export const useGenerationStore = create<GenerationState>((set) => ({
   prompt: '',
   negativePrompt: '',
   model: 'sdxl-1.0',
+  aspectRatio: '1:1',
   settings: { width: 1024, height: 1024, steps: 30, cfg: 7.5 },
   isGenerating: false,
   progress: 0,
@@ -125,6 +128,7 @@ export const useGenerationStore = create<GenerationState>((set) => ({
   setPrompt: (prompt) => set({ prompt }),
   setNegativePrompt: (negativePrompt) => set({ negativePrompt }),
   setModel: (model) => set({ model }),
+  setAspectRatio: (aspectRatio) => set({ aspectRatio }),
   updateSetting: (key, value) => set((state) => ({ settings: { ...state.settings, [key]: value } })),
   setGenerating: (isGenerating) => set({ isGenerating }),
   setProgress: (progress) => set({ progress }),

@@ -6,6 +6,7 @@ export interface ImageGenerationOptions {
   negativePrompt?: string;
   initImage?: string;
   numImages?: number;
+  aspectRatio?: string;
 }
 
 export interface IImageProvider {

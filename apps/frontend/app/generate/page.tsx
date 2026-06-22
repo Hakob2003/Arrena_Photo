@@ -130,7 +130,7 @@ function GeneratorContent() {
         negativePrompt: '',
         aiModelId: model,
         templateId: templateId || undefined,
-
+        aspectRatio,
         initImage: initImage
       });
 
@@ -189,6 +189,8 @@ function GeneratorContent() {
     fetchHistory();
   }, [fetchHistory]);
 
+  const ratios = ['1:1', '4:3', '3:4', '16:9', '9:16'];
+
   return (
     <div className="h-full flex flex-col lg:flex-row gap-3 sm:gap-4 xl:gap-6 p-3 sm:p-4 xl:p-6 overflow-y-auto lg:overflow-hidden">
       
@@ -246,15 +248,27 @@ function GeneratorContent() {
             ))}
           </select>
 
-          {/* Fake settings sliders */}
+          {/* Aspect Ratio Selection */}
           <div className="space-y-4">
             <div>
-              <div className="flex justify-between text-xs text-slate-500 dark:text-gray-400 mb-1">
+              <div className="flex justify-between text-xs text-slate-500 dark:text-gray-400 mb-2">
                 <span>Соотношение сторон (Aspect Ratio)</span>
-                <span>16:9</span>
+                <span>{aspectRatio}</span>
               </div>
-              <div className="h-2 bg-black/[0.05] dark:bg-white/10 rounded-full overflow-hidden">
-                <div className="w-[70%] h-full bg-indigo-500 rounded-full" />
+              <div className="flex gap-2 flex-wrap">
+                {ratios.map((ratio) => (
+                  <button
+                    key={ratio}
+                    onClick={() => setAspectRatio(ratio)}
+                    className={`px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
+                      aspectRatio === ratio
+                        ? 'bg-indigo-500 text-white shadow-md'
+                        : 'bg-black/[0.05] dark:bg-white/10 text-slate-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/20'
+                    }`}
+                  >
+                    {ratio}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
@@ -340,7 +354,7 @@ function GeneratorContent() {
         </div>
         
         {/* History Gallery */}
-        <div className="h-32 sm:h-36 lg:h-40 xl:h-44 shrink-0 gallery-container-compact border-t border-black/10 dark:border-white/10 bg-[#fafafa] dark:bg-black/40 p-3 sm:p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-hide">
+        <div className="h-32 sm:h-36 lg:h-40 xl:h-44 shrink-0 gallery-container-compact border-t border-black/10 dark:border-white/10 bg-[#fafafa] dark:bg-black/40 p-3 sm:p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap">
           <h3 className="text-[10px] sm:text-xs font-bold gallery-title-compact text-slate-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Мои генерации (Google Drive)</h3>
           <div className="flex w-max gap-2 sm:gap-4 h-[60px] sm:h-[70px] lg:h-[80px] xl:h-[90px] gallery-items-compact">
             {history.length === 0 ? (

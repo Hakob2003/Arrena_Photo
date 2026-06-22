@@ -73,7 +73,8 @@ export class GenerationProcessor extends WorkerHost {
       const startTime = Date.now();
       const generatedUrls = await providerFactory.generateImage(job.data.prompt, generation.aiModel.slug, {
         initImage: initImage,
-        negativePrompt: job.data.negativePrompt
+        negativePrompt: job.data.negativePrompt,
+        aspectRatio: job.data.aspectRatio
       });
       
       if (!generatedUrls || generatedUrls.length === 0) {
