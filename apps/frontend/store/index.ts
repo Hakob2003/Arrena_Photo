@@ -8,6 +8,7 @@ interface AuthState {
   credits: number;
   planId: string;
   paymentMethods: any[];
+  fetchPaymentMethods: () => Promise<void>;
   login: (user: any, token: string) => void;
   logout: () => void;
   deductCredits: (amount: number) => void;
@@ -15,9 +16,11 @@ interface AuthState {
   setCredits: (amount: number) => void;
   setPlanId: (planId: string) => void;
   setPaymentMethods: (methods: any[]) => void;
-  setDefaultPaymentMethod: (id: string) => void;
-  chargeDefaultCard: (amount: number) => { success: boolean; error?: string };
+  setDefaultPaymentMethod: (id: string) => Promise<{ success: boolean; error?: string }>;
+  chargeDefaultCard: (amount: number, reason: string) => Promise<{ success: boolean; error?: string }>;
 }
+
+import { api } from '../lib/api';
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -26,10 +29,15 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       credits: 0,
       planId: 'free',
-      paymentMethods: [
-        { id: '1', type: 'Visa', last4: '4242', expiry: '12/26', isDefault: true, limit: 100, balance: 250 },
-        { id: '2', type: 'Mastercard', last4: '5555', expiry: '08/25', isDefault: false, limit: 50, balance: 10 },
-      ],
+      paymentMethods: [],
+      fetchPaymentMethods: async () => {
+        try {
+          const res = await api.get('/billing/payment-methods');
+          set({ paymentMethods: res.data });
+        } catch (e) {
+          console.error(e);
+        }
+      },
       login: (user, token) => set({ user, token, credits: user.credits ?? 0, planId: user.planId ?? 'free' }),
       logout: () => set({ user: null, token: null, planId: 'free' }),
       deductCredits: (amount) => set((state) => ({ credits: Math.max(0, state.credits - amount) })),
@@ -37,41 +45,35 @@ export const useAuthStore = create<AuthState>()(
       setCredits: (amount) => set({ credits: amount }),
       setPlanId: (planId) => set({ planId }),
       setPaymentMethods: (methods) => set({ paymentMethods: methods }),
-      setDefaultPaymentMethod: (id) => set((state) => ({
-        paymentMethods: state.paymentMethods.map(m => 
-          m.id === id ? { ...m, isDefault: true } : { ...m, isDefault: false }
-        )
-      })),
-      chargeDefaultCard: (amount) => {
-        let result: { success: boolean; error?: string } = { success: false, error: '' };
-        set((state) => {
-          const defaultCard = state.paymentMethods.find(m => m.isDefault);
-          if (!defaultCard) {
-            result = { success: false, error: 'Оплата отклонена: Нет основной карты для списания.' };
-            return state;
-          }
-          if (amount > defaultCard.limit) {
-            result = { success: false, error: `Оплата отклонена: Сумма ($${amount}) превышает доступный лимит карты ($${defaultCard.limit}).` };
-            return state;
-          }
-          if (amount > defaultCard.balance) {
-            result = { success: false, error: `Оплата отклонена: Недостаточно средств на балансе карты (Доступно: $${defaultCard.balance}).` };
-            return state;
-          }
-          
-          result = { success: true };
-          return {
+      setDefaultPaymentMethod: async (id) => {
+        try {
+          await api.put(`/billing/payment-methods/${id}/default`);
+          // optimistically update
+          set((state) => ({
             paymentMethods: state.paymentMethods.map(m => 
-              m.id === defaultCard.id ? { ...m, limit: m.limit - amount, balance: m.balance - amount } : m
+              m.id === id ? { ...m, isDefault: true } : { ...m, isDefault: false }
             )
-          };
-        });
-        return result;
+          }));
+          return { success: true };
+        } catch (err: any) {
+          return { success: false, error: err.response?.data?.message || 'Error setting default payment method' };
+        }
+      },
+      chargeDefaultCard: async (amount, reason) => {
+        try {
+          await api.post('/billing/charge', { amount, reason });
+          // If successful, refresh the payment methods to get new balance
+          const res = await api.get('/billing/payment-methods');
+          set({ paymentMethods: res.data });
+          return { success: true };
+        } catch (err: any) {
+          return { success: false, error: err.response?.data?.message || 'Ошибка оплаты' };
+        }
       },
     }),
     {
       name: 'auth-storage', // name of item in the storage (must be unique)
-      partialize: (state) => ({ credits: state.credits, planId: state.planId, user: state.user, paymentMethods: state.paymentMethods }), // only save these fields
+      partialize: (state) => ({ credits: state.credits, planId: state.planId, user: state.user }), // don't persist payment methods locally anymore
     }
   )
 );

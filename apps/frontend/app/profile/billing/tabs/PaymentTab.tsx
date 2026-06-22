@@ -4,9 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
 import { useAuthStore } from '../../../../store';
+import { api } from '../../../../lib/api';
 
 export function PaymentTab() {
-  const { paymentMethods, setPaymentMethods, setDefaultPaymentMethod } = useAuthStore();
+  const { paymentMethods, setPaymentMethods, setDefaultPaymentMethod, fetchPaymentMethods } = useAuthStore();
 
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -15,24 +16,37 @@ export function PaymentTab() {
   const [editingCard, setEditingCard] = useState<any>(null);
 
   useEffect(() => {
+    fetchPaymentMethods().then(() => {
+      // The state will update soon, but let's assume we want to check
+      // Actually we can just do the check below in a separate useEffect if needed, 
+      // but to keep it simple, we just fetch here. The next useEffect will handle expiration check.
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     const now = new Date();
     const currentMonth = now.getMonth() + 1;
     const currentYear = now.getFullYear() % 100;
 
     paymentMethods.forEach(pm => {
+      if (!pm.expiry) return;
       const [mStr, yStr] = pm.expiry.split('/');
+      if (!mStr || !yStr) return;
       const m = parseInt(mStr, 10);
       const y = parseInt(yStr, 10);
       
       if (y < currentYear || (y === currentYear && m < currentMonth)) {
-        toast.error(`Внимание: Срок действия вашей карты ${pm.type} (•••• ${pm.last4}) истек!`, {
+        // Only show once per card using a ref or just rely on react-hot-toast deduplication if possible.
+        // For now, it will show every time paymentMethods updates (like on mount)
+        toast.error(`Внимание: Срок действия вашей карты (•••• ${pm.cardNumber?.slice(-4) || pm.last4}) истек!`, {
           duration: 5000,
+          id: `expired-${pm.id}`, // prevent duplicate toasts
           icon: '⚠️',
         });
       }
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [paymentMethods]);
 
   const isCardExpired = (expiry: string) => {
     const [m, y] = expiry.split('/').map(Number);
@@ -64,7 +78,7 @@ export function PaymentTab() {
     setNewCard({ ...newCard, cvv: val });
   };
 
-  const handleAddCardSubmit = (e: React.FormEvent) => {
+  const handleAddCardSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const numClean = newCard.number.replace(/\s/g, '');
@@ -100,21 +114,22 @@ export function PaymentTab() {
       return;
     }
 
-    const type = numClean.startsWith('4') ? 'Visa' : 'Mastercard';
-    const last4 = numClean.slice(-4);
-    
-    setPaymentMethods([...paymentMethods, {
-      id: Date.now().toString(),
-      type,
-      last4,
-      expiry: newCard.expiry,
-      isDefault: paymentMethods.length === 0,
-      limit: Number(newCard.limit),
-      balance: Number(newCard.balance)
-    }]);
-    setAddModalOpen(false);
-    setNewCard({ number: '', expiry: '', cvv: '', limit: 100, balance: 250 });
-    toast.success('Карта успешно добавлена!');
+    try {
+      await api.post('/billing/payment-methods', {
+        cardNumber: newCard.number,
+        expiry: newCard.expiry,
+        cvv: newCard.cvv,
+        cardholderName: 'User',
+        limit: Number(newCard.limit),
+        balance: Number(newCard.balance)
+      });
+      await fetchPaymentMethods();
+      setAddModalOpen(false);
+      setNewCard({ number: '', expiry: '', cvv: '', limit: 100, balance: 250 });
+      toast.success('Карта успешно добавлена!');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Ошибка при добавлении карты');
+    }
   };
 
   const handleEditLimitSubmit = (e: React.FormEvent) => {
@@ -124,9 +139,14 @@ export function PaymentTab() {
     setEditingCard(null);
   };
 
-  const handleRemoveCard = (id: string) => {
-    setPaymentMethods(paymentMethods.filter(pm => pm.id !== id));
-    toast.success('Карта удалена');
+  const handleRemoveCard = async (id: string) => {
+    try {
+      await api.delete(`/billing/payment-methods/${id}`);
+      await fetchPaymentMethods();
+      toast.success('Карта удалена');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Ошибка удаления карты');
+    }
   };
 
   const transactions = [
@@ -154,12 +174,16 @@ export function PaymentTab() {
               <div className="flex justify-between items-start mb-4">
                 <div className="flex gap-2 items-center flex-wrap pr-2">
                   <div className="w-10 h-6 bg-slate-200 dark:bg-white/10 rounded-md flex items-center justify-center text-xs font-bold text-slate-700 dark:text-white shrink-0">
-                    {pm.type}
+                    {pm.type || (pm.cardNumber?.startsWith('4') ? 'Visa' : 'Mastercard')}
                   </div>
                   {pm.isDefault ? (
                     <span className="text-[10px] bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 px-2 py-0.5 rounded-full font-medium shrink-0">Основной</span>
                   ) : (
-                    <button onClick={() => { setDefaultPaymentMethod(pm.id); toast.success('Основная карта изменена!'); }} className="text-[10px] bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-white px-2 py-0.5 rounded-full font-medium hover:bg-slate-300 dark:hover:bg-white/20 transition-colors shrink-0">Сделать основным</button>
+                    <button onClick={async () => { 
+                      const res = await setDefaultPaymentMethod(pm.id); 
+                      if (res.success) toast.success('Основная карта изменена!');
+                      else toast.error(res.error || 'Ошибка');
+                    }} className="text-[10px] bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-white px-2 py-0.5 rounded-full font-medium hover:bg-slate-300 dark:hover:bg-white/20 transition-colors shrink-0">Сделать основным</button>
                   )}
                   {isCardExpired(pm.expiry) && (
                     <span className="text-[10px] bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400 px-2 py-0.5 rounded-full font-medium shrink-0">Просрочена</span>
@@ -180,7 +204,7 @@ export function PaymentTab() {
               </div>
               <div className="flex justify-between items-end mt-auto">
                 <div>
-                  <p className="text-xl font-mono text-slate-900 dark:text-white tracking-widest mt-1">•••• •••• •••• {pm.last4}</p>
+                  <p className="text-xl font-mono text-slate-900 dark:text-white tracking-widest mt-1">•••• •••• •••• {pm.last4 || pm.cardNumber?.slice(-4) || '0000'}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-slate-500 dark:text-gray-400 mb-0.5">Expires</p>

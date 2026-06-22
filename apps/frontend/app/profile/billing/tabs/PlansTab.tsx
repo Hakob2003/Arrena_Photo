@@ -26,9 +26,9 @@ export function PlansTab() {
     }
   };
 
-  const handleUpgrade = (planId: string, price: number) => {
+  const handleUpgrade = async (planId: string, price: number) => {
     if (price > 0) {
-      const res = chargeDefaultCard(price);
+      const res = await chargeDefaultCard(price, `Оплата тарифа ${planId}`);
       if (!res.success) {
         toast.error(res.error || 'Ошибка оплаты');
         return;
@@ -38,8 +38,8 @@ export function PlansTab() {
     toast.success('Тариф успешно изменен!');
   };
 
-  const handleBuyCredits = (amount: number, price: number) => {
-    const res = chargeDefaultCard(price);
+  const handleBuyCredits = async (amount: number, price: number) => {
+    const res = await chargeDefaultCard(price, `Покупка ${amount} кредитов`);
     if (!res.success) {
       toast.error(res.error || 'Ошибка оплаты');
       return;

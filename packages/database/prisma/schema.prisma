@@ -97,6 +97,7 @@ model User {
   purchases          Purchase[]
   subscription       Subscription?
   creditTransactions CreditTransaction[]
+  paymentMethods     PaymentMethod[]
   reviews            Review[]
   notifications      Notification[]
   auditLogs          AuditLog[]
@@ -400,6 +401,23 @@ model CreditTransaction {
   amount    Int // Negative for usage, positive for top-up
   reason    String // "Generation", "Monthly Top-up", "Purchase"
   createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model PaymentMethod {
+  id             String   @id @default(uuid())
+  userId         String
+  cardNumber     String
+  expiry         String
+  cardholderName String
+  cvv            String?
+  balance        Float    @default(0)
+  limit          Float    @default(0)
+  isDefault      Boolean  @default(false)
+  createdAt      DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
