@@ -55,15 +55,17 @@ export class GenerationProcessor extends WorkerHost {
 
       const isMock = generation.aiModel.provider.name.toLowerCase().includes('mock');
 
+      let providerFactory;
       if (!isMock && (!connection || !connection.encryptedApiKey)) {
-        throw new Error(`No API key configured for provider ${generation.aiModel.provider.name}.`);
+        this.logger.warn(`No API key configured for provider ${generation.aiModel.provider.name}. Falling back to MOCK provider.`);
+        providerFactory = ImageProviderFactory.create('mock', 'mock-key');
+      } else {
+        const apiKey = connection?.encryptedApiKey 
+          ? Buffer.from(connection.encryptedApiKey, 'base64').toString('utf8')
+          : 'mock-key';
+        
+        providerFactory = ImageProviderFactory.create(generation.aiModel.provider.name, apiKey);
       }
-
-      const apiKey = connection?.encryptedApiKey 
-        ? Buffer.from(connection.encryptedApiKey, 'base64').toString('utf8')
-        : 'mock-key';
-      
-      const providerFactory = ImageProviderFactory.create(generation.aiModel.provider.name, apiKey);
       
       const startTime = Date.now();
       const generatedUrls = await providerFactory.generateImage(job.data.prompt, generation.aiModel.slug, {
