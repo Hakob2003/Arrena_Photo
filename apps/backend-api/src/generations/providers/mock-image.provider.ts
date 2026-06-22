@@ -13,7 +13,7 @@ export class MockImageProvider implements IImageProvider {
     for (let i = 0; i < count; i++) {
       if (this.usePicsumMock) {
         const randomSeed = Math.floor(Math.random() * 100000);
-        images.push(`https://fastly.picsum.photos/seed/${randomSeed}/1024/1024`);
+        images.push(`https://picsum.photos/seed/${randomSeed}/1024/1024`);
       } else {
         const color = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
       // Create a simple SVG as a placeholder
