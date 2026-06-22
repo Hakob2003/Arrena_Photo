@@ -31,11 +31,17 @@ export const useAuthStore = create<AuthState>()(
       planId: 'free',
       paymentMethods: [],
       fetchPaymentMethods: async () => {
+        const currentState = useAuthStore.getState();
+        if (!currentState.token) {
+          set({ paymentMethods: [] });
+          return;
+        }
         try {
           const res = await api.get('/billing/payment-methods');
           set({ paymentMethods: res.data });
         } catch (e) {
           console.error(e);
+          set({ paymentMethods: [] }); // Clear on error (e.g. 401)
         }
       },
       login: (user, token) => set({ user, token, credits: user.credits ?? 0, planId: user.planId ?? 'free' }),

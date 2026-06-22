@@ -1,15 +1,18 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { User, Shield, Palette, Bell, Activity, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '../../store';
+import { useEffect } from 'react';
 
 const profileTabs = [
   { id: 'personal', label: 'Personal Information', icon: User, href: '/profile/personal' },
   { id: 'security', label: 'Security & Access', icon: Shield, href: '/profile/security' },
   { id: 'appearance', label: 'Appearance', icon: Palette, href: '/profile/appearance' },
+  { id: 'billing', label: 'Billing & Plans', icon: Activity, href: '/profile/billing' },
   { id: 'notifications', label: 'Notifications', icon: Bell, href: '/profile/notifications' },
   { id: 'statistics', label: 'Statistics', icon: Activity, href: '/profile/statistics' },
   { id: 'activity', label: 'Activity History', icon: Clock, href: '/profile/activity' },
@@ -17,6 +20,16 @@ const profileTabs = [
 
 export default function ProfileLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user } = useAuthStore();
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/');
+    }
+  }, [user, router]);
+
+  if (!user) return null;
 
   return (
     <div className="flex flex-col md:flex-row gap-8 w-full max-w-7xl mx-auto py-8 px-4 md:px-8">
