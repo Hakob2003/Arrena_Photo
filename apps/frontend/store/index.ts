@@ -45,7 +45,12 @@ export const useAuthStore = create<AuthState>()(
         }
       },
       login: (user, token) => set({ user, token, credits: user.credits ?? 0, planId: user.planId ?? 'free' }),
-      logout: () => set({ user: null, token: null, planId: 'free' }),
+      logout: () => {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('token');
+        }
+        set({ user: null, token: null, planId: 'free', credits: 0, paymentMethods: [] });
+      },
       deductCredits: (amount) => set((state) => ({ credits: Math.max(0, state.credits - amount) })),
       addCredits: (amount) => set((state) => ({ credits: state.credits + amount })),
       setCredits: (amount) => set({ credits: amount }),

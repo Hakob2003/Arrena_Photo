@@ -12,7 +12,14 @@ async function bootstrap() {
 
     // Global Middlewares
     app.use(helmet());
-    app.enableCors();
+    app.enableCors({
+      origin: [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        process.env.FRONTEND_URL || 'https://arrena-photo-frontend-o4xg.onrender.com',
+      ],
+      credentials: true,
+    });
     
     // Increase body size limits for base64 image uploads
     app.use(json({ limit: '50mb' }));

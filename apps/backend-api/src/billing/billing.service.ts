@@ -52,13 +52,19 @@ export class BillingService {
       });
     }
 
+    const last4 = cleanedNumber.length >= 4 ? cleanedNumber.slice(-4) : cleanedNumber;
+    let brand = 'visa';
+    if (cleanedNumber.startsWith('5') || cleanedNumber.startsWith('2')) brand = 'mastercard';
+    if (cleanedNumber.startsWith('4')) brand = 'visa';
+    if (cleanedNumber.startsWith('34') || cleanedNumber.startsWith('37')) brand = 'amex';
+
     return this.prisma.paymentMethod.create({
       data: {
         userId,
-        cardNumber: data.cardNumber,
+        last4,
+        brand,
         expiry: data.expiry,
         cardholderName: data.cardholderName,
-        cvv: data.cvv,
         balance: data.balance,
         limit: data.limit,
         isDefault: makeDefault
