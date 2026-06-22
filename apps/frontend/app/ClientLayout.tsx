@@ -12,7 +12,7 @@ import { api } from '../lib/api';
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith('/admin');
-  const { login, setCredits } = useAuthStore();
+  const { user, login, setCredits } = useAuthStore();
   const { isSidebarOpen, setSidebarOpen, preferences, setPreferences } = useUIStore();
   const [touchStart, setTouchStart] = useState<number | null>(null);
 
