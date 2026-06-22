@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Download, Maximize2 } from 'lucide-react';
 import { useGenerationStore, useAuthStore } from '../../store';
 import { useSearchParams } from 'next/navigation';
 import { useDropzone } from 'react-dropzone';
@@ -277,14 +278,33 @@ function GeneratorContent() {
         <div className="absolute top-0 w-full h-14 bg-gradient-to-b from-black/80 to-transparent z-10 flex items-center px-6 justify-end">
            {resultImage && !isGenerating && (
              <div className="flex gap-2">
-               <button className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-colors">📥</button>
-               <button className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-colors">🔍</button>
+               <button 
+                 onClick={() => {
+                   const a = document.createElement('a');
+                   a.href = resultImage;
+                   a.download = `generation-${Date.now()}.png`;
+                   document.body.appendChild(a);
+                   a.click();
+                   document.body.removeChild(a);
+                 }}
+                 className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-colors"
+                 title="Download Image"
+               >
+                 <Download size={18} className="text-white" />
+               </button>
+               <button 
+                 onClick={() => window.open(resultImage, '_blank')}
+                 className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-colors"
+                 title="Open Fullscreen"
+               >
+                 <Maximize2 size={18} className="text-white" />
+               </button>
              </div>
            )}
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 flex items-center justify-center p-3 sm:p-4 lg:p-6 preview-area-compact bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/[0.02] to-transparent">
+        <div className="flex-1 min-h-0 min-w-0 flex items-center justify-center p-3 sm:p-4 lg:p-6 preview-area-compact bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/[0.02] to-transparent">
           {isGenerating ? (
             <div className="flex flex-col items-center gap-4 sm:gap-6">
               <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-black/10 dark:border-white/10 border-t-indigo-500 rounded-full animate-spin" />
