@@ -29,4 +29,9 @@ export class CreateGenerationDto {
   @IsOptional()
   @IsString()
   aspectRatio?: string;
+
+  @ApiPropertyOptional({ description: 'Resolution preset, e.g. 1K, 2K, 4K, 8K' })
+  @IsOptional()
+  @IsString()
+  resolution?: string;
 }

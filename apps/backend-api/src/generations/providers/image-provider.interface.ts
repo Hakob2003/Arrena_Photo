@@ -7,6 +7,7 @@ export interface ImageGenerationOptions {
   initImage?: string;
   numImages?: number;
   aspectRatio?: string;
+  resolution?: string;
 }
 
 export interface IImageProvider {

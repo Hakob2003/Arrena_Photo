@@ -131,6 +131,7 @@ function GeneratorContent() {
         aiModelId: model,
         templateId: templateId || undefined,
         aspectRatio,
+        resolution,
         initImage: initImage
       });
 
@@ -271,6 +272,29 @@ function GeneratorContent() {
                 ))}
               </div>
             </div>
+
+            {/* Resolution Selection */}
+            <div>
+              <div className="flex justify-between text-xs text-slate-500 dark:text-gray-400 mb-2">
+                <span>Разрешение (Quality)</span>
+                <span>{resolution}</span>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {['1K', '2K', '4K', '8K'].map((resOption) => (
+                  <button
+                    key={resOption}
+                    onClick={() => setResolution(resOption)}
+                    className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors ${
+                      resolution === resOption
+                        ? 'bg-indigo-500 text-white shadow-md'
+                        : 'bg-black/[0.05] dark:bg-white/10 text-slate-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/20'
+                    }`}
+                  >
+                    {resOption}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -294,7 +318,34 @@ function GeneratorContent() {
            {resultImage && !isGenerating && (
              <div className="flex gap-2">
                <button 
-                 onClick={() => {
+                 onClick={async () => {
+                   try {
+                     if ('showSaveFilePicker' in window) {
+                       let blob;
+                       if (resultImage.startsWith('data:')) {
+                         const res = await fetch(resultImage);
+                         blob = await res.blob();
+                       } else if (resultDriveFileId && resultDriveFileId !== 'saved') {
+                         const res = await api.get(`/integrations/google-drive/file/${resultDriveFileId}`, { responseType: 'blob' });
+                         blob = res.data;
+                       } else {
+                         const res = await fetch(resultImage);
+                         blob = await res.blob();
+                       }
+                       const handle = await (window as any).showSaveFilePicker({
+                         suggestedName: `generation-${Date.now()}.png`,
+                         types: [{ description: 'PNG Image', accept: {'image/png': ['.png']} }],
+                       });
+                       const writable = await handle.createWritable();
+                       await writable.write(blob);
+                       await writable.close();
+                       return;
+                     }
+                   } catch (err: any) {
+                     if (err.name !== 'AbortError') console.error('Save failed', err);
+                     return;
+                   }
+                   // Fallback for browsers without showSaveFilePicker
                    const a = document.createElement('a');
                    a.href = resultImage;
                    a.download = `generation-${Date.now()}.png`;
@@ -378,11 +429,11 @@ function GeneratorContent() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 sm:p-8 backdrop-blur-md"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4 sm:p-8 backdrop-blur-md"
             onClick={() => setIsFullscreen(false)}
           >
             <button 
-              className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-50"
+              className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-[9999]"
               onClick={() => setIsFullscreen(false)}
             >
               <X size={24} />

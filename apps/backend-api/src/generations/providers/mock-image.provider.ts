@@ -26,6 +26,16 @@ export class MockImageProvider implements IImageProvider {
       }
     }
     
+    let multiplier = 1;
+    if (options?.resolution) {
+      if (options.resolution === '2K') multiplier = 2;
+      if (options.resolution === '4K') multiplier = 4;
+      if (options.resolution === '8K') multiplier = 8;
+    }
+    
+    width *= multiplier;
+    height *= multiplier;
+    
     for (let i = 0; i < count; i++) {
       if (this.usePicsumMock) {
         const randomSeed = Math.floor(Math.random() * 100000);

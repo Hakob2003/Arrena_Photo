@@ -74,7 +74,8 @@ export class GenerationsService {
       prompt: dto.prompt,
       negativePrompt: dto.negativePrompt,
       initImage: dto.initImage,
-      aspectRatio: dto.aspectRatio
+      aspectRatio: dto.aspectRatio,
+      resolution: dto.resolution
     }, {
       attempts: 3,
       backoff: { type: 'exponential', delay: 1000 }
