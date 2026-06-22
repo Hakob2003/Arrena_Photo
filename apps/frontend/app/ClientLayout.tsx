@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from '../components/layout/Sidebar';
 import { useAuthStore, useUIStore } from '../store';
 import { Topbar } from '../components/layout/Topbar';
@@ -9,12 +9,30 @@ import { Toaster } from 'react-hot-toast';
 
 import { api } from '../lib/api';
 
+const ALL_LINKS = [
+  '/',
+  '/generate',
+  '/templates',
+  '/marketplace',
+  '/gallery',
+  '/my-generations',
+  '/my-templates',
+  '/connections/ai',
+  '/connections/cloud',
+  '/profile',
+  '/profile/billing',
+];
+
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const isAdmin = pathname?.startsWith('/admin');
   const { user, login, setCredits } = useAuthStore();
   const { isSidebarOpen, setSidebarOpen, preferences, setPreferences } = useUIStore();
-  const [touchStart, setTouchStart] = useState<number | null>(null);
+  
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [touchFingers, setTouchFingers] = useState<number>(0);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -140,20 +158,60 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   }, [preferences]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchStart(e.targetTouches[0].clientX);
+    setTouchStartX(e.touches[0].clientX);
+    setTouchStartY(e.touches[0].clientY);
+    setTouchFingers(e.touches.length);
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    if (touchStart === null) return;
-    const touchEnd = e.changedTouches[0].clientX;
-    const distance = touchEnd - touchStart;
+    if (touchStartX === null || touchStartY === null) return;
+    
+    const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    
+    const distanceX = touchEndX - touchStartX;
+    const distanceY = touchEndY - touchStartY;
+    
+    const isHorizontal = Math.abs(distanceX) > Math.abs(distanceY);
 
-    if (distance > 50 && touchStart < 50 && !isSidebarOpen) {
-      setSidebarOpen(true);
-    } else if (distance < -50 && isSidebarOpen) {
-      setSidebarOpen(false);
+    if (touchFingers === 1) {
+      if (isHorizontal) {
+        // Swipe Left/Right (from anywhere)
+        if (distanceX > 50 && !isSidebarOpen) {
+          setSidebarOpen(true);
+        } else if (distanceX < -50 && isSidebarOpen) {
+          setSidebarOpen(false);
+        }
+      } else {
+        // Swipe Up/Down with 1 finger (Pull-to-refresh)
+        // ONLY if at the top of the page to avoid breaking scroll
+        if (distanceY > 100 && window.scrollY === 0) {
+          window.location.reload();
+        }
+      }
+    } else if (touchFingers === 2) {
+      if (!isHorizontal) {
+        // Two-finger swipe Up/Down
+        if (Math.abs(distanceY) > 50) {
+          const currentIndex = ALL_LINKS.indexOf(pathname || '/');
+          const maxIndex = ALL_LINKS.length - 1;
+          
+          if (distanceY > 50) {
+            // Swipe down -> Next link
+            const nextIndex = currentIndex === -1 ? 0 : (currentIndex === maxIndex ? 0 : currentIndex + 1);
+            router.push(ALL_LINKS[nextIndex]);
+          } else if (distanceY < -50) {
+            // Swipe up -> Prev link
+            const prevIndex = currentIndex === -1 ? 0 : (currentIndex === 0 ? maxIndex : currentIndex - 1);
+            router.push(ALL_LINKS[prevIndex]);
+          }
+        }
+      }
     }
-    setTouchStart(null);
+
+    setTouchStartX(null);
+    setTouchStartY(null);
+    setTouchFingers(0);
   };
 
   if (isAdmin) {

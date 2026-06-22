@@ -76,12 +76,12 @@ export function Topbar() {
           >
             <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen ? 'pointer-events-none' : 'pointer-events-auto'}`}>
               <img 
-                src="/logo2.png" 
+                src={isMobile ? "/logo.png" : "/logo2.png"} 
                 alt="Arrena Photo Text" 
                 className="h-5 sm:h-6 w-auto object-contain hidden dark:block" 
               />
               <img 
-                src="/logo2-light.png" 
+                src={isMobile ? "/logo-light.png" : "/logo2-light.png"} 
                 alt="Arrena Photo Text" 
                 className="h-5 sm:h-6 w-auto object-contain block dark:hidden" 
               />
