@@ -98,6 +98,7 @@ interface GenerationState {
   isGenerating: boolean;
   progress: number;
   resultImage: string | null;
+  resultDriveFileId: string | null;
   initImage: string | null; // Base64 or Object URL
   
   setPrompt: (v: string) => void;
@@ -106,7 +107,7 @@ interface GenerationState {
   updateSetting: (key: string, value: number) => void;
   setGenerating: (isGenerating: boolean) => void;
   setProgress: (v: number) => void;
-  setResult: (url: string) => void;
+  setResult: (url: string, driveFileId?: string) => void;
   setInitImage: (v: string | null) => void;
 }
 
@@ -118,6 +119,7 @@ export const useGenerationStore = create<GenerationState>((set) => ({
   isGenerating: false,
   progress: 0,
   resultImage: null,
+  resultDriveFileId: null,
   initImage: null,
 
   setPrompt: (prompt) => set({ prompt }),
@@ -126,7 +128,7 @@ export const useGenerationStore = create<GenerationState>((set) => ({
   updateSetting: (key, value) => set((state) => ({ settings: { ...state.settings, [key]: value } })),
   setGenerating: (isGenerating) => set({ isGenerating }),
   setProgress: (progress) => set({ progress }),
-  setResult: (resultImage) => set({ resultImage }),
+  setResult: (resultImage, resultDriveFileId = null) => set({ resultImage, resultDriveFileId }),
   setInitImage: (initImage) => set({ initImage }),
 }));
 

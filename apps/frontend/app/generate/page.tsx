@@ -154,7 +154,7 @@ function GeneratorContent() {
             setLoadingText('Генерация...');
           } else if (status === 'DONE') {
             clearInterval(poll);
-            setResult(statusRes.data.result.imageUrl);
+            setResult(statusRes.data.result.imageUrl, statusRes.data.result.driveFileId);
             setGenerating(false);
             fetchHistory();
             // Sync credits from backend
@@ -298,14 +298,19 @@ function GeneratorContent() {
               </motion.p>
             </div>
           ) : resultImage ? (
-            <motion.img 
+            <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5 }}
-              src={resultImage} 
-              alt="Generated" 
-              className="max-w-full max-h-full object-contain rounded-xl shadow-2xl" 
-            />
+              className="max-w-full max-h-full flex justify-center items-center"
+            >
+              <AuthImage 
+                driveFileId={useGenerationStore.getState().resultDriveFileId || undefined}
+                fallbackUrl={resultImage} 
+                alt="Generated" 
+                className="max-w-full max-h-full object-contain rounded-xl shadow-2xl" 
+              />
+            </motion.div>
           ) : (
             <div className="text-gray-600 text-lg">
               Ожидание вашего промпта...
@@ -321,7 +326,7 @@ function GeneratorContent() {
               <div className="text-slate-400 dark:text-gray-500 text-sm flex items-center h-full">История пуста. Создайте свою первую картинку!</div>
             ) : (
               history.map((item) => (
-                <div key={item.id} className="relative aspect-square h-full shrink-0 rounded-lg overflow-hidden group cursor-pointer" onClick={() => setResult(item.imageUrl)}>
+                <div key={item.id} className="relative aspect-square h-full shrink-0 rounded-lg overflow-hidden group cursor-pointer" onClick={() => setResult(item.imageUrl, item.driveFileId)}>
                   <AuthImage driveFileId={item.driveFileId} fallbackUrl={item.imageUrl} alt={item.prompt} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
                   <div className="absolute inset-0 bg-[#fafafa] dark:bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
                     <span className="text-slate-900 dark:text-slate-900 dark:text-white text-[10px] font-bold truncate">{item.template || item.model}</span>
