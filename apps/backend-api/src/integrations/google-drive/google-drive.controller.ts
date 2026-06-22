@@ -64,7 +64,6 @@ export class GoogleDriveController {
   async getFile(@Req() req, @Param('id') id: string, @Res() res) {
     const stream = await this.driveService.streamFile(req.user.id, id);
     res.set({
-      'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000',
     });
     stream.pipe(res);

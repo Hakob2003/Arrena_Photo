@@ -22,8 +22,13 @@ export const AuthImage: React.FC<AuthImageProps> = ({ driveFileId, fallbackUrl, 
       finalFallback = `data:image/png;base64,${finalFallback}`;
     }
     
-    // Set src immediately to fallback while checking drive
+    // Set src immediately to fallback while checking drive (if needed)
     setSrc(finalFallback);
+
+    // If we already have the full image via data URI, there's no need to download it again from Google Drive!
+    if (finalFallback.startsWith('data:')) {
+      return;
+    }
 
     if (driveFileId && driveFileId !== 'saved') {
       api.get(`/integrations/google-drive/file/${driveFileId}`, { responseType: 'blob' })
