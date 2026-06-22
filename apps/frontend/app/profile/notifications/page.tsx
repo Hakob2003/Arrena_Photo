@@ -6,8 +6,10 @@ import { toast } from 'react-hot-toast';
 import { api } from '@/lib/api';
 import { Switch } from '@headlessui/react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n';
 
 export default function NotificationsProfilePage() {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -56,7 +58,7 @@ export default function NotificationsProfilePage() {
   const toggles = [
     {
       name: 'notifyEmail',
-      title: 'Email Notifications',
+      title: t('profile.notifications.email'),
       description: 'Receive important account updates and security alerts via email.',
       disabled: true // Usually security emails cannot be turned off
     },
@@ -74,7 +76,7 @@ export default function NotificationsProfilePage() {
     },
     {
       name: 'notifyNews',
-      title: 'Product News',
+      title: t('profile.notifications.updates'),
       description: 'Stay up to date with new models, features, and platform updates.',
       disabled: false
     },
@@ -93,8 +95,8 @@ export default function NotificationsProfilePage() {
   return (
     <div className="space-y-8 max-w-3xl">
       <div>
-        <h2 className="text-2xl font-semibold mb-1">Notifications</h2>
-        <p className="text-slate-500 dark:text-gray-400 text-sm">Choose what we notify you about and how we communicate.</p>
+        <h2 className="text-2xl font-semibold mb-1">{t('profile.notifications.title')}</h2>
+        <p className="text-slate-500 dark:text-gray-400 text-sm">{t('profile.notifications.desc')}</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pt-6 border-t border-black/10 dark:border-white/10">

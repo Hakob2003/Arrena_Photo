@@ -7,6 +7,7 @@ import * as z from 'zod';
 import { toast } from 'react-hot-toast';
 import { api } from '@/lib/api';
 import AvatarUpload from '@/components/profile/AvatarUpload';
+import { useTranslation } from '@/lib/i18n';
 
 const personalSchema = z.object({
   name: z.string().max(30).optional(),
@@ -25,6 +26,7 @@ const personalSchema = z.object({
 type PersonalFormValues = z.infer<typeof personalSchema>;
 
 export default function PersonalProfilePage() {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -93,12 +95,12 @@ export default function PersonalProfilePage() {
   return (
     <div className="space-y-8 max-w-3xl">
       <div>
-        <h2 className="text-2xl font-semibold mb-1">Personal Information</h2>
-        <p className="text-slate-500 dark:text-gray-400 text-sm">Update your photo and personal details here.</p>
+        <h2 className="text-2xl font-semibold mb-1">{t('profile.personal.title')}</h2>
+        <p className="text-slate-500 dark:text-gray-400 text-sm">{t('profile.personal.desc')}</p>
       </div>
 
       <div className="pt-6 border-t border-black/10 dark:border-white/10">
-        <h3 className="text-sm font-medium text-gray-300 mb-4">Profile Picture</h3>
+        <h3 className="text-sm font-medium text-gray-300 mb-4">{t('profile.personal.avatar')}</h3>
         <AvatarUpload 
           currentAvatarUrl={avatarUrl} 
           onUpload={handleAvatarUpload} 
@@ -174,7 +176,7 @@ export default function PersonalProfilePage() {
             disabled={isSaving}
             className="px-6 py-2.5 bg-white text-black font-medium rounded-lg hover:bg-gray-200 transition flex items-center justify-center min-w-[120px]"
           >
-            {isSaving ? <span className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></span> : 'Save Changes'}
+            {isSaving ? <span className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></span> : t('profile.personal.save')}
           </button>
         </div>
       </form>

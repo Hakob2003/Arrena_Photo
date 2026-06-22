@@ -6,8 +6,10 @@ import { api } from '@/lib/api';
 import { format } from 'date-fns';
 import { MonitorPlay, LogIn, Image as ImageIcon, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/lib/i18n';
 
 export default function ActivityProfilePage() {
+  const { t } = useTranslation();
   const [activity, setActivity] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -58,8 +60,8 @@ export default function ActivityProfilePage() {
   return (
     <div className="space-y-8 max-w-4xl">
       <div>
-        <h2 className="text-2xl font-semibold mb-1">Activity History</h2>
-        <p className="text-slate-500 dark:text-gray-400 text-sm">Review your recent actions and logins.</p>
+        <h2 className="text-2xl font-semibold mb-1">{t('profile.activity.title')}</h2>
+        <p className="text-slate-500 dark:text-gray-400 text-sm">{t('profile.activity.desc')}</p>
       </div>
 
       <div className="bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl overflow-hidden">

@@ -5,9 +5,11 @@ import toast from 'react-hot-toast';
 
 import { useAuthStore } from '../../../../store';
 import { api } from '../../../../lib/api';
+import { useTranslation } from '../../../../lib/i18n';
 
 export function PaymentTab() {
   const { paymentMethods, setPaymentMethods, setDefaultPaymentMethod, fetchPaymentMethods } = useAuthStore();
+  const { t } = useTranslation();
 
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -16,11 +18,7 @@ export function PaymentTab() {
   const [editingCard, setEditingCard] = useState<any>(null);
 
   useEffect(() => {
-    fetchPaymentMethods().then(() => {
-      // The state will update soon, but let's assume we want to check
-      // Actually we can just do the check below in a separate useEffect if needed, 
-      // but to keep it simple, we just fetch here. The next useEffect will handle expiration check.
-    });
+    fetchPaymentMethods().then(() => {});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -37,11 +35,9 @@ export function PaymentTab() {
       const y = parseInt(yStr, 10);
       
       if (y < currentYear || (y === currentYear && m < currentMonth)) {
-        // Only show once per card using a ref or just rely on react-hot-toast deduplication if possible.
-        // For now, it will show every time paymentMethods updates (like on mount)
-        toast.error(`Внимание: Срок действия вашей карты (•••• ${pm.cardNumber?.slice(-4) || pm.last4}) истек!`, {
+        toast.error(\`Warning: Card (•••• \${pm.cardNumber?.slice(-4) || pm.last4}) expired!\`, {
           duration: 5000,
-          id: `expired-${pm.id}`, // prevent duplicate toasts
+          id: \`expired-\${pm.id}\`,
           icon: '⚠️',
         });
       }
@@ -57,14 +53,14 @@ export function PaymentTab() {
   };
 
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\D/g, '');
+    let val = e.target.value.replace(/\\D/g, '');
     val = val.substring(0, 16);
     const formatted = val.match(/.{1,4}/g)?.join(' ') || val;
     setNewCard({ ...newCard, number: formatted });
   };
 
   const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\D/g, '');
+    let val = e.target.value.replace(/\\D/g, '');
     if (val.length > 4) val = val.substring(0, 4);
     if (val.length >= 3) {
       val = val.substring(0, 2) + '/' + val.substring(2);
@@ -73,7 +69,7 @@ export function PaymentTab() {
   };
 
   const handleCvvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\D/g, '');
+    let val = e.target.value.replace(/\\D/g, '');
     val = val.substring(0, 4);
     setNewCard({ ...newCard, cvv: val });
   };
@@ -81,19 +77,19 @@ export function PaymentTab() {
   const handleAddCardSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const numClean = newCard.number.replace(/\s/g, '');
+    const numClean = newCard.number.replace(/\\s/g, '');
     if (numClean.length !== 16) {
-      toast.error('Номер карты должен состоять из 16 цифр.');
+      toast.error('Card number must be 16 digits.');
       return;
     }
     
     if (newCard.cvv.length < 3) {
-      toast.error('CVV должен состоять из 3 или 4 цифр.');
+      toast.error('CVV must be 3 or 4 digits.');
       return;
     }
     
     if (newCard.expiry.length !== 5) {
-      toast.error('Введите срок действия в формате MM/YY.');
+      toast.error('Enter expiry in MM/YY format.');
       return;
     }
     
@@ -105,12 +101,12 @@ export function PaymentTab() {
     const currentYear = now.getFullYear() % 100;
 
     if (monthNum < 1 || monthNum > 12) {
-      toast.error('Неверный месяц.');
+      toast.error('Invalid month.');
       return;
     }
 
     if (yearNum < currentYear || (yearNum === currentYear && monthNum < currentMonth)) {
-      toast.error('Эта карта уже просрочена.');
+      toast.error('Card is expired.');
       return;
     }
 
@@ -126,9 +122,9 @@ export function PaymentTab() {
       await fetchPaymentMethods();
       setAddModalOpen(false);
       setNewCard({ number: '', expiry: '', cvv: '', limit: 100, balance: 250 });
-      toast.success('Карта успешно добавлена!');
+      toast.success('Card added successfully!');
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Ошибка при добавлении карты');
+      toast.error(err.response?.data?.message || 'Error adding card');
     }
   };
 
@@ -141,11 +137,11 @@ export function PaymentTab() {
 
   const handleRemoveCard = async (id: string) => {
     try {
-      await api.delete(`/billing/payment-methods/${id}`);
+      await api.delete(\`/billing/payment-methods/\${id}\`);
       await fetchPaymentMethods();
-      toast.success('Карта удалена');
+      toast.success('Card removed');
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Ошибка удаления карты');
+      toast.error(err.response?.data?.message || 'Error removing card');
     }
   };
 
@@ -162,9 +158,9 @@ export function PaymentTab() {
       {/* Block 7: Способы оплаты */}
       <div>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Способы оплаты</h2>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t('billing.payment.title')}</h2>
           <button onClick={() => setAddModalOpen(true)} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
-            + Добавить карту
+            {t('billing.payment.addCard')}
           </button>
         </div>
 
@@ -177,26 +173,26 @@ export function PaymentTab() {
                     {pm.type || (pm.cardNumber?.startsWith('4') ? 'Visa' : 'Mastercard')}
                   </div>
                   {pm.isDefault ? (
-                    <span className="text-[10px] bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 px-2 py-0.5 rounded-full font-medium shrink-0">Основной</span>
+                    <span className="text-[10px] bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 px-2 py-0.5 rounded-full font-medium shrink-0">{t('billing.payment.defaultCard')}</span>
                   ) : (
                     <button onClick={async () => { 
                       const res = await setDefaultPaymentMethod(pm.id); 
-                      if (res.success) toast.success('Основная карта изменена!');
-                      else toast.error(res.error || 'Ошибка');
-                    }} className="text-[10px] bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-white px-2 py-0.5 rounded-full font-medium hover:bg-slate-300 dark:hover:bg-white/20 transition-colors shrink-0">Сделать основным</button>
+                      if (res.success) toast.success('Default card changed!');
+                      else toast.error(res.error || 'Error');
+                    }} className="text-[10px] bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-white px-2 py-0.5 rounded-full font-medium hover:bg-slate-300 dark:hover:bg-white/20 transition-colors shrink-0">{t('billing.payment.makeDefault')}</button>
                   )}
                   {isCardExpired(pm.expiry) && (
-                    <span className="text-[10px] bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400 px-2 py-0.5 rounded-full font-medium shrink-0">Просрочена</span>
+                    <span className="text-[10px] bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400 px-2 py-0.5 rounded-full font-medium shrink-0">Expired</span>
                   )}
-                  <span className="text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-0.5 rounded-full font-medium shrink-0">Лимит: ${pm.limit}</span>
-                  <span className="text-[10px] bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400 px-2 py-0.5 rounded-full font-medium shrink-0">Баланс: ${pm.balance}</span>
+                  <span className="text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-0.5 rounded-full font-medium shrink-0">Limit: \${pm.limit}</span>
+                  <span className="text-[10px] bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400 px-2 py-0.5 rounded-full font-medium shrink-0">Balance: \${pm.balance}</span>
                 </div>
                 <div className="flex gap-2 shrink-0">
-                  <button onClick={() => { setEditingCard(pm); setEditModalOpen(true); }} className="text-slate-400 hover:text-indigo-500 transition-colors" title="Изменить лимит">
+                  <button onClick={() => { setEditingCard(pm); setEditModalOpen(true); }} className="text-slate-400 hover:text-indigo-500 transition-colors" title="Change limit">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                   </button>
                   {!pm.isDefault && (
-                    <button onClick={() => handleRemoveCard(pm.id)} className="text-slate-400 hover:text-red-500 transition-colors" title="Удалить карту">
+                    <button onClick={() => handleRemoveCard(pm.id)} className="text-slate-400 hover:text-red-500 transition-colors" title="Delete card">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                     </button>
                   )}
@@ -216,18 +212,18 @@ export function PaymentTab() {
           
           <div onClick={() => setAddModalOpen(true)} className="p-5 border-2 border-dashed border-black/10 dark:border-white/10 bg-transparent rounded-2xl flex items-center justify-center min-h-[140px] cursor-pointer hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-white/5 transition-all group">
             <div className="text-center">
-              <p className="text-sm font-medium text-slate-500 dark:text-gray-400 group-hover:text-indigo-500">+ Добавить новый метод</p>
+              <p className="text-sm font-medium text-slate-500 dark:text-gray-400 group-hover:text-indigo-500">{t('billing.payment.addCard')}</p>
             </div>
           </div>
         </div>
 
         {/* Digital Wallets */}
         <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-black/10 dark:border-white/10">
-          <button onClick={() => toast.success('Открывается Apple Pay...')} className="flex-1 flex items-center justify-center gap-2 py-3 bg-black hover:bg-black/80 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black font-semibold rounded-xl transition-colors">
+          <button onClick={() => toast.success('Apple Pay opening...')} className="flex-1 flex items-center justify-center gap-2 py-3 bg-black hover:bg-black/80 dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black font-semibold rounded-xl transition-colors">
             <svg viewBox="0 0 384 512" className="w-4 h-4 fill-current"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
             Pay
           </button>
-          <button onClick={() => toast.success('Открывается Google Pay...')} className="flex-1 flex items-center justify-center gap-2 py-3 bg-white hover:bg-gray-50 text-slate-700 border border-black/20 font-semibold rounded-xl transition-colors shadow-sm">
+          <button onClick={() => toast.success('Google Pay opening...')} className="flex-1 flex items-center justify-center gap-2 py-3 bg-white hover:bg-gray-50 text-slate-700 border border-black/20 font-semibold rounded-xl transition-colors shadow-sm">
             <svg viewBox="0 0 488 512" className="w-4 h-4 fill-current text-[#4285F4]"><path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/></svg>
             Google Pay
           </button>
@@ -236,19 +232,19 @@ export function PaymentTab() {
 
       {/* Block 4: История платежей */}
       <div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">История платежей</h2>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">{t('billing.payment.billingHistory')}</h2>
         
         <div className="overflow-x-auto rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a]">
           <table className="w-full text-sm text-left text-slate-600 dark:text-gray-300">
             <thead className="text-xs uppercase bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-gray-400 border-b border-black/10 dark:border-white/10">
               <tr>
-                <th className="px-6 py-4 font-semibold">ID платежа</th>
-                <th className="px-6 py-4 font-semibold">Дата</th>
-                <th className="px-6 py-4 font-semibold">Тариф / Продукт</th>
-                <th className="px-6 py-4 font-semibold">Сумма</th>
-                <th className="px-6 py-4 font-semibold">Метод</th>
-                <th className="px-6 py-4 font-semibold">Статус</th>
-                <th className="px-6 py-4 font-semibold text-right">Чек</th>
+                <th className="px-6 py-4 font-semibold">ID</th>
+                <th className="px-6 py-4 font-semibold">{t('billing.payment.date')}</th>
+                <th className="px-6 py-4 font-semibold">Plan / Product</th>
+                <th className="px-6 py-4 font-semibold">{t('billing.payment.amount')}</th>
+                <th className="px-6 py-4 font-semibold">Method</th>
+                <th className="px-6 py-4 font-semibold">{t('billing.payment.status')}</th>
+                <th className="px-6 py-4 font-semibold text-right">{t('billing.payment.invoice')}</th>
               </tr>
             </thead>
             <tbody>
@@ -260,12 +256,12 @@ export function PaymentTab() {
                   <td className="px-6 py-4 font-medium">{tx.amount}</td>
                   <td className="px-6 py-4">{tx.method}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                    <span className={\`px-2.5 py-1 rounded-full text-xs font-semibold \${
                       tx.status === 'Success' 
                         ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' 
                         : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
-                    }`}>
-                      {tx.status}
+                    }\`}>
+                      {tx.status === 'Success' ? t('billing.payment.statusSuccess') : t('billing.payment.statusFailed')}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
@@ -287,15 +283,15 @@ export function PaymentTab() {
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setAddModalOpen(false)} />
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl p-6 w-full max-w-md relative z-10 border border-black/10 dark:border-white/10">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Добавить карту</h2>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Add Card</h2>
               <form onSubmit={handleAddCardSubmit} className="flex flex-col gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Номер карты</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Card Number</label>
                   <input required type="text" value={newCard.number} onChange={handleNumberChange} placeholder="0000 0000 0000 0000" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Срок действия</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Expiry Date</label>
                     <input required type="text" value={newCard.expiry} onChange={handleExpiryChange} placeholder="MM/YY" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
                   </div>
                   <div className="flex-1">
@@ -305,41 +301,17 @@ export function PaymentTab() {
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Макс. лимит ($)</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Max Limit ($)</label>
                     <input required type="number" min="0" value={newCard.limit} onChange={e => setNewCard({...newCard, limit: Number(e.target.value)})} placeholder="100" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
                   </div>
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Баланс карты ($)</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Card Balance ($)</label>
                     <input required type="number" min="0" value={newCard.balance} onChange={e => setNewCard({...newCard, balance: Number(e.target.value)})} placeholder="250" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
                   </div>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Система не сможет списать с этой карты больше указанного лимита или при недостатке средств.</p>
                 <div className="flex gap-3 mt-4">
-                  <button type="submit" className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">Сохранить</button>
-                  <button type="button" onClick={() => setAddModalOpen(false)} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">Отмена</button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* Edit Limit Modal */}
-      <AnimatePresence>
-        {isEditModalOpen && editingCard && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => { setEditModalOpen(false); setEditingCard(null); }} />
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl p-6 w-full max-w-md relative z-10 border border-black/10 dark:border-white/10">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Изменить лимит</h2>
-              <p className="text-sm text-slate-600 dark:text-gray-300 mb-4">Карта: {editingCard.type} •••• {editingCard.last4}</p>
-              <form onSubmit={handleEditLimitSubmit} className="flex flex-col gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Новый лимит ($)</label>
-                  <input required type="number" min="0" value={editingCard.limit} onChange={e => setEditingCard({...editingCard, limit: Number(e.target.value)})} className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
-                </div>
-                <div className="flex gap-3 mt-4">
-                  <button type="submit" className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">Сохранить</button>
-                  <button type="button" onClick={() => { setEditModalOpen(false); setEditingCard(null); }} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">Отмена</button>
+                  <button type="submit" className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">Save</button>
+                  <button type="button" onClick={() => setAddModalOpen(false)} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">Cancel</button>
                 </div>
               </form>
             </motion.div>

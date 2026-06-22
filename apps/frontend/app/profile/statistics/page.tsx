@@ -5,8 +5,10 @@ import { toast } from 'react-hot-toast';
 import { api } from '@/lib/api';
 import { Image as ImageIcon, Zap, Coins, TrendingUp, Calendar, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
+import { useTranslation } from '@/lib/i18n';
 
 export default function StatisticsProfilePage() {
+  const { t } = useTranslation();
   const [stats, setStats] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -85,8 +87,8 @@ export default function StatisticsProfilePage() {
   return (
     <div className="space-y-8 max-w-4xl">
       <div>
-        <h2 className="text-2xl font-semibold mb-1">Statistics</h2>
-        <p className="text-slate-500 dark:text-gray-400 text-sm">Overview of your activity and usage.</p>
+        <h2 className="text-2xl font-semibold mb-1">{t('profile.statistics.title')}</h2>
+        <p className="text-slate-500 dark:text-gray-400 text-sm">{t('profile.statistics.desc')}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

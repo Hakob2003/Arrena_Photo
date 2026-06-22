@@ -8,8 +8,10 @@ import { Switch } from '@headlessui/react';
 import { Monitor, Moon, Sun, Palette, Type, Layout } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUIStore } from '@/store';
+import { useTranslation } from '@/lib/i18n';
 
 export default function AppearanceProfilePage() {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const { setPreferences } = useUIStore();
@@ -78,9 +80,9 @@ export default function AppearanceProfilePage() {
   };
 
   const themes = [
-    { id: 'LIGHT', icon: Sun, label: 'Light' },
-    { id: 'DARK', icon: Moon, label: 'Dark' },
-    { id: 'SYSTEM', icon: Monitor, label: 'System' },
+    { id: 'LIGHT', icon: Sun, label: t('profile.appearance.light') },
+    { id: 'DARK', icon: Moon, label: t('profile.appearance.dark') },
+    { id: 'SYSTEM', icon: Monitor, label: t('profile.appearance.system') },
   ];
 
   const colors = [
@@ -104,26 +106,26 @@ export default function AppearanceProfilePage() {
   return (
     <div className="space-y-8 max-w-3xl">
       <div>
-        <h2 className="text-2xl font-semibold mb-1">Appearance</h2>
-        <p className="text-slate-500 dark:text-gray-400 text-sm">Customize how the application looks and feels.</p>
+        <h2 className="text-2xl font-semibold mb-1">{t('profile.appearance.title')}</h2>
+        <p className="text-slate-500 dark:text-gray-400 text-sm">{t('profile.appearance.desc')}</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-6 border-t border-black/10 dark:border-white/10">
         {/* Theme */}
         <div className="space-y-4">
           <div>
-            <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">Theme</h3>
+            <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">{t('profile.appearance.theme')}</h3>
             <p className="text-sm text-slate-500 dark:text-gray-400">Select or customize your UI theme.</p>
           </div>
           <div className="grid grid-cols-3 gap-4">
-            {themes.map((t) => {
-              const Icon = t.icon;
-              const isActive = watchTheme === t.id;
+            {themes.map((themeOption) => {
+              const Icon = themeOption.icon;
+              const isActive = watchTheme === themeOption.id;
               return (
                 <button
-                  key={t.id}
+                  key={themeOption.id}
                   type="button"
-                  onClick={() => setValue('theme', t.id, { shouldDirty: true })}
+                  onClick={() => setValue('theme', themeOption.id, { shouldDirty: true })}
                   className={cn(
                     "flex flex-col items-center justify-center gap-3 p-4 rounded-xl border transition-all",
                     isActive 
@@ -132,7 +134,7 @@ export default function AppearanceProfilePage() {
                   )}
                 >
                   <Icon className="w-6 h-6" />
-                  <span className="font-medium text-sm">{t.label}</span>
+                  <span className="font-medium text-sm">{themeOption.label}</span>
                 </button>
               );
             })}
@@ -142,7 +144,7 @@ export default function AppearanceProfilePage() {
         {/* Accent Color */}
         <div className="space-y-4 pt-6 border-t border-black/10 dark:border-white/10">
           <div>
-            <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">Accent Color</h3>
+            <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">{t('profile.appearance.accent')}</h3>
             <p className="text-sm text-slate-500 dark:text-gray-400">Choose your primary brand color.</p>
           </div>
           <div className="flex items-center gap-4">

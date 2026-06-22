@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast';
 import { api } from '@/lib/api';
 import { Monitor, Smartphone, Globe, LogOut } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslation } from '@/lib/i18n';
 
 const passwordSchema = z.object({
   currentPassword: z.string().min(6, "Current password must be at least 6 characters"),
@@ -21,6 +22,7 @@ const passwordSchema = z.object({
 type PasswordFormValues = z.infer<typeof passwordSchema>;
 
 export default function SecurityProfilePage() {
+  const { t } = useTranslation();
   const [sessions, setSessions] = useState<any[]>([]);
   const [isLoadingSessions, setIsLoadingSessions] = useState(true);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -77,13 +79,13 @@ export default function SecurityProfilePage() {
       {/* Change Password */}
       <div>
         <div className="mb-6">
-          <h2 className="text-xl font-semibold mb-1">Change Password</h2>
-          <p className="text-slate-500 dark:text-gray-400 text-sm">Ensure your account is using a long, random password to stay secure.</p>
+          <h2 className="text-xl font-semibold mb-1">{t('profile.security.title')}</h2>
+          <p className="text-slate-500 dark:text-gray-400 text-sm">{t('profile.security.desc')}</p>
         </div>
 
         <form onSubmit={handleSubmit(onPasswordSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Current Password</label>
+            <label className="text-sm font-medium text-gray-300">{t('profile.security.currentPassword')}</label>
             <input 
               type="password"
               {...register('currentPassword')} 
@@ -94,7 +96,7 @@ export default function SecurityProfilePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300">New Password</label>
+              <label className="text-sm font-medium text-gray-300">{t('profile.security.newPassword')}</label>
               <input 
                 type="password"
                 {...register('newPassword')} 
@@ -103,7 +105,7 @@ export default function SecurityProfilePage() {
               {errors.newPassword && <p className="text-red-400 text-xs">{errors.newPassword.message}</p>}
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300">Confirm Password</label>
+              <label className="text-sm font-medium text-gray-300">{t('profile.security.confirmPassword')}</label>
               <input 
                 type="password"
                 {...register('confirmPassword')} 
@@ -119,7 +121,7 @@ export default function SecurityProfilePage() {
               disabled={isChangingPassword}
               className="px-6 py-2 bg-white text-black font-medium rounded-lg hover:bg-gray-200 transition flex items-center justify-center min-w-[140px]"
             >
-              {isChangingPassword ? <span className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></span> : 'Update Password'}
+              {isChangingPassword ? <span className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></span> : t('profile.security.changePassword')}
             </button>
           </div>
         </form>
@@ -129,7 +131,7 @@ export default function SecurityProfilePage() {
       <div className="pt-10 border-t border-black/10 dark:border-white/10">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
           <div>
-            <h2 className="text-xl font-semibold mb-1">Active Sessions</h2>
+            <h2 className="text-xl font-semibold mb-1">{t('profile.security.sessions')}</h2>
             <p className="text-slate-500 dark:text-gray-400 text-sm">Manage your active sessions across different devices.</p>
           </div>
           <button 
@@ -137,7 +139,7 @@ export default function SecurityProfilePage() {
             className="flex items-center justify-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 hover:bg-red-500/20 font-medium rounded-lg transition"
           >
             <LogOut className="w-4 h-4" />
-            Sign out all devices
+            {t('profile.security.terminate')}
           </button>
         </div>
 

@@ -1,27 +1,30 @@
 "use client";
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend, Cell } from 'recharts';
+import { useTranslation } from '../../../../lib/i18n';
 
 export function UsageTab() {
+  const { t } = useTranslation();
+
   const usageData = [
-    { date: '15 Июн', credits: 120 },
-    { date: '16 Июн', credits: 240 },
-    { date: '17 Июн', credits: 180 },
-    { date: '18 Июн', credits: 450 },
-    { date: '19 Июн', credits: 300 },
-    { date: '20 Июн', credits: 800 },
-    { date: '21 Июн', credits: 210 },
+    { date: '15 Jun', credits: 120 },
+    { date: '16 Jun', credits: 240 },
+    { date: '17 Jun', credits: 180 },
+    { date: '18 Jun', credits: 450 },
+    { date: '19 Jun', credits: 300 },
+    { date: '20 Jun', credits: 800 },
+    { date: '21 Jun', credits: 210 },
   ];
 
   const modelUsageData = [
-    { name: 'Изображения', value: 1200, fill: '#8b5cf6' },
-    { name: 'Текст', value: 800, fill: '#3b82f6' },
-    { name: 'Видео', value: 1500, fill: '#ec4899' },
+    { name: t('billing.usage.imageGen'), value: 1200, fill: '#8b5cf6' },
+    { name: 'Text', value: 800, fill: '#3b82f6' },
+    { name: 'Video', value: 1500, fill: '#ec4899' },
   ];
 
   const categories = [
     {
-      title: "Генерация изображений",
+      title: t('billing.usage.imageGen'),
       models: [
         { name: 'Flux Pro', limit: 500, used: 127, access: true, type: 'Premium' },
         { name: 'Stable Diffusion XL', limit: 2000, used: 1840, access: true, type: 'Standard' },
@@ -29,14 +32,14 @@ export function UsageTab() {
       ]
     },
     {
-      title: "Генерация видео",
+      title: "Video Generation",
       models: [
         { name: 'Veo', limit: 50, used: 12, access: true, type: 'Premium' },
         { name: 'Kling', limit: 10, used: 10, access: false, type: 'Pro' },
       ]
     },
     {
-      title: "Текстовые модели",
+      title: "Text Models",
       models: [
         { name: 'Gemini 1.5 Pro', limit: 1000, used: 450, access: true, type: 'Premium' },
         { name: 'Claude 3.5 Sonnet', limit: 500, used: 490, access: true, type: 'Premium' },
@@ -50,7 +53,7 @@ export function UsageTab() {
       {/* Analytics Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white dark:bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-2xl p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">Динамика расходов кредитов</h3>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">{t('billing.usage.chartTitle')}</h3>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={usageData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
@@ -61,7 +64,7 @@ export function UsageTab() {
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}`} />
+                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => \`\${v}\`} />
                 <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: 'rgba(0,0,0,0.8)', color: '#fff' }} />
                 <Area type="monotone" dataKey="credits" stroke="#8b5cf6" strokeWidth={2} fillOpacity={1} fill="url(#colorCredits)" />
               </AreaChart>
@@ -79,7 +82,7 @@ export function UsageTab() {
                 <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: 'rgba(0,0,0,0.8)', color: '#fff' }} />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                   {modelUsageData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                    <Cell key={\`cell-\${index}\`} fill={entry.fill} />
                   ))}
                 </Bar>
               </BarChart>
@@ -90,7 +93,7 @@ export function UsageTab() {
 
       {/* Models Detailed Breakdown */}
       <div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Использование AI-моделей</h2>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">{t('billing.usage.title')}</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {categories.map((cat, i) => (
@@ -110,7 +113,7 @@ export function UsageTab() {
                           {!model.access && <span className="text-[10px] bg-black/10 dark:bg-white/10 px-1.5 py-0.5 rounded text-slate-500">Upgrade required</span>}
                         </div>
                         {model.access && (
-                          <span className={`text-xs font-semibold ${isExhausted ? 'text-red-500' : isWarning ? 'text-amber-500' : 'text-slate-500 dark:text-gray-400'}`}>
+                          <span className={\`text-xs font-semibold \${isExhausted ? 'text-red-500' : isWarning ? 'text-amber-500' : 'text-slate-500 dark:text-gray-400'}\`}>
                             {model.used} / {model.limit}
                           </span>
                         )}
@@ -120,15 +123,15 @@ export function UsageTab() {
                         <>
                           <div className="w-full bg-slate-100 dark:bg-white/10 rounded-full h-1.5 mt-2">
                             <div 
-                              className={`h-1.5 rounded-full ${isExhausted ? 'bg-red-500' : isWarning ? 'bg-amber-500' : 'bg-indigo-500'}`} 
-                              style={{ width: `${Math.min(percent, 100)}%` }}
+                              className={\`h-1.5 rounded-full \${isExhausted ? 'bg-red-500' : isWarning ? 'bg-amber-500' : 'bg-indigo-500'}\`} 
+                              style={{ width: \`\${Math.min(percent, 100)}%\` }}
                             ></div>
                           </div>
-                          {isWarning && !isExhausted && <p className="text-[10px] text-amber-500 mt-1">Лимит почти исчерпан</p>}
-                          {isExhausted && <p className="text-[10px] text-red-500 mt-1">Лимит исчерпан. Пополните кредиты.</p>}
+                          {isWarning && !isExhausted && <p className="text-[10px] text-amber-500 mt-1">Limit almost reached</p>}
+                          {isExhausted && <p className="text-[10px] text-red-500 mt-1">Limit reached.</p>}
                         </>
                       ) : (
-                        <p className="text-xs text-slate-400 mt-1">Модель недоступна в вашем тарифе.</p>
+                        <p className="text-xs text-slate-400 mt-1">Model unavailable.</p>
                       )}
                     </div>
                   );

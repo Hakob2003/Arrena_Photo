@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '../../../../store';
+import { useTranslation } from '../../../../lib/i18n';
 
 const PLAN_DETAILS: Record<string, { name: string, limit: number, price: string, features: string[] }> = {
   free: { name: 'Free', limit: 100, price: '$0.00', features: ['До 1 задачи', 'Стандартная скорость', 'Водяной знак'] },
@@ -13,6 +14,7 @@ const PLAN_DETAILS: Record<string, { name: string, limit: number, price: string,
 export function OverviewTab() {
   const [isCancelModalOpen, setCancelModalOpen] = useState(false);
   const { credits, planId, setPlanId } = useAuthStore();
+  const { t } = useTranslation();
   
   const currentPlan = PLAN_DETAILS[planId] || PLAN_DETAILS.free;
   const isActive = planId !== 'free';
@@ -34,29 +36,29 @@ export function OverviewTab() {
                     ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 border-green-200 dark:border-green-500/30'
                     : 'bg-slate-100 text-slate-700 dark:bg-slate-500/20 dark:text-slate-400 border-slate-200 dark:border-slate-500/30'
                 }`}>
-                  {isActive ? 'Active' : 'Free'}
+                  {isActive ? t('billing.overview.active') : t('billing.overview.free')}
                 </span>
               </h2>
-              {isActive && <p className="text-slate-500 dark:text-gray-400 text-sm mt-1">Подписка активна до 21 Июля 2026</p>}
+              {isActive && <p className="text-slate-500 dark:text-gray-400 text-sm mt-1">{t('billing.overview.activeUntil')} 21 Июля 2026</p>}
             </div>
             <div className="text-left sm:text-right">
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">{currentPlan.price} <span className="text-sm font-normal text-slate-500">/ мес</span></p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">{currentPlan.price} <span className="text-sm font-normal text-slate-500">{t('billing.overview.perMonth')}</span></p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/5">
-              <p className="text-sm text-slate-500 dark:text-gray-400 mb-1">Остаток кредитов</p>
-              <p className="text-xl font-bold text-slate-900 dark:text-white">{credits.toLocaleString()} <span className="text-sm font-normal text-slate-500">из {currentPlan.limit > 100000 ? '∞' : currentPlan.limit.toLocaleString()}</span></p>
+              <p className="text-sm text-slate-500 dark:text-gray-400 mb-1">{t('billing.overview.creditsLeft')}</p>
+              <p className="text-xl font-bold text-slate-900 dark:text-white">{credits.toLocaleString()} <span className="text-sm font-normal text-slate-500">{t('billing.overview.outOf')} {currentPlan.limit > 100000 ? '∞' : currentPlan.limit.toLocaleString()}</span></p>
             </div>
             <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/5">
-              <p className="text-sm text-slate-500 dark:text-gray-400 mb-1">Использовано за период</p>
-              <p className="text-xl font-bold text-slate-900 dark:text-white">{(Math.max(0, currentPlan.limit - credits)).toLocaleString()} <span className="text-sm font-normal text-slate-500">кредитов</span></p>
+              <p className="text-sm text-slate-500 dark:text-gray-400 mb-1">{t('billing.overview.usedPeriod')}</p>
+              <p className="text-xl font-bold text-slate-900 dark:text-white">{(Math.max(0, currentPlan.limit - credits)).toLocaleString()} <span className="text-sm font-normal text-slate-500">{t('billing.overview.creditsWord')}</span></p>
             </div>
           </div>
 
           <div className="border-t border-black/10 dark:border-white/10 pt-4">
-            <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Доступные функции тарифа:</h4>
+            <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">{t('billing.overview.features')}</h4>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-slate-600 dark:text-gray-300">
               {currentPlan.features.map((feature, idx) => (
                 <li key={idx} className="flex items-center gap-2"><span className="text-green-500">✓</span> {feature}</li>
@@ -68,16 +70,16 @@ export function OverviewTab() {
         {/* Block 6: Управление подпиской */}
         <div className="bg-white dark:bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row gap-4 items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Управление подпиской</h3>
-            <p className="text-sm text-slate-500 dark:text-gray-400 mt-1">Измените тариф, обновите метод оплаты или отмените подписку.</p>
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{t('billing.overview.manage')}</h3>
+            <p className="text-sm text-slate-500 dark:text-gray-400 mt-1">{t('billing.overview.manageDesc')}</p>
           </div>
           <div className="flex flex-wrap gap-2 justify-start sm:justify-end">
             <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
-              Сменить тариф
+              {t('billing.overview.changePlan')}
             </button>
             {isActive && (
               <button onClick={() => setCancelModalOpen(true)} className="px-4 py-2 bg-transparent border border-black/10 dark:border-white/10 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-500/30 text-slate-700 dark:text-gray-300 text-sm font-medium rounded-lg transition-all">
-                Отменить
+                {t('billing.overview.cancelPlan')}
               </button>
             )}
           </div>
@@ -88,12 +90,12 @@ export function OverviewTab() {
       {/* Right Column: Usage Statistics (Short) */}
       <div className="space-y-6">
         <div className="bg-white dark:bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-2xl p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">Статистика за месяц</h3>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">{t('billing.overview.stats')}</h3>
           
           <div className="space-y-6">
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-slate-600 dark:text-gray-300">Использовано кредитов</span>
+                <span className="text-slate-600 dark:text-gray-300">{t('billing.overview.usedCredits')}</span>
                 <span className="font-semibold text-slate-900 dark:text-white">75%</span>
               </div>
               <div className="w-full bg-slate-100 dark:bg-white/10 rounded-full h-2">
@@ -103,7 +105,7 @@ export function OverviewTab() {
 
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-slate-600 dark:text-gray-300">Генерации изображений</span>
+                <span className="text-slate-600 dark:text-gray-300">{t('billing.overview.imagesGenerated')}</span>
                 <span className="font-semibold text-slate-900 dark:text-white">340</span>
               </div>
               <div className="w-full bg-slate-100 dark:bg-white/10 rounded-full h-2">
@@ -113,7 +115,7 @@ export function OverviewTab() {
 
             <div>
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-slate-600 dark:text-gray-300">Остаток кредитов</span>
+                <span className="text-slate-600 dark:text-gray-300">{t('billing.overview.creditsLeft')}</span>
                 <span className="font-semibold text-amber-600 dark:text-amber-400">{credits.toLocaleString()}</span>
               </div>
             </div>
@@ -121,7 +123,7 @@ export function OverviewTab() {
 
           <div className="mt-8 pt-6 border-t border-black/10 dark:border-white/10">
             <button className="w-full text-center text-sm text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
-              Смотреть детальную статистику →
+              {t('billing.overview.viewStats')}
             </button>
           </div>
         </div>
@@ -144,10 +146,10 @@ export function OverviewTab() {
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               className="relative w-full max-w-md bg-white dark:bg-[#111] border border-black/10 dark:border-white/10 rounded-2xl shadow-2xl p-6"
             >
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Отмена подписки</h2>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t('billing.overview.cancelModalTitle')}</h2>
               <p className="text-slate-600 dark:text-gray-300 text-sm mb-6">
-                Вы уверены, что хотите отменить подписку <strong>{currentPlan.name}</strong>? 
-                У вас останется доступ к функциям до конца оплаченного периода (21 Июля 2026), после чего тариф будет изменен на Free, а неиспользованные кредиты сгорят.
+                {t('billing.overview.cancelModalDesc1')} <strong>{currentPlan.name}</strong>? 
+                {t('billing.overview.cancelModalDesc2')} (21 Июля 2026), {t('billing.overview.cancelModalDesc3')}
               </p>
 
               <div className="flex flex-col gap-3">
@@ -158,10 +160,10 @@ export function OverviewTab() {
                   }} 
                   className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors"
                 >
-                  Да, отменить подписку
+                  {t('billing.overview.yesCancel')}
                 </button>
                 <button onClick={() => setCancelModalOpen(false)} className="w-full px-4 py-2 bg-transparent border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">
-                  Я передумал(а)
+                  {t('billing.overview.noCancel')}
                 </button>
               </div>
             </motion.div>
