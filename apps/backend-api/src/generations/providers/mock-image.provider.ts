@@ -11,9 +11,16 @@ export class MockImageProvider implements IImageProvider {
     const images: string[] = [];
     
     for (let i = 0; i < count; i++) {
-      // Random picsum image
-      const randomSeed = Math.floor(Math.random() * 100000);
-      images.push(`https://picsum.photos/seed/${randomSeed}/1024/1024`);
+      const color = Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+      // Create a simple SVG as a placeholder
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
+        <rect width="100%" height="100%" fill="#${color}" />
+        <text x="50%" y="40%" font-family="sans-serif" font-size="64" fill="white" text-anchor="middle">MOCK GENERATION</text>
+        <text x="50%" y="55%" font-family="sans-serif" font-size="32" fill="white" text-anchor="middle">${prompt.substring(0, 50) || 'No prompt'}</text>
+      </svg>`;
+      
+      const base64 = Buffer.from(svg).toString('base64');
+      images.push(`data:image/svg+xml;base64,${base64}`);
     }
 
     return images;
