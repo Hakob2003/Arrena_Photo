@@ -35,9 +35,9 @@ export function PaymentTab() {
       const y = parseInt(yStr, 10);
       
       if (y < currentYear || (y === currentYear && m < currentMonth)) {
-        toast.error(\`Warning: Card (•••• \${pm.cardNumber?.slice(-4) || pm.last4}) expired!\`, {
+        toast.error(`Warning: Card (•••• ${pm.cardNumber?.slice(-4) || pm.last4}) expired!`, {
           duration: 5000,
-          id: \`expired-\${pm.id}\`,
+          id: `expired-${pm.id}`,
           icon: '⚠️',
         });
       }
@@ -53,14 +53,14 @@ export function PaymentTab() {
   };
 
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\\D/g, '');
+    let val = e.target.value.replace(/\D/g, '');
     val = val.substring(0, 16);
     const formatted = val.match(/.{1,4}/g)?.join(' ') || val;
     setNewCard({ ...newCard, number: formatted });
   };
 
   const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\\D/g, '');
+    let val = e.target.value.replace(/\D/g, '');
     if (val.length > 4) val = val.substring(0, 4);
     if (val.length >= 3) {
       val = val.substring(0, 2) + '/' + val.substring(2);
@@ -69,7 +69,7 @@ export function PaymentTab() {
   };
 
   const handleCvvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\\D/g, '');
+    let val = e.target.value.replace(/\D/g, '');
     val = val.substring(0, 4);
     setNewCard({ ...newCard, cvv: val });
   };
@@ -77,7 +77,7 @@ export function PaymentTab() {
   const handleAddCardSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    const numClean = newCard.number.replace(/\\s/g, '');
+    const numClean = newCard.number.replace(/\s/g, '');
     if (numClean.length !== 16) {
       toast.error('Card number must be 16 digits.');
       return;
@@ -137,7 +137,7 @@ export function PaymentTab() {
 
   const handleRemoveCard = async (id: string) => {
     try {
-      await api.delete(\`/billing/payment-methods/\${id}\`);
+      await api.delete(`/billing/payment-methods/${id}`);
       await fetchPaymentMethods();
       toast.success('Card removed');
     } catch (err: any) {
@@ -184,8 +184,8 @@ export function PaymentTab() {
                   {isCardExpired(pm.expiry) && (
                     <span className="text-[10px] bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400 px-2 py-0.5 rounded-full font-medium shrink-0">Expired</span>
                   )}
-                  <span className="text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-0.5 rounded-full font-medium shrink-0">Limit: \${pm.limit}</span>
-                  <span className="text-[10px] bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400 px-2 py-0.5 rounded-full font-medium shrink-0">Balance: \${pm.balance}</span>
+                  <span className="text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-0.5 rounded-full font-medium shrink-0">Limit: ${pm.limit}</span>
+                  <span className="text-[10px] bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400 px-2 py-0.5 rounded-full font-medium shrink-0">Balance: ${pm.balance}</span>
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button onClick={() => { setEditingCard(pm); setEditModalOpen(true); }} className="text-slate-400 hover:text-indigo-500 transition-colors" title="Change limit">
@@ -256,11 +256,11 @@ export function PaymentTab() {
                   <td className="px-6 py-4 font-medium">{tx.amount}</td>
                   <td className="px-6 py-4">{tx.method}</td>
                   <td className="px-6 py-4">
-                    <span className={\`px-2.5 py-1 rounded-full text-xs font-semibold \${
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
                       tx.status === 'Success' 
                         ? 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400' 
                         : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'
-                    }\`}>
+                    }`}>
                       {tx.status === 'Success' ? t('billing.payment.statusSuccess') : t('billing.payment.statusFailed')}
                     </span>
                   </td>

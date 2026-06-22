@@ -64,7 +64,7 @@ export function UsageTab() {
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => \`\${v}\`} />
+                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(v) => `${v}`} />
                 <Tooltip contentStyle={{ borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: 'rgba(0,0,0,0.8)', color: '#fff' }} />
                 <Area type="monotone" dataKey="credits" stroke="#8b5cf6" strokeWidth={2} fillOpacity={1} fill="url(#colorCredits)" />
               </AreaChart>
@@ -82,7 +82,7 @@ export function UsageTab() {
                 <Tooltip cursor={{fill: 'transparent'}} contentStyle={{ borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: 'rgba(0,0,0,0.8)', color: '#fff' }} />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]}>
                   {modelUsageData.map((entry, index) => (
-                    <Cell key={\`cell-\${index}\`} fill={entry.fill} />
+                    <Cell key={`cell-${index}`} fill={entry.fill} />
                   ))}
                 </Bar>
               </BarChart>
@@ -113,7 +113,7 @@ export function UsageTab() {
                           {!model.access && <span className="text-[10px] bg-black/10 dark:bg-white/10 px-1.5 py-0.5 rounded text-slate-500">Upgrade required</span>}
                         </div>
                         {model.access && (
-                          <span className={\`text-xs font-semibold \${isExhausted ? 'text-red-500' : isWarning ? 'text-amber-500' : 'text-slate-500 dark:text-gray-400'}\`}>
+                          <span className={`text-xs font-semibold ${isExhausted ? 'text-red-500' : isWarning ? 'text-amber-500' : 'text-slate-500 dark:text-gray-400'}`}>
                             {model.used} / {model.limit}
                           </span>
                         )}
@@ -123,8 +123,8 @@ export function UsageTab() {
                         <>
                           <div className="w-full bg-slate-100 dark:bg-white/10 rounded-full h-1.5 mt-2">
                             <div 
-                              className={\`h-1.5 rounded-full \${isExhausted ? 'bg-red-500' : isWarning ? 'bg-amber-500' : 'bg-indigo-500'}\`} 
-                              style={{ width: \`\${Math.min(percent, 100)}%\` }}
+                              className={`h-1.5 rounded-full ${isExhausted ? 'bg-red-500' : isWarning ? 'bg-amber-500' : 'bg-indigo-500'}`} 
+                              style={{ width: `${Math.min(percent, 100)}%` }}
                             ></div>
                           </div>
                           {isWarning && !isExhausted && <p className="text-[10px] text-amber-500 mt-1">Limit almost reached</p>}
