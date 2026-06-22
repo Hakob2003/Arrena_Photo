@@ -33,6 +33,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [touchFingers, setTouchFingers] = useState<number>(0);
+  const [touchStartScrollY, setTouchStartScrollY] = useState<number>(0);
+  const [isPinch, setIsPinch] = useState<boolean>(false);
+  const [touchStartFingers, setTouchStartFingers] = useState<{ id: number, y: number }[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -161,6 +164,32 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     setTouchStartX(e.touches[0].clientX);
     setTouchStartY(e.touches[0].clientY);
     setTouchFingers(e.touches.length);
+    setIsPinch(false);
+    
+    // Track initial Y positions of all fingers for pinch detection
+    setTouchStartFingers(Array.from(e.touches).map(t => ({ id: t.identifier, y: t.clientY })));
+    
+    // Get scroll position of the main scroll container
+    const mainScroll = document.getElementById('main-scroll-container');
+    setTouchStartScrollY(mainScroll ? mainScroll.scrollTop : window.scrollY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && touchStartFingers.length === 2) {
+      const currentFingers = Array.from(e.touches);
+      const f1Start = touchStartFingers.find(f => f.id === currentFingers[0].identifier);
+      const f2Start = touchStartFingers.find(f => f.id === currentFingers[1].identifier);
+      
+      if (f1Start && f2Start) {
+        const dy1 = currentFingers[0].clientY - f1Start.y;
+        const dy2 = currentFingers[1].clientY - f2Start.y;
+        
+        // If fingers move in opposite vertical directions, it's a pinch
+        if (dy1 * dy2 < 0) {
+          setIsPinch(true);
+        }
+      }
+    }
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
@@ -184,12 +213,12 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         }
       } else {
         // Swipe Up/Down with 1 finger (Pull-to-refresh)
-        // ONLY if at the top of the page to avoid breaking scroll
-        if (distanceY > 100 && window.scrollY === 0) {
+        // ONLY if at the top of the page AT THE START of the touch
+        if (distanceY > 100 && touchStartScrollY <= 5) {
           window.location.reload();
         }
       }
-    } else if (touchFingers === 2) {
+    } else if (touchFingers === 2 && !isPinch) {
       if (!isHorizontal) {
         // Two-finger swipe Up/Down
         if (Math.abs(distanceY) > 50) {
@@ -212,6 +241,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     setTouchStartX(null);
     setTouchStartY(null);
     setTouchFingers(0);
+    setIsPinch(false);
   };
 
   if (isAdmin) {
@@ -224,6 +254,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
       <div 
         className="flex h-screen w-full overflow-hidden"
         onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
         {user && <Sidebar />}
@@ -238,7 +269,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           
-          <main className="flex-1 overflow-y-auto relative z-10 custom-scrollbar">
+          <main id="main-scroll-container" className="flex-1 overflow-y-auto relative z-10 custom-scrollbar">
             {children}
           </main>
         </div>
