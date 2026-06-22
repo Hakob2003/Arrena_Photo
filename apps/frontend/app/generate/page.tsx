@@ -71,7 +71,13 @@ function GeneratorContent() {
           setModels(res.data);
           // Set first model as default if none selected
           const currentModel = useGenerationStore.getState().model;
-          if (!currentModel || !res.data.find((m: any) => m.id === currentModel)) {
+          const matchedModel = res.data.find((m: any) => m.id === currentModel || m.slug === currentModel || m.name === currentModel);
+          if (matchedModel) {
+            // Update to use the actual UUID so the <select> works correctly
+            if (currentModel !== matchedModel.id) {
+              setModel(matchedModel.id);
+            }
+          } else {
             setModel(res.data[0].id);
           }
         }

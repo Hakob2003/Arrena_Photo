@@ -20,7 +20,8 @@ export class GenerationsService {
       where: { 
         OR: [
           { id: dto.aiModelId },
-          { name: dto.aiModelId }
+          { name: dto.aiModelId },
+          { slug: dto.aiModelId }
         ]
       }
     });
