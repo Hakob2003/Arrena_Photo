@@ -129,10 +129,13 @@ export class BillingService {
         throw new BadRequestException('Недостаточно средств на карте');
       }
 
-      // Deduct from card balance
+      // Deduct from card balance (and limit if it is set)
       await tx.paymentMethod.update({
         where: { id: defaultCard.id },
-        data: { balance: { decrement: amount } }
+        data: { 
+          balance: { decrement: amount },
+          ...(defaultCard.limit > 0 ? { limit: { decrement: amount } } : {})
+        }
       });
 
       // Record transaction
