@@ -15,7 +15,7 @@ function GeneratorContent() {
   const templateId = searchParams.get('templateId');
   const templateName = searchParams.get('template');
 
-  const { prompt, setPrompt, model, setModel, aspectRatio, setAspectRatio, isGenerating, setGenerating, resultImage, resultDriveFileId, setResult, initImage, setInitImage } = useGenerationStore();
+  const { prompt, setPrompt, model, setModel, aspectRatio, setAspectRatio, resolution, setResolution, isGenerating, setGenerating, resultImage, resultDriveFileId, setResult, initImage, setInitImage } = useGenerationStore();
   const { user, deductCredits, setCredits } = useAuthStore();
   const [loadingText, setLoadingText] = useState('Initializing AI...');
   const [models, setModels] = useState<any[]>([]);
