@@ -264,8 +264,10 @@ export default function AdminUsersPage() {
         </form>
       </div>
 
-      <div className="bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-lg overflow-x-auto">
-        <table className="w-full text-left text-sm text-slate-500 dark:text-gray-400">
+      {/* Table */}
+      <div className="mt-8 relative overflow-hidden bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-2xl">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full min-w-[800px] text-left text-sm text-slate-500 dark:text-gray-400">
           <thead className="text-xs text-slate-400 dark:text-gray-500 uppercase bg-[#fafafa] dark:bg-black/40 border-b border-black/10 dark:border-white/10">
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
@@ -302,6 +304,7 @@ export default function AdminUsersPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       <div className="flex justify-between items-center mt-4">

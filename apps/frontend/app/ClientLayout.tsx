@@ -213,8 +213,8 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         }
       } else {
         // Swipe Up/Down with 1 finger (Pull-to-refresh)
-        // ONLY if at the top of the page AT THE START of the touch
-        if (distanceY > 100 && touchStartScrollY <= 5) {
+        // ONLY if at the top of the page AT THE START of the touch and touch starts near the top
+        if (distanceY > 100 && touchStartScrollY <= 5 && touchStartY < 150) {
           window.location.reload();
         }
       }

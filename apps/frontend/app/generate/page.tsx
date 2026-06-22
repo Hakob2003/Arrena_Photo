@@ -438,8 +438,11 @@ function GeneratorContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/95 p-4 sm:p-8 backdrop-blur-md"
+              className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/40 p-4 sm:p-8 backdrop-blur-xl"
               onClick={() => setIsFullscreen(false)}
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
             >
               <button 
                 className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-[99999]"

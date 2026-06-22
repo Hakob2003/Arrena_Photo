@@ -63,14 +63,14 @@ export function Topbar() {
 
       {/* Topbar Logo Text */}
       {user ? (
-        <div ref={topbarWrapperRef} className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-none h-full z-[60]">
+        <div ref={topbarWrapperRef} className="absolute md:left-1/2 md:-translate-x-1/2 left-12 md:left-auto flex items-center justify-start md:justify-center pointer-events-none h-full z-[60]">
           <motion.div
             layout
             ref={topbarRef}
             initial={false}
             animate={{ 
               opacity: isSidebarOpen ? 0 : 1, 
-              x: isSidebarOpen ? targetX : 0, 
+              x: (isSidebarOpen && !isMobile) ? targetX : 0, 
               scale: isSidebarOpen ? 0.1 : 1 
             }}
             transition={{ 
