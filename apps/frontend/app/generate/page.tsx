@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, Maximize2, X } from 'lucide-react';
 import { useGenerationStore, useAuthStore } from '../../store';
@@ -22,6 +23,11 @@ function GeneratorContent() {
   const [history, setHistory] = useState<any[]>([]);
   const [cost, setCost] = useState(5);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const fetchHistory = React.useCallback(async () => {
     if (!user) return;
@@ -423,38 +429,42 @@ function GeneratorContent() {
           </div>
         </div>
       </div>
-      <AnimatePresence>
-        {isFullscreen && resultImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4 sm:p-8 backdrop-blur-md"
-            onClick={() => setIsFullscreen(false)}
-          >
-            <button 
-              className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-[9999]"
+      {mounted && createPortal(
+        <AnimatePresence>
+          {isFullscreen && resultImage && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/95 p-4 sm:p-8 backdrop-blur-md"
               onClick={() => setIsFullscreen(false)}
             >
-              <X size={24} />
-            </button>
-            <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="relative max-w-full max-h-full"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <AuthImage 
-                driveFileId={resultDriveFileId || undefined}
-                fallbackUrl={resultImage} 
-                alt="Generated Fullscreen" 
-                className="max-w-full max-h-full object-contain rounded-xl shadow-2xl" 
-              />
+              <button 
+                className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-[99999]"
+                onClick={() => setIsFullscreen(false)}
+              >
+                <X size={24} />
+              </button>
+              <motion.div 
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                className="relative flex items-center justify-center w-full h-full max-w-[100vw] max-h-[100vh] pointer-events-none"
+              >
+                <div className="pointer-events-auto" onClick={(e) => e.stopPropagation()}>
+                  <AuthImage 
+                    driveFileId={resultDriveFileId || undefined}
+                    fallbackUrl={resultImage} 
+                    alt="Generated Fullscreen" 
+                    className="max-w-[90vw] max-h-[90vh] object-contain rounded-xl shadow-2xl border border-white/10" 
+                  />
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }
