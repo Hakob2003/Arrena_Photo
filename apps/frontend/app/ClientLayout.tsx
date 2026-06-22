@@ -41,6 +41,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                  name: data.name || data.email?.split('@')[0] || 'User',
                  role: typeof data.role === 'object' ? data.role.name : data.role,
                  credits: data.credits,
+                 planId: useAuthStore.getState().planId, // Preserve planId
                };
                login(freshUser, token);
                if (typeof data.credits === 'number') {
@@ -81,6 +82,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                name: data.name || data.email?.split('@')[0] || 'User',
                role: typeof data.role === 'object' ? data.role.name : data.role,
                credits: data.credits,
+               planId: useAuthStore.getState().planId, // Preserve planId
              };
              login(freshUser, token);
              if (typeof data.credits === 'number') {
