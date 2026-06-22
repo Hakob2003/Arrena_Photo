@@ -57,8 +57,12 @@ export class GenerationProcessor extends WorkerHost {
 
       let providerFactory;
       if (!isMock && (!connection || !connection.encryptedApiKey)) {
+        const settingsStr = await this.redisClient.get('platform:system_settings');
+        const settings = settingsStr ? JSON.parse(settingsStr) : {};
+        const usePicsumMock = settings.usePicsumMock === true;
+        
         this.logger.warn(`No API key configured for provider ${generation.aiModel.provider.name}. Falling back to MOCK provider.`);
-        providerFactory = ImageProviderFactory.create('mock', 'mock-key');
+        providerFactory = ImageProviderFactory.create('mock', 'mock-key', { usePicsumMock });
       } else {
         const apiKey = connection?.encryptedApiKey 
           ? Buffer.from(connection.encryptedApiKey, 'base64').toString('utf8')

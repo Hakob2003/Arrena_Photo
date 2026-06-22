@@ -20,6 +20,8 @@ import { GoogleDriveModule } from './integrations/google-drive/google-drive.modu
 import { ScheduleModule } from '@nestjs/schedule';
 import { ProfileModule } from './profile/profile.module';
 
+import { SettingsModule } from './settings/settings.module';
+
 @Module({
   imports: [
     // Configuration
@@ -91,6 +93,7 @@ import { ProfileModule } from './profile/profile.module';
     AiModule,
     GoogleDriveModule,
     ProfileModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}

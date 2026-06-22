@@ -7,7 +7,7 @@ export class ImageProviderFactory {
   /**
    * Returns the appropriate IImageProvider based on provider name.
    */
-  static create(providerName: string, apiKey: string): IImageProvider {
+  static create(providerName: string, apiKey: string, options?: any): IImageProvider {
     const normalizedName = providerName.toLowerCase().trim();
 
     if (normalizedName.includes('openai')) {
@@ -23,7 +23,7 @@ export class ImageProviderFactory {
     }
 
     if (normalizedName.includes('mock')) {
-      return new MockImageProvider(apiKey);
+      return new MockImageProvider(apiKey, options?.usePicsumMock);
     }
 
     // Default to mock or throw error if not supported yet
