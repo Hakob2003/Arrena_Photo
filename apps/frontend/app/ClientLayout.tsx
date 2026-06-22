@@ -18,8 +18,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token && !useAuthStore.getState().user) {
-      // Decode initially to render quickly
+    if (token) {
+      if (!useAuthStore.getState().user) {
+        // Decode initially to render quickly
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         const user = {
@@ -63,6 +64,43 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
               useAuthStore.getState().logout();
             }
           });
+      } else if (useAuthStore.getState().user) {
+        // user is cached, but token might not be in zustand
+        login(useAuthStore.getState().user, token);
+        
+        // Still fetch fresh profile to keep credits updated
+        api.get('/auth/me')
+          .then(res => {
+             const data = res.data;
+             const freshUser = { 
+               id: data.id,
+               email: data.email,
+               name: data.name || data.email?.split('@')[0] || 'User',
+               role: typeof data.role === 'object' ? data.role.name : data.role,
+               credits: data.credits,
+             };
+             login(freshUser, token);
+             if (typeof data.credits === 'number') {
+               setCredits(data.credits);
+             }
+             if (data.preferences) {
+               setPreferences({
+                 theme: data.preferences.theme || 'DARK',
+                 accentColor: data.preferences.accentColor || 'INDIGO',
+                 fontSize: data.preferences.fontSize || 'MEDIUM',
+                 compactMode: !!data.preferences.compactMode,
+                 animationsEnabled: data.preferences.animationsEnabled !== false,
+               });
+             }
+          })
+          .catch(err => {
+            console.error('Failed to fetch user profile:', err);
+            if (err.response?.status === 401) {
+              localStorage.removeItem('token');
+              useAuthStore.getState().logout();
+            }
+          });
+      }
           
       } catch (err) {
         localStorage.removeItem('token');
