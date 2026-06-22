@@ -8,13 +8,22 @@ interface AuthImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 }
 
 export const AuthImage: React.FC<AuthImageProps> = ({ driveFileId, fallbackUrl, alt, ...props }) => {
-  const [src, setSrc] = useState<string>('');
+  const [src, setSrc] = useState<string>(() => {
+    let finalFallback = fallbackUrl;
+    if (finalFallback && !finalFallback.startsWith('http') && !finalFallback.startsWith('data:') && !finalFallback.startsWith('/')) {
+      finalFallback = `data:image/png;base64,${finalFallback}`;
+    }
+    return finalFallback;
+  });
 
   useEffect(() => {
     let finalFallback = fallbackUrl;
     if (finalFallback && !finalFallback.startsWith('http') && !finalFallback.startsWith('data:') && !finalFallback.startsWith('/')) {
       finalFallback = `data:image/png;base64,${finalFallback}`;
     }
+    
+    // Set src immediately to fallback while checking drive
+    setSrc(finalFallback);
 
     if (driveFileId && driveFileId !== 'saved') {
       api.get(`/integrations/google-drive/file/${driveFileId}`, { responseType: 'blob' })
