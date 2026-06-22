@@ -11,14 +11,19 @@ export const AuthImage: React.FC<AuthImageProps> = ({ driveFileId, fallbackUrl, 
   const [src, setSrc] = useState<string>('');
 
   useEffect(() => {
+    let finalFallback = fallbackUrl;
+    if (finalFallback && !finalFallback.startsWith('http') && !finalFallback.startsWith('data:') && !finalFallback.startsWith('/')) {
+      finalFallback = `data:image/png;base64,${finalFallback}`;
+    }
+
     if (driveFileId && driveFileId !== 'saved') {
       api.get(`/integrations/google-drive/file/${driveFileId}`, { responseType: 'blob' })
         .then(res => {
           setSrc(URL.createObjectURL(res.data));
         })
-        .catch(() => setSrc(fallbackUrl));
+        .catch(() => setSrc(finalFallback));
     } else {
-      setSrc(fallbackUrl);
+      setSrc(finalFallback);
     }
   }, [driveFileId, fallbackUrl]);
 

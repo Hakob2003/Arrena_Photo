@@ -40,7 +40,16 @@ export class OpenAIImageProvider implements IImageProvider {
       );
 
       if (response.data && response.data.data) {
-        return response.data.data.map((item: any) => item.url);
+        return response.data.data.map((item: any) => {
+          let imageUrl = item.url;
+          if (!imageUrl && item.b64_json) {
+            imageUrl = `data:image/png;base64,${item.b64_json}`;
+          }
+          if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('data:') && !imageUrl.startsWith('/')) {
+            imageUrl = `data:image/png;base64,${imageUrl}`;
+          }
+          return imageUrl;
+        }).filter(Boolean);
       }
 
       throw new Error('No image returned from OpenAI');
