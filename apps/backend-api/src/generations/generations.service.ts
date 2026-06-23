@@ -130,7 +130,11 @@ export class GenerationsService {
       include: { result: true }
     });
 
-    if (!generation || generation.userId !== userId) {
+    if (!generation) {
+      throw new NotFoundException('Generation not found');
+    }
+
+    if (generation.userId !== userId && !generation.isPublic) {
       throw new NotFoundException('Generation not found');
     }
 
