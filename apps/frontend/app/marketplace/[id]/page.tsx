@@ -77,10 +77,14 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
             <button className="flex-1 flex justify-center items-center bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-slate-900 dark:text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1">
               Buy Prompt • {template.price === 0 ? 'FREE' : `$${template.price}`}
               {template.oldPrice !== null && template.oldPrice !== undefined && template.price > template.oldPrice && (
-                <ArrowUp className="w-5 h-5 text-red-500 ml-2" title={`Previously $${template.oldPrice}`} />
+                <span title={`Previously $${template.oldPrice}`}>
+                  <ArrowUp className="w-5 h-5 text-red-500 ml-2" />
+                </span>
               )}
               {template.oldPrice !== null && template.oldPrice !== undefined && template.price < template.oldPrice && (
-                <ArrowDown className="w-5 h-5 text-green-400 ml-2" title={`Previously $${template.oldPrice}`} />
+                <span title={`Previously $${template.oldPrice}`}>
+                  <ArrowDown className="w-5 h-5 text-green-400 ml-2" />
+                </span>
               )}
             </button>
             <button className="px-4 sm:px-6 border border-gray-200 dark:border-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-white dark:bg-gray-800 transition-colors">

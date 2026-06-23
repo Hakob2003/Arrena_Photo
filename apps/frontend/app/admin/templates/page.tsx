@@ -322,10 +322,14 @@ export default function AdminTemplatesPage() {
                       />
                       <span className="text-[10px] uppercase">cr.</span>
                       {template.oldPrice !== null && template.oldPrice !== undefined && (template.price || 0) > template.oldPrice && (
-                        <ArrowUp className="w-3 h-3 text-red-500 shrink-0" title={`Previously ${template.oldPrice} cr.`} />
+                        <span title={`Previously ${template.oldPrice} cr.`}>
+                          <ArrowUp className="w-3 h-3 text-red-500 shrink-0" />
+                        </span>
                       )}
                       {template.oldPrice !== null && template.oldPrice !== undefined && (template.price || 0) < template.oldPrice && (
-                        <ArrowDown className="w-3 h-3 text-green-500 shrink-0" title={`Previously ${template.oldPrice} cr.`} />
+                        <span title={`Previously ${template.oldPrice} cr.`}>
+                          <ArrowDown className="w-3 h-3 text-green-500 shrink-0" />
+                        </span>
                       )}
                     </div>
                   </div>
@@ -402,10 +406,14 @@ export default function AdminTemplatesPage() {
                         />
                         <span className="text-xs text-slate-400 dark:text-gray-500">cr.</span>
                         {template.oldPrice !== null && template.oldPrice !== undefined && (template.price || 0) > template.oldPrice && (
-                          <ArrowUp className="w-4 h-4 text-red-500 ml-1 shrink-0" title={`Previously ${template.oldPrice} cr.`} />
+                          <span title={`Previously ${template.oldPrice} cr.`}>
+                            <ArrowUp className="w-4 h-4 text-red-500 ml-1 shrink-0" />
+                          </span>
                         )}
                         {template.oldPrice !== null && template.oldPrice !== undefined && (template.price || 0) < template.oldPrice && (
-                          <ArrowDown className="w-4 h-4 text-green-500 ml-1 shrink-0" title={`Previously ${template.oldPrice} cr.`} />
+                          <span title={`Previously ${template.oldPrice} cr.`}>
+                            <ArrowDown className="w-4 h-4 text-green-500 ml-1 shrink-0" />
+                          </span>
                         )}
                       </div>
                     </TableCell>
