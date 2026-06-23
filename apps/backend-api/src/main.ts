@@ -15,7 +15,9 @@ async function bootstrap() {
     app.enableCors({
       origin: [
         'http://localhost:3000',
+        'http://127.0.0.1:3000',
         'http://localhost:3001',
+        'http://127.0.0.1:3001',
         process.env.FRONTEND_URL || 'https://arrena-photo-frontend-o4xg.onrender.com',
       ],
       credentials: true,
@@ -53,8 +55,9 @@ async function bootstrap() {
 
     const port = parseInt(process.env.PORT || '3000', 10);
     console.log(`Attempting to bind to port ${port}...`);
-    await app.listen(port, '0.0.0.0');
-    console.log(`Backend API successfully bound and running on http://0.0.0.0:${port}`);
+    // Omit '0.0.0.0' so Node binds to both IPv4 and IPv6 (::)
+    await app.listen(port);
+    console.log(`Backend API successfully bound and running on port ${port}`);
   } catch (error) {
     console.error('Failed to start NestJS application:', error);
     process.exit(1);

@@ -137,7 +137,7 @@ function GeneratorContent() {
         prompt,
         negativePrompt: '',
         aiModelId: model,
-        templateId: templateId || undefined,
+        templateId: (templateId && templateId !== 'null' && templateId !== 'undefined' && templateId.length > 20) ? templateId : undefined,
         aspectRatio,
         resolution,
         initImage: initImage
@@ -184,11 +184,13 @@ function GeneratorContent() {
       }, 1500);
 
     } catch (err: any) {
-      console.error(err);
+      // Use console.log instead of console.error to avoid triggering Next.js dev overlay for expected business errors
+      console.log('Generate request failed:', err.response?.data || err.message);
+      
       if (err.response?.status === 400 && err.response?.data?.message === 'Insufficient credits') {
         toast.error(t('gen.creditsError'));
       } else {
-        toast.error(t('gen.requestError'));
+        toast.error(t('gen.requestError') + ': ' + (err.response?.data?.message || err.message));
       }
       setGenerating(false);
     }

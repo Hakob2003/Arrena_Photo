@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ModuleRef } from '@nestjs/core';
 import { GoogleDriveService } from '../integrations/google-drive/google-drive.service';
 import { ImageProviderFactory } from './providers/image-provider.factory';
+import { EncryptionUtil } from '../common/utils/encryption.util';
 
 @Processor('generations')
 export class GenerationProcessor extends WorkerHost {
@@ -64,7 +65,7 @@ export class GenerationProcessor extends WorkerHost {
         providerFactory = ImageProviderFactory.create('mock', 'mock-key', { usePicsumMock });
       } else {
         const apiKey = connection?.encryptedApiKey 
-          ? Buffer.from(connection.encryptedApiKey, 'base64').toString('utf8')
+          ? EncryptionUtil.decrypt(connection.encryptedApiKey)
           : '';
         const usePicsumMock = (global as any).usePicsumMock === true;
         providerFactory = ImageProviderFactory.create(generation.aiModel.provider.name, apiKey, { usePicsumMock });

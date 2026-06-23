@@ -1,4 +1,5 @@
 import React from 'react';
+import { ArrowUp, ArrowDown } from 'lucide-react';
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -12,7 +13,8 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
     name: resolvedParams.id === '2' ? 'Minimalist Product Studio' : 'Cyberpunk Neon Portraits',
     description: 'A highly detailed prompt for generating cyberpunk style portraits with neon lighting. Best used with DALL-E 3 or SDXL.',
     coverUrl: resolvedParams.id === '2' ? '/mock/studio_coffee.png' : '/mock/neon_cyberpunk.png',
-    price: 4.99,
+    price: resolvedParams.id === '2' ? 0 : 4.99,
+    oldPrice: resolvedParams.id === '2' ? 5.0 : 2.99,
     avgRating: 4.8,
     reviewsCount: 124,
     downloads: 3000,
@@ -72,8 +74,14 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
           </p>
 
           <div className="pt-6 border-t border-gray-200 dark:border-gray-800 flex gap-2 sm:gap-4 sticky bottom-4 z-10 bg-[#fafafa] dark:bg-black/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none p-4 sm:p-0 rounded-2xl sm:rounded-none">
-            <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-slate-900 dark:text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1">
-              Buy Prompt • ${template.price}
+            <button className="flex-1 flex justify-center items-center bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-slate-900 dark:text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1">
+              Buy Prompt • {template.price === 0 ? 'FREE' : `$${template.price}`}
+              {template.oldPrice !== null && template.oldPrice !== undefined && template.price > template.oldPrice && (
+                <ArrowUp className="w-5 h-5 text-red-500 ml-2" title={`Previously $${template.oldPrice}`} />
+              )}
+              {template.oldPrice !== null && template.oldPrice !== undefined && template.price < template.oldPrice && (
+                <ArrowDown className="w-5 h-5 text-green-400 ml-2" title={`Previously $${template.oldPrice}`} />
+              )}
             </button>
             <button className="px-4 sm:px-6 border border-gray-200 dark:border-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-white dark:bg-gray-800 transition-colors">
               ❤️

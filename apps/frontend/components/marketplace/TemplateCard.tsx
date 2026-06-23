@@ -1,11 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
+import { ArrowUp, ArrowDown } from 'lucide-react';
 
 interface TemplateProps {
   id: string;
   name: string;
   coverUrl?: string;
   price?: number;
+  oldPrice?: number;
   avgRating: number;
   author: { id: string; name: string };
 }
@@ -25,8 +27,14 @@ export const TemplateCard: React.FC<{ template: TemplateProps }> = ({ template }
             No Image
           </div>
         )}
-        <div className="absolute top-3 right-3 bg-[#fafafa] dark:bg-black/60 backdrop-blur-md text-slate-900 dark:text-slate-900 dark:text-white text-xs font-bold px-3 py-1 rounded-full">
+        <div className="absolute top-3 right-3 flex items-center bg-[#fafafa] dark:bg-black/60 backdrop-blur-md text-slate-900 dark:text-slate-900 dark:text-white text-xs font-bold px-3 py-1 rounded-full">
           {template.price == null || template.price === 0 ? 'FREE' : `$${template.price.toFixed(2)}`}
+          {template.oldPrice !== null && template.oldPrice !== undefined && (template.price || 0) > template.oldPrice && (
+            <ArrowUp className="w-3 h-3 text-red-500 ml-1 shrink-0" title={`Previously $${template.oldPrice.toFixed(2)}`} />
+          )}
+          {template.oldPrice !== null && template.oldPrice !== undefined && (template.price || 0) < template.oldPrice && (
+            <ArrowDown className="w-3 h-3 text-green-500 ml-1 shrink-0" title={`Previously $${template.oldPrice.toFixed(2)}`} />
+          )}
         </div>
       </div>
       

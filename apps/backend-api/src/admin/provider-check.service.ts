@@ -3,6 +3,7 @@ import { HttpService } from '@nestjs/axios';
 import { PrismaService } from '../prisma/prisma.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { firstValueFrom } from 'rxjs';
+import { EncryptionUtil } from '../common/utils/encryption.util';
 
 @Injectable()
 export class ProviderCheckService {
@@ -23,7 +24,7 @@ export class ProviderCheckService {
       throw new Error('Connection or API Key not found');
     }
 
-    const apiKey = Buffer.from(connection.encryptedApiKey, 'base64').toString('utf8');
+    const apiKey = EncryptionUtil.decrypt(connection.encryptedApiKey);
     const providerName = connection.provider.name.toLowerCase();
 
     let status = 'ERROR';

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { ArrowUp, ArrowDown } from 'lucide-react';
 import { templatesApi } from '../../lib/templates.api';
 import { useTranslation } from '../../lib/i18n';
 
@@ -110,6 +111,12 @@ export default function TemplatesPage() {
                 {tpl.price !== undefined && tpl.price !== null && (
                   <div className="absolute top-4 right-4 z-20 bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1 shadow-lg">
                     <span>⚡ {tpl.price}</span>
+                    {tpl.oldPrice !== undefined && tpl.oldPrice !== null && tpl.price > tpl.oldPrice && (
+                      <ArrowUp className="w-3 h-3 text-red-300" title={`Previously ${tpl.oldPrice}`} />
+                    )}
+                    {tpl.oldPrice !== undefined && tpl.oldPrice !== null && tpl.price < tpl.oldPrice && (
+                      <ArrowDown className="w-3 h-3 text-green-300" title={`Previously ${tpl.oldPrice}`} />
+                    )}
                   </div>
                 )}
                 

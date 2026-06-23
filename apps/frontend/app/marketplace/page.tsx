@@ -13,6 +13,7 @@ export default function MarketplacePage() {
       name: 'Cyberpunk Neon Portraits',
       coverUrl: '/mock/neon_cyberpunk.png',
       price: 4.99,
+      oldPrice: 2.99,
       avgRating: 4.8,
       author: { id: 'a1', name: 'NeonDreams' }
     },
@@ -21,6 +22,7 @@ export default function MarketplacePage() {
       name: 'Minimalist Product Studio',
       coverUrl: '/mock/studio_coffee.png',
       price: 0,
+      oldPrice: 5.0,
       avgRating: 5.0,
       author: { id: 'a2', name: 'StudioPro' }
     }

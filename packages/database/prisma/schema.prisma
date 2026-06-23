@@ -67,18 +67,18 @@ model User {
   updatedAt     DateTime   @updatedAt
 
   // --- Personal Info ---
-  nickname      String?   @unique
-  surname       String?
-  bio           String?   @db.Text
-  socialLinks   Json?     // { telegram: "", instagram: "", twitter: "", linkedin: "", website: "" }
-  
+  nickname    String? @unique
+  surname     String?
+  bio         String? @db.Text
+  socialLinks Json? // { telegram: "", instagram: "", twitter: "", linkedin: "", website: "" }
+
   // --- Preferences & Appearance ---
   theme             String  @default("SYSTEM") // "LIGHT", "DARK", "SYSTEM"
   accentColor       String  @default("INDIGO")
   fontSize          String  @default("MEDIUM") // "SMALL", "MEDIUM", "LARGE"
   compactMode       Boolean @default(false)
   animationsEnabled Boolean @default(true)
-  
+
   // --- Notifications ---
   notifyEmail       Boolean @default(true)
   notifyGenerations Boolean @default(true)
@@ -129,7 +129,7 @@ model Session {
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
-  
+
   ipAddress String?
   userAgent String?
   country   String?
@@ -195,6 +195,7 @@ model Template {
   isPublic          Boolean        @default(false)
   isApproved        Boolean        @default(false) // Moderation
   price             Float? // null means free
+  oldPrice          Float? // track price changes
   downloadCount     Int            @default(0)
   avgRating         Float          @default(0)
   createdAt         DateTime       @default(now())
@@ -218,6 +219,7 @@ model Template {
   @@index([creatorId])
   @@index([categoryId])
   @@index([isPublic, isApproved])
+  @@index([recommendedModels], type: Gin)
 }
 
 model TemplateVersion {

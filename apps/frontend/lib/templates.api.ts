@@ -11,6 +11,7 @@ export interface TemplateDto {
   prompt: string;
   negativePrompt?: string;
   price?: number;
+  oldPrice?: number;
   status?: string;
   settings?: any;
 }

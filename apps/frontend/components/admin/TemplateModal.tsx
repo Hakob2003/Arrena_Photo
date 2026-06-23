@@ -56,8 +56,8 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
         categoryId: template.categoryId,
         description: template.description || "",
         coverUrl: template.coverUrl || "",
-        prompt: template.versions?.[0]?.prompt || "",
-        negativePrompt: template.versions?.[0]?.negativePrompt || "",
+        prompt: template.prompt || template.versions?.[0]?.prompt || "",
+        negativePrompt: template.negativePrompt || template.versions?.[0]?.negativePrompt || "",
         price: template.price || 0,
         status: template.status || "DRAFT",
         tags: template.tags?.map((t: any) => t.name) || [],
@@ -92,11 +92,16 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
 
     setLoading(true);
     try {
+      const submitData = { 
+        ...formData, 
+        price: formData.price ? Number(formData.price) : 0 
+      };
+      
       if (template) {
-        await templatesApi.updateTemplate(template.id, formData as TemplateDto);
+        await templatesApi.updateTemplate(template.id, submitData as TemplateDto);
         toast.success("Template updated successfully");
       } else {
-        await templatesApi.createTemplate(formData as TemplateDto);
+        await templatesApi.createTemplate(submitData as TemplateDto);
         toast.success("Template created successfully");
       }
       onSave();
@@ -110,132 +115,149 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{template ? "Edit Template" : "Create Template"}</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto !p-0 gap-0 overflow-hidden bg-white dark:bg-[#0a0a0c]">
+        <div className="sticky top-0 z-10 bg-white/80 dark:bg-[#0a0a0c]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
+          <DialogTitle className="text-xl font-semibold tracking-tight">{template ? "Edit Template" : "Create Template"}</DialogTitle>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="p-6 space-y-8">
           
-          <div className="grid grid-cols-2 gap-4">
+          {/* Section: Basic Info */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Basic Information</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div className="space-y-2">
+                <Label className="text-gray-700 dark:text-gray-300">Name <span className="text-red-500">*</span></Label>
+                <Input 
+                  value={formData.name} 
+                  onChange={(e) => handleChange("name", e.target.value)} 
+                  placeholder="e.g. Cyberpunk City"
+                  className="bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-gray-700 dark:text-gray-300">Category <span className="text-red-500">*</span></Label>
+                <select 
+                  value={formData.categoryId || ""} 
+                  onChange={(e) => handleChange("categoryId", e.target.value)}
+                  className="flex h-10 w-full rounded-md px-3 py-2 text-sm bg-gray-50 dark:bg-black/50 border border-gray-200 dark:border-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                >
+                  <option value="" disabled>Select a category</option>
+                  {categories.map(c => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
             <div className="space-y-2">
-              <Label>Name *</Label>
-              <Input 
-                value={formData.name} 
-                onChange={(e) => handleChange("name", e.target.value)} 
-                placeholder="Cyberpunk City"
+              <Label className="text-gray-700 dark:text-gray-300">Description</Label>
+              <Textarea 
+                value={formData.description} 
+                onChange={(e) => handleChange("description", e.target.value)} 
+                placeholder="A brief description of this template..."
+                className="bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 resize-none h-20 focus-visible:ring-1 focus-visible:ring-indigo-500"
+              />
+            </div>
+          </div>
+
+          <div className="h-px bg-gray-200 dark:bg-white/5" />
+
+          {/* Section: AI Generation Settings */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">AI Generation Settings</h3>
+            <div className="space-y-2">
+              <Label className="text-gray-700 dark:text-gray-300">Prompt <span className="text-red-500">*</span></Label>
+              <Textarea 
+                className="min-h-[120px] bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 font-mono text-sm focus-visible:ring-1 focus-visible:ring-indigo-500"
+                value={formData.prompt} 
+                onChange={(e) => handleChange("prompt", e.target.value)} 
+                placeholder="A highly detailed 8k cinematic photo..."
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label>Category *</Label>
-              <Select value={formData.categoryId} onValueChange={(val) => handleChange("categoryId", val)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map(c => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Preview URL (Cover Image)</Label>
-              <Input 
-                value={formData.coverUrl} 
-                onChange={(e) => handleChange("coverUrl", e.target.value)} 
-                placeholder="https://example.com/image.jpg"
+              <Label className="text-gray-700 dark:text-gray-300">Negative Prompt</Label>
+              <Textarea 
+                value={formData.negativePrompt} 
+                onChange={(e) => handleChange("negativePrompt", e.target.value)} 
+                placeholder="ugly, blurry, low res..."
+                className="bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 font-mono text-sm resize-none h-20 focus-visible:ring-1 focus-visible:ring-indigo-500"
               />
             </div>
             <div className="space-y-2">
-              <Label>Price (Credits)</Label>
-              <Input 
-                type="number"
-                min="0"
-                value={formData.price} 
-                onChange={(e) => handleChange("price", Number(e.target.value))} 
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Description</Label>
-            <Textarea 
-              value={formData.description} 
-              onChange={(e) => handleChange("description", e.target.value)} 
-              placeholder="A brief description of this template..."
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Prompt *</Label>
-            <Textarea 
-              className="min-h-[100px]"
-              value={formData.prompt} 
-              onChange={(e) => handleChange("prompt", e.target.value)} 
-              placeholder="A highly detailed 8k cinematic photo..."
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Negative Prompt</Label>
-            <Textarea 
-              value={formData.negativePrompt} 
-              onChange={(e) => handleChange("negativePrompt", e.target.value)} 
-              placeholder="ugly, blurry, low res..."
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Visibility</Label>
-              <Select value={formData.status} onValueChange={(val) => handleChange("status", val)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="DRAFT">Draft</SelectItem>
-                  <SelectItem value="PUBLISHED">Published</SelectItem>
-                  <SelectItem value="ARCHIVED">Archived</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>AI Model</Label>
-              <Select 
+              <Label className="text-gray-700 dark:text-gray-300">Recommended AI Model</Label>
+              <select 
                 value={formData.recommendedModels?.[0] || ""} 
-                onValueChange={(val) => handleChange("recommendedModels", [val])}
+                onChange={(e) => handleChange("recommendedModels", [e.target.value])}
+                className="flex h-10 w-full rounded-md px-3 py-2 text-sm bg-gray-50 dark:bg-black/50 border border-gray-200 dark:border-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Выберите модель..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {aiModels.map(model => (
-                    <SelectItem key={model.slug} value={model.slug}>
-                      {model.provider?.name || 'Unknown'} - {model.name}
-                    </SelectItem>
-                  ))}
-                  {aiModels.length === 0 && (
-                    <SelectItem value={formData.recommendedModels?.[0] || "sdxl-1.0"}>
-                      {formData.recommendedModels?.[0] || "sdxl-1.0"}
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
+                <option value="" disabled>Select model...</option>
+                {aiModels.map(model => (
+                  <option key={model.slug} value={model.slug}>
+                    {model.provider?.name || 'Unknown'} - {model.name}
+                  </option>
+                ))}
+                {aiModels.length === 0 && (
+                  <option value={formData.recommendedModels?.[0] || "sdxl-1.0"}>
+                    {formData.recommendedModels?.[0] || "sdxl-1.0"}
+                  </option>
+                )}
+              </select>
             </div>
           </div>
 
-          <DialogFooter className="mt-6">
-            <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-            <Button type="submit" disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {template ? "Save Changes" : "Create"}
+          <div className="h-px bg-gray-200 dark:bg-white/5" />
+
+          {/* Section: Preview & Publishing */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Preview & Publishing</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div className="sm:col-span-2 space-y-2">
+                <Label className="text-gray-700 dark:text-gray-300">Preview Image URL</Label>
+                <Input 
+                  value={formData.coverUrl} 
+                  onChange={(e) => handleChange("coverUrl", e.target.value)} 
+                  placeholder="https://example.com/image.jpg"
+                  className="bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 focus-visible:ring-1 focus-visible:ring-indigo-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-gray-700 dark:text-gray-300">Price (Credits)</Label>
+                <Input 
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={formData.price !== undefined ? formData.price : ""} 
+                  onChange={(e) => handleChange("price", e.target.value)} 
+                  className="bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 focus-visible:ring-1 focus-visible:ring-indigo-500"
+                />
+              </div>
+              <div className="sm:col-span-3 space-y-2">
+                <Label className="text-gray-700 dark:text-gray-300">Status</Label>
+                <select 
+                  value={formData.status || "DRAFT"} 
+                  onChange={(e) => handleChange("status", e.target.value)}
+                  className="flex h-10 w-full sm:w-1/3 rounded-md px-3 py-2 text-sm bg-gray-50 dark:bg-black/50 border border-gray-200 dark:border-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                >
+                  <option value="DRAFT">Draft</option>
+                  <option value="PUBLISHED">Published</option>
+                  <option value="ARCHIVED">Archived</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer Actions */}
+          <div className="pt-4 flex justify-end gap-3 sticky bottom-0 bg-white/80 dark:bg-[#0a0a0c]/80 backdrop-blur-md p-4 -mx-6 -mb-6 border-t border-gray-200 dark:border-white/10">
+            <Button type="button" variant="outline" onClick={onClose} className="border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5">
+              Cancel
             </Button>
-          </DialogFooter>
+            <Button type="submit" disabled={loading} className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20">
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {template ? "Save Changes" : "Create Template"}
+            </Button>
+          </div>
         </form>
       </DialogContent>
     </Dialog>

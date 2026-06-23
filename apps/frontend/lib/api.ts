@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { useAuthStore } from '../store';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/v1';
+// Fallback to production backend if we are running in a browser on the render.com domain and no env var is set
+const isRenderProd = typeof window !== 'undefined' && window.location.hostname.includes('render.com');
+const API_URL = process.env.NEXT_PUBLIC_API_URL || (isRenderProd ? 'https://arrena-photo-backend.onrender.com/v1' : 'http://localhost:4000/v1');
 
 export const api = axios.create({
   baseURL: API_URL,

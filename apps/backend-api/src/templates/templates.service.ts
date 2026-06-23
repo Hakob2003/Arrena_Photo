@@ -64,6 +64,7 @@ export class TemplatesService {
         include: {
           category: true,
           tags: true,
+          versions: { orderBy: { versionNumber: 'desc' }, take: 1 },
           _count: { select: { generations: true } },
         },
         skip: query.skip || 0,
@@ -92,6 +93,11 @@ export class TemplatesService {
   }
 
   async update(id: string, dto: UpdateTemplateDto) {
+    const currentTemplate = await this.prisma.template.findUnique({
+      where: { id },
+      select: { price: true }
+    });
+
     const updateData: any = {
       ...(dto.name && { name: dto.name }),
       ...(dto.description && { description: dto.description }),
@@ -100,8 +106,14 @@ export class TemplatesService {
       ...(dto.galleryUrls && { galleryUrls: dto.galleryUrls }),
       ...(dto.recommendedModels && { recommendedModels: dto.recommendedModels }),
       ...(dto.status && { status: dto.status }),
-      ...(dto.price !== undefined && { price: dto.price }),
     };
+
+    if (dto.price !== undefined) {
+      updateData.price = dto.price;
+      if (currentTemplate && currentTemplate.price !== dto.price) {
+        updateData.oldPrice = currentTemplate.price;
+      }
+    }
 
     if (dto.tags) {
       const tagConnections = await Promise.all(

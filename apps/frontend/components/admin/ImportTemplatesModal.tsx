@@ -128,47 +128,54 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-[#1a1a1a] border-black/10 dark:border-gray-800 text-slate-900 dark:text-slate-900 dark:text-white">
-        <DialogHeader>
-          <DialogTitle>Import Templates</DialogTitle>
-          <DialogDescription className="text-slate-500 dark:text-gray-400">
-            Paste a JSON array or a TSV/CSV (from Excel/Google Sheets).
-            Required headers: <strong>Name, Category, Prompt</strong>.
-            Optional: <strong>Description, Preview URL (Cover Image), Negative Prompt, Price, Status, Recommended Models</strong>.
+      <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto !p-0 gap-0 overflow-hidden bg-white dark:bg-[#0a0a0c]">
+        <div className="sticky top-0 z-10 bg-white/80 dark:bg-[#0a0a0c]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 px-6 py-4">
+          <DialogTitle className="text-xl font-semibold tracking-tight">Import Templates</DialogTitle>
+          <DialogDescription className="text-gray-500 dark:text-gray-400 mt-1">
+            Paste a JSON array or a TSV/CSV. Required headers: <strong>Name, Category, Prompt</strong>.
           </DialogDescription>
-        </DialogHeader>
+        </div>
 
-        <div className="grid gap-4 py-4">
-          <div className="grid gap-2">
-            <Label>Upload File (.csv, .tsv, .json)</Label>
-            <input 
-              type="file" 
-              accept=".csv,.json,.tsv,.txt" 
-              onChange={handleFileUpload} 
-              className="block w-full text-sm text-slate-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none file:text-white hover:file:bg-indigo-700 cursor-pointer"
-            />
+        <div className="p-6 space-y-6">
+          <div className="space-y-3">
+            <Label className="text-gray-700 dark:text-gray-300 font-medium">Upload File (.csv, .tsv, .json)</Label>
+            <div className="flex items-center gap-4">
+              <input 
+                type="file" 
+                accept=".csv,.json,.tsv,.txt" 
+                onChange={handleFileUpload} 
+                className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 dark:file:bg-indigo-500/10 dark:file:text-indigo-400 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-500/20 cursor-pointer border border-gray-200 dark:border-white/10 rounded-lg p-1 bg-gray-50 dark:bg-black/50"
+              />
+            </div>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="data">Or Paste Data (JSON or TSV/CSV)</Label>
+          
+          <div className="flex items-center gap-4">
+            <div className="h-px bg-gray-200 dark:bg-white/10 flex-1" />
+            <span className="text-xs font-medium text-gray-400 uppercase tracking-widest">OR PASTE DATA</span>
+            <div className="h-px bg-gray-200 dark:bg-white/10 flex-1" />
+          </div>
+
+          <div className="space-y-3">
+            <Label htmlFor="data" className="text-gray-700 dark:text-gray-300 font-medium">Raw Data (JSON or TSV/CSV)</Label>
             <Textarea
               id="data"
-              placeholder={'[\n  {\n    "name": "Template 1",\n    "categoryName": "Business",\n    "prompt": "A professional portrait..."\n  }\n]\n\nOR\n\nName,Category,Prompt,Price (Credits)\nTemp1,Business,Portrait of...,10'}
-              className="bg-[#fafafa] dark:bg-black border-black/10 dark:border-gray-800 font-mono text-xs"
-              rows={15}
+              placeholder={'[\n  {\n    "name": "Template 1",\n    "categoryName": "Business",\n    "prompt": "A professional portrait..."\n  }\n]'}
+              className="bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 font-mono text-sm resize-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+              rows={12}
               value={rawData}
               onChange={(e) => setRawData(e.target.value)}
             />
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="ghost" onClick={onClose} disabled={loading} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white">
+        <div className="pt-4 flex justify-end gap-3 sticky bottom-0 bg-white/80 dark:bg-[#0a0a0c]/80 backdrop-blur-md p-4 border-t border-gray-200 dark:border-white/10">
+          <Button variant="outline" onClick={onClose} disabled={loading} className="border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5">
             Cancel
           </Button>
-          <Button onClick={handleImport} disabled={loading} className="bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none hover:bg-indigo-700 text-white">
-            {loading ? "Importing..." : "Import"}
+          <Button onClick={handleImport} disabled={loading} className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/20">
+            {loading ? "Importing..." : "Import Templates"}
           </Button>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

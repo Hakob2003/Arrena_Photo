@@ -8,7 +8,7 @@ export class SettingsService {
     return {
       platformName: 'AI Template Studio',
       supportEmail: 'support@studio.ai',
-      usePicsumMock: (global as any).usePicsumMock === true,
+      usePicsumMock: (global as any).usePicsumMock !== false,
       publicRegistrations: true,
       requireEmailVerification: false,
       maintenanceMode: false

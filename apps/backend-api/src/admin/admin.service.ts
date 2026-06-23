@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { EncryptionUtil } from '../common/utils/encryption.util';
 
 @Injectable()
 export class AdminService {
@@ -394,9 +395,7 @@ export class AdminService {
   }
 
   async updateGlobalApiKey(adminId: string, providerId: string, apiKey: string) {
-    // In a real app, use AES-256-GCM encryption here.
-    // For demonstration, we just base64 it or store directly if it's an MVP
-    const encryptedKey = Buffer.from(apiKey).toString('base64'); // Mock encryption
+    const encryptedKey = EncryptionUtil.encrypt(apiKey);
 
     const existingConnection = await this.prisma.aIConnection.findUnique({
       where: { userId_providerId: { userId: adminId, providerId } }

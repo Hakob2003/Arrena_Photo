@@ -27,7 +27,10 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
 
   useEffect(() => {
     if (!user) {
-      router.push('/');
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+      }
     }
   }, [user, router]);
 

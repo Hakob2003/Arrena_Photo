@@ -19,3 +19,6 @@
   * Security review is required
   * Database redesign/migrations are involved
 * **Return to Flash after plan is produced.**
+
+## Deployment Constraints
+* **NEVER run `git push` or deploy to hosting** automatically. All changes must remain local until the user explicitly says "запушай" (push) or gives explicit permission to deploy.

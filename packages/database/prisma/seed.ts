@@ -65,7 +65,7 @@ async function main() {
     { name: 'OpenRouter', isGlobal: true },
   ];
 
-  const createdProviders = {};
+  const createdProviders: Record<string, any> = {};
   for (const p of providers) {
     createdProviders[p.name] = await prisma.aIProvider.upsert({
       where: { name: p.name },
@@ -117,6 +117,70 @@ async function main() {
   });
 
   console.log('AI Models seeded successfully');
+
+  // 6. Create Template Categories and Templates
+  const category = await prisma.templateCategory.upsert({
+    where: { slug: 'portrait' },
+    update: {},
+    create: {
+      name: 'Portraits',
+      slug: 'portrait'
+    }
+  });
+
+  await prisma.template.upsert({
+    where: { id: '00000000-0000-4000-8000-000000000001' },
+    update: {},
+    create: {
+      id: '00000000-0000-4000-8000-000000000001',
+      name: 'Cinematic Cyberpunk Portrait',
+      description: 'A neon-lit cyberpunk style portrait',
+      coverUrl: 'https://images.unsplash.com/photo-1535295972055-1c762f4483e5',
+      galleryUrls: [],
+      recommendedModels: ['stability-ai/sdxl-1.0', 'openai/dall-e-3'],
+      status: 'PUBLISHED',
+      isPublic: true,
+      isApproved: true,
+      price: null,
+      categoryId: category.id,
+      creatorId: adminUser.id,
+      versions: {
+        create: {
+          versionNumber: 1,
+          prompt: 'A close up portrait of a cyberpunk character, neon lights, rainy street, cinematic lighting, 8k, photorealistic',
+          settings: { steps: 30, guidance_scale: 7.5 }
+        }
+      }
+    }
+  });
+
+  await prisma.template.upsert({
+    where: { id: '00000000-0000-4000-8000-000000000002' },
+    update: {},
+    create: {
+      id: '00000000-0000-4000-8000-000000000002',
+      name: 'Anime Style Avatar',
+      description: 'Convert your photo into a beautiful anime character',
+      coverUrl: 'https://images.unsplash.com/photo-1578632767115-351597cf2477',
+      galleryUrls: [],
+      recommendedModels: ['stability-ai/sdxl-1.0'],
+      status: 'PUBLISHED',
+      isPublic: true,
+      isApproved: true,
+      price: 5.99,
+      categoryId: category.id,
+      creatorId: adminUser.id,
+      versions: {
+        create: {
+          versionNumber: 1,
+          prompt: 'Makoto Shinkai style anime portrait, detailed eyes, beautiful lighting, masterpiece',
+          settings: { steps: 25, guidance_scale: 7.0 }
+        }
+      }
+    }
+  });
+
+  console.log('Templates seeded successfully');
   console.log('--- SEED COMPLETE ---');
 }
 
