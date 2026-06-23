@@ -161,7 +161,7 @@ export default function AdminTemplatesPage() {
         </div>
       )}
 
-      <div className="border border-black/10 dark:border-gray-800 rounded-md overflow-hidden bg-[#111]">
+      <div className="border border-black/10 dark:border-gray-800 rounded-md overflow-x-auto overflow-y-hidden bg-[#111] w-full max-w-full">
         <Table>
           <TableHeader className="bg-[#1a1a1a]">
             <TableRow className="border-black/10 dark:border-gray-800">

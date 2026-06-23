@@ -527,8 +527,8 @@ export default function AdminAIModelsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl overflow-hidden w-full max-w-full">
+        <div className="overflow-x-auto w-full">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-black/10 dark:border-white/10 text-slate-500 dark:text-gray-400 text-xs uppercase tracking-wider">

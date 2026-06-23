@@ -240,8 +240,8 @@ export default function AdminUsersPage() {
         }
       />
 
-      <div className="bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-lg p-4 mb-6">
-        <form onSubmit={handleSearch} className="flex gap-4">
+      <div className="bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-lg p-4 mb-6 overflow-hidden w-full max-w-full">
+        <form onSubmit={handleSearch} className="flex flex-col sm:flex-row flex-wrap gap-4 w-full">
           <input 
             type="text" 
             placeholder="Search by email or name..." 

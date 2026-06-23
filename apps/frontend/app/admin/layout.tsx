@@ -75,7 +75,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </div>
         
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar relative z-10">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8 custom-scrollbar relative z-10">
           <div className="w-full">
             {children}
           </div>

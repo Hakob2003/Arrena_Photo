@@ -128,8 +128,8 @@ export default function ApiKeysAdminPage() {
         description="Управление глобальными ключами доступа к AI провайдерам, проверка статусов и баланса."
       />
 
-      <div className="bg-[#111] border border-black/10 dark:border-white/10 rounded-2xl overflow-hidden flex flex-col min-h-0 flex-1">
-        <div className="overflow-x-auto">
+      <div className="bg-[#111] border border-black/10 dark:border-white/10 rounded-2xl overflow-hidden flex flex-col min-h-0 flex-1 w-full max-w-full">
+        <div className="overflow-x-auto w-full">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="border-b border-black/10 dark:border-white/10 text-sm text-slate-500 dark:text-gray-400 bg-white/[0.02]">
