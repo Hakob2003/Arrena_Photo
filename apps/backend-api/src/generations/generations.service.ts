@@ -197,7 +197,7 @@ export class GenerationsService {
       take: 50,
       include: {
         result: true,
-        user: { select: { name: true, image: true } },
+        user: { select: { name: true, avatarUrl: true } },
         template: { select: { name: true } }
       }
     });

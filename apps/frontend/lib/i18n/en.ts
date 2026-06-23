@@ -2,6 +2,7 @@
 const en: Record<string, string> = {
   // === Navigation (Sidebar) ===
   'nav.home': 'Home',
+  'nav.feed': 'Feed',
   'nav.generator': 'Generator',
   'nav.templates': 'Templates',
   'nav.marketplace': 'Marketplace',

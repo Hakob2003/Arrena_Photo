@@ -17,6 +17,7 @@ export function Sidebar() {
 
   const MAIN_LINKS = [
     { href: '/', label: t('nav.home'), icon: '🏠' },
+    { href: '/feed', label: t('nav.feed'), icon: '🌍' },
     { href: '/generate', label: t('nav.generator'), icon: '✨' },
     { href: '/templates', label: t('nav.templates'), icon: '📁' },
     { href: '/marketplace', label: t('nav.marketplace'), icon: '🛒' },

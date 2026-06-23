@@ -2,6 +2,7 @@
 const ru: Record<string, string> = {
   // === Navigation (Sidebar) ===
   'nav.home': 'Главная',
+  'nav.feed': 'Лента',
   'nav.generator': 'Генератор',
   'nav.templates': 'Шаблоны',
   'nav.marketplace': 'Маркетплейс',

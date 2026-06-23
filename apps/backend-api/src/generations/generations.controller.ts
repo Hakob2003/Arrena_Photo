@@ -30,17 +30,17 @@ export class GenerationsController {
     return this.generationsService.getHistory(req.user.id);
   }
 
+  @Get('feed/public')
+  @ApiOperation({ summary: 'Get public generations feed' })
+  getFeed(@Req() req: any) {
+    return this.generationsService.getFeed();
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get generation status and result' })
   getStatus(@Req() req: any, @Param('id') id: string) {
     return this.generationsService.getStatus(id, req.user.id);
-  }
-
-  @Get('feed/public')
-  @ApiOperation({ summary: 'Get public generations feed' })
-  getFeed(@Req() req: any) {
-    return this.generationsService.getFeed();
   }
 
   @Post(':id/publish')
