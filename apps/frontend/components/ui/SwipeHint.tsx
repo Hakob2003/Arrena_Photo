@@ -22,7 +22,8 @@ const SLIDES = [
     animation: {
       x: [-50, 50, -50], // Moves left to right
       y: [0, 0, 0]
-    }
+    },
+    fingers: 1
   },
   {
     id: 2,
@@ -31,7 +32,28 @@ const SLIDES = [
     animation: {
       x: [50, -50, 50], // Moves right to left
       y: [0, 0, 0]
-    }
+    },
+    fingers: 1
+  },
+  {
+    id: 3,
+    title: "Свайп вниз",
+    description: "Обновление страницы сверху",
+    animation: {
+      x: [0, 0, 0],
+      y: [-40, 40, -40] // Moves top to bottom
+    },
+    fingers: 1
+  },
+  {
+    id: 4,
+    title: "Свайп двумя пальцами",
+    description: "Быстрое переключение между страницами (вверх/вниз)",
+    animation: {
+      x: [0, 0, 0],
+      y: [40, -40, 40] // Moves bottom to top (or up/down)
+    },
+    fingers: 2
   }
 ];
 
@@ -96,8 +118,12 @@ export function SwipeHint() {
                     repeat: Infinity,
                     ease: "easeInOut"
                   }}
+                  className="flex items-center justify-center gap-1"
                 >
                   <HandIcon className="w-16 h-16 text-white/70 drop-shadow-lg" />
+                  {slide.fingers === 2 && (
+                    <HandIcon className="w-16 h-16 text-white/70 drop-shadow-lg -ml-8" />
+                  )}
                 </motion.div>
               </motion.div>
             </AnimatePresence>
