@@ -10,12 +10,14 @@ import { useDropzone } from 'react-dropzone';
 import { api } from '../../lib/api';
 import { AuthImage } from '@/components/ui/AuthImage';
 import { templatesApi } from '../../lib/templates.api';
+import { generationsApi } from '../../lib/generations.api';
 import toast from 'react-hot-toast';
 
 function GeneratorContent() {
   const searchParams = useSearchParams();
   const templateId = searchParams.get('templateId');
   const templateName = searchParams.get('template');
+  const remixId = searchParams.get('remixId');
 
   const { prompt, setPrompt, model, setModel, aspectRatio, setAspectRatio, resolution, setResolution, isGenerating, setGenerating, resultImage, resultDriveFileId, setResult, initImage, setInitImage } = useGenerationStore();
   const { user, deductCredits, setCredits } = useAuthStore();
@@ -69,8 +71,28 @@ function GeneratorContent() {
       }
     };
 
-    loadTemplateData();
-  }, [templateId, templateName, setPrompt, setModel]);
+    const loadRemixData = async () => {
+      if (remixId) {
+        try {
+          const gen = await generationsApi.getStatus(remixId);
+          if (gen) {
+            if (gen.prompt) setPrompt(gen.prompt);
+            if (gen.settings?.resolution) setResolution(gen.settings.resolution);
+            if (gen.settings?.aspectRatio) setAspectRatio(gen.settings.aspectRatio);
+            if (gen.aiModelId) setModel(gen.aiModelId);
+          }
+        } catch (e) {
+          console.error("Failed to load remix data", e);
+        }
+      }
+    };
+
+    if (remixId) {
+      loadRemixData();
+    } else {
+      loadTemplateData();
+    }
+  }, [templateId, templateName, remixId, setPrompt, setModel, setResolution, setAspectRatio]);
 
   // 2. Fetch Models from backend
   React.useEffect(() => {

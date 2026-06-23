@@ -36,4 +36,24 @@ export class GenerationsController {
   getStatus(@Req() req: any, @Param('id') id: string) {
     return this.generationsService.getStatus(id, req.user.id);
   }
+
+  @Get('feed/public')
+  @ApiOperation({ summary: 'Get public generations feed' })
+  getFeed(@Req() req: any) {
+    return this.generationsService.getFeed();
+  }
+
+  @Post(':id/publish')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Toggle publish status of generation' })
+  publish(@Req() req: any, @Param('id') id: string, @Body('isPublic') isPublic: boolean) {
+    return this.generationsService.publish(id, req.user.id, isPublic);
+  }
+
+  @Post(':id/like')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Toggle like on generation' })
+  toggleLike(@Req() req: any, @Param('id') id: string) {
+    return this.generationsService.toggleLike(id, req.user.id);
+  }
 }

@@ -4,6 +4,7 @@ import { api } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/store';
 import { useTranslation } from '@/lib/i18n';
+import { generationsApi } from '@/lib/generations.api';
 
 import { AuthImage } from '@/components/ui/AuthImage';
 
@@ -13,7 +14,7 @@ export default function MyGenerationsPage() {
   const [generations, setGenerations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
-
+  const [publishingId, setPublishingId] = useState<string | null>(null);
   useEffect(() => {
     if (user) {
       fetchGenerations();
@@ -50,6 +51,20 @@ export default function MyGenerationsPage() {
       }
     } finally {
       setSavingId(null);
+    }
+  };
+
+  const togglePublish = async (e: React.MouseEvent, id: string, currentStatus: boolean) => {
+    e.stopPropagation();
+    try {
+      setPublishingId(id);
+      await generationsApi.publish(id, !currentStatus);
+      toast.success(currentStatus ? t('myGen.unpublished') : t('myGen.published'));
+      setGenerations(prev => prev.map(g => g.id === id ? { ...g, isPublic: !currentStatus } : g));
+    } catch (error) {
+      toast.error(t('myGen.publishError') || 'Failed to update status');
+    } finally {
+      setPublishingId(null);
     }
   };
 
@@ -117,6 +132,20 @@ export default function MyGenerationsPage() {
                       <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg>
                     ) : (
                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    )}
+                  </button>
+                  <button 
+                    onClick={(e) => togglePublish(e, gen.id, gen.isPublic)}
+                    disabled={publishingId === gen.id}
+                    className={`${gen.isPublic ? 'bg-indigo-500/50 text-indigo-200' : 'bg-[#fafafa] dark:bg-black/50 hover:bg-[#fafafa] dark:bg-black/80 text-slate-900 dark:text-white'} p-2 rounded-lg backdrop-blur-md transition-colors ml-2`}
+                    title={gen.isPublic ? 'Unpublish from Feed' : 'Publish to Feed'}
+                  >
+                    {publishingId === gen.id ? (
+                      <div className="w-4 h-4 border-2 border-black/20 dark:border-white/20 border-t-white rounded-full animate-spin" />
+                    ) : gen.isPublic ? (
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm4.59-12.42L10 14.17l-2.59-2.58L6 13l4 4 8-8z"/></svg>
+                    ) : (
+                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     )}
                   </button>
                 </div>

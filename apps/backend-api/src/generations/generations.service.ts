@@ -65,6 +65,13 @@ export class GenerationsService {
         templateId: dto.templateId,
         aiModelId: aiModel.id,
         status: 'PENDING',
+        prompt: dto.prompt,
+        negativePrompt: dto.negativePrompt,
+        settings: {
+          aspectRatio: dto.aspectRatio,
+          resolution: dto.resolution,
+          initImage: dto.initImage ? true : false,
+        }
       }
     });
 
@@ -144,6 +151,86 @@ export class GenerationsService {
         }
       },
       orderBy: { name: 'asc' }
+    });
+  }
+
+  async publish(id: string, userId: string, isPublic: boolean) {
+    const generation = await this.prisma.generation.findUnique({ where: { id } });
+    if (!generation || generation.userId !== userId) {
+      throw new NotFoundException('Generation not found');
+    }
+
+    return this.prisma.generation.update({
+      where: { id },
+      data: { isPublic }
+    });
+  }
+
+  async toggleLike(generationId: string, userId: string) {
+    const existing = await this.prisma.generationLike.findUnique({
+      where: { userId_generationId: { userId, generationId } }
+    });
+
+    if (existing) {
+      await this.prisma.generationLike.delete({ where: { id: existing.id } });
+      await this.prisma.generation.update({
+        where: { id: generationId },
+        data: { likesCount: { decrement: 1 } }
+      });
+      return { liked: false };
+    } else {
+      await this.prisma.generationLike.create({
+        data: { userId, generationId }
+      });
+      await this.prisma.generation.update({
+        where: { id: generationId },
+        data: { likesCount: { increment: 1 } }
+      });
+      return { liked: true };
+    }
+  }
+
+  async getFeed(userId?: string) {
+    const generations = await this.prisma.generation.findMany({
+      where: { status: 'DONE', isPublic: true },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+      include: {
+        result: true,
+        user: { select: { name: true, image: true } },
+        template: { select: { name: true } }
+      }
+    });
+
+    let likedSet = new Set<string>();
+    if (userId) {
+      const likes = await this.prisma.generationLike.findMany({
+        where: { userId, generationId: { in: generations.map(g => g.id) } }
+      });
+      likes.forEach(l => likedSet.add(l.generationId));
+    }
+
+    return generations.map(g => {
+      let imageUrl = g.result?.imageUrl;
+      let driveFileId = g.result?.driveFileId;
+      const drivePathPrefix = '/api/integrations/google-drive/file/';
+      if (imageUrl && imageUrl.startsWith(drivePathPrefix) && !driveFileId) {
+        driveFileId = imageUrl.substring(drivePathPrefix.length);
+        imageUrl = null;
+      }
+
+      return {
+        id: g.id,
+        imageUrl: imageUrl || 'https://picsum.photos/seed/fallback/512/512',
+        driveFileId,
+        user: g.user,
+        template: g.template,
+        prompt: g.prompt,
+        settings: g.settings,
+        likesCount: g.likesCount,
+        isLiked: likedSet.has(g.id),
+        createdAt: g.createdAt
+      };
     });
   }
 }

@@ -112,6 +112,7 @@ model User {
   following   UserFollow[]     @relation("Followers")
   payouts     Payout[]
   reports     TemplateReport[]
+  generationLikes GenerationLike[]
 
   @@index([email])
 }
@@ -316,6 +317,14 @@ model Generation {
   aiModel  AIModel           @relation(fields: [aiModelId], references: [id])
   result   GenerationResult?
 
+  prompt         String?
+  negativePrompt String?
+  settings       Json?
+  isPublic       Boolean @default(false)
+  likesCount     Int     @default(0)
+
+  likes GenerationLike[]
+
   @@index([userId])
   @@index([status])
 }
@@ -331,6 +340,18 @@ model GenerationResult {
 
   generation      Generation      @relation(fields: [generationId], references: [id], onDelete: Cascade)
   storageProvider StorageProvider @relation(fields: [storageProviderId], references: [id])
+}
+
+model GenerationLike {
+  id           String   @id @default(uuid())
+  userId       String
+  generationId String
+  createdAt    DateTime @default(now())
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  generation Generation @relation(fields: [generationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, generationId])
 }
 
 // -----------------------------------------------------------------------------
