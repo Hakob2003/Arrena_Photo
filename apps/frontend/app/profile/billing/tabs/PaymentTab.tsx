@@ -35,10 +35,10 @@ export function PaymentTab() {
       const y = parseInt(yStr, 10);
       
       if (y < currentYear || (y === currentYear && m < currentMonth)) {
-        toast.error(`Warning: Card (•••• ${pm.cardNumber?.slice(-4) || pm.last4}) expired!`, {
+        toast.error(`Warning: Card (**** ${pm.cardNumber?.slice(-4) || pm.last4}) expired!`, {
           duration: 5000,
           id: `expired-${pm.id}`,
-          icon: '⚠️',
+          icon: '!',
         });
       }
     });
@@ -200,7 +200,7 @@ export function PaymentTab() {
               </div>
               <div className="flex justify-between items-end mt-auto">
                 <div>
-                  <p className="text-xl font-mono text-slate-900 dark:text-white tracking-widest mt-1">•••• •••• •••• {pm.last4 || pm.cardNumber?.slice(-4) || '0000'}</p>
+                  <p className="text-xl font-mono text-slate-900 dark:text-white tracking-widest mt-1">**** **** **** {pm.last4 || pm.cardNumber?.slice(-4) || '0000'}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-xs text-slate-500 dark:text-gray-400 mb-0.5">Expires</p>

@@ -73,7 +73,7 @@ export function UsageTab() {
         </div>
 
         <div className="bg-white dark:bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-2xl p-6 shadow-sm">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">Расходы по категориям</h3>
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">Expenses by Category</h3>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={modelUsageData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }} layout="vertical">
