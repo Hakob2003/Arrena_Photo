@@ -115,12 +115,13 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto !p-0 gap-0 overflow-hidden bg-white dark:bg-[#0a0a0c]">
-        <div className="sticky top-0 z-10 bg-white/80 dark:bg-[#0a0a0c]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
+      <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col !p-0 gap-0 bg-white dark:bg-[#0a0a0c]">
+        <div className="shrink-0 z-10 bg-white/80 dark:bg-[#0a0a0c]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
           <DialogTitle className="text-xl font-semibold tracking-tight">{template ? "Edit Template" : "Create Template"}</DialogTitle>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-6 space-y-8">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
+          <div className="p-6 space-y-8 overflow-y-auto flex-1">
           
           {/* Section: Basic Info */}
           <div className="space-y-4">
@@ -248,8 +249,10 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
             </div>
           </div>
 
+          </div>
+
           {/* Footer Actions */}
-          <div className="pt-4 flex justify-end gap-3 sticky bottom-0 bg-white/80 dark:bg-[#0a0a0c]/80 backdrop-blur-md p-4 -mx-6 -mb-6 border-t border-gray-200 dark:border-white/10">
+          <div className="shrink-0 flex justify-end gap-3 bg-white/80 dark:bg-[#0a0a0c]/80 backdrop-blur-md p-4 px-6 border-t border-gray-200 dark:border-white/10 mt-auto">
             <Button type="button" variant="outline" onClick={onClose} className="border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5">
               Cancel
             </Button>

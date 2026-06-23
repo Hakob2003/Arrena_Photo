@@ -76,7 +76,7 @@ export default function TemplatesPage() {
         >
           {t('templates.all')}
         </button>
-        {categories.map(c => (
+        {categories.filter(c => templates.some(t => t.categoryId === c.id)).map(c => (
           <button 
             key={c.id} 
             onClick={() => setSelectedCategory(c.id)}

@@ -118,9 +118,9 @@ export default function AdminTemplatesPage() {
 
   const handleQuickPriceChange = async (id: string, newPrice: number) => {
     try {
-      await templatesApi.updateTemplate(id, { price: newPrice } as any);
+      const updated = await templatesApi.updateTemplate(id, { price: newPrice } as any);
       toast.success("Price updated");
-      setTemplates(prev => prev.map(t => t.id === id ? { ...t, price: newPrice } : t));
+      setTemplates(prev => prev.map(t => t.id === id ? { ...t, ...updated } : t));
     } catch (e: any) {
       toast.error("Failed to update price");
     }
