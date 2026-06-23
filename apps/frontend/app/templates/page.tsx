@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 import { templatesApi } from '../../lib/templates.api';
 import { useTranslation } from '../../lib/i18n';
+import { useCardSize } from '../../hooks/useCardSize';
+import { ViewSizeSelector } from '../../components/ui/ViewSizeSelector';
 
 export default function TemplatesPage() {
   const { t } = useTranslation();
@@ -11,6 +13,7 @@ export default function TemplatesPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { size: cardSize, setSize: setCardSize, mounted } = useCardSize('medium');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,9 +68,10 @@ export default function TemplatesPage() {
         <p className="text-slate-500 dark:text-gray-400 text-lg">{t('templates.description')}</p>
       </div>
 
-      <div className="flex gap-4 overflow-x-auto pb-4 mb-8 custom-scrollbar">
-        <button 
-          onClick={() => setSelectedCategory('__all__')}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div className="flex gap-4 overflow-x-auto pb-2 sm:pb-0 custom-scrollbar flex-1">
+          <button 
+            onClick={() => setSelectedCategory('__all__')}
           className={`px-5 py-2 rounded-full whitespace-nowrap transition-colors ${
             selectedCategory === '__all__' 
               ? 'bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none text-white' 
@@ -89,6 +93,13 @@ export default function TemplatesPage() {
             {c.name}
           </button>
         ))}
+        </div>
+        
+        {mounted && (
+          <div className="flex-shrink-0 ml-auto sm:ml-0">
+            <ViewSizeSelector size={cardSize} onChange={setCardSize} />
+          </div>
+        )}
       </div>
 
       {filteredTemplates.length === 0 ? (
@@ -96,7 +107,11 @@ export default function TemplatesPage() {
           {t('templates.emptyCategory')}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className={`grid gap-6 ${
+          cardSize === 'small' ? 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6' :
+          cardSize === 'large' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' :
+          'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+        }`}>
           {filteredTemplates.map((tpl, i) => {
             const fallbackCover = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80";
             return (

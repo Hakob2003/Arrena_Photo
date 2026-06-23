@@ -36,6 +36,7 @@
     ]
   },
   "dependencies": {
+    "form-data": "^4.0.6",
     "immer": "^11.1.8",
     "papaparse": "^5.5.3"
   }
