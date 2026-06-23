@@ -7,6 +7,7 @@ import { Response } from 'express';
 import { ProfileService } from './profile.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateProfileDto, UpdatePreferencesDto, UpdateNotificationsDto, UpdateSecurityDto } from './dto/profile.dto';
+import { Public } from '../auth/decorators/public.decorator';
 
 @Controller('profile')
 @UseGuards(JwtAuthGuard)
@@ -53,6 +54,7 @@ export class ProfileController {
     return { success: true, avatarUrl };
   }
 
+  @Public()
   @Get('avatar/view/:filename')
   viewAvatar(@Param('filename') filename: string, @Res() res: Response) {
     const filePath = join(process.cwd(), 'uploads/avatars', filename);
