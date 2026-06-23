@@ -271,9 +271,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <LayoutGroup>
+    <>
       <div 
-        className="flex h-screen w-full overflow-hidden"
+        className="flex h-[100dvh] w-full overflow-hidden"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -290,13 +290,15 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           
-          <main id="main-scroll-container" className="flex-1 overflow-y-auto relative z-10 custom-scrollbar">
-            {children}
+          <main id="main-scroll-container" className="flex-1 overflow-y-auto relative z-10 custom-scrollbar pb-20">
+            <div className="pb-10">
+              {children}
+            </div>
           </main>
         </div>
       </div>
       <Toaster position="bottom-right" />
       <SwipeHint />
-    </LayoutGroup>
+    </>
   );
 }

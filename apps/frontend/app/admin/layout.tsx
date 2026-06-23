@@ -57,7 +57,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div 
-      className="flex h-screen w-screen max-w-full bg-[#050505] text-gray-200 overflow-hidden"
+      className="flex h-[100dvh] w-screen max-w-full bg-[#050505] text-gray-200 overflow-hidden"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -75,8 +75,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </div>
         
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 md:p-8 custom-scrollbar relative z-10">
-          <div className="w-full max-w-full">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 md:p-8 pb-20 custom-scrollbar relative z-10">
+          <div className="w-full max-w-full pb-10">
             {children}
           </div>
         </main>

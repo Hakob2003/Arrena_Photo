@@ -41,5 +41,15 @@ export const AuthImage: React.FC<AuthImageProps> = ({ driveFileId, fallbackUrl, 
     }
   }, [driveFileId, fallbackUrl]);
 
-  return <img src={src} alt={alt || 'Image'} {...props} />;
+  const handleError = () => {
+    let finalFallback = fallbackUrl;
+    if (finalFallback && !finalFallback.startsWith('http') && !finalFallback.startsWith('data:') && !finalFallback.startsWith('/')) {
+      finalFallback = `data:image/png;base64,${finalFallback}`;
+    }
+    if (src !== finalFallback) {
+      setSrc(finalFallback);
+    }
+  };
+
+  return <img src={src} alt={alt || 'Image'} onError={handleError} {...props} />;
 };
