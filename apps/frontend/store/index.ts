@@ -158,6 +158,10 @@ interface UIState {
   setLocale: (v: 'ru' | 'en') => void;
   preferences: UIPreferences;
   setPreferences: (prefs: Partial<UIPreferences>) => void;
+  hasSeenSwipeHints: boolean;
+  setHasSeenSwipeHints: (seen: boolean) => void;
+  showSwipeHints: boolean;
+  setShowSwipeHints: (show: boolean) => void;
 }
 
 const getInitialLocale = (): 'ru' | 'en' => {
@@ -182,4 +186,11 @@ export const useUIStore = create<UIState>((set) => ({
     animationsEnabled: true,
   },
   setPreferences: (prefs) => set((state) => ({ preferences: { ...state.preferences, ...prefs } })),
+  hasSeenSwipeHints: false, // We'll initialize from localStorage in ClientLayout
+  setHasSeenSwipeHints: (hasSeenSwipeHints) => {
+    if (typeof window !== 'undefined') localStorage.setItem('hasSeenSwipeHints', hasSeenSwipeHints ? 'true' : 'false');
+    set({ hasSeenSwipeHints });
+  },
+  showSwipeHints: false,
+  setShowSwipeHints: (showSwipeHints) => set({ showSwipeHints }),
 }));

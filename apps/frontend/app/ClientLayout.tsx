@@ -6,6 +6,7 @@ import { useAuthStore, useUIStore } from '../store';
 import { Topbar } from '../components/layout/Topbar';
 import { LayoutGroup } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
+import { SwipeHint } from '../components/ui/SwipeHint';
 
 import { api } from '../lib/api';
 
@@ -168,6 +169,18 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     }
   }, [preferences]);
 
+  // Show swipe hints on first load on mobile
+  useEffect(() => {
+    if (typeof window !== 'undefined' && user) {
+      const hasSeen = localStorage.getItem('hasSeenSwipeHints') === 'true';
+      if (!hasSeen) {
+        useUIStore.getState().setShowSwipeHints(true);
+      } else {
+        useUIStore.getState().setHasSeenSwipeHints(true);
+      }
+    }
+  }, [user]);
+
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.touches[0].clientX);
     setTouchStartY(e.touches[0].clientY);
@@ -283,6 +296,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
       <Toaster position="bottom-right" />
+      <SwipeHint />
     </LayoutGroup>
   );
 }

@@ -115,6 +115,19 @@ export function Topbar() {
       <div className="flex-1 max-w-xl hidden md:block"></div>
 
       <div className="flex items-center gap-2 sm:gap-4 md:gap-6 ml-auto">
+        {/* Help Button (Mobile Only) */}
+        {isMobile && user && (
+          <button
+            onClick={() => useUIStore.getState().setShowSwipeHints(true)}
+            className="flex items-center justify-center bg-black/[0.05] dark:bg-white/10 border border-black/10 dark:border-white/10 w-7 h-7 sm:w-8 sm:h-8 rounded-full hover:bg-black/10 dark:hover:bg-white/20 transition-colors shrink-0"
+            title="Подсказки жестов"
+          >
+            <svg className="w-4 h-4 text-slate-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </button>
+        )}
+
         {/* Language Toggle */}
         <button
           onClick={toggleLocale}
