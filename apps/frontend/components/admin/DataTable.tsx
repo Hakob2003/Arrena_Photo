@@ -37,9 +37,9 @@ export function DataTable<T extends { id: string }>({ data, columns, onSelection
   };
 
   return (
-    <div className="border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a] overflow-hidden">
+    <div className="border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a] overflow-hidden w-full max-w-full">
       {/* Toolbar */}
-      <div className="p-4 border-b border-black/10 dark:border-white/10 flex justify-between items-center bg-[#050505]">
+      <div className="p-3 sm:p-4 border-b border-black/10 dark:border-white/10 flex flex-col sm:flex-row gap-2 sm:justify-between sm:items-center bg-[#050505]">
         <div className="flex items-center gap-2">
           <input 
             type="text" 
@@ -57,7 +57,7 @@ export function DataTable<T extends { id: string }>({ data, columns, onSelection
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto w-full">
         <table className="w-full text-left text-sm">
           <thead className="bg-[#050505] border-b border-black/10 dark:border-white/10 text-slate-500 dark:text-gray-400">
             <tr>
@@ -104,7 +104,7 @@ export function DataTable<T extends { id: string }>({ data, columns, onSelection
       </div>
       
       {/* Pagination (Mock) */}
-      <div className="p-4 border-t border-black/10 dark:border-white/10 flex justify-between items-center text-sm text-slate-400 dark:text-gray-500 bg-[#050505]">
+      <div className="p-3 sm:p-4 border-t border-black/10 dark:border-white/10 flex flex-col sm:flex-row gap-2 sm:justify-between sm:items-center text-sm text-slate-400 dark:text-gray-500 bg-[#050505]">
         <span>Showing 1 to {data.length} of {data.length} entries</span>
         <div className="flex gap-1">
           <button className="px-3 py-1 border border-black/10 dark:border-white/10 rounded-md hover:bg-black/[0.03] dark:bg-white/5 disabled:opacity-50" disabled>Previous</button>

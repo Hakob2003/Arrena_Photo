@@ -136,18 +136,18 @@ export default function AdminTemplatesPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 max-w-full overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <PageHeader 
           title="Template Management" 
           description="Manage AI generation templates, categories and visibility."
         />
-        <div className="flex items-center gap-4">
-          <Button onClick={() => setIsImportModalOpen(true)} variant="outline" className="bg-transparent border-black/10 dark:border-gray-800 hover:bg-white dark:bg-gray-800 text-slate-900 dark:text-slate-900 dark:text-white">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4 shrink-0">
+          <Button onClick={() => setIsImportModalOpen(true)} variant="outline" className="bg-transparent border-black/10 dark:border-gray-800 hover:bg-white dark:bg-gray-800 text-slate-900 dark:text-slate-900 dark:text-white text-xs sm:text-sm">
             Import CSV/JSON
           </Button>
-          <Button onClick={openCreate} className="bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none hover:bg-indigo-700 text-white">
-            <Plus className="mr-2 h-4 w-4" /> Create Template
+          <Button onClick={openCreate} className="bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none hover:bg-indigo-700 text-white text-xs sm:text-sm">
+            <Plus className="mr-1 sm:mr-2 h-4 w-4" /> Create Template
           </Button>
         </div>
       </div>

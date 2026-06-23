@@ -450,7 +450,7 @@ export default function AdminAIModelsPage() {
         title="AI Models" 
         description="Управление моделями генерации изображений"
         actions={
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() => setShowHelp(h => !h)}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 border ${

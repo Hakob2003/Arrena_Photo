@@ -122,7 +122,7 @@ export default function ApiKeysAdminPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] p-6 lg:p-8 flex flex-col gap-8">
+    <div className="flex flex-col gap-6 sm:gap-8 max-w-full overflow-hidden">
       <PageHeader 
         title="API Ключи Провайдеров" 
         description="Управление глобальными ключами доступа к AI провайдерам, проверка статусов и баланса."
