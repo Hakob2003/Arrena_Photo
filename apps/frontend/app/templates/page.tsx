@@ -15,7 +15,7 @@ export default function TemplatesPage() {
   const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { size: cardSize, setSize: setCardSize, mounted } = useCardSize('medium');
-  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
 
   useEffect(() => {
     const fetchData = async () => {

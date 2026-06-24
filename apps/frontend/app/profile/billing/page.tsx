@@ -13,7 +13,7 @@ type Tab = 'overview' | 'plans' | 'usage' | 'payment';
 export default function UserBillingPage() {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const { t } = useTranslation();
-  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
 
   const tabs = [
     { id: 'overview', label: t('billing.overview') },

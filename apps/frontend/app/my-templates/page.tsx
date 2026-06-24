@@ -6,7 +6,7 @@ import { useUIStore } from '../../store';
 
 export default function MyTemplatesPage() {
   const { t } = useTranslation();
-  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
 
   return (
     <div className="p-4 sm:p-8 w-full h-full flex flex-col">

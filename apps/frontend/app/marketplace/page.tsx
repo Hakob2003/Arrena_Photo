@@ -9,7 +9,7 @@ import { useUIStore } from '../../store';
 export default function MarketplacePage() {
   const { t } = useTranslation();
   const { size: cardSize, setSize: setCardSize, mounted } = useCardSize('medium');
-  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
 
   // Mock data for display, in reality fetch from /api/templates
   const mockTemplates = [

@@ -16,7 +16,7 @@ export function OverviewTab() {
   const [isCancelModalOpen, setCancelModalOpen] = useState(false);
   const { credits, planId, setPlanId } = useAuthStore();
   const { t } = useTranslation();
-  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
   
   const currentPlan = PLAN_DETAILS[planId] || PLAN_DETAILS.free;
   const isActive = planId !== 'free';

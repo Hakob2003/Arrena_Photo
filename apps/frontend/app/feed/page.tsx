@@ -13,7 +13,7 @@ export default function FeedPage() {
   const { user } = useAuthStore();
   const [generations, setGenerations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
 
   useEffect(() => {
     fetchFeed();

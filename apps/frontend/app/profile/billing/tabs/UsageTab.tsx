@@ -7,7 +7,7 @@ import { useUIStore } from '../../../../store';
 export function UsageTab() {
   const [timeRange, setTimeRange] = useState<'7d'|'30d'>('7d');
   const { t } = useTranslation();
-  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
 
   const usageData = [
     { date: '15 Jun', credits: 120 },

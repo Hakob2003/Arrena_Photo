@@ -10,7 +10,7 @@ import { useUIStore } from '../../../store';
 
 export default function TemplateDetailsPage({ params }: PageProps) {
   const resolvedParams = use(params);
-  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
   // Mock data
   const template = {
     id: resolvedParams.id,

@@ -12,7 +12,7 @@ export function PlansTab() {
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoError, setPromoError] = useState(false);
-  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
 
   const handleApplyPromo = () => {
     if (promoCode.trim().toUpperCase() === 'PROMOCODE20') {

@@ -12,7 +12,7 @@ import { useUIStore } from '@/store';
 export default function MyGenerationsPage() {
   const { user } = useAuthStore();
   const { t, locale } = useTranslation();
-  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
   const [generations, setGenerations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);

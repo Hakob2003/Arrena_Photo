@@ -11,7 +11,7 @@ import { useUIStore } from '../../../../store';
 export function PaymentTab() {
   const { paymentMethods, setPaymentMethods, setDefaultPaymentMethod, fetchPaymentMethods } = useAuthStore();
   const { t } = useTranslation();
-  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
 
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);

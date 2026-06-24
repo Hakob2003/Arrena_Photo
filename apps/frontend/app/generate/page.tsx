@@ -29,7 +29,7 @@ function GeneratorContent() {
   const [cost, setCost] = useState(5);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
 
   useEffect(() => {
     setMounted(true);
