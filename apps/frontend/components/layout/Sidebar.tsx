@@ -6,13 +6,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore, useAuthStore } from '../../store';
 import { useTranslation } from '../../lib/i18n';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import { cn } from '../../lib/utils';
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { isSidebarOpen, setSidebarOpen } = useUIStore();
+  const { isSidebarOpen, setSidebarOpen, preferences } = useUIStore();
   const { user } = useAuthStore();
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+  const isLuxury = preferences?.skin === 'LUXURY';
   const showSidebarLogo = isSidebarOpen;
 
   const MAIN_LINKS = [
@@ -51,7 +53,10 @@ export function Sidebar() {
               {isActive && (
                 <motion.div 
                   layoutId="sidebar-active" 
-                  className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 dark:from-indigo-500/20 to-transparent rounded-lg border-l-2 border-indigo-500"
+                  className={cn(
+                    "absolute inset-0 rounded-lg border-l-2",
+                    isLuxury ? "bg-gradient-to-r from-[#D4AF37]/10 to-transparent border-[#D4AF37]" : "bg-gradient-to-r from-indigo-500/10 dark:from-indigo-500/20 to-transparent border-indigo-500"
+                  )}
                   transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
               )}
@@ -108,54 +113,65 @@ export function Sidebar() {
             setSidebarOpen(true);
           }
         }}
-        className={`
-          fixed inset-y-0 left-0 z-50 border-r border-black/10 dark:border-white/5 bg-[rgba(255,255,255,0.75)] dark:bg-black/60 backdrop-blur-xl shadow-lg dark:shadow-none flex flex-col overflow-hidden
-          ${!isMobile ? 'relative cursor-pointer' : ''}
-          ${isSidebarOpen ? 'cursor-default' : ''}
-        `}
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 border-r bg-[rgba(255,255,255,0.75)] dark:bg-black/60 backdrop-blur-xl shadow-lg dark:shadow-none flex flex-col overflow-hidden",
+          !isMobile ? 'relative cursor-pointer' : '',
+          isSidebarOpen ? 'cursor-default' : '',
+          isLuxury ? 'border-[#D4AF37]/20' : 'border-black/10 dark:border-white/5'
+        )}
       >
-        <div className={`flex items-center justify-between border-b border-black/10 dark:border-white/5 md:border-none ${isSidebarOpen ? 'p-4' : 'pt-4 pb-2 px-0'}`}>
-          <div className={`flex items-center justify-center w-full overflow-hidden ${isSidebarOpen ? 'h-[80px]' : 'h-[50px]'}`}>
-            <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity w-full h-full max-w-[180px] ${isSidebarOpen ? 'justify-start' : 'justify-center'}`}>
-              <motion.div layout className="flex-shrink-0 z-20 flex justify-center">
-                <img 
-                  src="/logo1.png" 
-                  alt="Arrena Photo Icon" 
-                  className="w-10 h-auto max-h-[40px] object-contain hidden dark:block" 
-                />
-                <img 
-                  src="/logo1-light.png" 
-                  alt="Arrena Photo Icon" 
-                  className="w-10 h-auto max-h-[40px] object-contain block dark:hidden" 
-                />
-              </motion.div>
-
+        <div className={`flex items-center justify-center ${isSidebarOpen ? 'p-0' : 'pt-4 pb-2 px-0 border-b border-black/10 dark:border-white/5 md:border-none'}`}>
+          <div className={`flex items-center justify-center overflow-hidden relative mx-auto ${isSidebarOpen ? 'w-[130px] h-[130px] my-4' : 'w-full h-[50px]'}`}>
+            <Link href="/" className="relative flex items-center hover:opacity-80 transition-opacity w-full h-full justify-center">
+              
+              {/* Closed State (Icon only: logo1 / logoG1) */}
               <AnimatePresence>
-                {isSidebarOpen && (
-                  <motion.div
-                    initial={{ width: 0, opacity: 0, x: -10 }}
-                    animate={{ width: '130px', opacity: 1, x: 0 }}
-                    exit={{ width: 0, opacity: 0, x: -10 }}
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    className="overflow-hidden flex items-center justify-start z-10 h-[40px]"
+                {!isSidebarOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute flex justify-center w-full"
                   >
-                    <div className="pl-1.5 w-[130px] flex-shrink-0 flex items-center justify-start h-full">
-                      <div id="sidebar-logo-ref" className="flex items-center h-full">
-                        <img 
-                          src="/logo2.png" 
-                          alt="Arrena Photo Text" 
-                          className="h-4 sm:h-5 w-auto object-contain hidden dark:block" 
-                        />
-                        <img 
-                          src="/logo2-light.png" 
-                          alt="Arrena Photo Text" 
-                          className="h-4 sm:h-5 w-auto object-contain block dark:hidden" 
-                        />
-                      </div>
-                    </div>
+                    <img 
+                      src={isLuxury ? "/logoG1.png" : "/logo1.png"} 
+                      alt="Arrena Photo Icon" 
+                      className="w-10 h-auto max-h-[40px] object-contain hidden dark:block" 
+                    />
+                    <img 
+                      src={isLuxury ? "/logoG1.png" : "/logo1-light.png"} 
+                      alt="Arrena Photo Icon" 
+                      className="w-10 h-auto max-h-[40px] object-contain block dark:hidden" 
+                    />
                   </motion.div>
                 )}
               </AnimatePresence>
+
+              {/* Open State (Full logo: logo / logoG) */}
+              <AnimatePresence>
+                {isSidebarOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute inset-0 flex items-center justify-center w-full h-full"
+                  >
+                    <img 
+                      src={isLuxury ? "/logoG.png" : "/logo.png"} 
+                      alt="Arrena Photo Logo" 
+                      className="w-[130px] h-[130px] object-contain hidden dark:block" 
+                    />
+                    <img 
+                      src={isLuxury ? "/logoG.png" : "/logo-light.png"} 
+                      alt="Arrena Photo Logo" 
+                      className="w-[130px] h-[130px] object-contain block dark:hidden" 
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              
             </Link>
           </div>
           {/* Close / Collapse button */}
@@ -238,7 +254,9 @@ export function Sidebar() {
         {user ? (
           <div className={`flex items-center ${isSidebarOpen ? 'justify-between w-full' : 'justify-center w-full'}`}>
             <div className={`flex items-center ${isSidebarOpen ? 'gap-3' : 'justify-center'}`}>
-              <div className="w-9 h-9 shrink-0 rounded-full bg-gradient-to-tr from-purple-500 to-indigo-500 flex items-center justify-center text-white font-bold">
+              <div className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center font-bold ${
+                isLuxury ? 'bg-gradient-to-tr from-[#C5A028] to-[#D4AF37] text-black' : 'bg-gradient-to-tr from-purple-500 to-indigo-500 text-white'
+              }`}>
                 {user.name?.charAt(0) || 'U'}
               </div>
               <AnimatePresence mode="wait">
@@ -280,7 +298,9 @@ export function Sidebar() {
         ) : (
           <div className="flex flex-col gap-2 w-full">
             <Link href="/login" className="w-full py-2 text-center text-sm text-slate-500 hover:text-slate-900 hover:bg-[#fafafa] dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/5 rounded-lg transition-colors">{t('auth.login')}</Link>
-            <Link href="/register" className="w-full py-2 text-center bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+            <Link href="/register" className={`w-full py-2 text-center text-sm font-medium rounded-lg transition-colors ${
+              isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+            }`}>
               {t('auth.register')}
             </Link>
           </div>

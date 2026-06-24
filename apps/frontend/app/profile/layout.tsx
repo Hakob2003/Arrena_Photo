@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { User, Shield, Palette, Bell, Activity, Clock } from 'lucide-react';
+import { User, Shield, Palette, Bell, Activity, Clock, CreditCard, BarChart2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '../../store';
 import { useTranslation } from '../../lib/i18n';
@@ -19,9 +19,9 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
     { id: 'personal', label: t('profile.personal'), icon: User, href: '/profile/personal' },
     { id: 'security', label: t('profile.security'), icon: Shield, href: '/profile/security' },
     { id: 'appearance', label: t('profile.appearance'), icon: Palette, href: '/profile/appearance' },
-    { id: 'billing', label: t('profile.billing'), icon: Activity, href: '/profile/billing' },
+    { id: 'billing', label: t('profile.billing'), icon: CreditCard, href: '/profile/billing' },
     { id: 'notifications', label: t('profile.notifications'), icon: Bell, href: '/profile/notifications' },
-    { id: 'statistics', label: t('profile.statistics'), icon: Activity, href: '/profile/statistics' },
+    { id: 'statistics', label: t('profile.statistics'), icon: BarChart2, href: '/profile/statistics' },
     { id: 'activity', label: t('profile.activity'), icon: Clock, href: '/profile/activity' },
   ];
 

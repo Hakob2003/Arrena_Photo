@@ -6,12 +6,14 @@ import { generationsApi } from '@/lib/generations.api';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/store';
 import { AuthImage } from '@/components/ui/AuthImage';
+import { useUIStore } from '@/store';
 
 export default function FeedPage() {
   const router = useRouter();
   const { user } = useAuthStore();
   const [generations, setGenerations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
 
   useEffect(() => {
     fetchFeed();
@@ -77,7 +79,7 @@ export default function FeedPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 p-4 sm:p-8">
       <div className="w-full">
         <div className="mb-12 text-center space-y-4">
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent luxury-override-text-gradient">
             Community Feed
           </h1>
           <p className="text-base sm:text-lg text-slate-400 dark:text-gray-500 max-w-2xl mx-auto px-2">
@@ -87,7 +89,7 @@ export default function FeedPage() {
 
         {loading ? (
           <div className="flex items-center justify-center h-64">
-             <div className="w-12 h-12 border-4 border-black/10 dark:border-white/10 border-t-indigo-500 rounded-full animate-spin" />
+             <div className={`w-12 h-12 border-4 border-black/10 dark:border-white/10 rounded-full animate-spin ${isLuxury ? 'border-t-[#D4AF37]' : 'border-t-indigo-500'}`} />
           </div>
         ) : generations.length === 0 ? (
           <div className="text-center py-20 text-slate-400 glass-card rounded-2xl p-8">
@@ -117,7 +119,7 @@ export default function FeedPage() {
                   <div className="flex items-center justify-between">
                     {/* User info */}
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden ${isLuxury ? 'bg-[#D4AF37]' : 'bg-indigo-500'}`}>
                         {gen.user?.image ? (
                            <img src={gen.user.image} alt="User" className="w-full h-full object-cover" />
                         ) : (
@@ -139,7 +141,7 @@ export default function FeedPage() {
                       
                       <button 
                         onClick={(e) => handleRemix(e, gen.id)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-colors ${isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-indigo-600 hover:bg-indigo-500 text-white'}`}
                       >
                         <RefreshCw className="w-4 h-4" />
                         <span className="text-xs font-bold">Remix</span>

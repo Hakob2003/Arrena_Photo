@@ -2,9 +2,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { useTranslation } from '../../lib/i18n';
+import { useUIStore } from '../../store';
 
 export default function MyTemplatesPage() {
   const { t } = useTranslation();
+  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
 
   return (
     <div className="p-4 sm:p-8 w-full h-full flex flex-col">
@@ -25,7 +27,9 @@ export default function MyTemplatesPage() {
           {t('myTpl.emptyDescription')}
         </p>
         <Link href="/generate">
-          <button className="px-6 py-3 glass rounded-xl font-bold text-indigo-400 hover:text-indigo-300 hover:bg-black/[0.05] dark:bg-white/10 transition-colors">
+          <button className={`px-6 py-3 glass rounded-xl font-bold hover:bg-black/[0.05] dark:bg-white/10 transition-colors ${
+            isLuxury ? 'text-[#D4AF37] hover:text-[#C5A028]' : 'text-indigo-400 hover:text-indigo-300'
+          }`}>
             {t('myTpl.goToGenerator')}
           </button>
         </Link>

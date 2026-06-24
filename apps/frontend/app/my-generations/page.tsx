@@ -5,16 +5,19 @@ import toast from 'react-hot-toast';
 import { useAuthStore } from '@/store';
 import { useTranslation } from '@/lib/i18n';
 import { generationsApi } from '@/lib/generations.api';
-
+import { useRouter } from 'next/navigation';
 import { AuthImage } from '@/components/ui/AuthImage';
+import { useUIStore } from '@/store';
 
 export default function MyGenerationsPage() {
   const { user } = useAuthStore();
   const { t, locale } = useTranslation();
+  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
   const [generations, setGenerations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [publishingId, setPublishingId] = useState<string | null>(null);
+  
   useEffect(() => {
     if (user) {
       fetchGenerations();
@@ -75,7 +78,9 @@ export default function MyGenerationsPage() {
           <div className="text-6xl mb-6">🔒</div>
           <h2 className="text-2xl font-bold mb-2">{t('myGen.loginRequired')}</h2>
           <p className="text-slate-500 dark:text-gray-400 mb-6">{t('myGen.loginDescription')}</p>
-          <a href="/login" className="px-6 py-3 bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none hover:bg-indigo-700 text-white font-bold rounded-xl transition-colors">
+          <a href="/login" className={`px-6 py-3 font-bold rounded-xl transition-colors ${
+            isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-none' : 'bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none hover:bg-indigo-700 text-white'
+          }`}>
             {t('auth.login')}
           </a>
         </div>
@@ -100,7 +105,7 @@ export default function MyGenerationsPage() {
 
       {loading ? (
         <div className="flex items-center justify-center h-64">
-          <div className="w-12 h-12 border-4 border-black/10 dark:border-white/10 border-t-indigo-500 rounded-full animate-spin" />
+          <div className={`w-12 h-12 border-4 border-black/10 dark:border-white/10 rounded-full animate-spin ${isLuxury ? 'border-t-[#D4AF37]' : 'border-t-indigo-500'}`} />
         </div>
       ) : generations.length === 0 ? (
         <div className="flex-1 border border-black/10 dark:border-white/10 rounded-2xl bg-[#fafafa] dark:bg-black/40 backdrop-blur-md p-10 flex flex-col items-center justify-center text-center">
@@ -109,7 +114,9 @@ export default function MyGenerationsPage() {
           <p className="text-slate-500 dark:text-gray-400 max-w-md mb-8">
             {t('myGen.emptyDescription')}
           </p>
-          <a href="/generate" className="px-6 py-3 glass rounded-xl font-bold text-indigo-400 hover:text-indigo-300 hover:bg-black/[0.05] dark:bg-white/10 transition-colors">
+          <a href="/generate" className={`px-6 py-3 glass rounded-xl font-bold hover:bg-black/[0.05] dark:bg-white/10 transition-colors ${
+            isLuxury ? 'text-[#D4AF37] hover:text-[#C5A028]' : 'text-indigo-400 hover:text-indigo-300'
+          }`}>
             {t('myGen.goToGenerator')}
           </a>
         </div>
@@ -137,7 +144,7 @@ export default function MyGenerationsPage() {
                   <button 
                     onClick={(e) => togglePublish(e, gen.id, gen.isPublic)}
                     disabled={publishingId === gen.id}
-                    className={`${gen.isPublic ? 'bg-indigo-500/50 text-indigo-200' : 'bg-[#fafafa] dark:bg-black/50 hover:bg-[#fafafa] dark:bg-black/80 text-slate-900 dark:text-white'} p-2 rounded-lg backdrop-blur-md transition-colors ml-2`}
+                    className={`${gen.isPublic ? (isLuxury ? 'bg-[#D4AF37]/50 text-[#D4AF37]' : 'bg-indigo-500/50 text-indigo-200') : 'bg-[#fafafa] dark:bg-black/50 hover:bg-[#fafafa] dark:bg-black/80 text-slate-900 dark:text-white'} p-2 rounded-lg backdrop-blur-md transition-colors ml-2`}
                     title={gen.isPublic ? 'Unpublish from Feed' : 'Publish to Feed'}
                   >
                     {publishingId === gen.id ? (
@@ -150,7 +157,7 @@ export default function MyGenerationsPage() {
                   </button>
                 </div>
                 <div>
-                  <span className="text-xs text-indigo-400 font-bold mb-1 block">{gen.model}</span>
+                  <span className={`text-xs font-bold mb-1 block ${isLuxury ? 'text-[#D4AF37]' : 'text-indigo-400'}`}>{gen.model}</span>
                   {gen.template && <span className="text-xs text-gray-300 block">{t('myGen.template')}: {gen.template}</span>}
                   <span className="text-xs text-slate-400 dark:text-gray-500 block mt-1">{new Date(gen.createdAt).toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-US')}</span>
                 </div>

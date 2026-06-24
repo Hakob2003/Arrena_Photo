@@ -12,6 +12,7 @@ import { AuthImage } from '@/components/ui/AuthImage';
 import { templatesApi } from '../../lib/templates.api';
 import { generationsApi } from '../../lib/generations.api';
 import toast from 'react-hot-toast';
+import { useUIStore } from '../../store';
 
 function GeneratorContent() {
   const searchParams = useSearchParams();
@@ -28,6 +29,7 @@ function GeneratorContent() {
   const [cost, setCost] = useState(5);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
 
   useEffect(() => {
     setMounted(true);
@@ -236,7 +238,7 @@ function GeneratorContent() {
           <div 
             {...getRootProps()} 
             className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-colors ${
-              isDragActive ? 'border-indigo-500 bg-indigo-500/10' : 'border-black/20 dark:border-white/20 hover:border-white/40 bg-[#fafafa] dark:bg-black/30'
+              isDragActive ? (isLuxury ? 'border-[#D4AF37] bg-[#D4AF37]/10' : 'border-indigo-500 bg-indigo-500/10') : 'border-black/20 dark:border-white/20 hover:border-white/40 bg-[#fafafa] dark:bg-black/30'
             }`}
           >
             <input {...getInputProps()} />
@@ -265,7 +267,7 @@ function GeneratorContent() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder={t('gen.promptPlaceholder')}
-            className="w-full h-40 bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-xl p-4 text-slate-900 dark:text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+            className={`w-full h-40 bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-xl p-4 text-slate-900 dark:text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 resize-none ${isLuxury ? 'focus:ring-[#D4AF37]' : 'focus:ring-indigo-500'}`}
           />
         </div>
 
@@ -295,7 +297,7 @@ function GeneratorContent() {
                     onClick={() => setAspectRatio(ratio)}
                     className={`px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
                       aspectRatio === ratio
-                        ? 'bg-indigo-500 text-white shadow-md'
+                        ? (isLuxury ? 'bg-[#D4AF37] text-black shadow-md' : 'bg-indigo-500 text-white shadow-md')
                         : 'bg-black/[0.05] dark:bg-white/10 text-slate-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/20'
                     }`}
                   >
@@ -318,7 +320,7 @@ function GeneratorContent() {
                     onClick={() => setResolution(resOption)}
                     className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors ${
                       resolution === resOption
-                        ? 'bg-indigo-500 text-white shadow-md'
+                        ? (isLuxury ? 'bg-[#D4AF37] text-black shadow-md' : 'bg-indigo-500 text-white shadow-md')
                         : 'bg-black/[0.05] dark:bg-white/10 text-slate-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/20'
                     }`}
                   >
@@ -405,12 +407,12 @@ function GeneratorContent() {
         <div className="flex-1 min-h-0 min-w-0 flex items-center justify-center p-3 sm:p-4 lg:p-6 preview-area-compact bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/[0.02] to-transparent">
           {isGenerating ? (
             <div className="flex flex-col items-center gap-4 sm:gap-6">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-black/10 dark:border-white/10 border-t-indigo-500 rounded-full animate-spin" />
+              <div className={`w-12 h-12 sm:w-16 sm:h-16 border-4 border-black/10 dark:border-white/10 rounded-full animate-spin ${isLuxury ? 'border-t-[#D4AF37]' : 'border-t-indigo-500'}`} />
               <motion.p 
                 key={loadingText}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-indigo-400 font-medium tracking-wide"
+                className={`font-medium tracking-wide ${isLuxury ? 'text-[#D4AF37]' : 'text-indigo-400'}`}
               >
                 {loadingText}
               </motion.p>

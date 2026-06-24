@@ -23,12 +23,14 @@ export default function AppearanceProfilePage() {
       fontSize: 'MEDIUM',
       compactMode: false,
       animationsEnabled: true,
+      skin: 'LUXURY',
     }
   });
 
   const watchTheme = watch('theme');
   const watchAccent = watch('accentColor');
   const watchFont = watch('fontSize');
+  const watchSkin = watch('skin');
 
   // Instantly apply changes to the UI store for real-time preview
   useEffect(() => {
@@ -39,6 +41,7 @@ export default function AppearanceProfilePage() {
         fontSize: value.fontSize as any,
         compactMode: value.compactMode,
         animationsEnabled: value.animationsEnabled,
+        skin: value.skin as any,
       });
     });
     return () => subscription.unsubscribe();
@@ -54,6 +57,7 @@ export default function AppearanceProfilePage() {
           fontSize: data.fontSize || 'MEDIUM',
           compactMode: !!data.compactMode,
           animationsEnabled: data.animationsEnabled !== false,
+          skin: data.skin || 'LUXURY',
         };
         reset(fetchedPrefs);
         setPreferences(fetchedPrefs);
@@ -111,8 +115,54 @@ export default function AppearanceProfilePage() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-6 border-t border-black/10 dark:border-white/10">
-        {/* Theme */}
+        
+        {/* Skin Selector */}
         <div className="space-y-4">
+          <div>
+            <h3 className="text-base font-medium text-slate-900 dark:text-white mb-1">Скин сайта (Стиль)</h3>
+            <p className="text-sm text-slate-500 dark:text-gray-400">Выберите общую стилистику интерфейса.</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => setValue('skin', 'LUXURY', { shouldDirty: true })}
+              className={cn(
+                "relative flex flex-col items-start gap-2 p-4 rounded-xl border transition-all overflow-hidden text-left",
+                watchSkin === 'LUXURY'
+                  ? "border-[#D4AF37] bg-black/40 shadow-[0_0_20px_rgba(212,175,55,0.15)]" 
+                  : "border-black/10 dark:border-white/10 hover:border-white/30 bg-transparent text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white"
+              )}
+            >
+              <div className="absolute inset-0 bg-[#050505] -z-10" />
+              <div className="w-full flex justify-between items-center mb-2">
+                <span className={cn("font-medium text-lg", watchSkin === 'LUXURY' ? "text-[#D4AF37]" : "text-gray-300")}>Luxury Gold</span>
+                {watchSkin === 'LUXURY' && <div className="w-3 h-3 rounded-full bg-[#D4AF37] shadow-[0_0_10px_#D4AF37]" />}
+              </div>
+              <p className="text-xs text-gray-400">Премиальный темный интерфейс с металлическими акцентами.</p>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setValue('skin', 'NEON', { shouldDirty: true })}
+              className={cn(
+                "relative flex flex-col items-start gap-2 p-4 rounded-xl border transition-all overflow-hidden text-left",
+                watchSkin === 'NEON'
+                  ? "border-indigo-500 bg-indigo-500/10 shadow-[0_0_20px_rgba(99,102,241,0.15)]" 
+                  : "border-black/10 dark:border-white/10 hover:border-white/30 bg-transparent text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white"
+              )}
+            >
+              <div className="absolute inset-0 bg-[#fafafa] dark:bg-[#0A0A0A] -z-10" />
+              <div className="w-full flex justify-between items-center mb-2">
+                <span className={cn("font-medium text-lg", watchSkin === 'NEON' ? "text-indigo-500 dark:text-indigo-400" : "")}>Neon Cyberpunk</span>
+                {watchSkin === 'NEON' && <div className="w-3 h-3 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.8)]" />}
+              </div>
+              <p className="text-xs text-slate-500 dark:text-gray-400">Яркий стиль с неоновыми свечениями и ярким акцентным цветом.</p>
+            </button>
+          </div>
+        </div>
+
+        {/* Theme */}
+        <div className="space-y-4 pt-6 border-t border-black/10 dark:border-white/10">
           <div>
             <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">{t('profile.appearance.theme')}</h3>
             <p className="text-sm text-slate-500 dark:text-gray-400">Select or customize your UI theme.</p>

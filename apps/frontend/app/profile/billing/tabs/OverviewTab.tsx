@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '../../../../store';
 import { useTranslation } from '../../../../lib/i18n';
+import { useUIStore } from '../../../../store';
 
 const PLAN_DETAILS: Record<string, { name: string, limit: number, price: string, features: string[] }> = {
   free: { name: 'Free', limit: 100, price: '$0.00', features: ['До 1 задачи', 'Стандартная скорость', 'Водяной знак'] },
@@ -15,6 +16,7 @@ export function OverviewTab() {
   const [isCancelModalOpen, setCancelModalOpen] = useState(false);
   const { credits, planId, setPlanId } = useAuthStore();
   const { t } = useTranslation();
+  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
   
   const currentPlan = PLAN_DETAILS[planId] || PLAN_DETAILS.free;
   const isActive = planId !== 'free';
@@ -74,7 +76,9 @@ export function OverviewTab() {
             <p className="text-sm text-slate-500 dark:text-gray-400 mt-1">{t('billing.overview.manageDesc')}</p>
           </div>
           <div className="flex flex-wrap gap-2 justify-start sm:justify-end">
-            <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+            <button className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+              isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+            }`}>
               {t('billing.overview.changePlan')}
             </button>
             {isActive && (
@@ -99,7 +103,7 @@ export function OverviewTab() {
                 <span className="font-semibold text-slate-900 dark:text-white">75%</span>
               </div>
               <div className="w-full bg-slate-100 dark:bg-white/10 rounded-full h-2">
-                <div className="bg-indigo-500 h-2 rounded-full" style={{ width: '75%' }}></div>
+                <div className={`h-2 rounded-full ${isLuxury ? 'bg-[#D4AF37]' : 'bg-indigo-500'}`} style={{ width: '75%' }}></div>
               </div>
             </div>
 
@@ -122,7 +126,9 @@ export function OverviewTab() {
           </div>
 
           <div className="mt-8 pt-6 border-t border-black/10 dark:border-white/10">
-            <button className="w-full text-center text-sm text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
+            <button className={`w-full text-center text-sm font-medium hover:underline ${
+              isLuxury ? 'text-[#D4AF37]' : 'text-indigo-600 dark:text-indigo-400'
+            }`}>
               {t('billing.overview.viewStats')}
             </button>
           </div>

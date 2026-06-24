@@ -4,10 +4,12 @@ import { TemplateCard } from '../../components/marketplace/TemplateCard';
 import { useTranslation } from '../../lib/i18n';
 import { useCardSize } from '../../hooks/useCardSize';
 import { ViewSizeSelector } from '../../components/ui/ViewSizeSelector';
+import { useUIStore } from '../../store';
 
 export default function MarketplacePage() {
   const { t } = useTranslation();
   const { size: cardSize, setSize: setCardSize, mounted } = useCardSize('medium');
+  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
 
   // Mock data for display, in reality fetch from /api/templates
   const mockTemplates = [
@@ -35,7 +37,7 @@ export default function MarketplacePage() {
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 p-4 sm:p-8">
       <div className="w-full">
         <div className="mb-12 text-center space-y-4">
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent break-words">
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight break-words bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent luxury-override-text-gradient">
             {t('market.title')}
           </h1>
           <p className="text-base sm:text-lg text-slate-400 dark:text-gray-500 dark:text-gray-400 max-w-2xl mx-auto px-2">
@@ -47,7 +49,9 @@ export default function MarketplacePage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div className="flex flex-wrap gap-4 flex-1">
             {[t('market.all'), t('market.free'), t('market.premium'), 'Anime', 'Realistic', 'Cyberpunk'].map(tag => (
-            <button key={tag} className="px-5 py-2 rounded-full border border-gray-200 dark:border-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+            <button key={tag} className={`px-5 py-2 rounded-full border border-gray-200 dark:border-gray-800 transition-colors ${
+              isLuxury ? 'hover:bg-[#D4AF37]/10 dark:hover:bg-[#D4AF37]/20 hover:border-[#D4AF37]' : 'hover:bg-blue-50 dark:hover:bg-blue-900/20'
+            }`}>
               {tag}
             </button>
           ))}

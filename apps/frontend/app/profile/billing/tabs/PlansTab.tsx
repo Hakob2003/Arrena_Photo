@@ -4,6 +4,7 @@ import { useAuthStore } from '../../../../store';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from '../../../../lib/i18n';
+import { useUIStore } from '../../../../store';
 
 export function PlansTab() {
   const { planId, setPlanId, addCredits, chargeDefaultCard } = useAuthStore();
@@ -11,6 +12,7 @@ export function PlansTab() {
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoError, setPromoError] = useState(false);
+  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
 
   const handleApplyPromo = () => {
     if (promoCode.trim().toUpperCase() === 'PROMOCODE20') {
@@ -75,10 +77,10 @@ export function PlansTab() {
             return (
               <div 
                 key={plan.id} 
-                className={`relative flex flex-col p-6 rounded-2xl border ${isCurrent ? 'border-indigo-500 bg-indigo-50/30 dark:bg-indigo-500/5 shadow-sm' : 'border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a]'}`}
+                className={`relative flex flex-col p-6 rounded-2xl border ${isCurrent ? (isLuxury ? 'border-[#D4AF37] bg-[#D4AF37]/5 shadow-sm' : 'border-indigo-500 bg-indigo-50/30 dark:bg-indigo-500/5 shadow-sm') : 'border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a]'}`}
               >
                 {isCurrent && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 bg-indigo-500 text-white text-[10px] font-bold uppercase tracking-wider rounded-full">
+                  <div className={`absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full ${isLuxury ? 'bg-[#D4AF37] text-black' : 'bg-indigo-500 text-white'}`}>
                     {t('billing.plans.yourPlan')}
                   </div>
                 )}
@@ -111,7 +113,9 @@ export function PlansTab() {
                       {t('billing.plans.currentPlan')}
                     </button>
                   ) : (
-                    <button onClick={() => handleUpgrade(plan.id, plan.priceNum)} className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+                    <button onClick={() => handleUpgrade(plan.id, plan.priceNum)} className={`w-full py-2 text-sm font-medium rounded-lg transition-colors ${
+                      isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                    }`}>
                       {plan.price === '$0' ? 'Downgrade' : 'Upgrade'}
                     </button>
                   )}
@@ -131,12 +135,14 @@ export function PlansTab() {
           
           <div className="grid grid-cols-2 gap-4">
             {creditPackages.map(pkg => (
-              <div key={pkg.id} className="p-4 border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-xl flex items-center justify-between hover:border-indigo-500/50 transition-colors">
+              <div key={pkg.id} className={`p-4 border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] rounded-xl flex items-center justify-between transition-colors ${isLuxury ? 'hover:border-[#D4AF37]/50' : 'hover:border-indigo-500/50'}`}>
                 <div>
                   <p className="font-bold text-slate-900 dark:text-white">{pkg.credits}</p>
                   <p className="text-xs text-slate-500">{t('billing.plans.credits')}</p>
                 </div>
-                <button onClick={() => handleBuyCredits(pkg.credits, pkg.priceNum)} className="px-4 py-2 bg-slate-100 dark:bg-white/10 hover:bg-indigo-500 hover:text-white text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">
+                <button onClick={() => handleBuyCredits(pkg.credits, pkg.priceNum)} className={`px-4 py-2 bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors ${
+                  isLuxury ? 'hover:bg-[#D4AF37] hover:text-black' : 'hover:bg-indigo-500 hover:text-white'
+                }`}>
                   {pkg.price}
                 </button>
               </div>
@@ -156,9 +162,9 @@ export function PlansTab() {
                 value={promoCode}
                 onChange={(e) => setPromoCode(e.target.value)}
                 placeholder="PROMOCODE20" 
-                className="flex-1 bg-transparent border border-black/20 dark:border-white/20 rounded-lg p-2.5 text-slate-900 dark:text-white font-mono uppercase focus:outline-none focus:border-indigo-500" 
+                className={`flex-1 bg-transparent border border-black/20 dark:border-white/20 rounded-lg p-2.5 text-slate-900 dark:text-white font-mono uppercase focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} 
               />
-              <button onClick={handleApplyPromo} className="px-6 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+              <button onClick={handleApplyPromo} className={`px-6 text-sm font-medium rounded-lg transition-colors ${isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}>
                 {t('billing.plans.apply')}
               </button>
             </div>

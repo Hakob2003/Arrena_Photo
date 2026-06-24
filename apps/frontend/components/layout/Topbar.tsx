@@ -6,40 +6,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import { cn } from '../../lib/utils';
 
 export function Topbar() {
   const { user, credits } = useAuthStore();
-  const { isSidebarOpen, setSidebarOpen, locale, setLocale } = useUIStore();
+  const { isSidebarOpen, setSidebarOpen, locale, setLocale, preferences } = useUIStore();
   const { t } = useTranslation();
   const isMobile = useIsMobile();
+  const isLuxury = preferences.skin === 'LUXURY';
   const showTopbarLogo = !isSidebarOpen;
 
-  // We use a ref on the static wrapper to get the true absolute center on screen without feedback loops!
-  const topbarWrapperRef = useRef<HTMLDivElement>(null);
-  const topbarRef = useRef<HTMLDivElement>(null);
-
-  const [targetX, setTargetX] = useState(0);
-
+  // We no longer need manual targetX calculation, we will use Framer Motion layout animations.
   useEffect(() => {
-    const calc = () => {
-      // The user wants the logo to reach the LEFT EDGE of the Topbar.
-      const isMobileLocal = window.innerWidth < 768;
-      
-      // On desktop, the Topbar starts at 256px. On mobile, it starts at 0px.
-      const topbarLeftEdge = isMobileLocal ? 0 : 256;
-      
-      // Topbar center when open
-      const openTopbarCenterX = isMobileLocal 
-        ? window.innerWidth / 2 
-        : 256 + (window.innerWidth - 256) / 2;
-      
-      const targetDelta = topbarLeftEdge - openTopbarCenterX;
-      setTargetX(targetDelta);
-    };
-
-    calc();
-    window.addEventListener('resize', calc);
-    return () => window.removeEventListener('resize', calc);
+    // keeping empty for any future resize logic
   }, [isSidebarOpen]);
 
   const toggleLocale = () => {
@@ -47,7 +26,7 @@ export function Topbar() {
   };
 
   return (
-    <header className="h-16 border-b border-black/10 dark:border-white/5 bg-[rgba(255,255,255,0.75)] dark:bg-black/20 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 sticky top-0 z-[60] shadow-sm dark:shadow-none">
+    <header className={`h-16 border-b bg-[rgba(255,255,255,0.75)] dark:bg-black/20 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 sticky top-0 z-[60] shadow-sm dark:shadow-none ${isLuxury ? 'border-[#D4AF37]/20' : 'border-black/10 dark:border-white/5'}`}>
       <div className="flex items-center gap-2 md:hidden">
         {user && (
           <button 
@@ -63,33 +42,34 @@ export function Topbar() {
 
       {/* Topbar Logo Text */}
       {user ? (
-        <div ref={topbarWrapperRef} className="absolute left-12 md:left-1/2 md:-translate-x-1/2 flex items-center justify-start md:justify-center pointer-events-none h-full z-[60]">
+        <div className={`absolute pointer-events-none h-full z-[60] flex items-center transition-all duration-500 ease-in-out ${
+          isSidebarOpen 
+            ? "left-4 md:left-8 justify-start translate-x-0" 
+            : "left-12 md:left-1/2 justify-start md:justify-center md:-translate-x-1/2"
+        }`}>
           <motion.div
             layout
-            ref={topbarRef}
             initial={false}
             animate={{ 
-              opacity: (isSidebarOpen && isMobile) ? 0 : 1, 
-              x: (isSidebarOpen && !isMobile) ? targetX : 0, 
-              scale: (isSidebarOpen && isMobile) ? 0.1 : 1 
+              opacity: isSidebarOpen ? 0 : 1, 
+              scale: isSidebarOpen ? 0.8 : 1 
             }}
             transition={{ 
-              layout: { duration: 1.7, ease: "easeInOut" },
-              x: { duration: 1.7, ease: "easeInOut" },
-              scale: { duration: 1.7, ease: "easeInOut" },
-              opacity: { delay: (isSidebarOpen && isMobile) ? 1.5 : 0, duration: 0.2 } 
+              layout: { duration: 0.5, ease: "easeInOut" },
+              opacity: { duration: 0.3 },
+              scale: { duration: 0.4 }
             }}
           >
-            <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen ? 'pointer-events-none' : 'pointer-events-auto'}`}>
+            <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen && isMobile ? 'pointer-events-none' : 'pointer-events-auto'}`}>
               <img 
-                src={isMobile ? "/logo.png" : "/logo2.png"} 
+                src={isLuxury ? "/logoG2.png" : "/logo2.png"} 
                 alt="Arrena Photo Text" 
-                className="h-5 sm:h-6 w-auto object-contain hidden dark:block" 
+                className="h-6 sm:h-7 w-auto object-contain hidden dark:block" 
               />
               <img 
-                src={isMobile ? "/logo-light.png" : "/logo2-light.png"} 
+                src={isLuxury ? "/logoG2.png" : "/logo2-light.png"} 
                 alt="Arrena Photo Text" 
-                className="h-5 sm:h-6 w-auto object-contain block dark:hidden" 
+                className="h-6 sm:h-7 w-auto object-contain block dark:hidden" 
               />
             </Link>
           </motion.div>
@@ -98,12 +78,12 @@ export function Topbar() {
         <div className="flex items-center pointer-events-auto z-[60]">
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
             <img 
-              src="/logo.png" 
+              src={isLuxury ? "/logoG.png" : "/logo.png"} 
               alt="Arrena Photo Logo" 
               className="h-6 sm:h-8 w-auto object-contain hidden dark:block" 
             />
             <img 
-              src="/logo-light.png" 
+              src={isLuxury ? "/logoG.png" : "/logo-light.png"} 
               alt="Arrena Photo Logo" 
               className="h-6 sm:h-8 w-auto object-contain block dark:hidden" 
             />
@@ -131,26 +111,36 @@ export function Topbar() {
         {/* Language Toggle */}
         <button
           onClick={toggleLocale}
-          className="flex items-center gap-1.5 bg-black/[0.05] dark:bg-white/10 border border-black/10 dark:border-white/10 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full hover:bg-black/10 dark:hover:bg-white/20 transition-colors"
+          className={cn(
+            "flex items-center gap-1.5 bg-black/[0.05] border px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full transition-colors",
+            isLuxury 
+              ? "dark:bg-black/40 border-black/10 dark:border-[#D4AF37]/20 hover:bg-black/10 dark:hover:border-[#D4AF37]/50" 
+              : "dark:bg-white/10 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/20"
+          )}
           title={locale === 'ru' ? 'Switch to English' : 'Переключить на русский'}
         >
-          <span className={`text-xs sm:text-sm font-bold transition-colors ${locale === 'ru' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-gray-500'}`}>RU</span>
+          <span className={`text-xs sm:text-sm font-bold transition-colors ${locale === 'ru' ? (isLuxury ? 'text-[#D4AF37]' : 'text-indigo-600 dark:text-indigo-400') : 'text-slate-400 dark:text-gray-500'}`}>RU</span>
           <span className="text-slate-300 dark:text-gray-600 text-xs">/</span>
-          <span className={`text-xs sm:text-sm font-bold transition-colors ${locale === 'en' ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-gray-500'}`}>EN</span>
+          <span className={`text-xs sm:text-sm font-bold transition-colors ${locale === 'en' ? (isLuxury ? 'text-[#D4AF37]' : 'text-indigo-600 dark:text-indigo-400') : 'text-slate-400 dark:text-gray-500'}`}>EN</span>
         </button>
 
         {user ? (
           /* Credits Pill */
-          <div className="flex items-center gap-1 sm:gap-2 bg-indigo-500/10 border border-indigo-500/20 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full">
-            <span className="text-indigo-600 dark:text-indigo-400 text-xs sm:text-sm font-bold">⚡ {credits?.toLocaleString('en-US') || 0}</span>
-            <span className="text-[10px] sm:text-xs text-indigo-500/70 dark:text-indigo-300/70 uppercase hidden sm:inline">{t('auth.credits')}</span>
+          <div className={cn(
+            "flex items-center gap-1 sm:gap-2 border px-2 sm:px-3 py-1 sm:py-1.5 rounded-full",
+            isLuxury ? "bg-[#D4AF37]/10 border-[#D4AF37]/20" : "bg-indigo-500/10 border-indigo-500/20"
+          )}>
+            <span className={cn("text-xs sm:text-sm font-bold", isLuxury ? "text-[#D4AF37]" : "text-indigo-600 dark:text-indigo-400")}>⚡ {credits?.toLocaleString('en-US') || 0}</span>
+            <span className={cn("text-[10px] sm:text-xs uppercase hidden sm:inline", isLuxury ? "text-[#D4AF37]/70" : "text-indigo-500/70 dark:text-indigo-300/70")}>{t('auth.credits')}</span>
           </div>
         ) : (
           <div className="flex items-center gap-3">
             <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white transition-colors">
               {t('auth.login')}
             </Link>
-            <Link href="/register" className="text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors">
+            <Link href="/register" className={`text-sm font-medium px-4 py-2 rounded-lg transition-colors ${
+              isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+            }`}>
               {t('auth.register')}
             </Link>
           </div>

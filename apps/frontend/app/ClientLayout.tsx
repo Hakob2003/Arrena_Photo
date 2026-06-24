@@ -157,6 +157,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     // Set custom data attributes for CSS overrides
     root.setAttribute('data-accent', preferences.accentColor.toLowerCase());
     root.setAttribute('data-font-size', preferences.fontSize.toLowerCase());
+    root.setAttribute('data-skin', preferences.skin ? preferences.skin.toLowerCase() : 'luxury');
     if (preferences.compactMode) {
       root.classList.add('compact-mode');
     } else {
@@ -281,8 +282,12 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         {user && <Sidebar />}
         <div className="flex-1 flex flex-col min-w-0 relative">
           {/* Background Glow for Consumer App */}
-          <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
-          <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />
+          {preferences.skin !== 'LUXURY' && (
+            <>
+              <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[120px] rounded-full pointer-events-none" />
+              <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />
+            </>
+          )}
           
           <div className="flex items-center w-full z-20 relative">
             <div className="flex-1">

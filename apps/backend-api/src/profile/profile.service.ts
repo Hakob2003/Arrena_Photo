@@ -24,6 +24,7 @@ export class ProfileService {
         fontSize: true,
         compactMode: true,
         animationsEnabled: true,
+        skin: true,
         notifyEmail: true,
         notifyGenerations: true,
         notifyMarketing: true,

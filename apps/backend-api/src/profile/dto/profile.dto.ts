@@ -47,6 +47,10 @@ export class UpdatePreferencesDto {
   @IsOptional()
   @IsBoolean()
   animationsEnabled?: boolean;
+
+  @IsOptional()
+  @IsString()
+  skin?: string;
 }
 
 export class UpdateNotificationsDto {

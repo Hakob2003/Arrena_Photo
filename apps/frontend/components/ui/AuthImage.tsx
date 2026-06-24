@@ -10,7 +10,7 @@ interface AuthImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 export const AuthImage: React.FC<AuthImageProps> = ({ driveFileId, fallbackUrl, alt, ...props }) => {
   const [src, setSrc] = useState<string>(() => {
     let finalFallback = fallbackUrl;
-    if (finalFallback && !finalFallback.startsWith('http') && !finalFallback.startsWith('data:') && !finalFallback.startsWith('/')) {
+    if (finalFallback && !finalFallback.startsWith('http') && !finalFallback.startsWith('data:') && (!finalFallback.startsWith('/') || finalFallback.length > 500)) {
       finalFallback = `data:image/png;base64,${finalFallback}`;
     }
     return finalFallback;
@@ -18,7 +18,7 @@ export const AuthImage: React.FC<AuthImageProps> = ({ driveFileId, fallbackUrl, 
 
   useEffect(() => {
     let finalFallback = fallbackUrl;
-    if (finalFallback && !finalFallback.startsWith('http') && !finalFallback.startsWith('data:') && !finalFallback.startsWith('/')) {
+    if (finalFallback && !finalFallback.startsWith('http') && !finalFallback.startsWith('data:') && (!finalFallback.startsWith('/') || finalFallback.length > 500)) {
       finalFallback = `data:image/png;base64,${finalFallback}`;
     }
     
@@ -26,7 +26,7 @@ export const AuthImage: React.FC<AuthImageProps> = ({ driveFileId, fallbackUrl, 
     setSrc(finalFallback);
 
     // If we already have the full image via data URI, there's no need to download it again from Google Drive!
-    if (finalFallback.startsWith('data:')) {
+    if (finalFallback && finalFallback.startsWith('data:')) {
       return;
     }
 
@@ -43,7 +43,7 @@ export const AuthImage: React.FC<AuthImageProps> = ({ driveFileId, fallbackUrl, 
 
   const handleError = () => {
     let finalFallback = fallbackUrl;
-    if (finalFallback && !finalFallback.startsWith('http') && !finalFallback.startsWith('data:') && !finalFallback.startsWith('/')) {
+    if (finalFallback && !finalFallback.startsWith('http') && !finalFallback.startsWith('data:') && (!finalFallback.startsWith('/') || finalFallback.length > 500)) {
       finalFallback = `data:image/png;base64,${finalFallback}`;
     }
     if (src !== finalFallback) {

@@ -1,12 +1,16 @@
-import React from 'react';
+"use client";
+import React, { use } from 'react';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 
 type PageProps = {
   params: Promise<{ id: string }>;
 };
 
-export default async function TemplateDetailsPage({ params }: PageProps) {
-  const resolvedParams = await params;
+import { useUIStore } from '../../../store';
+
+export default function TemplateDetailsPage({ params }: PageProps) {
+  const resolvedParams = use(params);
+  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
   // Mock data
   const template = {
     id: resolvedParams.id,
@@ -32,7 +36,7 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
           <div className="flex gap-4 overflow-x-auto pb-4">
             {/* Additional gallery images would go here */}
             {[1,2,3].map(i => (
-              <div key={i} className="w-24 h-24 flex-shrink-0 bg-gray-200 dark:bg-gray-800 rounded-xl overflow-hidden cursor-pointer hover:ring-2 ring-blue-500 transition-all">
+              <div key={i} className={`w-24 h-24 flex-shrink-0 bg-gray-200 dark:bg-gray-800 rounded-xl overflow-hidden cursor-pointer hover:ring-2 transition-all ${isLuxury ? 'ring-[#D4AF37]' : 'ring-blue-500'}`}>
                 <img src={template.coverUrl} className="w-full h-full object-cover opacity-60 hover:opacity-100" />
               </div>
             ))}
@@ -57,7 +61,7 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
             <div>
               <p className="text-sm text-slate-400 dark:text-gray-500 mb-1">Created by</p>
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full"></div>
+                <div className={`w-10 h-10 rounded-full ${isLuxury ? 'bg-gradient-to-tr from-[#C5A028] to-[#D4AF37]' : 'bg-gradient-to-tr from-blue-500 to-purple-500'}`}></div>
                 <div>
                   <p className="font-bold">{template.author.name}</p>
                   <p className="text-xs text-slate-500 dark:text-gray-400">{template.author.followers} followers</p>
@@ -74,7 +78,9 @@ export default async function TemplateDetailsPage({ params }: PageProps) {
           </p>
 
           <div className="pt-6 border-t border-gray-200 dark:border-gray-800 flex gap-2 sm:gap-4 sticky bottom-4 z-10 bg-[#fafafa] dark:bg-black/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none p-4 sm:p-0 rounded-2xl sm:rounded-none">
-            <button className="flex-1 flex justify-center items-center bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-slate-900 dark:text-white py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-1">
+            <button className={`flex-1 flex justify-center items-center py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg transition-all transform hover:-translate-y-1 ${
+              isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-[#D4AF37]/30' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/30'
+            }`}>
               Buy Prompt • {template.price === 0 ? 'FREE' : `$${template.price}`}
               {template.oldPrice !== null && template.oldPrice !== undefined && template.price > template.oldPrice && (
                 <span title={`Previously $${template.oldPrice}`}>

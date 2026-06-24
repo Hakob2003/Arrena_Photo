@@ -147,6 +147,7 @@ interface UIPreferences {
   fontSize: 'SMALL' | 'MEDIUM' | 'LARGE';
   compactMode: boolean;
   animationsEnabled: boolean;
+  skin: 'NEON' | 'LUXURY';
 }
 
 interface UIState {
@@ -184,6 +185,7 @@ export const useUIStore = create<UIState>((set) => ({
     fontSize: 'MEDIUM',
     compactMode: false,
     animationsEnabled: true,
+    skin: 'LUXURY',
   },
   setPreferences: (prefs) => set((state) => ({ preferences: { ...state.preferences, ...prefs } })),
   hasSeenSwipeHints: false, // We'll initialize from localStorage in ClientLayout

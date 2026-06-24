@@ -6,10 +6,12 @@ import toast from 'react-hot-toast';
 import { useAuthStore } from '../../../../store';
 import { api } from '../../../../lib/api';
 import { useTranslation } from '../../../../lib/i18n';
+import { useUIStore } from '../../../../store';
 
 export function PaymentTab() {
   const { paymentMethods, setPaymentMethods, setDefaultPaymentMethod, fetchPaymentMethods } = useAuthStore();
   const { t } = useTranslation();
+  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
 
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -159,7 +161,9 @@ export function PaymentTab() {
       <div>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">{t('billing.payment.title')}</h2>
-          <button onClick={() => setAddModalOpen(true)} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+          <button onClick={() => setAddModalOpen(true)} className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+            isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+          }`}>
             {t('billing.payment.addCard')}
           </button>
         </div>
@@ -188,7 +192,7 @@ export function PaymentTab() {
                   <span className="text-[10px] bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400 px-2 py-0.5 rounded-full font-medium shrink-0">Balance: ${pm.balance}</span>
                 </div>
                 <div className="flex gap-2 shrink-0">
-                  <button onClick={() => { setEditingCard(pm); setEditModalOpen(true); }} className="text-slate-400 hover:text-indigo-500 transition-colors" title="Change limit">
+                  <button onClick={() => { setEditingCard(pm); setEditModalOpen(true); }} className={`text-slate-400 transition-colors ${isLuxury ? 'hover:text-[#D4AF37]' : 'hover:text-indigo-500'}`} title="Change limit">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                   </button>
                   {!pm.isDefault && (
@@ -210,9 +214,11 @@ export function PaymentTab() {
             </div>
           ))}
           
-          <div onClick={() => setAddModalOpen(true)} className="p-5 border-2 border-dashed border-black/10 dark:border-white/10 bg-transparent rounded-2xl flex items-center justify-center min-h-[140px] cursor-pointer hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-white/5 transition-all group">
+          <div onClick={() => setAddModalOpen(true)} className={`p-5 border-2 border-dashed border-black/10 dark:border-white/10 bg-transparent rounded-2xl flex items-center justify-center min-h-[140px] cursor-pointer hover:bg-slate-50 dark:hover:bg-white/5 transition-all group ${
+            isLuxury ? 'hover:border-[#D4AF37]/50' : 'hover:border-indigo-500/50'
+          }`}>
             <div className="text-center">
-              <p className="text-sm font-medium text-slate-500 dark:text-gray-400 group-hover:text-indigo-500">{t('billing.payment.addCard')}</p>
+              <p className={`text-sm font-medium text-slate-500 dark:text-gray-400 ${isLuxury ? 'group-hover:text-[#D4AF37]' : 'group-hover:text-indigo-500'}`}>{t('billing.payment.addCard')}</p>
             </div>
           </div>
         </div>
@@ -265,7 +271,9 @@ export function PaymentTab() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center justify-end gap-1 ml-auto">
+                    <button className={`flex items-center justify-end gap-1 ml-auto ${
+                      isLuxury ? 'text-[#D4AF37] hover:text-[#C5A028]' : 'text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300'
+                    }`}>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                       PDF
                     </button>
@@ -287,30 +295,32 @@ export function PaymentTab() {
               <form onSubmit={handleAddCardSubmit} className="flex flex-col gap-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Card Number</label>
-                  <input required type="text" value={newCard.number} onChange={handleNumberChange} placeholder="0000 0000 0000 0000" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                  <input required type="text" value={newCard.number} onChange={handleNumberChange} placeholder="0000 0000 0000 0000" className={`w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} />
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
                     <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Expiry Date</label>
-                    <input required type="text" value={newCard.expiry} onChange={handleExpiryChange} placeholder="MM/YY" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                    <input required type="text" value={newCard.expiry} onChange={handleExpiryChange} placeholder="MM/YY" className={`w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} />
                   </div>
                   <div className="flex-1">
                     <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">CVV</label>
-                    <input required type="text" value={newCard.cvv} onChange={handleCvvChange} placeholder="123" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                    <input required type="text" value={newCard.cvv} onChange={handleCvvChange} placeholder="123" className={`w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} />
                   </div>
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
                     <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Max Limit ($)</label>
-                    <input required type="number" min="0" value={newCard.limit} onChange={e => setNewCard({...newCard, limit: Number(e.target.value)})} placeholder="100" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                    <input required type="number" min="0" value={newCard.limit} onChange={e => setNewCard({...newCard, limit: Number(e.target.value)})} placeholder="100" className={`w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} />
                   </div>
                   <div className="flex-1">
                     <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Card Balance ($)</label>
-                    <input required type="number" min="0" value={newCard.balance} onChange={e => setNewCard({...newCard, balance: Number(e.target.value)})} placeholder="250" className="w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500" />
+                    <input required type="number" min="0" value={newCard.balance} onChange={e => setNewCard({...newCard, balance: Number(e.target.value)})} placeholder="250" className={`w-full bg-slate-50 dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} />
                   </div>
                 </div>
                 <div className="flex gap-3 mt-4">
-                  <button type="submit" className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">Save</button>
+                  <button type="submit" className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                  }`}>Save</button>
                   <button type="button" onClick={() => setAddModalOpen(false)} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">Cancel</button>
                 </div>
               </form>

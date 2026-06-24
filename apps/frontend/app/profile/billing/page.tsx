@@ -6,12 +6,14 @@ import { PlansTab } from './tabs/PlansTab';
 import { UsageTab } from './tabs/UsageTab';
 import { PaymentTab } from './tabs/PaymentTab';
 import { useTranslation } from '../../../lib/i18n';
+import { useUIStore } from '../../../store';
 
 type Tab = 'overview' | 'plans' | 'usage' | 'payment';
 
 export default function UserBillingPage() {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const { t } = useTranslation();
+  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
 
   const tabs = [
     { id: 'overview', label: t('billing.overview') },
@@ -49,7 +51,7 @@ export default function UserBillingPage() {
             onClick={() => setActiveTab(tb.id as Tab)}
             className={`whitespace-nowrap px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
               activeTab === tb.id 
-                ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' 
+                ? (isLuxury ? 'border-[#D4AF37] text-[#D4AF37]' : 'border-indigo-500 text-indigo-600 dark:text-indigo-400')
                 : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'
             }`}
           >

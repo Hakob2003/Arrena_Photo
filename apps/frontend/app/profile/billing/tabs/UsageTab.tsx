@@ -1,10 +1,13 @@
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend, Cell } from 'recharts';
 import { useTranslation } from '../../../../lib/i18n';
+import { useUIStore } from '../../../../store';
 
 export function UsageTab() {
+  const [timeRange, setTimeRange] = useState<'7d'|'30d'>('7d');
   const { t } = useTranslation();
+  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
 
   const usageData = [
     { date: '15 Jun', credits: 120 },
@@ -123,7 +126,7 @@ export function UsageTab() {
                         <>
                           <div className="w-full bg-slate-100 dark:bg-white/10 rounded-full h-1.5 mt-2">
                             <div 
-                              className={`h-1.5 rounded-full ${isExhausted ? 'bg-red-500' : isWarning ? 'bg-amber-500' : 'bg-indigo-500'}`} 
+                              className={`h-1.5 rounded-full ${isExhausted ? 'bg-red-500' : isWarning ? 'bg-amber-500' : (isLuxury ? 'bg-[#D4AF37]' : 'bg-indigo-500')}`} 
                               style={{ width: `${Math.min(percent, 100)}%` }}
                             ></div>
                           </div>

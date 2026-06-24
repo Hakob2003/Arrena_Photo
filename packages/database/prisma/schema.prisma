@@ -78,6 +78,7 @@ model User {
   fontSize          String  @default("MEDIUM") // "SMALL", "MEDIUM", "LARGE"
   compactMode       Boolean @default(false)
   animationsEnabled Boolean @default(true)
+  skin              String  @default("LUXURY") // "LUXURY", "NEON"
 
   // --- Notifications ---
   notifyEmail       Boolean @default(true)

@@ -6,6 +6,7 @@ import { templatesApi } from '../../lib/templates.api';
 import { useTranslation } from '../../lib/i18n';
 import { useCardSize } from '../../hooks/useCardSize';
 import { ViewSizeSelector } from '../../components/ui/ViewSizeSelector';
+import { useUIStore } from '../../store';
 
 export default function TemplatesPage() {
   const { t } = useTranslation();
@@ -14,6 +15,7 @@ export default function TemplatesPage() {
   const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { size: cardSize, setSize: setCardSize, mounted } = useCardSize('medium');
+  const isLuxury = useUIStore(state => state.skin === 'LUXURY');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,7 +76,7 @@ export default function TemplatesPage() {
             onClick={() => setSelectedCategory('__all__')}
           className={`px-5 py-2 rounded-full whitespace-nowrap transition-colors ${
             selectedCategory === '__all__' 
-              ? 'bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none text-white' 
+              ? (isLuxury ? 'bg-[#D4AF37] shadow-none text-black' : 'bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none text-white')
               : 'glass hover:bg-black/[0.05] dark:bg-white/10'
           }`}
         >
@@ -86,7 +88,7 @@ export default function TemplatesPage() {
             onClick={() => setSelectedCategory(c.id)}
             className={`px-5 py-2 rounded-full whitespace-nowrap transition-colors ${
               selectedCategory === c.id 
-                ? 'bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none text-white' 
+                ? (isLuxury ? 'bg-[#D4AF37] shadow-none text-black' : 'bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none text-white')
                 : 'glass hover:bg-black/[0.05] dark:bg-white/10'
             }`}
           >
@@ -124,7 +126,9 @@ export default function TemplatesPage() {
                 className="group glass-card rounded-2xl overflow-hidden cursor-pointer relative"
               >
                 {tpl.price !== undefined && tpl.price !== null && (
-                  <div className="absolute top-4 right-4 z-20 bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none/90 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1 shadow-lg">
+                  <div className={`absolute top-4 right-4 z-20 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg ${
+                    isLuxury ? 'bg-[#D4AF37]/90 text-black shadow-none' : 'bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none/90 text-white'
+                  }`}>
                     <span>⚡ {tpl.price}</span>
                     {tpl.oldPrice !== undefined && tpl.oldPrice !== null && tpl.price > tpl.oldPrice && (
                       <span title={`Previously ${tpl.oldPrice}`}>
@@ -147,7 +151,7 @@ export default function TemplatesPage() {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
                   />
                   <div className="absolute bottom-4 left-4 right-4 z-20">
-                    <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider">{tpl.category?.name || 'Uncategorized'}</span>
+                    <span className={`text-xs font-bold uppercase tracking-wider ${isLuxury ? 'text-[#D4AF37]' : 'text-indigo-400'}`}>{tpl.category?.name || 'Uncategorized'}</span>
                     <h3 className="text-lg font-bold text-slate-900 dark:text-slate-900 dark:text-white mt-1">{tpl.name}</h3>
                   </div>
                 </div>

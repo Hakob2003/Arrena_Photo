@@ -60,7 +60,7 @@ export class OpenAIImageProvider implements IImageProvider {
           if (markdownMatch && markdownMatch[1]) {
             imageUrl = markdownMatch[1];
           }
-          if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('data:') && !imageUrl.startsWith('/')) {
+          if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('data:') && (!imageUrl.startsWith('/') || imageUrl.length > 500)) {
             imageUrl = `data:image/png;base64,${imageUrl}`;
           }
           return [imageUrl];
@@ -74,7 +74,7 @@ export class OpenAIImageProvider implements IImageProvider {
           if (!imageUrl && item.b64_json) {
             imageUrl = `data:image/png;base64,${item.b64_json}`;
           }
-          if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('data:') && !imageUrl.startsWith('/')) {
+          if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('data:') && (!imageUrl.startsWith('/') || imageUrl.length > 500)) {
             imageUrl = `data:image/png;base64,${imageUrl}`;
           }
           return imageUrl;
