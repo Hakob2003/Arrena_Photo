@@ -30,7 +30,9 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
     }
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, open } = useDropzone({
+    noClick: true,
+    noKeyboard: true,
     onDrop,
     accept: { 'image/*': ['.jpeg', '.jpg', '.png', '.webp'] },
     maxSize: 5 * 1024 * 1024,
@@ -70,6 +72,7 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
     <div className="flex items-center gap-6">
       <div 
         {...getRootProps()}
+        onClick={open}
         className="relative group cursor-pointer w-24 h-24 rounded-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden shrink-0"
       >
         <input {...getInputProps()} />
@@ -93,7 +96,7 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
         <div className="flex items-center gap-3">
           <button 
             type="button"
-            onClick={() => document.querySelector<HTMLInputElement>('input[type="file"]')?.click()}
+            onClick={open}
             className="px-4 py-2 bg-white text-black font-medium rounded-lg text-sm hover:bg-gray-200 transition"
           >
             Change picture

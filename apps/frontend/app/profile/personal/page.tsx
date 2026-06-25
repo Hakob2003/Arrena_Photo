@@ -9,6 +9,8 @@ import { api } from '@/lib/api';
 import AvatarUpload from '@/components/profile/AvatarUpload';
 import { useTranslation } from '@/lib/i18n';
 
+import { useAuthStore } from '@/store';
+
 const personalSchema = z.object({
   name: z.string().max(30).optional(),
   surname: z.string().max(30).optional(),
@@ -77,11 +79,13 @@ export default function PersonalProfilePage() {
       },
     });
     setAvatarUrl(data.avatarUrl);
+    useAuthStore.getState().updateUser({ image: data.avatarUrl });
   };
 
   const handleAvatarRemove = async () => {
     await api.delete('/profile/avatar');
     setAvatarUrl(null);
+    useAuthStore.getState().updateUser({ image: null });
     toast.success('Avatar removed');
   };
 

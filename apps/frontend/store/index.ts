@@ -3,13 +3,14 @@ import { persist } from 'zustand/middleware';
 
 // --- Auth Store ---
 interface AuthState {
-  user: { id: string; name: string; email: string; role: string } | null;
+  user: { id: string; name: string; email: string; role: string; image?: string | null } | null;
   token: string | null;
   credits: number;
   planId: string;
   paymentMethods: any[];
   fetchPaymentMethods: () => Promise<void>;
   login: (user: any, token: string) => void;
+  updateUser: (userUpdates: Partial<any>) => void;
   logout: () => void;
   deductCredits: (amount: number) => void;
   addCredits: (amount: number) => void;
@@ -45,6 +46,7 @@ export const useAuthStore = create<AuthState>()(
         }
       },
       login: (user, token) => set({ user, token, credits: user.credits ?? 0, planId: user.planId ?? 'free' }),
+      updateUser: (userUpdates) => set((state) => ({ user: state.user ? { ...state.user, ...userUpdates } : null })),
       logout: () => {
         if (typeof window !== 'undefined') {
           localStorage.removeItem('token');

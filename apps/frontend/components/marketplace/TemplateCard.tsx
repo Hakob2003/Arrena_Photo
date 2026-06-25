@@ -21,6 +21,8 @@ export const TemplateCard: React.FC<{ template: TemplateProps }> = ({ template }
             src={template.coverUrl} 
             alt={template.name} 
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+            decoding="async"
           />
         ) : (
           <div className="flex items-center justify-center w-full h-full text-slate-500 dark:text-gray-400">

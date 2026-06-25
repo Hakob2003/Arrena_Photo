@@ -8,6 +8,7 @@ import { useUIStore, useAuthStore } from '../../store';
 import { useTranslation } from '../../lib/i18n';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { cn } from '../../lib/utils';
+import { getMediaUrl } from '../../lib/api';
 import { Home, Globe, Sparkles, Folder, ShoppingCart, Image as ImageIcon, Clock, Palette, Plug, Cloud, Settings, CreditCard, Crown } from 'lucide-react';
 
 export function Sidebar() {
@@ -335,10 +336,14 @@ export function Sidebar() {
         {user ? (
           <div className={`flex items-center ${isSidebarOpen ? 'justify-between w-full' : 'justify-center w-full'}`}>
             <div className={`flex items-center ${isSidebarOpen ? 'gap-3' : 'justify-center'}`}>
-              <div className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center font-bold ${
+              <div className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center font-bold overflow-hidden ${
                 isLuxury ? 'bg-gradient-to-tr from-[#C5A028] to-[#D4AF37] text-black' : 'bg-gradient-to-tr from-purple-500 to-indigo-500 text-white'
               }`}>
-                {user.name?.charAt(0) || 'U'}
+                {user.image ? (
+                  <img src={getMediaUrl(user.image)} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  user.name?.charAt(0) || 'U'
+                )}
               </div>
               <AnimatePresence mode="wait">
                 {isSidebarOpen && (

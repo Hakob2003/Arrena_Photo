@@ -44,6 +44,8 @@ export default function GalleryPage() {
             <img 
               src={`https://picsum.photos/seed/${item.seed}/600/${item.height}`}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-transparent/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
               <div className="flex items-center gap-3 mb-3">

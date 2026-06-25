@@ -61,6 +61,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                  id: data.id,
                  email: data.email,
                  name: data.name || data.email?.split('@')[0] || 'User',
+                 image: data.avatarUrl,
                  role: typeof data.role === 'object' ? data.role.name : data.role,
                  credits: data.credits,
                  planId: useAuthStore.getState().planId, // Preserve planId
