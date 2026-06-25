@@ -87,7 +87,7 @@ export function SwipeHint() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/5 backdrop-blur-none"
       >
         <div className="relative w-full max-w-sm px-6 flex flex-col items-center">
           
@@ -162,7 +162,7 @@ export function SwipeHint() {
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
                     currentSlide === i 
                       ? (isLuxury ? 'bg-[#D4AF37] w-6' : 'bg-indigo-500 w-6') 
-                      : 'bg-white/20'
+                      : 'bg-white/5'
                   }`}
                 />
               ))}

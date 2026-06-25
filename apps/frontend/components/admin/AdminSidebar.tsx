@@ -55,7 +55,7 @@ export function AdminSidebar() {
       {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div 
-          className="fixed inset-0 bg-[#fafafa] dark:bg-black/60 z-40 md:hidden backdrop-blur-sm transition-opacity"
+          className="fixed inset-0 bg-[#fafafa] dark:bg-black/5 z-40 md:hidden backdrop-blur-none transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
       )}

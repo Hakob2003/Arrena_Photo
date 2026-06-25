@@ -57,7 +57,7 @@ export default function PromocodesPage() {
                 <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Код купона</label>
                 <div className="flex gap-2">
                   <input type="text" className="flex-1 bg-transparent border border-black/20 dark:border-white/20 rounded-lg p-2 text-slate-900 dark:text-white font-mono uppercase focus:outline-none focus:border-indigo-500" placeholder="NEWYEAR20" />
-                  <button className="px-3 bg-black/5 dark:bg-white/10 rounded-lg text-sm font-medium hover:bg-black/10 dark:hover:bg-white/20">Сгенерировать</button>
+                  <button className="px-3 bg-black/5 dark:bg-white/10 rounded-lg text-sm font-medium hover:bg-black/10 dark:hover:bg-white/5">Сгенерировать</button>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">

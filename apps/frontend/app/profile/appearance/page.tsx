@@ -129,7 +129,7 @@ export default function AppearanceProfilePage() {
               className={cn(
                 "relative flex flex-col items-start gap-2 p-4 rounded-xl border transition-all overflow-hidden text-left",
                 watchSkin === 'LUXURY'
-                  ? "border-[#D4AF37] bg-black/40 shadow-[0_0_20px_rgba(212,175,55,0.15)]" 
+                  ? "border-[#D4AF37] bg-black/5 shadow-[0_0_20px_rgba(212,175,55,0.15)]" 
                   : "border-black/10 dark:border-white/10 hover:border-white/30 bg-transparent text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white"
               )}
             >

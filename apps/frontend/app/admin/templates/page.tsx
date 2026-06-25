@@ -260,16 +260,16 @@ export default function AdminTemplatesPage() {
           ) : (
             filteredTemplates.map((template) => (
               <div key={template.id} className="bg-[#111] border border-black/10 dark:border-gray-800 rounded-xl overflow-hidden flex flex-col relative group">
-                <div className="absolute top-2 left-2 z-10 bg-black/40 rounded-md backdrop-blur-md">
+                <div className="absolute top-2 left-2 z-10 bg-black/5 rounded-md backdrop-blur-none">
                   <Checkbox 
                     checked={selectedIds.has(template.id)}
                     onCheckedChange={(c) => handleSelectRow(template.id, c as boolean)}
                     className="m-2"
                   />
                 </div>
-                <div className="absolute top-2 right-2 z-10 bg-black/40 rounded-md backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-2 right-2 z-10 bg-black/5 rounded-md backdrop-blur-none opacity-0 group-hover:opacity-100 transition-opacity">
                   <DropdownMenu>
-                    <DropdownMenuTrigger className="h-8 w-8 text-white flex items-center justify-center rounded-md hover:bg-black/60">
+                    <DropdownMenuTrigger className="h-8 w-8 text-white flex items-center justify-center rounded-md hover:bg-black/5">
                       <MoreHorizontal className="h-4 w-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="bg-[#1a1a1a] border-gray-800 text-white">
@@ -318,7 +318,7 @@ export default function AdminTemplatesPage() {
                             handleQuickPriceChange(template.id, val);
                           }
                         }}
-                        className="w-16 h-6 px-1 py-0 text-xs text-right bg-black/20 border border-transparent rounded hover:border-gray-700 focus:border-indigo-500 focus:bg-black focus:outline-none"
+                        className="w-16 h-6 px-1 py-0 text-xs text-right bg-black/5 border border-transparent rounded hover:border-gray-700 focus:border-indigo-500 focus:bg-black focus:outline-none"
                       />
                       <span className="text-[10px] uppercase">cr.</span>
                       {template.oldPrice !== null && template.oldPrice !== undefined && (template.price || 0) > template.oldPrice && (
@@ -402,7 +402,7 @@ export default function AdminTemplatesPage() {
                               handleQuickPriceChange(template.id, val);
                             }
                           }}
-                          className="w-20 h-8 px-2 py-1 text-sm bg-transparent border border-transparent rounded-md hover:border-black/10 dark:hover:border-gray-800 focus:border-indigo-500 focus:bg-white dark:focus:bg-black/50 focus:outline-none"
+                          className="w-20 h-8 px-2 py-1 text-sm bg-transparent border border-transparent rounded-md hover:border-black/10 dark:hover:border-gray-800 focus:border-indigo-500 focus:bg-white dark:focus:bg-black/5 focus:outline-none"
                         />
                         <span className="text-xs text-slate-400 dark:text-gray-500">cr.</span>
                         {template.oldPrice !== null && template.oldPrice !== undefined && (template.price || 0) > template.oldPrice && (

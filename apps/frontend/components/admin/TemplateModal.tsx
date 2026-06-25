@@ -116,7 +116,7 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col !p-0 gap-0 bg-white dark:bg-[#0a0a0c]">
-        <div className="shrink-0 z-10 bg-white/80 dark:bg-[#0a0a0c]/80 backdrop-blur-md border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
+        <div className="shrink-0 z-10 bg-white/5 dark:bg-[#0a0a0c]/80 backdrop-blur-none border-b border-gray-200 dark:border-white/10 px-6 py-4 flex items-center justify-between">
           <DialogTitle className="text-xl font-semibold tracking-tight">{template ? "Edit Template" : "Create Template"}</DialogTitle>
         </div>
         
@@ -133,7 +133,7 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
                   value={formData.name} 
                   onChange={(e) => handleChange("name", e.target.value)} 
                   placeholder="e.g. Cyberpunk City"
-                  className="bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  className="bg-gray-50 dark:bg-black/5 border-gray-200 dark:border-white/10 focus-visible:ring-1 focus-visible:ring-indigo-500"
                   required
                 />
               </div>
@@ -142,7 +142,7 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
                 <select 
                   value={formData.categoryId || ""} 
                   onChange={(e) => handleChange("categoryId", e.target.value)}
-                  className="flex h-10 w-full rounded-md px-3 py-2 text-sm bg-gray-50 dark:bg-black/50 border border-gray-200 dark:border-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  className="flex h-10 w-full rounded-md px-3 py-2 text-sm bg-gray-50 dark:bg-black/5 border border-gray-200 dark:border-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
                 >
                   <option value="" disabled>Select a category</option>
                   {categories.map(c => (
@@ -157,7 +157,7 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
                 value={formData.description} 
                 onChange={(e) => handleChange("description", e.target.value)} 
                 placeholder="A brief description of this template..."
-                className="bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 resize-none h-20 focus-visible:ring-1 focus-visible:ring-indigo-500"
+                className="bg-gray-50 dark:bg-black/5 border-gray-200 dark:border-white/10 resize-none h-20 focus-visible:ring-1 focus-visible:ring-indigo-500"
               />
             </div>
           </div>
@@ -170,7 +170,7 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
             <div className="space-y-2">
               <Label className="text-gray-700 dark:text-gray-300">Prompt <span className="text-red-500">*</span></Label>
               <Textarea 
-                className="min-h-[120px] bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 font-mono text-sm focus-visible:ring-1 focus-visible:ring-indigo-500"
+                className="min-h-[120px] bg-gray-50 dark:bg-black/5 border-gray-200 dark:border-white/10 font-mono text-sm focus-visible:ring-1 focus-visible:ring-indigo-500"
                 value={formData.prompt} 
                 onChange={(e) => handleChange("prompt", e.target.value)} 
                 placeholder="A highly detailed 8k cinematic photo..."
@@ -183,7 +183,7 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
                 value={formData.negativePrompt} 
                 onChange={(e) => handleChange("negativePrompt", e.target.value)} 
                 placeholder="ugly, blurry, low res..."
-                className="bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 font-mono text-sm resize-none h-20 focus-visible:ring-1 focus-visible:ring-indigo-500"
+                className="bg-gray-50 dark:bg-black/5 border-gray-200 dark:border-white/10 font-mono text-sm resize-none h-20 focus-visible:ring-1 focus-visible:ring-indigo-500"
               />
             </div>
             <div className="space-y-2">
@@ -191,7 +191,7 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
               <select 
                 value={formData.recommendedModels?.[0] || ""} 
                 onChange={(e) => handleChange("recommendedModels", [e.target.value])}
-                className="flex h-10 w-full rounded-md px-3 py-2 text-sm bg-gray-50 dark:bg-black/50 border border-gray-200 dark:border-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                className="flex h-10 w-full rounded-md px-3 py-2 text-sm bg-gray-50 dark:bg-black/5 border border-gray-200 dark:border-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
               >
                 <option value="" disabled>Select model...</option>
                 {aiModels.map(model => (
@@ -220,7 +220,7 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
                   value={formData.coverUrl} 
                   onChange={(e) => handleChange("coverUrl", e.target.value)} 
                   placeholder="https://example.com/image.jpg"
-                  className="bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  className="bg-gray-50 dark:bg-black/5 border-gray-200 dark:border-white/10 focus-visible:ring-1 focus-visible:ring-indigo-500"
                 />
               </div>
               <div className="space-y-2">
@@ -231,7 +231,7 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
                   step="1"
                   value={formData.price !== undefined ? formData.price : ""} 
                   onChange={(e) => handleChange("price", e.target.value)} 
-                  className="bg-gray-50 dark:bg-black/50 border-gray-200 dark:border-white/10 focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  className="bg-gray-50 dark:bg-black/5 border-gray-200 dark:border-white/10 focus-visible:ring-1 focus-visible:ring-indigo-500"
                 />
               </div>
               <div className="sm:col-span-3 space-y-2">
@@ -239,7 +239,7 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
                 <select 
                   value={formData.status || "DRAFT"} 
                   onChange={(e) => handleChange("status", e.target.value)}
-                  className="flex h-10 w-full sm:w-1/3 rounded-md px-3 py-2 text-sm bg-gray-50 dark:bg-black/50 border border-gray-200 dark:border-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
+                  className="flex h-10 w-full sm:w-1/3 rounded-md px-3 py-2 text-sm bg-gray-50 dark:bg-black/5 border border-gray-200 dark:border-white/10 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-indigo-500"
                 >
                   <option value="DRAFT">Draft</option>
                   <option value="PUBLISHED">Published</option>
@@ -252,7 +252,7 @@ export function TemplateModal({ isOpen, onClose, template, onSave, categories }:
           </div>
 
           {/* Footer Actions */}
-          <div className="shrink-0 flex justify-end gap-3 bg-white/80 dark:bg-[#0a0a0c]/80 backdrop-blur-md p-4 px-6 border-t border-gray-200 dark:border-white/10 mt-auto">
+          <div className="shrink-0 flex justify-end gap-3 bg-white/5 dark:bg-[#0a0a0c]/80 backdrop-blur-none p-4 px-6 border-t border-gray-200 dark:border-white/10 mt-auto">
             <Button type="button" variant="outline" onClick={onClose} className="border-gray-200 dark:border-white/10 hover:bg-gray-100 dark:hover:bg-white/5">
               Cancel
             </Button>

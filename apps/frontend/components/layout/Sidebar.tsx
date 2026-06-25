@@ -42,10 +42,13 @@ export function Sidebar() {
     { href: '/profile/billing', label: t('nav.billing'), icon: <CreditCard className="w-5 h-5" /> },
   ];
 
-  const renderLinks = (links: typeof MAIN_LINKS) => (
+  const renderLinks = (links: any[], startIndex = 0) => (
     <ul className="space-y-1">
-      {links.map(link => {
+      {links.map((link, i) => {
+        const globalIndex = startIndex + i;
         const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
+        // Use globalIndex to offset the gradient, ensuring a single unified 2D gradient
+        const gradientPosY = `${globalIndex * 8}%`;
         return (
           <li key={link.href}>
             <Link 
@@ -59,9 +62,9 @@ export function Sidebar() {
                   layoutId="sidebar-active" 
                   className={cn(
                     "absolute inset-0 rounded-lg border-l-2",
-                    isLuxury ? "bg-gradient-to-r from-[#D4AF37]/10 to-transparent border-[#D4AF37]" : 
-                    isNeon ? "bg-gradient-to-r from-indigo-500/20 to-transparent border-indigo-400 shadow-[inset_4px_0_15px_rgba(99,102,241,0.4)]" :
-                    "bg-gradient-to-r from-indigo-500/10 dark:from-indigo-500/20 to-transparent border-indigo-500"
+                    isLuxury ? "bg-gradient-to-r from-[#D4AF37]/5 to-transparent border-[#D4AF37]" : 
+                    isNeon ? "bg-gradient-to-r from-indigo-500/5 to-transparent border-indigo-400 shadow-[inset_4px_0_15px_rgba(99,102,241,0.15)]" :
+                    "bg-gradient-to-r from-indigo-500/5 dark:from-indigo-500/10 to-transparent border-indigo-500"
                   )}
                   transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
@@ -69,9 +72,9 @@ export function Sidebar() {
               <span className={cn(
                 "relative z-10 w-6 flex items-center justify-center transition-all", 
                 isActive && isLuxury ? "text-[#D4AF37]" : "",
-                isNeon ? (isActive ? "drop-shadow-[0_0_10px_rgba(99,102,241,0.9)]" : "drop-shadow-[0_0_4px_rgba(99,102,241,0.4)]") : ""
+                (isNeon && isActive) ? "drop-shadow-[0_0_10px_rgba(99,102,241,0.9)]" : ""
               )}>
-                {isNeon ? (
+                {(isNeon && isActive) ? (
                   <>
                     <svg style={{ width: 0, height: 0, position: 'absolute' }} aria-hidden="true" focusable="false">
                       <mask id={`icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')}`}>
@@ -90,7 +93,14 @@ export function Sidebar() {
                         mask: `url(#icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')})`
                       }}
                     >
-                      <div className="w-full h-full bg-fixed bg-gradient-to-b from-indigo-400 via-purple-400 to-cyan-400 bg-[length:100%_125%] animate-gradient-y" />
+                      <div 
+                        className="w-full h-full" 
+                        style={{
+                          backgroundImage: 'linear-gradient(135deg, #818cf8, #c084fc, #22d3ee)',
+                          backgroundSize: '400% 1200%',
+                          backgroundPosition: `0% ${gradientPosY}`
+                        }}
+                      />
                     </div>
                     <div className="opacity-0 w-5 h-5 flex items-center justify-center">
                       {link.icon}
@@ -106,10 +116,17 @@ export function Sidebar() {
                     exit={{ opacity: 0, width: 0 }}
                     className={cn(
                       "relative z-10 font-medium whitespace-nowrap overflow-hidden transition-all flex items-center",
-                      isNeon ? "drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" : ""
+                      (isNeon && isActive) ? "drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" : ""
                     )}
                   >
-                    <span className={isNeon ? "bg-clip-text text-transparent bg-fixed bg-gradient-to-b from-indigo-400 via-purple-400 to-cyan-400 bg-[length:100%_125%] animate-gradient-y" : ""}>
+                    <span 
+                      className={(isNeon && isActive) ? "bg-clip-text text-transparent" : ""}
+                      style={(isNeon && isActive) ? {
+                        backgroundImage: 'linear-gradient(135deg, #818cf8, #c084fc, #22d3ee)',
+                        backgroundSize: '400% 1200%',
+                        backgroundPosition: `20% ${gradientPosY}`
+                      } : undefined}
+                    >
                       {link.label}
                     </span>
                   </motion.span>
@@ -129,10 +146,13 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile Overlay */}
+      {/* Overlay to close sidebar when clicking outside */}
       {isSidebarOpen && (
         <div 
-          className="fixed inset-0 bg-white/60 dark:bg-black/60 z-40 md:hidden backdrop-blur-sm transition-opacity"
+          className={cn(
+            "fixed inset-0 z-40 transition-opacity",
+            isMobile ? "bg-white/5 dark:bg-black/5 backdrop-blur-none" : "bg-transparent"
+          )}
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -149,24 +169,25 @@ export function Sidebar() {
           damping: 30,
           mass: 0.8
         }}
-        onClick={(e) => {
-          // If sidebar is closed on desktop, clicking it anywhere opens it.
-          if (!isMobile && !isSidebarOpen) {
-            setSidebarOpen(true);
-          }
-        }}
         className={cn(
-          "fixed inset-y-0 left-0 z-50 border-r bg-[rgba(255,255,255,0.75)] dark:bg-black/60 backdrop-blur-xl shadow-lg dark:shadow-none flex flex-col overflow-hidden",
-          !isMobile ? 'relative cursor-pointer' : '',
-          isSidebarOpen ? 'cursor-default' : '',
+          "fixed inset-y-0 left-0 z-50 border-r bg-transparent dark:bg-transparent backdrop-blur-none shadow-lg dark:shadow-none flex flex-col overflow-hidden",
+          !isMobile ? 'relative' : '',
           isLuxury ? 'border-[#D4AF37]/20' : 'border-black/10 dark:border-white/5'
         )}
       >
-        <div className={`flex items-center justify-center ${isSidebarOpen ? 'p-0' : 'pt-4 pb-2 px-0 border-b border-black/10 dark:border-white/5 md:border-none'}`}>
-          <div className={`flex items-center justify-center overflow-hidden relative mx-auto ${isSidebarOpen ? 'w-[130px] h-[130px] my-4' : 'w-full h-[50px]'}`}>
-            <Link href="/" className="relative flex items-center hover:opacity-80 transition-opacity w-full h-full justify-center">
+        <div className={`flex items-center relative ${isSidebarOpen ? 'justify-center p-0' : 'justify-start pt-4 pb-2 px-1 border-b border-black/10 dark:border-white/5 md:border-none'}`}>
+          <div className={`flex items-center justify-center overflow-hidden relative ${isSidebarOpen ? (isLuxury ? 'w-[130px] h-[130px] mx-auto my-4' : 'w-[160px] h-[60px] mx-auto my-2') : 'w-10 h-10 ml-2'}`}>
+            <Link 
+              href="/" 
+              className="relative flex items-center hover:opacity-80 transition-opacity w-full h-full justify-center"
+              onClick={(e) => {
+                if (!isMobile && !isSidebarOpen) {
+                  e.preventDefault();
+                  setSidebarOpen(true);
+                }
+              }}
+            >
               
-              {/* Closed State (Icon only: logo1 / logoG1) */}
               <AnimatePresence>
                 {!isSidebarOpen && (
                   <motion.div 
@@ -174,7 +195,7 @@ export function Sidebar() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute flex justify-center w-full"
+                    className="absolute flex justify-center w-full cursor-pointer"
                   >
                     <img 
                       src={isLuxury ? "/logoG1.png" : "/logo1.png"} 
@@ -190,7 +211,6 @@ export function Sidebar() {
                 )}
               </AnimatePresence>
 
-              {/* Open State (Full logo: logo / logoG) */}
               <AnimatePresence>
                 {isSidebarOpen && (
                   <motion.div
@@ -198,17 +218,17 @@ export function Sidebar() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute inset-0 flex items-center justify-center w-full h-full"
+                    className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer"
                   >
                     <img 
                       src={isLuxury ? "/logoG.png" : "/logo.png"} 
                       alt="Arrena Photo Logo" 
-                      className="w-[130px] h-[130px] object-contain hidden dark:block" 
+                      className={cn("object-contain hidden dark:block", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
                     />
                     <img 
                       src={isLuxury ? "/logoG.png" : "/logo-light.png"} 
                       alt="Arrena Photo Logo" 
-                      className="w-[130px] h-[130px] object-contain block dark:hidden" 
+                      className={cn("object-contain block dark:hidden", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
                     />
                   </motion.div>
                 )}
@@ -216,17 +236,16 @@ export function Sidebar() {
               
             </Link>
           </div>
-          {/* Close / Collapse button */}
           <button 
-            className={`text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white p-2 transition-opacity ${!isSidebarOpen && !isMobile ? 'hidden' : 'block'}`}
-            onClick={() => setSidebarOpen(false)}
+            className={`text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-opacity ${!isMobile ? 'block' : (isSidebarOpen ? 'block' : 'hidden')} ${isSidebarOpen ? 'p-2' : 'absolute right-1 p-1'}`}
+            onClick={() => setSidebarOpen(!isSidebarOpen)}
           >
             {isMobile ? (
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ transform: isSidebarOpen ? 'rotate(0)' : 'rotate(180deg)' }}>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             )}
@@ -238,69 +257,92 @@ export function Sidebar() {
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
             {isSidebarOpen ? t('nav.sectionOverview') : "•••"}
           </p>
-          {renderLinks(MAIN_LINKS)}
+          {renderLinks(MAIN_LINKS, 0)}
         </div>
         
         <div>
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
             {isSidebarOpen ? t('nav.sectionStudio') : "•••"}
           </p>
-          {renderLinks(USER_LINKS)}
+          {renderLinks(USER_LINKS, MAIN_LINKS.length)}
         </div>
 
         <div>
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
             {isSidebarOpen ? t('nav.sectionSettings') : "•••"}
           </p>
-          {renderLinks(SETTINGS_LINKS)}
+          {renderLinks(SETTINGS_LINKS, MAIN_LINKS.length + USER_LINKS.length)}
           
-          {user?.role === 'ADMIN' && (
-            <div className="mt-8">
-              <p className={cn("text-[10px] font-semibold uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left transition-all", 
-                isLuxury ? "text-[#D4AF37]" : 
-                isNeon ? "text-indigo-400 drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" : 
-                "text-pink-500"
-              )}>
-                {isSidebarOpen ? t('nav.adminPanel') : "ADM"}
-              </p>
-              <ul className="space-y-1">
-                <li>
-                  <Link 
-                    href="/admin/ai-models"
-                    className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-slate-500 hover:text-slate-900 hover:bg-[#fafafa] dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5 group ${!isSidebarOpen ? 'justify-center !px-0' : ''}`}
-                  >
-                    <span className={cn(
-                      "relative z-10 w-6 flex items-center justify-center transition-all", 
-                      isLuxury ? "text-[#D4AF37]" : "",
-                      isNeon ? "drop-shadow-[0_0_4px_rgba(99,102,241,0.4)]" : ""
-                    )}>
-                      {isNeon ? (
-                        <>
-                          <svg style={{ width: 0, height: 0, position: 'absolute' }} aria-hidden="true" focusable="false">
-                            <mask id="icon-mask-admin">
-                              <svg width="32" height="32" viewBox="0 0 32 32">
-                                <rect width="32" height="32" fill="black" />
-                                <g transform="translate(6, 6)" style={{ color: "white" }} stroke="white" fill="none">
-                                  <Crown className="w-5 h-5" style={{ overflow: "visible" }} />
-                                </g>
-                              </svg>
-                            </mask>
-                          </svg>
-                          <div 
-                            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 pointer-events-none"
-                            style={{ 
-                              WebkitMask: `url(#icon-mask-admin)`,
-                              mask: `url(#icon-mask-admin)`
-                            }}
-                          >
-                            <div className="w-full h-full bg-fixed bg-gradient-to-b from-indigo-400 via-purple-400 to-cyan-400 bg-[length:100%_125%] animate-gradient-y" />
-                          </div>
-                          <div className="opacity-0 w-5 h-5 flex items-center justify-center">
-                            <Crown className="w-5 h-5" />
-                          </div>
-                        </>
-                      ) : <Crown className="w-5 h-5" />}
-                    </span>
+          {user?.role === 'ADMIN' && (() => {
+            const isAdminActive = pathname.startsWith('/admin');
+            return (
+              <div className="mt-8">
+                <p className={cn("text-[10px] font-semibold uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left transition-all", 
+                  isLuxury ? "text-[#D4AF37]" : 
+                  isNeon ? "text-indigo-400 drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" : 
+                  "text-pink-500"
+                )}>
+                  {isSidebarOpen ? t('nav.adminPanel') : "ADM"}
+                </p>
+                <ul className="space-y-1">
+                  <li>
+                    <Link 
+                      href="/admin/ai-models"
+                      className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-slate-500 hover:text-slate-900 hover:bg-[#fafafa] dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5 group ${!isSidebarOpen ? 'justify-center !px-0' : ''} ${isAdminActive ? 'text-slate-900 dark:text-white' : ''}`}
+                    >
+                      {isAdminActive && (
+                        <motion.div 
+                          layoutId="sidebar-active" 
+                          className={cn(
+                            "absolute inset-0 rounded-lg border-l-2",
+                            isLuxury ? "bg-gradient-to-r from-[#D4AF37]/5 to-transparent border-[#D4AF37]" : 
+                            isNeon ? "bg-gradient-to-r from-indigo-500/5 to-transparent border-indigo-400 shadow-[inset_4px_0_15px_rgba(99,102,241,0.15)]" :
+                            "bg-gradient-to-r from-indigo-500/5 dark:from-indigo-500/10 to-transparent border-indigo-500"
+                          )}
+                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                        />
+                      )}
+                      <span className={cn(
+                        "relative z-10 w-6 flex items-center justify-center transition-all",
+                        isAdminActive && isLuxury ? "text-[#D4AF37]" : "",
+                        (isNeon && isAdminActive) ? "drop-shadow-[0_0_10px_rgba(99,102,241,0.9)]" : ""
+                      )}>
+                        {(isNeon && isAdminActive) ? (
+                          <>
+                            <svg style={{ width: 0, height: 0, position: 'absolute' }} aria-hidden="true" focusable="false">
+                              <mask id="icon-mask-admin">
+                                <svg width="32" height="32" viewBox="0 0 32 32">
+                                  <rect width="32" height="32" fill="black" />
+                                  <g transform="translate(6, 6)" style={{ color: "white" }} stroke="white" fill="none">
+                                    <Crown className="w-5 h-5" style={{ overflow: "visible" }} />
+                                  </g>
+                                </svg>
+                              </mask>
+                            </svg>
+                            <div 
+                              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 pointer-events-none"
+                              style={{ 
+                                WebkitMask: `url(#icon-mask-admin)`,
+                                mask: `url(#icon-mask-admin)`
+                              }}
+                            >
+                              <div 
+                                className="w-full h-full" 
+                                style={{
+                                  backgroundImage: 'linear-gradient(135deg, #818cf8, #c084fc, #22d3ee)',
+                                  backgroundSize: '400% 1200%',
+                                  backgroundPosition: `0% ${(MAIN_LINKS.length + USER_LINKS.length + SETTINGS_LINKS.length) * 8}%`
+                                }}
+                              />
+                            </div>
+                            <div className="opacity-0 w-5 h-5 flex items-center justify-center">
+                              <Crown className="w-5 h-5" />
+                            </div>
+                          </>
+                        ) : (
+                          <Crown className="w-5 h-5" />
+                        )}
+                      </span>
                     <AnimatePresence mode="wait">
                       {isSidebarOpen && (
                         <motion.span 
@@ -309,10 +351,17 @@ export function Sidebar() {
                           exit={{ opacity: 0, width: 0 }}
                           className={cn(
                             "relative z-10 font-medium whitespace-nowrap overflow-hidden transition-all flex items-center",
-                            isNeon ? "drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" : ""
+                            (isNeon && isAdminActive) ? "drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" : ""
                           )}
                         >
-                          <span className={isNeon ? "bg-clip-text text-transparent bg-fixed bg-gradient-to-b from-indigo-400 via-purple-400 to-cyan-400 bg-[length:100%_125%] animate-gradient-y" : ""}>
+                          <span 
+                            className={(isNeon && isAdminActive) ? "bg-clip-text text-transparent" : ""}
+                            style={(isNeon && isAdminActive) ? {
+                              backgroundImage: 'linear-gradient(135deg, #818cf8, #c084fc, #22d3ee)',
+                              backgroundSize: '400% 1200%',
+                              backgroundPosition: `20% ${(MAIN_LINKS.length + USER_LINKS.length + SETTINGS_LINKS.length) * 8}%`
+                            } : undefined}
+                          >
                             {t('nav.goToAdmin')}
                           </span>
                         </motion.span>
@@ -327,7 +376,8 @@ export function Sidebar() {
                 </li>
               </ul>
             </div>
-          )}
+            );
+          })()}
         </div>
       </div>
       

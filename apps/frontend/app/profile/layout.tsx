@@ -70,7 +70,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
 
       {/* Main Content Area */}
       <main className="flex-1 min-w-0">
-        <div className="bg-transparent/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-xl">
+        <div className="bg-transparent/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl p-6 md:p-8 backdrop-blur-none">
           {children}
         </div>
       </main>

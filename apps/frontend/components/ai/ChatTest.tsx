@@ -113,7 +113,7 @@ export function ChatTest() {
         )}
         <div ref={messagesEndRef} />
       </div>
-      <div className="p-4 border-t border-black/10 dark:border-white/10 bg-[#fafafa] dark:bg-black/50">
+      <div className="p-4 border-t border-black/10 dark:border-white/10 bg-[#fafafa] dark:bg-black/5">
         <div className="flex gap-2">
           <input 
             type="text" 

@@ -181,7 +181,7 @@ export default function AdminUsersPage() {
           <div className="flex flex-wrap gap-2">
             <button 
               onClick={() => setEditingCredits(user)}
-              className="text-xs bg-black/[0.05] dark:bg-white/10 hover:bg-white/20 text-slate-900 dark:text-slate-900 dark:text-white px-2 py-1 rounded transition-colors"
+              className="text-xs bg-black/[0.05] dark:bg-white/10 hover:bg-white/5 text-slate-900 dark:text-slate-900 dark:text-white px-2 py-1 rounded transition-colors"
             >
               Credits
             </button>
@@ -268,7 +268,7 @@ export default function AdminUsersPage() {
       <div className="mt-8 relative overflow-hidden bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-2xl">
         <div className="overflow-x-auto w-full">
           <table className="w-full min-w-[800px] text-left text-sm text-slate-500 dark:text-gray-400">
-          <thead className="text-xs text-slate-400 dark:text-gray-500 uppercase bg-transparent/40 border-b border-black/10 dark:border-white/10">
+          <thead className="text-xs text-slate-400 dark:text-gray-500 uppercase bg-white/5 border-b border-black/10 dark:border-white/10">
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => (

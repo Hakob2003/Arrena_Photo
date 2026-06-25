@@ -56,8 +56,8 @@ export default function GalleryPage() {
                 {item.prompt}
               </p>
               <div className="flex gap-2 mt-4">
-                <button className="flex-1 glass text-slate-900 dark:text-slate-900 dark:text-white text-xs font-bold py-2 rounded-lg hover:bg-white/20">{t('gallery.remix')}</button>
-                <button className="w-10 glass flex items-center justify-center rounded-lg hover:bg-white/20">❤️</button>
+                <button className="flex-1 glass text-slate-900 dark:text-slate-900 dark:text-white text-xs font-bold py-2 rounded-lg hover:bg-white/5">{t('gallery.remix')}</button>
+                <button className="w-10 glass flex items-center justify-center rounded-lg hover:bg-white/5">❤️</button>
               </div>
             </div>
           </motion.div>

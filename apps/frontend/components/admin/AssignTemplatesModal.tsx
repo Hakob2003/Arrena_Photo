@@ -94,7 +94,7 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
   };
 
   return (
-    <div className="fixed inset-0 bg-[#fafafa] dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-[#fafafa] dark:bg-black/5 backdrop-blur-none z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div 
         className="bg-[#111] border border-black/10 dark:border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col"
         onClick={e => e.stopPropagation()}
@@ -163,7 +163,7 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
                         type="checkbox"
                         checked={selectedIds.has(t.id)}
                         onChange={() => toggleSelection(t.id)}
-                        className="peer appearance-none w-5 h-5 border border-black/20 dark:border-white/20 rounded bg-[#fafafa] dark:bg-black/20 checked:bg-indigo-500 checked:border-indigo-500 transition-colors cursor-pointer"
+                        className="peer appearance-none w-5 h-5 border border-black/20 dark:border-white/20 rounded bg-[#fafafa] dark:bg-black/5 checked:bg-indigo-500 checked:border-indigo-500 transition-colors cursor-pointer"
                       />
                       <svg 
                         className="absolute w-3.5 h-3.5 text-slate-900 dark:text-slate-900 dark:text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" 

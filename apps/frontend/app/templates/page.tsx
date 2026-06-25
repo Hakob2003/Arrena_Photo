@@ -126,7 +126,7 @@ export default function TemplatesPage() {
                 className="group glass-card rounded-2xl overflow-hidden cursor-pointer relative"
               >
                 {tpl.price !== undefined && tpl.price !== null && (
-                  <div className={`absolute top-4 right-4 z-20 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg ${
+                  <div className={`absolute top-4 right-4 z-20 backdrop-blur-none px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg ${
                     isLuxury ? 'bg-[#D4AF37]/90 text-black shadow-none' : 'bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none/90 text-white'
                   }`}>
                     <span>⚡ {tpl.price}</span>

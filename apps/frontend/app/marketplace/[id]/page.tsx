@@ -77,7 +77,7 @@ export default function TemplateDetailsPage({ params }: PageProps) {
             {template.description}
           </p>
 
-          <div className="pt-6 border-t border-gray-200 dark:border-gray-800 flex gap-2 sm:gap-4 sticky bottom-4 z-10 bg-transparent/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none p-4 sm:p-0 rounded-2xl sm:rounded-none">
+          <div className="pt-6 border-t border-gray-200 dark:border-gray-800 flex gap-2 sm:gap-4 sticky bottom-4 z-10 bg-transparent/80 sm:bg-transparent backdrop-blur-none sm:backdrop-blur-none p-4 sm:p-0 rounded-2xl sm:rounded-none">
             <button className={`flex-1 flex justify-center items-center py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg shadow-lg transition-all transform hover:-translate-y-1 ${
               isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-[#D4AF37]/30' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/30'
             }`}>

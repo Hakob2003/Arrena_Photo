@@ -133,7 +133,7 @@ export default function FeedPage() {
                     <div className="flex items-center gap-2">
                       <button 
                         onClick={(e) => handleLike(e, gen.id)}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-md transition-colors ${gen.isLiked ? 'bg-red-500/20 text-red-400' : 'bg-white/20 text-white hover:bg-white/30'}`}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-none transition-colors ${gen.isLiked ? 'bg-red-500/20 text-red-400' : 'bg-white/5 text-white hover:bg-white/5'}`}
                       >
                         <Heart className={`w-4 h-4 ${gen.isLiked ? 'fill-current' : ''}`} />
                         <span className="text-xs font-bold">{gen.likesCount || 0}</span>

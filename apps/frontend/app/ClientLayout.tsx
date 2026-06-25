@@ -103,6 +103,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                id: data.id,
                email: data.email,
                name: data.name || data.email?.split('@')[0] || 'User',
+               image: data.avatarUrl,
                role: typeof data.role === 'object' ? data.role.name : data.role,
                credits: data.credits,
                planId: useAuthStore.getState().planId, // Preserve planId
@@ -286,14 +287,14 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
           {preferences.skin === 'NEON' ? (
             <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-b from-[#0f0c29]/80 via-[#302b63]/40 to-[#24243e]/80 bg-[length:100%_125%] animate-gradient-y" />
-              <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] bg-indigo-600/20 blur-[120px] rounded-full mix-blend-screen animate-pulse-glow" />
-              <div className="absolute bottom-[-20%] right-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] bg-cyan-600/20 blur-[120px] rounded-full mix-blend-screen animate-pulse-glow" style={{ animationDelay: '2s' }} />
-              <div className="absolute top-[40%] right-[30%] w-[50vw] h-[50vw] md:w-[30vw] md:h-[30vw] bg-purple-600/15 blur-[100px] rounded-full mix-blend-screen animate-pulse-glow" style={{ animationDelay: '4s' }} />
+              <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] bg-indigo-600/20 blur-[40px] rounded-full mix-blend-screen animate-pulse-glow" />
+              <div className="absolute bottom-[-20%] right-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] bg-cyan-600/20 blur-[40px] rounded-full mix-blend-screen animate-pulse-glow" style={{ animationDelay: '2s' }} />
+              <div className="absolute top-[40%] right-[30%] w-[50vw] h-[50vw] md:w-[30vw] md:h-[30vw] bg-purple-600/15 blur-[30px] rounded-full mix-blend-screen animate-pulse-glow" style={{ animationDelay: '4s' }} />
             </div>
           ) : preferences.skin !== 'LUXURY' ? (
             <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
-              <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[120px] rounded-full" />
-              <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[120px] rounded-full" />
+              <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[40px] rounded-full" />
+              <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[40px] rounded-full" />
             </div>
           ) : null}
           

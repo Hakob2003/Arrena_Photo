@@ -298,7 +298,7 @@ function GeneratorContent() {
                     className={`px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
                       aspectRatio === ratio
                         ? (isLuxury ? 'bg-[#D4AF37] text-black shadow-md' : 'bg-indigo-500 text-white shadow-md')
-                        : 'bg-black/[0.05] dark:bg-white/10 text-slate-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/20'
+                        : 'bg-black/[0.05] dark:bg-white/10 text-slate-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/5'
                     }`}
                   >
                     {ratio}
@@ -321,7 +321,7 @@ function GeneratorContent() {
                     className={`px-4 py-2 text-xs font-medium rounded-lg transition-colors ${
                       resolution === resOption
                         ? (isLuxury ? 'bg-[#D4AF37] text-black shadow-md' : 'bg-indigo-500 text-white shadow-md')
-                        : 'bg-black/[0.05] dark:bg-white/10 text-slate-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/20'
+                        : 'bg-black/[0.05] dark:bg-white/10 text-slate-600 dark:text-gray-300 hover:bg-black/10 dark:hover:bg-white/5'
                     }`}
                   >
                     {resOption}
@@ -387,14 +387,14 @@ function GeneratorContent() {
                    a.click();
                    document.body.removeChild(a);
                  }}
-                 className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-colors"
+                 className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/5 transition-colors"
                  title="Download Image"
                >
                  <Download size={18} className="text-white" />
                </button>
                <button 
                  onClick={() => setIsFullscreen(true)}
-                 className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-colors"
+                 className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/5 transition-colors"
                  title="Open Fullscreen"
                >
                  <Maximize2 size={18} className="text-white" />
@@ -439,7 +439,7 @@ function GeneratorContent() {
         </div>
         
         {/* History Gallery */}
-        <div className="h-32 sm:h-36 lg:h-40 xl:h-44 shrink-0 gallery-container-compact border-t border-black/10 dark:border-white/10 bg-transparent/40 p-3 sm:p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap">
+        <div className="h-32 sm:h-36 lg:h-40 xl:h-44 shrink-0 gallery-container-compact border-t border-black/10 dark:border-white/10 bg-white/5 p-3 sm:p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap">
           <h3 className="text-[10px] sm:text-xs font-bold gallery-title-compact text-slate-500 dark:text-gray-400 mb-2 uppercase tracking-wider">{t('gen.galleryTitle')}</h3>
           <div className="flex w-max gap-2 sm:gap-4 h-[60px] sm:h-[70px] lg:h-[80px] xl:h-[90px] gallery-items-compact">
             {history.length === 0 ? (
@@ -464,14 +464,14 @@ function GeneratorContent() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/40 p-4 sm:p-8 backdrop-blur-xl"
+              className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/5 p-4 sm:p-8 backdrop-blur-none"
               onClick={() => setIsFullscreen(false)}
               onTouchStart={(e) => e.stopPropagation()}
               onTouchMove={(e) => e.stopPropagation()}
               onTouchEnd={(e) => e.stopPropagation()}
             >
               <button 
-                className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-[99999]"
+                className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/5 text-white rounded-full transition-colors z-[99999]"
                 onClick={() => setIsFullscreen(false)}
               >
                 <X size={24} />

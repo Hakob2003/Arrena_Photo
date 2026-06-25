@@ -30,7 +30,7 @@ export function MonitorConfigModal({ provider, onClose, onSuccess }: MonitorConf
   };
 
   return (
-    <div className="fixed inset-0 bg-[#fafafa] dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 bg-[#fafafa] dark:bg-black/5 backdrop-blur-none z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div 
         className="bg-[#111] border border-black/10 dark:border-white/10 rounded-2xl w-full max-w-md flex flex-col"
         onClick={e => e.stopPropagation()}

@@ -26,7 +26,7 @@ export function Topbar() {
   };
 
   return (
-    <header className={`h-16 border-b bg-[rgba(255,255,255,0.75)] dark:bg-black/20 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 sticky top-0 z-[60] shadow-sm dark:shadow-none ${isLuxury ? 'border-[#D4AF37]/20' : 'border-black/10 dark:border-white/5'}`}>
+    <header className={`h-16 border-b bg-white/5 dark:bg-black/5 backdrop-blur-none flex items-center justify-between px-4 sm:px-6 sticky top-0 z-[60] shadow-sm dark:shadow-none ${isLuxury ? 'border-[#D4AF37]/20' : 'border-black/10 dark:border-white/5'}`}>
       <div className="flex items-center gap-2 md:hidden">
         {user && (
           <button 
@@ -64,12 +64,12 @@ export function Topbar() {
               <img 
                 src={isLuxury ? "/logoG2.png" : "/logo2.png"} 
                 alt="Arrena Photo Text" 
-                className="h-6 sm:h-7 w-auto object-contain hidden dark:block" 
+                className="h-[18px] sm:h-7 w-auto object-contain hidden dark:block" 
               />
               <img 
                 src={isLuxury ? "/logoG2.png" : "/logo2-light.png"} 
                 alt="Arrena Photo Text" 
-                className="h-6 sm:h-7 w-auto object-contain block dark:hidden" 
+                className="h-[18px] sm:h-7 w-auto object-contain block dark:hidden" 
               />
             </Link>
           </motion.div>
@@ -99,7 +99,7 @@ export function Topbar() {
         {isMobile && user && (
           <button
             onClick={() => useUIStore.getState().setShowSwipeHints(true)}
-            className="flex items-center justify-center bg-black/[0.05] dark:bg-white/10 border border-black/10 dark:border-white/10 w-7 h-7 sm:w-8 sm:h-8 rounded-full hover:bg-black/10 dark:hover:bg-white/20 transition-colors shrink-0"
+            className="flex items-center justify-center bg-black/[0.05] dark:bg-white/10 border border-black/10 dark:border-white/10 w-7 h-7 sm:w-8 sm:h-8 rounded-full hover:bg-black/10 dark:hover:bg-white/5 transition-colors shrink-0"
             title="Подсказки жестов"
           >
             <svg className="w-4 h-4 text-slate-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,8 +114,8 @@ export function Topbar() {
           className={cn(
             "flex items-center gap-1.5 bg-black/[0.05] border px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full transition-colors",
             isLuxury 
-              ? "dark:bg-black/40 border-black/10 dark:border-[#D4AF37]/20 hover:bg-black/10 dark:hover:border-[#D4AF37]/50" 
-              : "dark:bg-white/10 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/20"
+              ? "dark:bg-black/5 border-black/10 dark:border-[#D4AF37]/20 hover:bg-black/10 dark:hover:border-[#D4AF37]/50" 
+              : "dark:bg-white/10 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/5"
           )}
           title={locale === 'ru' ? 'Switch to English' : 'Переключить на русский'}
         >

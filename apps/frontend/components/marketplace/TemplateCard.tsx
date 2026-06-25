@@ -29,7 +29,7 @@ export const TemplateCard: React.FC<{ template: TemplateProps }> = ({ template }
             No Image
           </div>
         )}
-        <div className="absolute top-3 right-3 flex items-center bg-[#fafafa] dark:bg-black/60 backdrop-blur-md text-slate-900 dark:text-slate-900 dark:text-white text-xs font-bold px-3 py-1 rounded-full">
+        <div className="absolute top-3 right-3 flex items-center bg-[#fafafa] dark:bg-black/5 backdrop-blur-none text-slate-900 dark:text-slate-900 dark:text-white text-xs font-bold px-3 py-1 rounded-full">
           {template.price == null || template.price === 0 ? 'FREE' : `$${template.price.toFixed(2)}`}
           {template.oldPrice !== null && template.oldPrice !== undefined && (template.price || 0) > template.oldPrice && (
             <span title={`Previously $${template.oldPrice.toFixed(2)}`}>

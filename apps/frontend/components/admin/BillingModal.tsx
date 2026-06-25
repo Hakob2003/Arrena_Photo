@@ -9,7 +9,7 @@ export function BillingModal({ title, children, onClose }: { title: string, chil
         initial={{ opacity: 0 }} 
         animate={{ opacity: 1 }} 
         exit={{ opacity: 0 }} 
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
+        className="absolute inset-0 bg-black/5 backdrop-blur-none" 
         onClick={onClose} 
       />
       <motion.div 
