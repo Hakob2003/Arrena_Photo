@@ -7,6 +7,7 @@ import { Topbar } from '../components/layout/Topbar';
 import { LayoutGroup } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { SwipeHint } from '../components/ui/SwipeHint';
+import { useIdleLogout } from '../hooks/useIdleLogout';
 
 import { api } from '../lib/api';
 
@@ -25,6 +26,8 @@ const ALL_LINKS = [
 ];
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
+  useIdleLogout();
+  
   const pathname = usePathname();
   const router = useRouter();
   const isAdmin = pathname?.startsWith('/admin');
