@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 interface AvatarUploadProps {
   currentAvatarUrl?: string | null;
-  onUpload: (file: File) => Promise<void>;
+  onUpload: (file: File | Blob) => Promise<void>;
   onRemove: () => Promise<void>;
 }
 
@@ -47,8 +47,14 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
     try {
       setIsUploading(true);
       const croppedImage = await getCroppedImg(imageSrc!, croppedAreaPixels!);
-      const file = new File([croppedImage], 'avatar.jpg', { type: 'image/jpeg' });
-      await onUpload(file);
+      let fileToUpload: File | Blob = croppedImage;
+      try {
+        fileToUpload = new File([croppedImage], 'avatar.jpg', { type: 'image/jpeg' });
+      } catch (err) {
+        // Fallback for mobile browsers (like Samsung Internet) that do not support the File constructor
+        fileToUpload = croppedImage;
+      }
+      await onUpload(fileToUpload);
       setImageSrc(null);
       toast.success('Avatar updated successfully');
     } catch (e: any) {

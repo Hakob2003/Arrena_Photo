@@ -68,9 +68,9 @@ export default function PersonalProfilePage() {
     }
   };
 
-  const handleAvatarUpload = async (file: File) => {
+  const handleAvatarUpload = async (file: File | Blob) => {
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('file', file, 'avatar.jpg');
     const { data } = await api.post('/profile/avatar', formData);
     setAvatarUrl(data.avatarUrl);
   };
