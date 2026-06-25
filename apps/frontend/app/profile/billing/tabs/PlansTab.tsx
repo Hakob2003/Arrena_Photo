@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from '../../../../lib/i18n';
 import { useUIStore } from '../../../../store';
+import { api } from '../../../../lib/api';
 
 export function PlansTab() {
   const { planId, setPlanId, addCredits, chargeDefaultCard } = useAuthStore();
@@ -48,8 +49,16 @@ export function PlansTab() {
       toast.error(res.error || t('billing.plans.paymentError'));
       return;
     }
-    addCredits(amount);
-    toast.success(t('billing.plans.creditsSuccess'));
+    
+    try {
+      // Actually add the credits on the backend
+      await api.post('/billing/add-credits', { amount, reason: `Purchased ${amount} credits` });
+      addCredits(amount); // Update local state
+      toast.success(t('billing.plans.creditsSuccess'));
+    } catch (err) {
+      console.error('Failed to add credits to backend', err);
+      toast.error('Failed to apply credits to your account. Please contact support.');
+    }
   };
 
   const plans = [
