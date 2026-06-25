@@ -71,7 +71,11 @@ export default function PersonalProfilePage() {
   const handleAvatarUpload = async (file: File | Blob) => {
     const formData = new FormData();
     formData.append('file', file, 'avatar.jpg');
-    const { data } = await api.post('/profile/avatar', formData);
+    const { data } = await api.post('/profile/avatar', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     setAvatarUrl(data.avatarUrl);
   };
 

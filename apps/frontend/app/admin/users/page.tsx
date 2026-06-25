@@ -245,12 +245,12 @@ export default function AdminUsersPage() {
           <input 
             type="text" 
             placeholder="Search by email or name..." 
-            className="flex-1 bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+            className="flex-1 bg-transparent border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
           <select 
-            className="bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+            className="bg-transparent border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
             value={roleFilter}
             onChange={e => setRoleFilter(e.target.value)}
           >
@@ -268,7 +268,7 @@ export default function AdminUsersPage() {
       <div className="mt-8 relative overflow-hidden bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-2xl">
         <div className="overflow-x-auto w-full">
           <table className="w-full min-w-[800px] text-left text-sm text-slate-500 dark:text-gray-400">
-          <thead className="text-xs text-slate-400 dark:text-gray-500 uppercase bg-[#fafafa] dark:bg-black/40 border-b border-black/10 dark:border-white/10">
+          <thead className="text-xs text-slate-400 dark:text-gray-500 uppercase bg-transparent/40 border-b border-black/10 dark:border-white/10">
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
@@ -331,7 +331,7 @@ export default function AdminUsersPage() {
 
       {/* Credits Modal */}
       {editingCredits && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#fafafa] dark:bg-black/80 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent/80 p-4">
           <div className="bg-[#111] border border-black/10 dark:border-white/10 rounded-xl p-6 w-full max-w-md">
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-900 dark:text-white mb-2">Manage Credits</h3>
             <p className="text-sm text-slate-500 dark:text-gray-400 mb-6">Editing balance for {editingCredits.email}</p>
@@ -343,7 +343,7 @@ export default function AdminUsersPage() {
                   type="number" 
                   name="amount" 
                   required
-                  className="w-full bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+                  className="w-full bg-transparent border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
                   placeholder="e.g. 100 or -50"
                 />
               </div>
@@ -353,7 +353,7 @@ export default function AdminUsersPage() {
                   type="text" 
                   name="reason" 
                   required
-                  className="w-full bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+                  className="w-full bg-transparent border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
                   placeholder="e.g. Bonus for reporting a bug"
                 />
               </div>
@@ -379,7 +379,7 @@ export default function AdminUsersPage() {
 
       {/* Change Plan Modal */}
       {changingPlan && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#fafafa] dark:bg-black/80 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent/80 p-4">
           <div className="bg-[#111] border border-black/10 dark:border-white/10 rounded-xl p-6 w-full max-w-md">
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-900 dark:text-white mb-2">Change Subscription Plan</h3>
             <p className="text-sm text-slate-500 dark:text-gray-400 mb-6">Updating plan for {changingPlan.email}</p>
@@ -390,7 +390,7 @@ export default function AdminUsersPage() {
                 <select 
                   name="plan" 
                   defaultValue={changingPlan.plan}
-                  className="w-full bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+                  className="w-full bg-transparent border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
                 >
                   <option value="FREE">Free</option>
                   <option value="PRO">Pro</option>
@@ -419,7 +419,7 @@ export default function AdminUsersPage() {
 
       {/* Import Modal */}
       {importing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#fafafa] dark:bg-black/80 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent/80 p-4">
           <div className="bg-[#111] border border-black/10 dark:border-white/10 rounded-xl p-6 w-full max-w-2xl">
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-900 dark:text-white mb-2">Import Users (CSV)</h3>
             <p className="text-sm text-slate-500 dark:text-gray-400 mb-6">Paste your CSV contents below. Only the first column (Email) will be parsed.</p>
@@ -428,7 +428,7 @@ export default function AdminUsersPage() {
               <textarea 
                 value={importText}
                 onChange={e => setImportText(e.target.value)}
-                className="w-full h-64 bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md p-3 text-slate-900 dark:text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:border-white/30 custom-scrollbar"
+                className="w-full h-64 bg-transparent border border-black/10 dark:border-white/10 rounded-md p-3 text-slate-900 dark:text-slate-900 dark:text-white font-mono text-sm focus:outline-none focus:border-white/30 custom-scrollbar"
                 placeholder="user1@example.com, ...&#10;user2@example.com, ..."
               />
               <div className="flex justify-end gap-3 pt-2">

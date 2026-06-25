@@ -45,11 +45,11 @@ export default function AdminSettings() {
           <div className="space-y-4">
             <div>
               <label className="text-sm font-medium text-gray-300 block mb-1">Platform Name</label>
-              <input type="text" value={settings?.platformName || ''} onChange={(e) => setSettings({...settings, platformName: e.target.value})} className="w-full bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md p-2 text-sm text-slate-900 dark:text-white outline-none focus:border-white/30" />
+              <input type="text" value={settings?.platformName || ''} onChange={(e) => setSettings({...settings, platformName: e.target.value})} className="w-full bg-transparent border border-black/10 dark:border-white/10 rounded-md p-2 text-sm text-slate-900 dark:text-white outline-none focus:border-white/30" />
             </div>
             <div>
               <label className="text-sm font-medium text-gray-300 block mb-1">Support Email</label>
-              <input type="email" value={settings?.supportEmail || ''} onChange={(e) => setSettings({...settings, supportEmail: e.target.value})} className="w-full bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md p-2 text-sm text-slate-900 dark:text-white outline-none focus:border-white/30" />
+              <input type="email" value={settings?.supportEmail || ''} onChange={(e) => setSettings({...settings, supportEmail: e.target.value})} className="w-full bg-transparent border border-black/10 dark:border-white/10 rounded-md p-2 text-sm text-slate-900 dark:text-white outline-none focus:border-white/30" />
             </div>
           </div>
         </div>
@@ -67,7 +67,7 @@ export default function AdminSettings() {
                 type="checkbox" 
                 checked={settings?.usePicsumMock || false} 
                 onChange={(e) => setSettings({...settings, usePicsumMock: e.target.checked})} 
-                className="rounded bg-[#fafafa] dark:bg-black border-black/20 dark:border-white/20" 
+                className="rounded bg-transparent border-black/20 dark:border-white/20" 
               />
             </div>
           </div>
@@ -82,21 +82,21 @@ export default function AdminSettings() {
                 <p className="text-sm font-medium text-slate-900 dark:text-white">Public Registrations</p>
                 <p className="text-xs text-slate-400 dark:text-gray-500">Allow new users to sign up.</p>
               </div>
-              <input type="checkbox" checked={settings?.publicRegistrations || false} onChange={(e) => setSettings({...settings, publicRegistrations: e.target.checked})} className="rounded bg-[#fafafa] dark:bg-black border-black/20 dark:border-white/20" />
+              <input type="checkbox" checked={settings?.publicRegistrations || false} onChange={(e) => setSettings({...settings, publicRegistrations: e.target.checked})} className="rounded bg-transparent border-black/20 dark:border-white/20" />
             </div>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-slate-900 dark:text-white">Require Email Verification</p>
                 <p className="text-xs text-slate-400 dark:text-gray-500">Users must verify email before generating.</p>
               </div>
-              <input type="checkbox" checked={settings?.requireEmailVerification || false} onChange={(e) => setSettings({...settings, requireEmailVerification: e.target.checked})} className="rounded bg-[#fafafa] dark:bg-black border-black/20 dark:border-white/20" />
+              <input type="checkbox" checked={settings?.requireEmailVerification || false} onChange={(e) => setSettings({...settings, requireEmailVerification: e.target.checked})} className="rounded bg-transparent border-black/20 dark:border-white/20" />
             </div>
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-slate-900 dark:text-white">Maintenance Mode</p>
                 <p className="text-xs text-slate-400 dark:text-gray-500">Disable platform access for all non-admins.</p>
               </div>
-              <input type="checkbox" checked={settings?.maintenanceMode || false} onChange={(e) => setSettings({...settings, maintenanceMode: e.target.checked})} className="rounded bg-[#fafafa] dark:bg-black border-black/20 dark:border-white/20" />
+              <input type="checkbox" checked={settings?.maintenanceMode || false} onChange={(e) => setSettings({...settings, maintenanceMode: e.target.checked})} className="rounded bg-transparent border-black/20 dark:border-white/20" />
             </div>
           </div>
         </div>

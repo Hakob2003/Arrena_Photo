@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import toast from 'react-hot-toast';
+import { useUIStore } from '@/store';
 
 export default function CloudConnectionsPage() {
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
   const [driveConnected, setDriveConnected] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -64,7 +66,7 @@ export default function CloudConnectionsPage() {
           {loading ? (
             <span className="text-slate-500 dark:text-gray-400 text-sm">Загрузка...</span>
           ) : driveConnected ? (
-            <span className="px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full text-sm font-medium">Подключено</span>
+            <span className={`px-3 py-1 border rounded-full text-sm font-medium ${isLuxury ? 'bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/20' : 'bg-green-500/10 text-green-400 border-green-500/20'}`}>Подключено</span>
           ) : (
             <span className="px-3 py-1 bg-gray-500/10 text-slate-500 dark:text-gray-400 border border-gray-500/20 rounded-full text-sm font-medium">Не подключено</span>
           )}
@@ -80,7 +82,7 @@ export default function CloudConnectionsPage() {
               Отключить
             </button>
           ) : (
-            <button onClick={connectDrive} className="w-full sm:w-auto px-6 py-3 sm:py-2 bg-white text-black hover:bg-gray-100 rounded-lg font-bold shadow-lg transition-colors">
+            <button onClick={connectDrive} className={`w-full sm:w-auto px-6 py-3 sm:py-2 rounded-lg font-bold shadow-lg transition-colors ${isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-white text-black hover:bg-gray-100'}`}>
               Привязать Google Drive
             </button>
           )}
@@ -96,7 +98,7 @@ export default function CloudConnectionsPage() {
             <input 
               type="text" 
               placeholder="https://s3.amazonaws.com or https://<id>.r2.cloudflarestorage.com"
-              className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-transparent/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
           <div>
@@ -104,7 +106,7 @@ export default function CloudConnectionsPage() {
             <input 
               type="text" 
               placeholder="my-ai-studio-bucket"
-              className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-transparent/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
           <div>
@@ -112,7 +114,7 @@ export default function CloudConnectionsPage() {
             <input 
               type="text" 
               placeholder="AKIAIOSFODNN7EXAMPLE"
-              className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-transparent/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
           <div>
@@ -120,14 +122,14 @@ export default function CloudConnectionsPage() {
             <input 
               type="password" 
               placeholder="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-              className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-full bg-transparent/50 border border-black/10 dark:border-white/10 rounded-lg p-2.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
           <button className="w-full sm:w-auto px-6 py-3 sm:py-2 glass rounded-lg text-slate-900 dark:text-slate-900 dark:text-white font-medium hover:bg-black/[0.05] dark:bg-white/10">Тест соединения</button>
-          <button className="w-full sm:w-auto px-6 py-3 sm:py-2 bg-blue-600 hover:bg-blue-700 text-slate-900 dark:text-slate-900 dark:text-white rounded-lg font-bold shadow-[0_0_15px_rgba(37,99,235,0.4)]">Сохранить</button>
+          <button className={`w-full sm:w-auto px-6 py-3 sm:py-2 rounded-lg font-bold transition-colors ${isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-none' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-[0_0_15px_rgba(37,99,235,0.4)]'}`}>Сохранить</button>
         </div>
       </div>
     </div>

@@ -177,7 +177,7 @@ export default function ApiKeysAdminPage() {
                             value={keyValue}
                             onChange={e => setKeyValue(e.target.value)}
                             placeholder="sk-..."
-                            className="w-full px-3 py-1.5 bg-[#fafafa] dark:bg-black border border-black/20 dark:border-white/20 rounded-md text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+                            className="w-full px-3 py-1.5 bg-transparent border border-black/20 dark:border-white/20 rounded-md text-sm text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
                             autoFocus
                             onKeyDown={e => e.key === 'Enter' && handleSaveKey(p.id)}
                           />

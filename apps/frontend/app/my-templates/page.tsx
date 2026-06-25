@@ -20,7 +20,7 @@ export default function MyTemplatesPage() {
         </button>
       </div>
 
-      <div className="flex-1 border border-black/10 dark:border-white/10 rounded-2xl bg-[#fafafa] dark:bg-black/40 backdrop-blur-md p-10 flex flex-col items-center justify-center text-center">
+      <div className="flex-1 border border-black/10 dark:border-white/10 rounded-2xl bg-transparent/40 backdrop-blur-md p-10 flex flex-col items-center justify-center text-center">
         <div className="w-20 h-20 bg-black/[0.03] dark:bg-white/5 rounded-full flex items-center justify-center text-4xl mb-6">📁</div>
         <h2 className="text-2xl font-bold mb-2">{t('myTpl.empty')}</h2>
         <p className="text-slate-500 dark:text-gray-400 max-w-md mb-8">

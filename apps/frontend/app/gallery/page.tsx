@@ -45,7 +45,7 @@ export default function GalleryPage() {
               src={`https://picsum.photos/seed/${item.seed}/600/${item.height}`}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
             />
-            <div className="absolute inset-0 bg-[#fafafa] dark:bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+            <div className="absolute inset-0 bg-transparent/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-orange-400" />
                 <span className="text-slate-900 dark:text-slate-900 dark:text-white font-medium text-sm">{item.author}</span>

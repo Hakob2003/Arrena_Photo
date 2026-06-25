@@ -101,7 +101,7 @@ export function PlansTab() {
                   <ul className="text-sm text-slate-600 dark:text-gray-400 space-y-2 mt-2">
                     {plan.features.map((f, i) => (
                       <li key={i} className="flex items-center gap-2">
-                        <span className="text-green-500 text-xs">✓</span> {f}
+                        <span className={`${isLuxury ? 'text-[#D4AF37]' : 'text-green-500'} text-xs`}>✓</span> {f}
                       </li>
                     ))}
                   </ul>
@@ -173,10 +173,10 @@ export function PlansTab() {
 
             <AnimatePresence>
               {promoApplied && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-4 p-3 bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/20 rounded-lg flex justify-between items-center overflow-hidden">
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className={`mt-4 p-3 rounded-lg flex justify-between items-center overflow-hidden border ${isLuxury ? 'bg-[#D4AF37]/10 border-[#D4AF37]/20' : 'bg-green-50 dark:bg-green-500/10 border-green-200 dark:border-green-500/20'}`}>
                   <div>
-                    <p className="text-sm font-medium text-green-800 dark:text-green-400">{t('billing.plans.promoDiscount')}</p>
-                    <p className="text-xs text-green-700 dark:text-green-500 mt-0.5">{t('billing.plans.promoNext')}</p>
+                    <p className={`text-sm font-medium ${isLuxury ? 'text-[#D4AF37]' : 'text-green-800 dark:text-green-400'}`}>{t('billing.plans.promoDiscount')}</p>
+                    <p className={`text-xs mt-0.5 ${isLuxury ? 'text-[#D4AF37]/80' : 'text-green-700 dark:text-green-500'}`}>{t('billing.plans.promoNext')}</p>
                   </div>
                   <span className="text-lg">🎉</span>
                 </motion.div>

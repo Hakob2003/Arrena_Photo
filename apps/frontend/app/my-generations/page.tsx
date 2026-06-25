@@ -108,7 +108,7 @@ export default function MyGenerationsPage() {
           <div className={`w-12 h-12 border-4 border-black/10 dark:border-white/10 rounded-full animate-spin ${isLuxury ? 'border-t-[#D4AF37]' : 'border-t-indigo-500'}`} />
         </div>
       ) : generations.length === 0 ? (
-        <div className="flex-1 border border-black/10 dark:border-white/10 rounded-2xl bg-[#fafafa] dark:bg-black/40 backdrop-blur-md p-10 flex flex-col items-center justify-center text-center">
+        <div className="flex-1 border border-black/10 dark:border-white/10 rounded-2xl bg-transparent/40 backdrop-blur-md p-10 flex flex-col items-center justify-center text-center">
           <div className="w-20 h-20 bg-black/[0.03] dark:bg-white/5 rounded-full flex items-center justify-center text-4xl mb-6">🎨</div>
           <h2 className="text-2xl font-bold mb-2">{t('myGen.empty')}</h2>
           <p className="text-slate-500 dark:text-gray-400 max-w-md mb-8">
@@ -125,12 +125,12 @@ export default function MyGenerationsPage() {
           {generations.map(gen => (
             <div key={gen.id} className="group relative aspect-square rounded-xl overflow-hidden glass-card cursor-pointer">
               <AuthImage driveFileId={gen.driveFileId !== 'saved' ? gen.driveFileId : undefined} fallbackUrl={gen.imageUrl} alt="Generated" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-              <div className="absolute inset-0 bg-[#fafafa] dark:bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-between">
+              <div className="absolute inset-0 bg-transparent/60 opacity-0 group-hover:opacity-100 transition-opacity p-3 flex flex-col justify-between">
                 <div className="flex justify-end">
                   <button 
                     onClick={(e) => saveToDrive(e, gen.id, gen.imageUrl)}
                     disabled={savingId === gen.id || !!gen.driveFileId}
-                    className={`${gen.driveFileId ? 'bg-green-500/50 text-green-200' : 'bg-[#fafafa] dark:bg-black/50 hover:bg-[#fafafa] dark:bg-black/80 text-slate-900 dark:text-white'} p-2 rounded-lg backdrop-blur-md transition-colors`}
+                    className={`${gen.driveFileId ? 'bg-green-500/50 text-green-200' : 'bg-transparent/50 hover:bg-transparent/80 text-slate-900 dark:text-white'} p-2 rounded-lg backdrop-blur-md transition-colors`}
                     title={gen.driveFileId ? t('myGen.alreadySaved') : t('myGen.saveToDrive')}
                   >
                     {savingId === gen.id ? (
@@ -144,7 +144,7 @@ export default function MyGenerationsPage() {
                   <button 
                     onClick={(e) => togglePublish(e, gen.id, gen.isPublic)}
                     disabled={publishingId === gen.id}
-                    className={`${gen.isPublic ? (isLuxury ? 'bg-[#D4AF37]/50 text-[#D4AF37]' : 'bg-indigo-500/50 text-indigo-200') : 'bg-[#fafafa] dark:bg-black/50 hover:bg-[#fafafa] dark:bg-black/80 text-slate-900 dark:text-white'} p-2 rounded-lg backdrop-blur-md transition-colors ml-2`}
+                    className={`${gen.isPublic ? (isLuxury ? 'bg-[#D4AF37]/50 text-[#D4AF37]' : 'bg-indigo-500/50 text-indigo-200') : 'bg-transparent/50 hover:bg-transparent/80 text-slate-900 dark:text-white'} p-2 rounded-lg backdrop-blur-md transition-colors ml-2`}
                     title={gen.isPublic ? 'Unpublish from Feed' : 'Publish to Feed'}
                   >
                     {publishingId === gen.id ? (

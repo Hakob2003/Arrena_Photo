@@ -64,8 +64,8 @@ export default function PromocodesPage() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Тип скидки</label>
                   <select className="w-full bg-transparent border border-black/20 dark:border-white/20 rounded-lg p-2 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500">
-                    <option className="bg-white dark:bg-black text-slate-900 dark:text-white">Процент (%)</option>
-                    <option className="bg-white dark:bg-black text-slate-900 dark:text-white">Фикс. сумма ($)</option>
+                    <option className="bg-transparent text-slate-900 dark:text-white">Процент (%)</option>
+                    <option className="bg-transparent text-slate-900 dark:text-white">Фикс. сумма ($)</option>
                   </select>
                 </div>
                 <div>

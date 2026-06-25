@@ -697,7 +697,7 @@ export default function AdminAIModelsPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-[#fafafa] dark:bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 bg-transparent/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowModal(false)}>
           <div 
             className="bg-[#111] border border-black/10 dark:border-white/10 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}

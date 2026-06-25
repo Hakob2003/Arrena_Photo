@@ -185,7 +185,7 @@ export const useUIStore = create<UIState>((set) => ({
     fontSize: 'MEDIUM',
     compactMode: false,
     animationsEnabled: true,
-    skin: 'LUXURY',
+    skin: 'NEON',
   },
   setPreferences: (prefs) => set((state) => ({ preferences: { ...state.preferences, ...prefs } })),
   hasSeenSwipeHints: false, // We'll initialize from localStorage in ClientLayout

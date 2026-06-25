@@ -1,4 +1,5 @@
 "use client";
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -7,6 +8,7 @@ import { useUIStore, useAuthStore } from '../../store';
 import { useTranslation } from '../../lib/i18n';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { cn } from '../../lib/utils';
+import { Home, Globe, Sparkles, Folder, ShoppingCart, Image as ImageIcon, Clock, Palette, Plug, Cloud, Settings, CreditCard, Crown } from 'lucide-react';
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -15,27 +17,28 @@ export function Sidebar() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const isLuxury = preferences?.skin === 'LUXURY';
+  const isNeon = preferences?.skin === 'NEON';
   const showSidebarLogo = isSidebarOpen;
 
   const MAIN_LINKS = [
-    { href: '/', label: t('nav.home'), icon: '🏠' },
-    { href: '/feed', label: t('nav.feed'), icon: '🌍' },
-    { href: '/generate', label: t('nav.generator'), icon: '✨' },
-    { href: '/templates', label: t('nav.templates'), icon: '📁' },
-    { href: '/marketplace', label: t('nav.marketplace'), icon: '🛒' },
-    { href: '/gallery', label: t('nav.gallery'), icon: '🖼️' },
+    { href: '/', label: t('nav.home'), icon: <Home className="w-5 h-5" /> },
+    { href: '/feed', label: t('nav.feed'), icon: <Globe className="w-5 h-5" /> },
+    { href: '/generate', label: t('nav.generator'), icon: <Sparkles className="w-5 h-5" /> },
+    { href: '/templates', label: t('nav.templates'), icon: <Folder className="w-5 h-5" /> },
+    { href: '/marketplace', label: t('nav.marketplace'), icon: <ShoppingCart className="w-5 h-5" /> },
+    { href: '/gallery', label: t('nav.gallery'), icon: <ImageIcon className="w-5 h-5" /> },
   ];
 
   const USER_LINKS = [
-    { href: '/my-generations', label: t('nav.myGenerations'), icon: '⏱️' },
-    { href: '/my-templates', label: t('nav.myTemplates'), icon: '🎨' },
+    { href: '/my-generations', label: t('nav.myGenerations'), icon: <Clock className="w-5 h-5" /> },
+    { href: '/my-templates', label: t('nav.myTemplates'), icon: <Palette className="w-5 h-5" /> },
   ];
 
   const SETTINGS_LINKS = [
-    { href: '/connections/ai', label: t('nav.aiProviders'), icon: '🔌' },
-    { href: '/connections/cloud', label: t('nav.cloud'), icon: '☁️' },
-    { href: '/profile', label: t('nav.profile'), icon: '⚙️' },
-    { href: '/profile/billing', label: t('nav.billing'), icon: '💳' },
+    { href: '/connections/ai', label: t('nav.aiProviders'), icon: <Plug className="w-5 h-5" /> },
+    { href: '/connections/cloud', label: t('nav.cloud'), icon: <Cloud className="w-5 h-5" /> },
+    { href: '/profile', label: t('nav.profile'), icon: <Settings className="w-5 h-5" /> },
+    { href: '/profile/billing', label: t('nav.billing'), icon: <CreditCard className="w-5 h-5" /> },
   ];
 
   const renderLinks = (links: typeof MAIN_LINKS) => (
@@ -55,21 +58,59 @@ export function Sidebar() {
                   layoutId="sidebar-active" 
                   className={cn(
                     "absolute inset-0 rounded-lg border-l-2",
-                    isLuxury ? "bg-gradient-to-r from-[#D4AF37]/10 to-transparent border-[#D4AF37]" : "bg-gradient-to-r from-indigo-500/10 dark:from-indigo-500/20 to-transparent border-indigo-500"
+                    isLuxury ? "bg-gradient-to-r from-[#D4AF37]/10 to-transparent border-[#D4AF37]" : 
+                    isNeon ? "bg-gradient-to-r from-indigo-500/20 to-transparent border-indigo-400 shadow-[inset_4px_0_15px_rgba(99,102,241,0.4)]" :
+                    "bg-gradient-to-r from-indigo-500/10 dark:from-indigo-500/20 to-transparent border-indigo-500"
                   )}
                   transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
               )}
-              <span className="relative z-10 text-xl w-6 flex items-center justify-center">{link.icon}</span>
+              <span className={cn(
+                "relative z-10 w-6 flex items-center justify-center transition-all", 
+                isActive && isLuxury ? "text-[#D4AF37]" : "",
+                isNeon ? (isActive ? "drop-shadow-[0_0_10px_rgba(99,102,241,0.9)]" : "drop-shadow-[0_0_4px_rgba(99,102,241,0.4)]") : ""
+              )}>
+                {isNeon ? (
+                  <>
+                    <svg style={{ width: 0, height: 0, position: 'absolute' }} aria-hidden="true" focusable="false">
+                      <mask id={`icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')}`}>
+                        <svg width="32" height="32" viewBox="0 0 32 32">
+                          <rect width="32" height="32" fill="black" />
+                          <g transform="translate(6, 6)" style={{ color: "white" }} stroke="white" fill="none">
+                            {React.cloneElement(link.icon as React.ReactElement, { style: { overflow: "visible" } })}
+                          </g>
+                        </svg>
+                      </mask>
+                    </svg>
+                    <div 
+                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 pointer-events-none"
+                      style={{ 
+                        WebkitMask: `url(#icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')})`,
+                        mask: `url(#icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')})`
+                      }}
+                    >
+                      <div className="w-full h-full bg-fixed bg-gradient-to-b from-indigo-400 via-purple-400 to-cyan-400 bg-[length:100%_125%] animate-gradient-y" />
+                    </div>
+                    <div className="opacity-0 w-5 h-5 flex items-center justify-center">
+                      {link.icon}
+                    </div>
+                  </>
+                ) : link.icon}
+              </span>
               <AnimatePresence mode="wait">
                 {isSidebarOpen && (
                   <motion.span 
                     initial={{ opacity: 0, width: 0 }}
                     animate={{ opacity: 1, width: 'auto' }}
                     exit={{ opacity: 0, width: 0 }}
-                    className="relative z-10 font-medium whitespace-nowrap overflow-hidden"
+                    className={cn(
+                      "relative z-10 font-medium whitespace-nowrap overflow-hidden transition-all flex items-center",
+                      isNeon ? "drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" : ""
+                    )}
                   >
-                    {link.label}
+                    <span className={isNeon ? "bg-clip-text text-transparent bg-fixed bg-gradient-to-b from-indigo-400 via-purple-400 to-cyan-400 bg-[length:100%_125%] animate-gradient-y" : ""}>
+                      {link.label}
+                    </span>
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -214,7 +255,11 @@ export function Sidebar() {
           
           {user?.role === 'ADMIN' && (
             <div className="mt-8">
-              <p className="text-[10px] font-semibold text-pink-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
+              <p className={cn("text-[10px] font-semibold uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left transition-all", 
+                isLuxury ? "text-[#D4AF37]" : 
+                isNeon ? "text-indigo-400 drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" : 
+                "text-pink-500"
+              )}>
                 {isSidebarOpen ? t('nav.adminPanel') : "ADM"}
               </p>
               <ul className="space-y-1">
@@ -223,16 +268,52 @@ export function Sidebar() {
                     href="/admin/ai-models"
                     className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-slate-500 hover:text-slate-900 hover:bg-[#fafafa] dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5 group ${!isSidebarOpen ? 'justify-center !px-0' : ''}`}
                   >
-                    <span className="relative z-10 text-xl w-6 flex justify-center">👑</span>
+                    <span className={cn(
+                      "relative z-10 w-6 flex items-center justify-center transition-all", 
+                      isLuxury ? "text-[#D4AF37]" : "",
+                      isNeon ? "drop-shadow-[0_0_4px_rgba(99,102,241,0.4)]" : ""
+                    )}>
+                      {isNeon ? (
+                        <>
+                          <svg style={{ width: 0, height: 0, position: 'absolute' }} aria-hidden="true" focusable="false">
+                            <mask id="icon-mask-admin">
+                              <svg width="32" height="32" viewBox="0 0 32 32">
+                                <rect width="32" height="32" fill="black" />
+                                <g transform="translate(6, 6)" style={{ color: "white" }} stroke="white" fill="none">
+                                  <Crown className="w-5 h-5" style={{ overflow: "visible" }} />
+                                </g>
+                              </svg>
+                            </mask>
+                          </svg>
+                          <div 
+                            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 pointer-events-none"
+                            style={{ 
+                              WebkitMask: `url(#icon-mask-admin)`,
+                              mask: `url(#icon-mask-admin)`
+                            }}
+                          >
+                            <div className="w-full h-full bg-fixed bg-gradient-to-b from-indigo-400 via-purple-400 to-cyan-400 bg-[length:100%_125%] animate-gradient-y" />
+                          </div>
+                          <div className="opacity-0 w-5 h-5 flex items-center justify-center">
+                            <Crown className="w-5 h-5" />
+                          </div>
+                        </>
+                      ) : <Crown className="w-5 h-5" />}
+                    </span>
                     <AnimatePresence mode="wait">
                       {isSidebarOpen && (
                         <motion.span 
                           initial={{ opacity: 0, width: 0 }}
                           animate={{ opacity: 1, width: 'auto' }}
                           exit={{ opacity: 0, width: 0 }}
-                          className="relative z-10 font-medium whitespace-nowrap overflow-hidden"
+                          className={cn(
+                            "relative z-10 font-medium whitespace-nowrap overflow-hidden transition-all flex items-center",
+                            isNeon ? "drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" : ""
+                          )}
                         >
-                          {t('nav.goToAdmin')}
+                          <span className={isNeon ? "bg-clip-text text-transparent bg-fixed bg-gradient-to-b from-indigo-400 via-purple-400 to-cyan-400 bg-[length:100%_125%] animate-gradient-y" : ""}>
+                            {t('nav.goToAdmin')}
+                          </span>
                         </motion.span>
                       )}
                     </AnimatePresence>

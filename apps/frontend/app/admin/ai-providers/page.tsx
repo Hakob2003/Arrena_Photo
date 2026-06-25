@@ -40,7 +40,7 @@ export default function AdminAiProviders() {
               </div>
               <div className="flex justify-between items-center py-3 border-b border-black/10 dark:border-white/10">
                 <span className="text-slate-500 dark:text-gray-400">Default Model</span>
-                <span className="font-mono text-slate-900 dark:text-slate-900 dark:text-white bg-[#fafafa] dark:bg-black/50 px-2 py-1 rounded text-sm">openrouter/free</span>
+                <span className="font-mono text-slate-900 dark:text-slate-900 dark:text-white bg-transparent/50 px-2 py-1 rounded text-sm">openrouter/free</span>
               </div>
               <div className="flex justify-between items-center py-3">
                 <span className="text-slate-500 dark:text-gray-400">Fallback Logic</span>
@@ -52,15 +52,15 @@ export default function AdminAiProviders() {
           <div className="bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg p-6">
             <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-900 dark:text-white mb-4">Usage Statistics</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-[#fafafa] dark:bg-black/30 p-4 rounded-lg border border-black/5 dark:border-white/5">
+              <div className="bg-transparent/30 p-4 rounded-lg border border-black/5 dark:border-white/5">
                 <p className="text-sm text-slate-500 dark:text-gray-400 mb-1">Total Tokens Used</p>
                 <p className="text-2xl font-bold text-slate-900 dark:text-slate-900 dark:text-white">1,492,050</p>
               </div>
-              <div className="bg-[#fafafa] dark:bg-black/30 p-4 rounded-lg border border-black/5 dark:border-white/5">
+              <div className="bg-transparent/30 p-4 rounded-lg border border-black/5 dark:border-white/5">
                 <p className="text-sm text-slate-500 dark:text-gray-400 mb-1">Input Tokens</p>
                 <p className="text-xl font-semibold text-gray-300">840,100</p>
               </div>
-              <div className="bg-[#fafafa] dark:bg-black/30 p-4 rounded-lg border border-black/5 dark:border-white/5">
+              <div className="bg-transparent/30 p-4 rounded-lg border border-black/5 dark:border-white/5">
                 <p className="text-sm text-slate-500 dark:text-gray-400 mb-1">Output Tokens</p>
                 <p className="text-xl font-semibold text-gray-300">651,950</p>
               </div>

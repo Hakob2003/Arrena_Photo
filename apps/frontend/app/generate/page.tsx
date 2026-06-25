@@ -238,7 +238,7 @@ function GeneratorContent() {
           <div 
             {...getRootProps()} 
             className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-colors ${
-              isDragActive ? (isLuxury ? 'border-[#D4AF37] bg-[#D4AF37]/10' : 'border-indigo-500 bg-indigo-500/10') : 'border-black/20 dark:border-white/20 hover:border-white/40 bg-[#fafafa] dark:bg-black/30'
+              isDragActive ? (isLuxury ? 'border-[#D4AF37] bg-[#D4AF37]/10' : 'border-indigo-500 bg-indigo-500/10') : 'border-black/20 dark:border-white/20 hover:border-white/40 bg-transparent/30'
             }`}
           >
             <input {...getInputProps()} />
@@ -246,7 +246,7 @@ function GeneratorContent() {
               <div className="relative group">
                 <img src={initImage} alt="Initial" className="w-full h-32 object-contain rounded-lg" />
                 <div 
-                  className="absolute inset-0 bg-[#fafafa] dark:bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute inset-0 bg-transparent/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => { e.stopPropagation(); setInitImage(null); }}
                 >
                   <span className="text-slate-900 dark:text-white font-bold text-sm bg-red-500/80 px-3 py-1 rounded-full cursor-pointer">{t('gen.remove')}</span>
@@ -267,7 +267,7 @@ function GeneratorContent() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder={t('gen.promptPlaceholder')}
-            className={`w-full h-40 bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-xl p-4 text-slate-900 dark:text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 resize-none ${isLuxury ? 'focus:ring-[#D4AF37]' : 'focus:ring-indigo-500'}`}
+            className={`w-full h-40 bg-transparent/50 border border-black/10 dark:border-white/10 rounded-xl p-4 text-slate-900 dark:text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 resize-none ${isLuxury ? 'focus:ring-[#D4AF37]' : 'focus:ring-indigo-500'}`}
           />
         </div>
 
@@ -276,7 +276,7 @@ function GeneratorContent() {
           <select 
             value={model}
             onChange={(e) => setModel(e.target.value)}
-            className="w-full bg-[#fafafa] dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-xl p-3 text-slate-900 dark:text-slate-900 dark:text-white mb-4 outline-none"
+            className="w-full bg-transparent/50 border border-black/10 dark:border-white/10 rounded-xl p-3 text-slate-900 dark:text-slate-900 dark:text-white mb-4 outline-none"
           >
             {models.map(m => (
               <option key={m.id} value={m.id}>{m.name}</option>
@@ -439,7 +439,7 @@ function GeneratorContent() {
         </div>
         
         {/* History Gallery */}
-        <div className="h-32 sm:h-36 lg:h-40 xl:h-44 shrink-0 gallery-container-compact border-t border-black/10 dark:border-white/10 bg-[#fafafa] dark:bg-black/40 p-3 sm:p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap">
+        <div className="h-32 sm:h-36 lg:h-40 xl:h-44 shrink-0 gallery-container-compact border-t border-black/10 dark:border-white/10 bg-transparent/40 p-3 sm:p-4 overflow-x-auto overflow-y-hidden whitespace-nowrap">
           <h3 className="text-[10px] sm:text-xs font-bold gallery-title-compact text-slate-500 dark:text-gray-400 mb-2 uppercase tracking-wider">{t('gen.galleryTitle')}</h3>
           <div className="flex w-max gap-2 sm:gap-4 h-[60px] sm:h-[70px] lg:h-[80px] xl:h-[90px] gallery-items-compact">
             {history.length === 0 ? (
@@ -448,7 +448,7 @@ function GeneratorContent() {
               history.map((item) => (
                 <div key={item.id} className="relative aspect-square h-full shrink-0 rounded-lg overflow-hidden group cursor-pointer" onClick={() => setResult(item.imageUrl, item.driveFileId)}>
                   <AuthImage driveFileId={item.driveFileId} fallbackUrl={item.imageUrl} alt={item.prompt} className="w-full h-full object-cover group-hover:scale-110 transition-transform" />
-                  <div className="absolute inset-0 bg-[#fafafa] dark:bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
+                  <div className="absolute inset-0 bg-transparent/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-2">
                     <span className="text-slate-900 dark:text-slate-900 dark:text-white text-[10px] font-bold truncate">{item.template || item.model}</span>
                   </div>
                 </div>

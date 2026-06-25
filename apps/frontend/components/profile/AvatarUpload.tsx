@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from './cropImage';
+import { getMediaUrl } from '../../lib/api';
 import { Camera, Trash2, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -73,7 +74,13 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
       >
         <input {...getInputProps()} />
         {currentAvatarUrl ? (
-          <img src={currentAvatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+          <img 
+            src={getMediaUrl(currentAvatarUrl)} 
+            alt="Avatar" 
+            className="w-full h-full object-cover" 
+            onError={(e) => console.error("Image failed to load:", getMediaUrl(currentAvatarUrl), e)}
+            onLoad={() => console.log("Image loaded successfully:", getMediaUrl(currentAvatarUrl))}
+          />
         ) : (
           <Camera className="w-8 h-8 text-slate-400 dark:text-gray-500" />
         )}

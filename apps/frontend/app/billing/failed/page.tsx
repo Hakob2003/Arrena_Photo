@@ -23,7 +23,7 @@ export default function BillingFailedPage() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#fafafa] dark:bg-black p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-transparent p-4">
       <motion.div 
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

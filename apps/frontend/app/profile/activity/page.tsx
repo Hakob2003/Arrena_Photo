@@ -7,9 +7,11 @@ import { format } from 'date-fns';
 import { MonitorPlay, LogIn, Image as ImageIcon, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslation } from '@/lib/i18n';
+import { useUIStore } from '@/store';
 
 export default function ActivityProfilePage() {
   const { t } = useTranslation();
+  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
   const [activity, setActivity] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -38,8 +40,8 @@ export default function ActivityProfilePage() {
 
   const getIcon = (type: string) => {
     switch (type) {
-      case 'GENERATION': return <ImageIcon className="w-5 h-5 text-blue-400" />;
-      case 'LOGIN': return <LogIn className="w-5 h-5 text-green-400" />;
+      case 'GENERATION': return <ImageIcon className={cn("w-5 h-5", isLuxury ? "text-[#D4AF37]" : "text-blue-400")} />;
+      case 'LOGIN': return <LogIn className={cn("w-5 h-5", isLuxury ? "text-[#D4AF37]" : "text-green-400")} />;
       default: return <MonitorPlay className="w-5 h-5 text-slate-500 dark:text-gray-400" />;
     }
   };
@@ -48,12 +50,12 @@ export default function ActivityProfilePage() {
     switch (status) {
       case 'DONE':
       case 'SUCCESS': 
-        return <CheckCircle className="w-4 h-4 text-green-500" />;
+        return <CheckCircle className={cn("w-4 h-4", isLuxury ? "text-[#D4AF37]" : "text-green-500")} />;
       case 'ERROR':
       case 'FAILED': 
-        return <XCircle className="w-4 h-4 text-red-500" />;
+        return <XCircle className={cn("w-4 h-4", isLuxury ? "text-[#D4AF37]" : "text-red-500")} />;
       default: 
-        return <Clock className="w-4 h-4 text-amber-500" />;
+        return <Clock className={cn("w-4 h-4", isLuxury ? "text-[#D4AF37]" : "text-amber-500")} />;
     }
   };
 

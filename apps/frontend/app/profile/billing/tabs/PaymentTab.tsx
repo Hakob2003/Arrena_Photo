@@ -177,7 +177,7 @@ export function PaymentTab() {
                     {pm.type || (pm.cardNumber?.startsWith('4') ? 'Visa' : 'Mastercard')}
                   </div>
                   {pm.isDefault ? (
-                    <span className="text-[10px] bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400 px-2 py-0.5 rounded-full font-medium shrink-0">{t('billing.payment.defaultCard')}</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0 ${isLuxury ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400'}`}>{t('billing.payment.defaultCard')}</span>
                   ) : (
                     <button onClick={async () => { 
                       const res = await setDefaultPaymentMethod(pm.id); 
@@ -186,10 +186,10 @@ export function PaymentTab() {
                     }} className="text-[10px] bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-white px-2 py-0.5 rounded-full font-medium hover:bg-slate-300 dark:hover:bg-white/20 transition-colors shrink-0">{t('billing.payment.makeDefault')}</button>
                   )}
                   {isCardExpired(pm.expiry) && (
-                    <span className="text-[10px] bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400 px-2 py-0.5 rounded-full font-medium shrink-0">Expired</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0 ${isLuxury ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'}`}>Expired</span>
                   )}
-                  <span className="text-[10px] bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400 px-2 py-0.5 rounded-full font-medium shrink-0">Limit: ${pm.limit}</span>
-                  <span className="text-[10px] bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400 px-2 py-0.5 rounded-full font-medium shrink-0">Balance: ${pm.balance}</span>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0 ${isLuxury ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400'}`}>Limit: ${pm.limit}</span>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0 ${isLuxury ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400'}`}>Balance: ${pm.balance}</span>
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button onClick={() => { setEditingCard(pm); setEditModalOpen(true); }} className={`text-slate-400 transition-colors ${isLuxury ? 'hover:text-[#D4AF37]' : 'hover:text-indigo-500'}`} title="Change limit">

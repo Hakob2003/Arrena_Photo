@@ -58,7 +58,8 @@ const SLIDES = [
 ];
 
 export function SwipeHint() {
-  const { isMobile, showSwipeHints, setShowSwipeHints, setHasSeenSwipeHints } = useUIStore();
+  const { isMobile, showSwipeHints, setShowSwipeHints, setHasSeenSwipeHints, preferences } = useUIStore();
+  const isLuxury = preferences?.skin === 'LUXURY';
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // If not mobile or not showing hints, render nothing
@@ -148,7 +149,7 @@ export function SwipeHint() {
           <div className="flex flex-col w-full gap-4">
             <button
               onClick={handleNext}
-              className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white rounded-xl font-medium shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-colors"
+              className={`w-full py-3.5 rounded-xl font-medium transition-colors ${isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-none' : 'bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-[0_0_20px_rgba(79,70,229,0.3)]'}`}
             >
               {currentSlide < SLIDES.length - 1 ? 'Далее' : 'Понятно!'}
             </button>
@@ -158,8 +159,10 @@ export function SwipeHint() {
               {SLIDES.map((_, i) => (
                 <div 
                   key={i} 
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    i === currentSlide ? 'bg-indigo-500' : 'bg-white/20'
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    currentSlide === i 
+                      ? (isLuxury ? 'bg-[#D4AF37] w-6' : 'bg-indigo-500 w-6') 
+                      : 'bg-white/20'
                   }`}
                 />
               ))}

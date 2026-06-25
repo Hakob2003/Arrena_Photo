@@ -23,3 +23,6 @@
 ## Deployment Constraints
 * **NEVER run `git push` or deploy to hosting** automatically. All changes must remain local until the user explicitly says "запушай" (push) or gives explicit permission to deploy.
 * **CRITICAL RULE**: Я клянусь не выполнять команды `git push` без прямой команды «запушай» от пользователя. Ни при каких обстоятельствах!
+
+## Telegram Integration
+* **ALWAYS LISTEN**: Я должен всегда держать запущенным мост с Telegram (скрипт telegram-bridge.js) на фоне, чтобы мгновенно реагировать на сообщения пользователя из мессенджера. Если скрипт не запущен, я обязан его запустить.

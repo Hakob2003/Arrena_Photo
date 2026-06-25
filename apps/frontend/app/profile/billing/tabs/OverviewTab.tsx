@@ -63,7 +63,7 @@ export function OverviewTab() {
             <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">{t('billing.overview.features')}</h4>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-slate-600 dark:text-gray-300">
               {currentPlan.features.map((feature, idx) => (
-                <li key={idx} className="flex items-center gap-2"><span className="text-green-500">✓</span> {feature}</li>
+                <li key={idx} className="flex items-center gap-2"><span className={isLuxury ? "text-[#D4AF37]" : "text-green-500"}>✓</span> {feature}</li>
               ))}
             </ul>
           </div>
@@ -113,7 +113,7 @@ export function OverviewTab() {
                 <span className="font-semibold text-slate-900 dark:text-white">340</span>
               </div>
               <div className="w-full bg-slate-100 dark:bg-white/10 rounded-full h-2">
-                <div className="bg-pink-500 h-2 rounded-full" style={{ width: '45%' }}></div>
+                <div className={`${isLuxury ? 'bg-[#D4AF37]' : 'bg-pink-500'} h-2 rounded-full`} style={{ width: '45%' }}></div>
               </div>
             </div>
 
