@@ -3,7 +3,8 @@ export const createImage = (url: string): Promise<HTMLImageElement> =>
     const image = new Image();
     image.addEventListener('load', () => resolve(image));
     image.addEventListener('error', (error) => reject(error));
-    image.setAttribute('crossOrigin', 'anonymous');
+    // crossOrigin is not needed and breaks data: URLs in Safari/iOS
+    // image.setAttribute('crossOrigin', 'anonymous');
     image.src = url;
   });
 

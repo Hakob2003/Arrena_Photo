@@ -51,8 +51,9 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
       await onUpload(file);
       setImageSrc(null);
       toast.success('Avatar updated successfully');
-    } catch (e) {
-      toast.error('Failed to crop or upload image');
+    } catch (e: any) {
+      console.error('Avatar upload error:', e);
+      toast.error(e?.response?.data?.message || e.message || 'Failed to crop or upload image');
     } finally {
       setIsUploading(false);
     }
