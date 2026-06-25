@@ -27,7 +27,13 @@ export class ProfileController {
   @Post('avatar')
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
-      destination: './uploads/avatars',
+      destination: (req, file, cb) => {
+        const dest = './uploads/avatars';
+        if (!fs.existsSync(dest)) {
+          fs.mkdirSync(dest, { recursive: true });
+        }
+        cb(null, dest);
+      },
       filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const ext = extname(file.originalname);
