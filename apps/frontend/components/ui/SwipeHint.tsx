@@ -87,7 +87,7 @@ export function SwipeHint() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/5 backdrop-blur-none"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm"
       >
         <div className="relative w-full max-w-sm px-6 flex flex-col items-center">
           

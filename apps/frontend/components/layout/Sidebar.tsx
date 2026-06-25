@@ -151,7 +151,7 @@ export function Sidebar() {
         <div 
           className={cn(
             "fixed inset-0 z-40 transition-opacity",
-            isMobile ? "bg-white/5 dark:bg-black/5 backdrop-blur-none" : "bg-transparent"
+            isMobile ? "bg-black/60 backdrop-blur-sm" : "bg-transparent"
           )}
           onClick={() => setSidebarOpen(false)}
         />
@@ -170,8 +170,8 @@ export function Sidebar() {
           mass: 0.8
         }}
         className={cn(
-          "fixed inset-y-0 left-0 z-50 border-r bg-transparent dark:bg-transparent backdrop-blur-none shadow-lg dark:shadow-none flex flex-col overflow-hidden",
-          !isMobile ? 'relative' : '',
+          "fixed inset-y-0 left-0 z-50 border-r flex flex-col overflow-hidden",
+          !isMobile ? 'relative bg-transparent dark:bg-transparent backdrop-blur-none shadow-lg dark:shadow-none' : 'bg-[#fafafa] dark:bg-[#050505] shadow-2xl',
           isLuxury ? 'border-[#D4AF37]/20' : 'border-black/10 dark:border-white/5'
         )}
       >
