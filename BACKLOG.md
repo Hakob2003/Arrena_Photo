@@ -14,6 +14,9 @@ These ideas were proposed and saved for later implementation.
 
 4. 🔍 **Post-processing (Upscale and Face-Fix)**
    Add buttons to generated photos: "Make 4k (Upscale)" and "Fix Face (Face Restoration)". These are separate micro-generations.
+
+5. 📱 **Mobile APK Generation (Capacitor WebView)**
+   Convert the Next.js web application into an installable Android APK using Capacitor in WebView mode pointing to the live URL.
 # рџљЂ РЈС‚СЂРµРЅРЅРёР№ РѕС‚С‡РµС‚: РђСѓРґРёС‚ РїСЂРѕРµРєС‚Р° Рё РІРµРєС‚РѕСЂ СЂР°Р·РІРёС‚РёСЏ (Arrena Photo)
 
 РџСЂРёРІРµС‚! РџРѕРєР° С‚С‹ СЃРїР°Р», СЏ РїРѕР»РЅРѕСЃС‚СЊСЋ РїСЂРѕР°РЅР°Р»РёР·РёСЂРѕРІР°Р» РІСЃСЋ РєРѕРґРѕРІСѓСЋ Р±Р°Р·Сѓ С‚РІРѕРµРіРѕ РјРѕРЅРѕСЂРµРїРѕР·РёС‚РѕСЂРёСЏ (Frontend РЅР° Next.js, Backend РЅР° NestJS Рё Р±Р°Р·Сѓ РґР°РЅРЅС‹С… РЅР° Prisma). 

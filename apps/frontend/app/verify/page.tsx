@@ -18,6 +18,8 @@ function VerifyContent() {
   const [message, setMessage] = useState(t('verify.checking'));
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
     if (!token) {
       setStatus('error');
       setMessage(t('verify.tokenNotFound'));
@@ -31,14 +33,18 @@ function VerifyContent() {
         // Automatically log the user in if the token is provided
         if (res.data && res.data.token && res.data.user) {
           login(res.data.user, res.data.token);
-          setTimeout(() => router.push('/'), 2000);
+          timeoutId = setTimeout(() => router.push('/'), 2000);
         }
       })
       .catch((err: any) => {
         setStatus('error');
         setMessage(err.response?.data?.message || t('verify.tokenNotFound'));
       });
-  }, [token, router, login]);
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [token, router, login, t]);
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
