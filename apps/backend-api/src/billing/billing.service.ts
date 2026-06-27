@@ -185,14 +185,17 @@ export class BillingService {
 
   async deductCredits(userId: string, amount: number, reason: string) {
     return this.prisma.$transaction(async (tx) => {
-      const user = await tx.user.findUnique({ where: { id: userId } });
-      if (!user || user.credits < amount) {
-        throw new BadRequestException('Insufficient credits');
-      }
-      const updatedUser = await tx.user.update({
-        where: { id: userId },
+      // Use atomic updateMany to prevent Race Conditions (Double Spend)
+      const result = await tx.user.updateMany({
+        where: { id: userId, credits: { gte: amount } },
         data: { credits: { decrement: amount } }
       });
+
+      if (result.count === 0) {
+        throw new BadRequestException('Insufficient credits or user not found');
+      }
+
+      const updatedUser = await tx.user.findUnique({ where: { id: userId } });
       const txRecord = await tx.creditTransaction.create({
         data: { userId, amount: -amount, reason }
       });
