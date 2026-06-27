@@ -82,15 +82,15 @@ export class GoogleDriveService {
   }
 
   async disconnect(userId: string) {
-    console.log(`[DriveService] Disconnecting user ${userId}`);
+    this.logger.log(`[DriveService] Disconnecting user ${userId}`);
     try {
       const result = await this.prisma.oAuthAccount.deleteMany({
         where: { userId, provider: 'google-drive' }
       });
-      console.log(`[DriveService] Deleted ${result.count} records for user ${userId}`);
+      this.logger.log(`[DriveService] Deleted ${result.count} records for user ${userId}`);
       return { success: true, deletedCount: result.count };
     } catch (e) {
-      console.error(`[DriveService] Error disconnecting:`, e);
+      this.logger.error(`[DriveService] Error disconnecting:`, e);
       throw new InternalServerErrorException('Failed to disconnect Google Drive');
     }
   }

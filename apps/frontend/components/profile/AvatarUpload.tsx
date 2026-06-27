@@ -82,7 +82,7 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
             alt="Avatar" 
             className="w-full h-full object-cover" 
             onError={(e) => console.error("Image failed to load:", getMediaUrl(currentAvatarUrl), e)}
-            onLoad={() => console.log("Image loaded successfully:", getMediaUrl(currentAvatarUrl))}
+            onLoad={() => {}}
           />
         ) : (
           <Camera className="w-8 h-8 text-slate-400 dark:text-gray-500" />

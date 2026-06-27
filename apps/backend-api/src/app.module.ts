@@ -55,14 +55,6 @@ import { SettingsModule } from './settings/settings.module';
             tls: tlsConfig,
           };
           
-          console.log('[Redis Debug] Connecting with URL mode:', {
-            host: conn.host,
-            port: conn.port,
-            username: conn.username,
-            hasPassword: !!conn.password,
-            tls: !!conn.tls,
-          });
-
           return { connection: conn as any };
         }
         return {

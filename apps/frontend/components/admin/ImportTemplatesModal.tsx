@@ -105,7 +105,7 @@ export function ImportTemplatesModal({ isOpen, onClose, onSuccess }: ImportTempl
       // Basic validation
       const validTemplates = parsedTemplates.filter(t => t.name && (t.categoryName || t.categoryId) && t.prompt);
       
-      console.log('Parsed Templates:', parsedTemplates, 'Valid:', validTemplates);
+
       
       if (validTemplates.length === 0) {
         toast.error("No valid templates found. Ensure 'name', 'categoryName', and 'prompt' are provided.");
