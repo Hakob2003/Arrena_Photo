@@ -338,6 +338,30 @@ export function PaymentTab() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Edit Limit Modal */}
+      <AnimatePresence>
+        {isEditModalOpen && editingCard && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/5 backdrop-blur-none" onClick={() => setEditModalOpen(false)} />
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl p-6 w-full max-w-md relative z-10 border border-black/10 dark:border-white/10">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Edit Max Limit</h2>
+              <form onSubmit={handleEditLimitSubmit} className="flex flex-col gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Max Limit ($)</label>
+                  <input required type="number" min="0" value={editingCard.limit} onChange={e => setEditingCard({...editingCard, limit: Number(e.target.value)})} placeholder="100" className={`w-full bg-slate-50 dark:bg-black/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} />
+                </div>
+                <div className="flex gap-3 mt-4">
+                  <button type="submit" className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                    isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                  }`}>Save Limit</button>
+                  <button type="button" onClick={() => setEditModalOpen(false)} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/5 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">Cancel</button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
