@@ -130,11 +130,21 @@ export function PaymentTab() {
     }
   };
 
-  const handleEditLimitSubmit = (e: React.FormEvent) => {
+  const handleEditLimitSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setPaymentMethods(paymentMethods.map(pm => pm.id === editingCard.id ? { ...pm, limit: Number(editingCard.limit) } : pm));
-    setEditModalOpen(false);
-    setEditingCard(null);
+    if (!editingCard) return;
+    try {
+      await api.put(`/billing/payment-methods/${editingCard.id}/limit`, {
+        limit: Number(editingCard.limit)
+      });
+      setPaymentMethods(paymentMethods.map(pm => pm.id === editingCard.id ? { ...pm, limit: Number(editingCard.limit) } : pm));
+      toast.success('Limit updated successfully');
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || 'Error updating limit');
+    } finally {
+      setEditModalOpen(false);
+      setEditingCard(null);
+    }
   };
 
   const handleRemoveCard = async (id: string) => {

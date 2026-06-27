@@ -46,6 +46,12 @@ export class BillingController {
     return this.billingService.setDefaultPaymentMethod(req.user.id, id);
   }
 
+  @Put('payment-methods/:id/limit')
+  @ApiOperation({ summary: 'Update payment method limit' })
+  setPaymentMethodLimit(@Request() req, @Param('id') id: string, @Body('limit') limit: number) {
+    return this.billingService.updatePaymentMethodLimit(req.user.id, id, limit);
+  }
+
   @Post('charge')
   @ApiOperation({ summary: 'Charge the default payment method' })
   chargePaymentMethod(@Request() req, @Body('amount') amount: number, @Body('reason') reason: string) {

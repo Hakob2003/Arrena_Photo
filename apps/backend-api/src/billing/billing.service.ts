@@ -113,6 +113,20 @@ export class BillingService {
     return { success: true };
   }
 
+  async updatePaymentMethodLimit(userId: string, id: string, limit: number) {
+    const card = await this.prisma.paymentMethod.findUnique({
+      where: { id }
+    });
+    if (!card || card.userId !== userId) {
+      throw new BadRequestException('Карта не найдена');
+    }
+    await this.prisma.paymentMethod.update({
+      where: { id },
+      data: { limit }
+    });
+    return { success: true };
+  }
+
   async chargePaymentMethod(userId: string, amount: number, reason: string) {
     return this.prisma.$transaction(async (tx) => {
       const defaultCard = await tx.paymentMethod.findFirst({
