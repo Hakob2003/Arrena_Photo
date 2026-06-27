@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException, Logger } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { google } from 'googleapis';
 import { ConfigService } from '@nestjs/config';
@@ -6,6 +6,7 @@ import { Readable } from 'stream';
 
 @Injectable()
 export class GoogleDriveService {
+  private readonly logger = new Logger(GoogleDriveService.name);
   private oauth2Client;
 
   constructor(
