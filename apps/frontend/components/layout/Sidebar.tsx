@@ -71,9 +71,10 @@ export function Sidebar() {
                 />
               )}
               <span className={cn(
-                "relative z-10 w-6 flex items-center justify-center transition-all", 
+                "relative z-10 w-6 flex items-center justify-center transition-transform duration-300 origin-center", 
                 isActive && isLuxury ? "text-[#D4AF37]" : "",
-                (isNeon && isActive) ? "drop-shadow-[0_0_12px_rgb(var(--color-accent-500)/0.9)]" : ""
+                (isNeon && isActive) ? "drop-shadow-[0_0_12px_rgb(var(--color-accent-500)/0.9)]" : "",
+                isActive ? "scale-110" : "group-hover:scale-110"
               )}>
                 {(isNeon && isActive) ? (
                   <>

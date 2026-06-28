@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useAuthStore, useUIStore } from '../../store';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '../../hooks/useIsMobile';
+import { cn } from '../../lib/utils';
 
 const ADMIN_LINKS = [
   { section: 'Overview', items: [
@@ -113,13 +114,13 @@ export function AdminSidebar() {
                   <Link 
                     key={link.href} 
                     href={link.href}
-                    className={`flex items-center gap-3 px-3 py-1.5 rounded-md transition-colors ${
+                    className={`flex items-center gap-3 px-3 py-1.5 rounded-md transition-colors group ${
                       isActive 
                         ? 'bg-black/[0.05] dark:bg-white/10 text-slate-900 dark:text-white font-medium' 
                         : 'text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white hover:bg-black/[0.03] dark:bg-white/5'
                     }`}
                   >
-                    <span className="text-base">{link.icon}</span>
+                    <span className={cn("text-base transition-transform duration-300 origin-center", isActive ? "scale-110" : "group-hover:scale-110")}>{link.icon}</span>
                     {link.name}
                   </Link>
                 );
