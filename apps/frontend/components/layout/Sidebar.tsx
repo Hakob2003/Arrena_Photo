@@ -212,7 +212,7 @@ export function Sidebar() {
                           backgroundSize: '200% 200%'
                         }}
                         animate={{
-                          opacity: [0.9, 0.3, 1, 0.4, 0.9],
+                          opacity: [1, 0.7, 0.95, 0.75, 1],
                           backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
                         }}
                         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
@@ -249,7 +249,7 @@ export function Sidebar() {
                           backgroundSize: '200% 200%'
                         }}
                         animate={{
-                          opacity: [0.9, 0.3, 1, 0.4, 0.9],
+                          opacity: [1, 0.7, 0.95, 0.75, 1],
                           backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
                         }}
                         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
