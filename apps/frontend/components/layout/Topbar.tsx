@@ -64,12 +64,14 @@ export function Topbar() {
             <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen && isMobile ? 'pointer-events-none' : 'pointer-events-auto'}`}>
               {isNeon ? (
                 <div 
-                  className="h-[18px] sm:h-7 w-24 object-contain hidden dark:block logo-shimmer"
+                  className="h-[18px] sm:h-7 w-24 hidden dark:block relative"
                   style={{
                     WebkitMask: `url(/logo2.png) no-repeat center / contain`,
                     mask: `url(/logo2.png) no-repeat center / contain`
                   }}
-                />
+                >
+                  <div className="absolute inset-0 logo-shimmer" />
+                </div>
               ) : (
                 <img 
                   src={isLuxury ? "/logoG2.png" : "/logo2.png"} 
@@ -90,12 +92,14 @@ export function Topbar() {
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
             {isNeon ? (
               <div 
-                className="h-6 sm:h-8 w-32 object-contain hidden dark:block logo-shimmer"
+                className="h-6 sm:h-8 w-32 hidden dark:block relative"
                 style={{
                   WebkitMask: `url(/logo.png) no-repeat center / contain`,
                   mask: `url(/logo.png) no-repeat center / contain`
                 }}
-              />
+              >
+                <div className="absolute inset-0 logo-shimmer" />
+              </div>
             ) : (
               <img 
                 src={isLuxury ? "/logoG.png" : "/logo.png"} 
