@@ -64,12 +64,10 @@ export function Topbar() {
             <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen && isMobile ? 'pointer-events-none' : 'pointer-events-auto'}`}>
               {isNeon ? (
                 <div 
-                  className="h-[18px] sm:h-7 w-24 object-contain hidden dark:block animate-pulse-glow animate-gradient-x"
+                  className="h-[18px] sm:h-7 w-24 object-contain hidden dark:block logo-shimmer animate-pulse-glow"
                   style={{
                     WebkitMask: `url(/logo2.png) no-repeat center / contain`,
-                    mask: `url(/logo2.png) no-repeat center / contain`,
-                    backgroundImage: 'linear-gradient(110deg, rgb(var(--color-accent-600)) 0%, rgb(var(--color-accent-400)) 30%, rgb(var(--color-accent-300)) 50%, rgb(var(--color-accent-400)) 70%, rgb(var(--color-accent-600)) 100%)',
-                    backgroundSize: '200% 200%'
+                    mask: `url(/logo2.png) no-repeat center / contain`
                   }}
                 />
               ) : (
@@ -92,12 +90,10 @@ export function Topbar() {
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
             {isNeon ? (
               <div 
-                className="h-6 sm:h-8 w-32 object-contain hidden dark:block animate-pulse-glow animate-gradient-x"
+                className="h-6 sm:h-8 w-32 object-contain hidden dark:block logo-shimmer animate-pulse-glow"
                 style={{
                   WebkitMask: `url(/logo.png) no-repeat center / contain`,
-                  mask: `url(/logo.png) no-repeat center / contain`,
-                  backgroundImage: 'linear-gradient(110deg, rgb(var(--color-accent-600)) 0%, rgb(var(--color-accent-400)) 30%, rgb(var(--color-accent-300)) 50%, rgb(var(--color-accent-400)) 70%, rgb(var(--color-accent-600)) 100%)',
-                  backgroundSize: '200% 200%'
+                  mask: `url(/logo.png) no-repeat center / contain`
                 }}
               />
             ) : (
