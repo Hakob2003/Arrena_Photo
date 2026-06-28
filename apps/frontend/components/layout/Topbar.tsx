@@ -63,21 +63,13 @@ export function Topbar() {
           >
             <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen && isMobile ? 'pointer-events-none' : 'pointer-events-auto'}`}>
               {isNeon ? (
-                <motion.div 
-                  className="h-[18px] sm:h-7 w-24 object-contain hidden dark:block"
+                <div 
+                  className="h-[18px] sm:h-7 w-24 object-contain hidden dark:block animate-pulse-glow animate-gradient-x"
                   style={{
                     WebkitMask: `url(/logo2.png) no-repeat center / contain`,
                     mask: `url(/logo2.png) no-repeat center / contain`,
                     backgroundImage: 'linear-gradient(110deg, rgb(var(--color-accent-600)) 0%, rgb(var(--color-accent-400)) 30%, rgb(var(--color-accent-200)) 50%, rgb(var(--color-accent-400)) 70%, rgb(var(--color-accent-600)) 100%)',
                     backgroundSize: '200% 200%'
-                  }}
-                  animate={{
-                    opacity: [1, 0.7, 0.95, 0.75, 1],
-                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-                  }}
-                  transition={{ 
-                    opacity: { duration: 7, repeat: Infinity, ease: 'easeInOut' },
-                    backgroundPosition: { duration: 3, repeat: Infinity, ease: 'linear' }
                   }}
                 />
               ) : (
@@ -99,21 +91,13 @@ export function Topbar() {
         <div className="flex items-center pointer-events-auto z-[60]">
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
             {isNeon ? (
-              <motion.div 
-                className="h-6 sm:h-8 w-32 object-contain hidden dark:block"
+              <div 
+                className="h-6 sm:h-8 w-32 object-contain hidden dark:block animate-pulse-glow animate-gradient-x"
                 style={{
                   WebkitMask: `url(/logo.png) no-repeat center / contain`,
                   mask: `url(/logo.png) no-repeat center / contain`,
                   backgroundImage: 'linear-gradient(110deg, rgb(var(--color-accent-600)) 0%, rgb(var(--color-accent-400)) 30%, rgb(var(--color-accent-200)) 50%, rgb(var(--color-accent-400)) 70%, rgb(var(--color-accent-600)) 100%)',
                   backgroundSize: '200% 200%'
-                }}
-                animate={{
-                  opacity: [1, 0.7, 0.95, 0.75, 1],
-                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-                }}
-                transition={{ 
-                  opacity: { duration: 7, repeat: Infinity, ease: 'easeInOut' },
-                  backgroundPosition: { duration: 3, repeat: Infinity, ease: 'linear' }
                 }}
               />
             ) : (
