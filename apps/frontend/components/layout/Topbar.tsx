@@ -64,11 +64,12 @@ export function Topbar() {
             <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen && isMobile ? 'pointer-events-none' : 'pointer-events-auto'}`}>
               {isNeon ? (
                 <div 
-                  className="h-[18px] sm:h-7 w-24 object-contain hidden dark:block"
+                  className="h-[18px] sm:h-7 w-24 object-contain hidden dark:block animate-pulse-glow animate-gradient-x"
                   style={{
                     WebkitMask: `url(/logo2.png) no-repeat center / contain`,
                     mask: `url(/logo2.png) no-repeat center / contain`,
-                    backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))'
+                    backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))',
+                    backgroundSize: '200% 200%'
                   }}
                 />
               ) : (
@@ -91,11 +92,12 @@ export function Topbar() {
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
             {isNeon ? (
               <div 
-                className="h-6 sm:h-8 w-32 object-contain hidden dark:block"
+                className="h-6 sm:h-8 w-32 object-contain hidden dark:block animate-pulse-glow animate-gradient-x"
                 style={{
                   WebkitMask: `url(/logo.png) no-repeat center / contain`,
                   mask: `url(/logo.png) no-repeat center / contain`,
-                  backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))'
+                  backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))',
+                  backgroundSize: '200% 200%'
                 }}
               />
             ) : (
