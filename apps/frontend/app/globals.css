@@ -414,8 +414,8 @@
 
 /* Neon Logo Shimmer Effect */
 @keyframes logo-shimmer-sweep-new {
-  0% { left: -100%; }
-  100% { left: 200%; }
+  0% { left: -35%; }
+  100% { left: 115%; }
 }
 .logo-shimmer {
   background-image: linear-gradient(to right, rgb(var(--color-accent-500)), rgb(var(--color-accent-600)), rgb(var(--color-accent-500)));
@@ -426,12 +426,12 @@
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
-  width: 50%;
+  left: -35%;
+  width: 30%;
   height: 100%;
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
-  animation: logo-shimmer-sweep-new 2.5s ease-in-out infinite;
-  transform: skewX(-20deg);
+  background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.9) 50%, transparent 100%);
+  animation: logo-shimmer-sweep-new 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform: skewX(-25deg);
   will-change: left;
 }
 
