@@ -69,11 +69,11 @@ export function Topbar() {
                     WebkitMask: `url(/logo2.png) no-repeat center / contain`,
                     mask: `url(/logo2.png) no-repeat center / contain`,
                     backgroundImage: 'linear-gradient(110deg, rgb(var(--color-accent-600)) 0%, rgb(var(--color-accent-400)) 30%, rgb(var(--color-accent-200)) 50%, rgb(var(--color-accent-400)) 70%, rgb(var(--color-accent-600)) 100%)',
-                    backgroundSize: '200% auto'
+                    backgroundSize: '200% 200%'
                   }}
                   animate={{
                     opacity: [1, 0.7, 0.95, 0.75, 1],
-                    backgroundPosition: ['200% center', '-200% center']
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
                   }}
                   transition={{ 
                     opacity: { duration: 7, repeat: Infinity, ease: 'easeInOut' },
@@ -105,11 +105,11 @@ export function Topbar() {
                   WebkitMask: `url(/logo.png) no-repeat center / contain`,
                   mask: `url(/logo.png) no-repeat center / contain`,
                   backgroundImage: 'linear-gradient(110deg, rgb(var(--color-accent-600)) 0%, rgb(var(--color-accent-400)) 30%, rgb(var(--color-accent-200)) 50%, rgb(var(--color-accent-400)) 70%, rgb(var(--color-accent-600)) 100%)',
-                  backgroundSize: '200% auto'
+                  backgroundSize: '200% 200%'
                 }}
                 animate={{
                   opacity: [1, 0.7, 0.95, 0.75, 1],
-                  backgroundPosition: ['200% center', '-200% center']
+                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
                 }}
                 transition={{ 
                   opacity: { duration: 7, repeat: Infinity, ease: 'easeInOut' },
