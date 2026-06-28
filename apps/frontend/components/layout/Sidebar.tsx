@@ -79,7 +79,7 @@ export function Sidebar() {
                   <>
                     <svg style={{ width: 0, height: 0, position: 'absolute' }} aria-hidden="true" focusable="false">
                       <mask id={`icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')}`}>
-                        <svg width="32" height="32" viewBox="0 0 32 32" style={{ overflow: "visible" }}>
+                        <svg width="28" height="28" viewBox="0 0 32 32" style={{ overflow: "visible" }}>
                           <rect width="32" height="32" fill="black" />
                           <g transform="translate(6, 6)" style={{ color: "white", transition: "none" }} stroke="white" fill="none">
                             {React.cloneElement(link.icon as React.ReactElement, { style: { overflow: "visible", transition: "none" } })}
@@ -313,7 +313,7 @@ export function Sidebar() {
                           <>
                             <svg style={{ width: 0, height: 0, position: 'absolute' }} aria-hidden="true" focusable="false">
                               <mask id="icon-mask-admin">
-                                <svg width="32" height="32" viewBox="0 0 32 32">
+                                <svg width="28" height="28" viewBox="0 0 32 32" style={{ overflow: "visible" }}>
                                   <rect width="32" height="32" fill="black" />
                                   <g transform="translate(6, 6)" style={{ color: "white" }} stroke="white" fill="none">
                                     <Crown className="w-5 h-5" style={{ overflow: "visible" }} />
