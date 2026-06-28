@@ -14,6 +14,7 @@ export function Topbar() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
   const isLuxury = preferences.skin === 'LUXURY';
+  const isNeon = preferences.skin === 'NEON';
   const showTopbarLogo = !isSidebarOpen;
 
   // We no longer need manual targetX calculation, we will use Framer Motion layout animations.
@@ -61,11 +62,22 @@ export function Topbar() {
             }}
           >
             <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen && isMobile ? 'pointer-events-none' : 'pointer-events-auto'}`}>
-              <img 
-                src={isLuxury ? "/logoG2.png" : "/logo2.png"} 
-                alt="Arrena Photo Text" 
-                className="h-[18px] sm:h-7 w-auto object-contain hidden dark:block" 
-              />
+              {isNeon ? (
+                <div 
+                  className="h-[18px] sm:h-7 w-24 object-contain hidden dark:block"
+                  style={{
+                    WebkitMask: `url(/logo2.png) no-repeat center / contain`,
+                    mask: `url(/logo2.png) no-repeat center / contain`,
+                    backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))'
+                  }}
+                />
+              ) : (
+                <img 
+                  src={isLuxury ? "/logoG2.png" : "/logo2.png"} 
+                  alt="Arrena Photo Text" 
+                  className="h-[18px] sm:h-7 w-auto object-contain hidden dark:block" 
+                />
+              )}
               <img 
                 src={isLuxury ? "/logoG2.png" : "/logo2-light.png"} 
                 alt="Arrena Photo Text" 
@@ -77,11 +89,22 @@ export function Topbar() {
       ) : (
         <div className="flex items-center pointer-events-auto z-[60]">
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-            <img 
-              src={isLuxury ? "/logoG.png" : "/logo.png"} 
-              alt="Arrena Photo Logo" 
-              className="h-6 sm:h-8 w-auto object-contain hidden dark:block" 
-            />
+            {isNeon ? (
+              <div 
+                className="h-6 sm:h-8 w-32 object-contain hidden dark:block"
+                style={{
+                  WebkitMask: `url(/logo.png) no-repeat center / contain`,
+                  mask: `url(/logo.png) no-repeat center / contain`,
+                  backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))'
+                }}
+              />
+            ) : (
+              <img 
+                src={isLuxury ? "/logoG.png" : "/logo.png"} 
+                alt="Arrena Photo Logo" 
+                className="h-6 sm:h-8 w-auto object-contain hidden dark:block" 
+              />
+            )}
             <img 
               src={isLuxury ? "/logoG.png" : "/logo-light.png"} 
               alt="Arrena Photo Logo" 

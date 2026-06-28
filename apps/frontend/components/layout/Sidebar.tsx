@@ -202,11 +202,22 @@ export function Sidebar() {
                     transition={{ duration: 0.2 }}
                     className="absolute flex justify-center w-full cursor-pointer"
                   >
-                    <img 
-                      src={isLuxury ? "/logoG1.png" : "/logo1.png"} 
-                      alt="Arrena Photo Icon" 
-                      className="w-8 h-8 object-contain hidden dark:block" 
-                    />
+                    {isNeon ? (
+                      <div 
+                        className="w-8 h-8 hidden dark:block"
+                        style={{
+                          WebkitMask: `url(/logo1.png) no-repeat center / contain`,
+                          mask: `url(/logo1.png) no-repeat center / contain`,
+                          backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))'
+                        }}
+                      />
+                    ) : (
+                      <img 
+                        src={isLuxury ? "/logoG1.png" : "/logo1.png"} 
+                        alt="Arrena Photo Icon" 
+                        className="w-8 h-8 object-contain hidden dark:block" 
+                      />
+                    )}
                     <img 
                       src={isLuxury ? "/logoG1.png" : "/logo1-light.png"} 
                       alt="Arrena Photo Icon" 
@@ -222,11 +233,22 @@ export function Sidebar() {
                     transition={{ duration: 0.2 }}
                     className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer"
                   >
-                    <img 
-                      src={isLuxury ? "/logoG.png" : "/logo.png"} 
-                      alt="Arrena Photo Logo" 
-                      className={cn("object-contain hidden dark:block", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
-                    />
+                    {isNeon ? (
+                      <div 
+                        className={cn("hidden dark:block", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
+                        style={{
+                          WebkitMask: `url(/logo.png) no-repeat center / contain`,
+                          mask: `url(/logo.png) no-repeat center / contain`,
+                          backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))'
+                        }}
+                      />
+                    ) : (
+                      <img 
+                        src={isLuxury ? "/logoG.png" : "/logo.png"} 
+                        alt="Arrena Photo Logo" 
+                        className={cn("object-contain hidden dark:block", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
+                      />
+                    )}
                     <img 
                       src={isLuxury ? "/logoG.png" : "/logo-light.png"} 
                       alt="Arrena Photo Logo" 
