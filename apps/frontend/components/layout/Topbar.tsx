@@ -64,13 +64,33 @@ export function Topbar() {
             <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen && isMobile ? 'pointer-events-none' : 'pointer-events-auto'}`}>
               {isNeon ? (
                 <div 
-                  className="h-[18px] sm:h-7 w-24 hidden dark:block relative masked-logo-parent"
+                  className="h-[18px] sm:h-7 w-24 hidden dark:block relative overflow-hidden masked-logo-parent"
                   style={{
                     WebkitMask: `url(/logo2.png) no-repeat center / contain`,
                     mask: `url(/logo2.png) no-repeat center / contain`
                   }}
                 >
-                  <div className="absolute inset-0 logo-shimmer" />
+                  <div 
+                    className="absolute inset-0" 
+                    style={{
+                      background: 'linear-gradient(to right, rgb(var(--color-accent-600)), rgb(var(--color-accent-400)), rgb(var(--color-accent-600)))'
+                    }}
+                  />
+                  <motion.div
+                    className="absolute inset-y-0 w-8 pointer-events-none"
+                    initial={{ x: "-150%" }}
+                    animate={{ x: "350%" }}
+                    transition={{
+                      duration: 1.2,
+                      ease: "easeInOut",
+                      repeat: Infinity,
+                      repeatDelay: 2.8
+                    }}
+                    style={{
+                      background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75) 50%, transparent)",
+                      transform: "skewX(-20deg)"
+                    }}
+                  />
                 </div>
               ) : (
                 <img 
@@ -92,13 +112,33 @@ export function Topbar() {
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
             {isNeon ? (
               <div 
-                className="h-6 sm:h-8 w-32 hidden dark:block relative masked-logo-parent"
+                className="h-6 sm:h-8 w-32 hidden dark:block relative overflow-hidden masked-logo-parent"
                 style={{
                   WebkitMask: `url(/logo.png) no-repeat center / contain`,
                   mask: `url(/logo.png) no-repeat center / contain`
                 }}
               >
-                <div className="absolute inset-0 logo-shimmer" />
+                <div 
+                  className="absolute inset-0" 
+                  style={{
+                    background: 'linear-gradient(to right, rgb(var(--color-accent-600)), rgb(var(--color-accent-400)), rgb(var(--color-accent-600)))'
+                  }}
+                />
+                <motion.div
+                  className="absolute inset-y-0 w-12 pointer-events-none"
+                  initial={{ x: "-150%" }}
+                  animate={{ x: "350%" }}
+                  transition={{
+                    duration: 1.2,
+                    ease: "easeInOut",
+                    repeat: Infinity,
+                    repeatDelay: 2.8
+                  }}
+                  style={{
+                    background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75) 50%, transparent)",
+                    transform: "skewX(-20deg)"
+                  }}
+                />
               </div>
             ) : (
               <img 

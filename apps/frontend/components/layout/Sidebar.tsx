@@ -203,15 +203,35 @@ export function Sidebar() {
                     className="absolute flex justify-center w-full cursor-pointer"
                   >
                     {isNeon ? (
-                      <div 
-                        className="w-8 h-8 hidden dark:block relative masked-logo-parent"
-                        style={{
-                          WebkitMask: `url(/logo1.png) no-repeat center / contain`,
-                          mask: `url(/logo1.png) no-repeat center / contain`
-                        }}
-                      >
-                        <div className="absolute inset-0 logo-shimmer" />
-                      </div>
+                       <div 
+                         className="w-8 h-8 hidden dark:block relative overflow-hidden masked-logo-parent"
+                         style={{
+                           WebkitMask: `url(/logo1.png) no-repeat center / contain`,
+                           mask: `url(/logo1.png) no-repeat center / contain`
+                         }}
+                       >
+                         <div 
+                           className="absolute inset-0" 
+                           style={{
+                             background: 'linear-gradient(to right, rgb(var(--color-accent-600)), rgb(var(--color-accent-400)), rgb(var(--color-accent-600)))'
+                           }}
+                         />
+                         <motion.div
+                           className="absolute inset-y-0 w-4 pointer-events-none"
+                           initial={{ x: "-150%" }}
+                           animate={{ x: "350%" }}
+                           transition={{
+                             duration: 1.2,
+                             ease: "easeInOut",
+                             repeat: Infinity,
+                             repeatDelay: 2.8
+                           }}
+                           style={{
+                             background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75) 50%, transparent)",
+                             transform: "skewX(-20deg)"
+                           }}
+                         />
+                       </div>
                     ) : (
                       <img 
                         src={isLuxury ? "/logoG1.png" : "/logo1.png"} 
@@ -235,15 +255,35 @@ export function Sidebar() {
                     className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer"
                   >
                     {isNeon ? (
-                      <div 
-                        className={cn("hidden dark:block relative masked-logo-parent", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
-                        style={{
-                          WebkitMask: `url(/logo.png) no-repeat center / contain`,
-                          mask: `url(/logo.png) no-repeat center / contain`
-                        }}
-                      >
-                        <div className="absolute inset-0 logo-shimmer" />
-                      </div>
+                       <div 
+                         className={cn("hidden dark:block relative overflow-hidden masked-logo-parent", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
+                         style={{
+                           WebkitMask: `url(/logo.png) no-repeat center / contain`,
+                           mask: `url(/logo.png) no-repeat center / contain`
+                         }}
+                       >
+                         <div 
+                           className="absolute inset-0" 
+                           style={{
+                             background: 'linear-gradient(to right, rgb(var(--color-accent-600)), rgb(var(--color-accent-400)), rgb(var(--color-accent-600)))'
+                           }}
+                         />
+                         <motion.div
+                           className="absolute inset-y-0 w-12 pointer-events-none"
+                           initial={{ x: "-150%" }}
+                           animate={{ x: "350%" }}
+                           transition={{
+                             duration: 1.2,
+                             ease: "easeInOut",
+                             repeat: Infinity,
+                             repeatDelay: 2.8
+                           }}
+                           style={{
+                             background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75) 50%, transparent)",
+                             transform: "skewX(-20deg)"
+                           }}
+                         />
+                       </div>
                     ) : (
                       <img 
                         src={isLuxury ? "/logoG.png" : "/logo.png"} 
