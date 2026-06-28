@@ -71,15 +71,15 @@ export function Sidebar() {
                 />
               )}
               <span className={cn(
-                "relative z-10 w-6 flex items-center justify-center transition-transform duration-300 origin-center", 
-                isActive && isLuxury ? "text-[#D4AF37]" : "",
-                (isNeon && isActive) ? "drop-shadow-[0_0_12px_rgb(var(--color-accent-500)/0.9)]" : ""
+                "relative z-10 w-6 flex items-center justify-center transition-transform duration-300 origin-center group-hover:scale-110", 
+                isActive ? "scale-110" : "",
+                isActive && isLuxury ? "text-[#D4AF37]" : ""
               )}>
                 {(isNeon && isActive) ? (
                   <>
                     <svg style={{ width: 0, height: 0, position: 'absolute' }} aria-hidden="true" focusable="false">
                       <mask id={`icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')}`}>
-                        <svg width="32" height="32" viewBox="0 0 32 32">
+                        <svg width="32" height="32" viewBox="0 0 32 32" style={{ overflow: "visible" }}>
                           <rect width="32" height="32" fill="black" />
                           <g transform="translate(6, 6)" style={{ color: "white", transition: "none" }} stroke="white" fill="none">
                             {React.cloneElement(link.icon as React.ReactElement, { style: { overflow: "visible", transition: "none" } })}
@@ -88,7 +88,10 @@ export function Sidebar() {
                       </mask>
                     </svg>
                     <div 
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 pointer-events-none"
+                      className={cn(
+                        "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 pointer-events-none",
+                        isActive ? "drop-shadow-[0_0_12px_rgb(var(--color-accent-500)/0.9)]" : ""
+                      )}
                       style={{ 
                         WebkitMask: `url(#icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')})`,
                         mask: `url(#icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')})`,
@@ -178,7 +181,7 @@ export function Sidebar() {
         )}
       >
         <div className={`flex items-center relative ${isSidebarOpen ? 'justify-center p-0' : 'justify-start pt-4 pb-2 px-1 border-b border-black/10 dark:border-white/5 md:border-none'}`}>
-          <div className={`flex items-center justify-center overflow-hidden relative ${isSidebarOpen ? (isLuxury ? 'w-[130px] h-[130px] mx-auto my-4' : 'w-[160px] h-[60px] mx-auto my-2') : 'w-8 h-8 ml-3'}`}>
+          <div className={`flex items-center justify-center relative ${isSidebarOpen ? (isLuxury ? 'w-[130px] h-[130px] mx-auto my-4' : 'w-[160px] h-[60px] mx-auto my-2') : 'w-8 h-8 ml-3'}`}>
             <Link 
               href="/" 
               className="relative flex items-center hover:opacity-80 transition-opacity w-full h-full justify-center"
