@@ -208,14 +208,17 @@ export function Sidebar() {
                         style={{
                           WebkitMask: `url(/logo1.png) no-repeat center / contain`,
                           mask: `url(/logo1.png) no-repeat center / contain`,
-                          backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))',
-                          backgroundSize: '200% 200%'
+                          backgroundImage: 'linear-gradient(110deg, rgb(var(--color-accent-600)) 0%, rgb(var(--color-accent-400)) 30%, rgb(var(--color-accent-200)) 50%, rgb(var(--color-accent-400)) 70%, rgb(var(--color-accent-600)) 100%)',
+                          backgroundSize: '200% auto'
                         }}
                         animate={{
                           opacity: [1, 0.7, 0.95, 0.75, 1],
-                          backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+                          backgroundPosition: ['200% center', '-200% center']
                         }}
-                        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+                        transition={{ 
+                          opacity: { duration: 7, repeat: Infinity, ease: 'easeInOut' },
+                          backgroundPosition: { duration: 3, repeat: Infinity, ease: 'linear' }
+                        }}
                       />
                     ) : (
                       <img 
@@ -245,14 +248,17 @@ export function Sidebar() {
                         style={{
                           WebkitMask: `url(/logo.png) no-repeat center / contain`,
                           mask: `url(/logo.png) no-repeat center / contain`,
-                          backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))',
-                          backgroundSize: '200% 200%'
+                          backgroundImage: 'linear-gradient(110deg, rgb(var(--color-accent-600)) 0%, rgb(var(--color-accent-400)) 30%, rgb(var(--color-accent-200)) 50%, rgb(var(--color-accent-400)) 70%, rgb(var(--color-accent-600)) 100%)',
+                          backgroundSize: '200% auto'
                         }}
                         animate={{
                           opacity: [1, 0.7, 0.95, 0.75, 1],
-                          backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+                          backgroundPosition: ['200% center', '-200% center']
                         }}
-                        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+                        transition={{ 
+                          opacity: { duration: 7, repeat: Infinity, ease: 'easeInOut' },
+                          backgroundPosition: { duration: 3, repeat: Infinity, ease: 'linear' }
+                        }}
                       />
                     ) : (
                       <img 
