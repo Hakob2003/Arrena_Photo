@@ -221,26 +221,23 @@
 
   /* Neon Logo Shimmer Effect */
   @keyframes logo-shimmer-sweep {
-    0% { transform: translateX(-150%) skewX(-20deg); }
-    100% { transform: translateX(250%) skewX(-20deg); }
+    0% { left: -100%; }
+    100% { left: 200%; }
   }
   .logo-shimmer {
     background-image: linear-gradient(to right, rgb(var(--color-accent-500)), rgb(var(--color-accent-600)), rgb(var(--color-accent-500)));
     background-size: 100% 100%;
     overflow: hidden;
-    transform: translateZ(0);
   }
   .logo-shimmer::after {
     content: '';
     position: absolute;
     top: 0;
-    left: 0;
-    width: 40%;
+    width: 50%;
     height: 100%;
     background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
     animation: logo-shimmer-sweep 2.5s ease-in-out infinite;
-    will-change: transform;
-    transform: translateZ(0);
+    transform: skewX(-20deg);
   }
 
   /* Specific override for hydration-safe text gradients */
