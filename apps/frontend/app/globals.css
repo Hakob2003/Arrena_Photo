@@ -228,7 +228,7 @@
   .logo-shimmer {
     background-image: linear-gradient(110deg, rgb(var(--color-accent-600)) 0%, rgb(var(--color-accent-400)) 30%, rgb(var(--color-accent-300)) 50%, rgb(var(--color-accent-400)) 70%, rgb(var(--color-accent-600)) 100%);
     background-size: 200% auto;
-    animation: logo-shimmer-sweep 3s linear infinite;
+    animation: logo-shimmer-sweep 3s linear infinite, pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
   /* Specific override for hydration-safe text gradients */

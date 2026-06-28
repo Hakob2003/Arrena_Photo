@@ -64,7 +64,7 @@ export function Topbar() {
             <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen && isMobile ? 'pointer-events-none' : 'pointer-events-auto'}`}>
               {isNeon ? (
                 <div 
-                  className="h-[18px] sm:h-7 w-24 object-contain hidden dark:block logo-shimmer animate-pulse-glow"
+                  className="h-[18px] sm:h-7 w-24 object-contain hidden dark:block logo-shimmer"
                   style={{
                     WebkitMask: `url(/logo2.png) no-repeat center / contain`,
                     mask: `url(/logo2.png) no-repeat center / contain`
@@ -90,7 +90,7 @@ export function Topbar() {
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
             {isNeon ? (
               <div 
-                className="h-6 sm:h-8 w-32 object-contain hidden dark:block logo-shimmer animate-pulse-glow"
+                className="h-6 sm:h-8 w-32 object-contain hidden dark:block logo-shimmer"
                 style={{
                   WebkitMask: `url(/logo.png) no-repeat center / contain`,
                   mask: `url(/logo.png) no-repeat center / contain`
