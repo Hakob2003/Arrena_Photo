@@ -254,7 +254,7 @@ export function Sidebar() {
           </button>
         </div>
 
-      <div className={`flex-1 overflow-y-auto px-2 py-2 space-y-8 ${isSidebarOpen ? 'custom-scrollbar' : 'scrollbar-hide'}`}>
+      <div className={`flex-1 overflow-y-auto overflow-x-hidden py-6 flex flex-col gap-8 ${isSidebarOpen ? 'custom-scrollbar px-3' : 'scrollbar-hide px-1'}`}>
         <div>
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
             {isSidebarOpen ? t('nav.sectionOverview') : "•••"}
