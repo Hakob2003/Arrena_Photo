@@ -204,7 +204,7 @@ export function Sidebar() {
                   >
                     {isNeon ? (
                       <div 
-                        className="w-8 h-8 hidden dark:block relative"
+                        className="w-8 h-8 hidden dark:block relative masked-logo-parent"
                         style={{
                           WebkitMask: `url(/logo1.png) no-repeat center / contain`,
                           mask: `url(/logo1.png) no-repeat center / contain`
@@ -236,7 +236,7 @@ export function Sidebar() {
                   >
                     {isNeon ? (
                       <div 
-                        className={cn("hidden dark:block relative", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
+                        className={cn("hidden dark:block relative masked-logo-parent", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
                         style={{
                           WebkitMask: `url(/logo.png) no-repeat center / contain`,
                           mask: `url(/logo.png) no-repeat center / contain`

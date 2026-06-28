@@ -434,3 +434,10 @@
   transform: skewX(-20deg);
   will-change: left;
 }
+
+.masked-logo-parent {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: perspective(1000px) translate3d(0,0,0);
+  transform: perspective(1000px) translate3d(0,0,0);
+}
