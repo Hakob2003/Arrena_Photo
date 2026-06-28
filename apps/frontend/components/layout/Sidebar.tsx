@@ -203,14 +203,19 @@ export function Sidebar() {
                     className="absolute flex justify-center w-full cursor-pointer"
                   >
                     {isNeon ? (
-                      <div 
-                        className="w-8 h-8 hidden dark:block animate-pulse-glow animate-gradient-x"
+                      <motion.div 
+                        className="w-8 h-8 hidden dark:block"
                         style={{
                           WebkitMask: `url(/logo1.png) no-repeat center / contain`,
                           mask: `url(/logo1.png) no-repeat center / contain`,
                           backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))',
                           backgroundSize: '200% 200%'
                         }}
+                        animate={{
+                          opacity: [0.9, 0.3, 1, 0.4, 0.9],
+                          backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+                        }}
+                        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
                       />
                     ) : (
                       <img 
@@ -235,14 +240,19 @@ export function Sidebar() {
                     className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer"
                   >
                     {isNeon ? (
-                      <div 
-                        className={cn("hidden dark:block animate-pulse-glow animate-gradient-x", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
+                      <motion.div 
+                        className={cn("hidden dark:block", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
                         style={{
                           WebkitMask: `url(/logo.png) no-repeat center / contain`,
                           mask: `url(/logo.png) no-repeat center / contain`,
                           backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))',
                           backgroundSize: '200% 200%'
                         }}
+                        animate={{
+                          opacity: [0.9, 0.3, 1, 0.4, 0.9],
+                          backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+                        }}
+                        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
                       />
                     ) : (
                       <img 
