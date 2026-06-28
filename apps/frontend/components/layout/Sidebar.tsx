@@ -177,7 +177,7 @@ export function Sidebar() {
         )}
       >
         <div className={`flex items-center relative ${isSidebarOpen ? 'justify-center p-0' : 'justify-start pt-4 pb-2 px-1 border-b border-black/10 dark:border-white/5 md:border-none'}`}>
-          <div className={`flex items-center justify-center overflow-hidden relative ${isSidebarOpen ? (isLuxury ? 'w-[130px] h-[130px] mx-auto my-4' : 'w-[160px] h-[60px] mx-auto my-2') : 'w-10 h-10 ml-2'}`}>
+          <div className={`flex items-center justify-center overflow-hidden relative ${isSidebarOpen ? (isLuxury ? 'w-[130px] h-[130px] mx-auto my-4' : 'w-[160px] h-[60px] mx-auto my-2') : 'w-8 h-8 ml-3'}`}>
             <Link 
               href="/" 
               className="relative flex items-center hover:opacity-80 transition-opacity w-full h-full justify-center"
@@ -201,18 +201,15 @@ export function Sidebar() {
                     <img 
                       src={isLuxury ? "/logoG1.png" : "/logo1.png"} 
                       alt="Arrena Photo Icon" 
-                      className="w-10 h-auto max-h-[40px] object-contain hidden dark:block" 
+                      className="w-8 h-8 object-contain hidden dark:block" 
                     />
                     <img 
                       src={isLuxury ? "/logoG1.png" : "/logo1-light.png"} 
                       alt="Arrena Photo Icon" 
-                      className="w-10 h-auto max-h-[40px] object-contain block dark:hidden" 
+                      className="w-8 h-8 object-contain block dark:hidden" 
                     />
                   </motion.div>
                 )}
-              </AnimatePresence>
-
-              <AnimatePresence>
                 {isSidebarOpen && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -238,7 +235,7 @@ export function Sidebar() {
             </Link>
           </div>
           <button 
-            className={`text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-opacity ${!isMobile ? 'block' : (isSidebarOpen ? 'block' : 'hidden')} ${isSidebarOpen ? 'p-2' : 'absolute right-1 p-1'}`}
+            className={`text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-opacity ${!isMobile ? 'block' : (isSidebarOpen ? 'block' : 'hidden')} ${isSidebarOpen ? 'p-2' : 'absolute right-2 p-1'}`}
             onClick={() => setSidebarOpen(!isSidebarOpen)}
           >
             {isMobile ? (
@@ -253,7 +250,7 @@ export function Sidebar() {
           </button>
         </div>
 
-      <div className="flex-1 overflow-y-auto px-2 py-2 space-y-8 custom-scrollbar">
+      <div className={`flex-1 overflow-y-auto px-2 py-2 space-y-8 ${isSidebarOpen ? 'custom-scrollbar' : 'scrollbar-hide'}`}>
         <div>
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
             {isSidebarOpen ? t('nav.sectionOverview') : "•••"}

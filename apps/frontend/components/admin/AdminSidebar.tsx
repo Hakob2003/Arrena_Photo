@@ -100,7 +100,7 @@ export function AdminSidebar() {
       </div>
 
       {/* Navigation */}
-      <div className="flex-1 overflow-y-auto py-4 px-3 space-y-6 custom-scrollbar">
+      <div className={`flex-1 overflow-y-auto py-4 px-3 space-y-6 ${isSidebarOpen ? 'custom-scrollbar' : 'scrollbar-hide'}`}>
         {ADMIN_LINKS.map((group, i) => (
           <div key={i}>
             <h4 className="px-3 text-xs font-semibold text-slate-400 dark:text-gray-500 uppercase tracking-wider mb-2">
