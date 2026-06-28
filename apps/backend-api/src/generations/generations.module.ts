@@ -5,6 +5,7 @@ import { GenerationsService } from './generations.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { GenerationProcessor } from './generation.processor';
 import { BillingModule } from '../billing/billing.module';
+import { WatermarkService } from './watermark.service';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { BillingModule } from '../billing/billing.module';
     BillingModule,
   ],
   controllers: [GenerationsController],
-  providers: [GenerationsService, GenerationProcessor],
+  providers: [GenerationsService, GenerationProcessor, WatermarkService],
   exports: [GenerationsService],
 })
 export class GenerationsModule {}

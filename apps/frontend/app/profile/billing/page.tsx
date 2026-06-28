@@ -70,7 +70,7 @@ export default function UserBillingPage() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
           >
-            {activeTab === 'overview' && <OverviewTab />}
+            {activeTab === 'overview' && <OverviewTab onNavigateToPlans={() => setActiveTab('plans')} />}
             {activeTab === 'plans' && <PlansTab />}
             {activeTab === 'usage' && <UsageTab />}
             {activeTab === 'payment' && <PaymentTab />}

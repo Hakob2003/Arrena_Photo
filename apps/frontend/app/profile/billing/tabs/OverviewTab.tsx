@@ -12,14 +12,14 @@ const PLAN_DETAILS: Record<string, { name: string, limit: number, price: string,
   business: { name: 'Business', limit: 999999, price: '$99.00', features: ['До 20 задач', 'Макс. скорость', 'API доступ'] },
 };
 
-export function OverviewTab() {
+export function OverviewTab({ onNavigateToPlans }: { onNavigateToPlans?: () => void }) {
   const [isCancelModalOpen, setCancelModalOpen] = useState(false);
   const { credits, planId, setPlanId } = useAuthStore();
   const { t } = useTranslation();
   const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
   
-  const currentPlan = PLAN_DETAILS[planId] || PLAN_DETAILS.free;
-  const isActive = planId !== 'free';
+  const currentPlan = PLAN_DETAILS[planId?.toLowerCase()] || PLAN_DETAILS.free;
+  const isActive = planId?.toLowerCase() !== 'free';
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -76,7 +76,9 @@ export function OverviewTab() {
             <p className="text-sm text-slate-500 dark:text-gray-400 mt-1">{t('billing.overview.manageDesc')}</p>
           </div>
           <div className="flex flex-wrap gap-2 justify-start sm:justify-end">
-            <button className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+            <button 
+              onClick={onNavigateToPlans}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
               isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-indigo-600 hover:bg-indigo-700 text-white'
             }`}>
               {t('billing.overview.changePlan')}
@@ -143,7 +145,7 @@ export function OverviewTab() {
               initial={{ opacity: 0 }} 
               animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }} 
-              className="absolute inset-0 bg-black/5 backdrop-blur-none" 
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm" 
               onClick={() => setCancelModalOpen(false)} 
             />
             <motion.div 
@@ -153,22 +155,24 @@ export function OverviewTab() {
               className="relative w-full max-w-md bg-white dark:bg-[#111] border border-black/10 dark:border-white/10 rounded-2xl shadow-2xl p-6"
             >
               <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t('billing.overview.cancelModalTitle')}</h2>
-              <p className="text-slate-600 dark:text-gray-300 text-sm mb-6">
-                {t('billing.overview.cancelModalDesc1')} <strong>{currentPlan.name}</strong>? 
-                {t('billing.overview.cancelModalDesc2')} (21 Июля 2026), {t('billing.overview.cancelModalDesc3')}
+              <p className="text-slate-600 dark:text-gray-300 text-sm mb-6 leading-relaxed">
+                Вы отменяете подписку <strong>{currentPlan.name}</strong>. Обратите внимание: возврат средств за оставшийся период не производится.
               </p>
 
               <div className="flex flex-col gap-3">
                 <button 
-                  onClick={() => {
+                  onClick={async () => {
+                    try {
+                      await api.put('/billing/subscription/upgrade', { plan: 'FREE' });
+                    } catch(e) {}
                     setPlanId('free');
                     setCancelModalOpen(false);
                   }} 
-                  className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors"
+                  className="w-full px-4 py-2 bg-red-500/90 hover:bg-red-500 text-white text-sm font-medium rounded-lg transition-colors shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.5)]"
                 >
                   {t('billing.overview.yesCancel')}
                 </button>
-                <button onClick={() => setCancelModalOpen(false)} className="w-full px-4 py-2 bg-transparent border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">
+                <button onClick={() => setCancelModalOpen(false)} className="w-full px-4 py-2 bg-white/5 hover:bg-white/10 text-white text-sm font-medium rounded-lg transition-colors">
                   {t('billing.overview.noCancel')}
                 </button>
               </div>

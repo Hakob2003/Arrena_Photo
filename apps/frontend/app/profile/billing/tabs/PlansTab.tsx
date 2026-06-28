@@ -13,6 +13,8 @@ export function PlansTab() {
   const [promoCode, setPromoCode] = useState('');
   const [promoApplied, setPromoApplied] = useState(false);
   const [promoError, setPromoError] = useState(false);
+  const [showDowngradeModal, setShowDowngradeModal] = useState(false);
+  const [pendingPlan, setPendingPlan] = useState<string | null>(null);
   const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
 
   const handleApplyPromo = () => {
@@ -31,16 +33,42 @@ export function PlansTab() {
     }
   };
 
-  const handleUpgrade = async (planId: string, price: number) => {
+  const confirmDowngrade = async () => {
+    if (!pendingPlan) return;
+    setShowDowngradeModal(false);
+    try {
+      await api.put('/billing/subscription/upgrade', { plan: pendingPlan.toUpperCase() });
+      setPlanId(pendingPlan);
+      toast.success(t('billing.plans.upgradeSuccess'));
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to update subscription on server');
+    }
+  };
+
+  const handleUpgrade = async (newPlanId: string, price: number) => {
+    if (price === 0 && planId && planId !== 'FREE' && planId !== 'free') {
+      setPendingPlan(newPlanId);
+      setShowDowngradeModal(true);
+      return;
+    }
+
     if (price > 0) {
-      const res = await chargeDefaultCard(price, `Plan payment ${planId}`);
+      const res = await chargeDefaultCard(price, `Plan payment ${newPlanId}`);
       if (!res.success) {
         toast.error(res.error || t('billing.plans.paymentError'));
         return;
       }
     }
-    setPlanId(planId);
-    toast.success(t('billing.plans.upgradeSuccess'));
+    
+    try {
+      await api.put('/billing/subscription/upgrade', { plan: newPlanId.toUpperCase() });
+      setPlanId(newPlanId);
+      toast.success(t('billing.plans.upgradeSuccess'));
+    } catch (e) {
+      console.error(e);
+      toast.error('Failed to update subscription on server');
+    }
   };
 
   const handleBuyCredits = async (amount: number, price: number) => {
@@ -82,7 +110,7 @@ export function PlansTab() {
         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">{t('billing.plans.title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {plans.map(plan => {
-            const isCurrent = plan.id === planId;
+            const isCurrent = plan.id === planId?.toLowerCase();
             return (
               <div 
                 key={plan.id} 
@@ -195,6 +223,48 @@ export function PlansTab() {
         </div>
 
       </div>
+
+      {/* Downgrade Modal */}
+      <AnimatePresence>
+        {showDowngradeModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowDowngradeModal(false)}
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className={`relative w-full max-w-md p-6 rounded-2xl border shadow-2xl ${isLuxury ? 'bg-[#111] border-[#D4AF37]/30' : 'bg-[#0a0a0a] border-white/10'}`}
+            >
+              <h3 className={`text-xl font-bold mb-4 ${isLuxury ? 'text-[#D4AF37]' : 'text-white'}`}>
+                Внимание
+              </h3>
+              <p className="text-gray-300 mb-6 leading-relaxed">
+                Вы переходите на бесплатный тариф. Обратите внимание: возврат средств за оставшийся период не производится.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button 
+                  onClick={() => setShowDowngradeModal(false)}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${isLuxury ? 'bg-white/5 hover:bg-white/10 text-white/90' : 'bg-white/5 hover:bg-white/10 text-white'}`}
+                >
+                  Отмена
+                </button>
+                <button 
+                  onClick={confirmDowngrade}
+                  className="px-4 py-2 rounded-lg font-medium bg-red-500/90 hover:bg-red-500 text-white transition-colors shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.5)]"
+                >
+                  Подтвердить
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

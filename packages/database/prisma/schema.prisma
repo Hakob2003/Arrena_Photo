@@ -32,8 +32,9 @@ enum GenerationStatus {
 
 enum SubscriptionPlan {
   FREE
+  STARTER
   PRO
-  ENTERPRISE
+  BUSINESS
 }
 
 enum TemplateStatus {

@@ -17,7 +17,7 @@ export class AuthService {
   async getMe(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      include: { role: true },
+      include: { role: true, subscription: true },
     });
     if (!user) throw new UnauthorizedException('User not found');
     return {
@@ -27,6 +27,7 @@ export class AuthService {
       avatarUrl: user.avatarUrl,
       role: user.role.name,
       credits: user.credits,
+      planId: user.subscription?.plan || 'FREE',
       preferences: {
         theme: user.theme,
         accentColor: user.accentColor,

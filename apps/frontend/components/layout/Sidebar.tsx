@@ -52,7 +52,8 @@ export function Sidebar() {
         return (
           <li key={link.href}>
             <Link 
-              href={link.href}
+              href={isActive ? '#' : link.href}
+              onClick={(e) => { if (isActive) e.preventDefault(); }}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative group ${
                 isActive ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[#fafafa] dark:hover:bg-white/5'
               } ${!isSidebarOpen ? 'justify-center !px-0' : ''}`}
@@ -63,8 +64,8 @@ export function Sidebar() {
                   className={cn(
                     "absolute inset-0 rounded-lg border-l-2",
                     isLuxury ? "bg-gradient-to-r from-[#D4AF37]/5 to-transparent border-[#D4AF37]" : 
-                    isNeon ? "bg-gradient-to-r from-indigo-500/5 to-transparent border-indigo-400 shadow-[inset_4px_0_15px_rgba(99,102,241,0.15)]" :
-                    "bg-gradient-to-r from-indigo-500/5 dark:from-indigo-500/10 to-transparent border-indigo-500"
+                    isNeon ? "bg-gradient-to-r from-[rgb(var(--color-accent-500)/0.05)] to-transparent border-[rgb(var(--color-accent-500))] shadow-[inset_4px_0_15px_rgb(var(--color-accent-500)/0.25)]" :
+                    "bg-gradient-to-r from-[rgb(var(--color-accent-500)/0.05)] dark:from-[rgb(var(--color-accent-500)/0.1)] to-transparent border-[rgb(var(--color-accent-500))]"
                   )}
                   transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
@@ -72,7 +73,7 @@ export function Sidebar() {
               <span className={cn(
                 "relative z-10 w-6 flex items-center justify-center transition-all", 
                 isActive && isLuxury ? "text-[#D4AF37]" : "",
-                (isNeon && isActive) ? "drop-shadow-[0_0_10px_rgba(99,102,241,0.9)]" : ""
+                (isNeon && isActive) ? "drop-shadow-[0_0_12px_rgb(var(--color-accent-500)/0.9)]" : ""
               )}>
                 {(isNeon && isActive) ? (
                   <>
@@ -96,7 +97,7 @@ export function Sidebar() {
                       <div 
                         className="w-full h-full" 
                         style={{
-                          backgroundImage: 'linear-gradient(135deg, #818cf8, #c084fc, #22d3ee)',
+                          backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))',
                           backgroundSize: '400% 1200%',
                           backgroundPosition: `0% ${gradientPosY}`
                         }}
@@ -122,7 +123,7 @@ export function Sidebar() {
                     <span 
                       className={(isNeon && isActive) ? "bg-clip-text text-transparent" : ""}
                       style={(isNeon && isActive) ? {
-                        backgroundImage: 'linear-gradient(135deg, #818cf8, #c084fc, #22d3ee)',
+                        backgroundImage: 'linear-gradient(135deg, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)))',
                         backgroundSize: '400% 1200%',
                         backgroundPosition: `20% ${gradientPosY}`
                       } : undefined}
@@ -279,7 +280,7 @@ export function Sidebar() {
               <div className="mt-8">
                 <p className={cn("text-[10px] font-semibold uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left transition-all", 
                   isLuxury ? "text-[#D4AF37]" : 
-                  isNeon ? "text-indigo-400 drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]" : 
+                  isNeon ? "text-[rgb(var(--color-accent-400))] drop-shadow-[0_0_8px_rgb(var(--color-accent-500)/0.8)]" : 
                   "text-pink-500"
                 )}>
                   {isSidebarOpen ? t('nav.adminPanel') : "ADM"}
@@ -296,8 +297,8 @@ export function Sidebar() {
                           className={cn(
                             "absolute inset-0 rounded-lg border-l-2",
                             isLuxury ? "bg-gradient-to-r from-[#D4AF37]/5 to-transparent border-[#D4AF37]" : 
-                            isNeon ? "bg-gradient-to-r from-indigo-500/5 to-transparent border-indigo-400 shadow-[inset_4px_0_15px_rgba(99,102,241,0.15)]" :
-                            "bg-gradient-to-r from-indigo-500/5 dark:from-indigo-500/10 to-transparent border-indigo-500"
+                            isNeon ? "bg-gradient-to-r from-[rgb(var(--color-accent-500)/0.05)] to-transparent border-[rgb(var(--color-accent-500))] shadow-[inset_4px_0_15px_rgb(var(--color-accent-500)/0.25)]" :
+                            "bg-gradient-to-r from-[rgb(var(--color-accent-500)/0.05)] dark:from-[rgb(var(--color-accent-500)/0.1)] to-transparent border-[rgb(var(--color-accent-500))]"
                           )}
                           transition={{ type: "spring", stiffness: 350, damping: 30 }}
                         />
@@ -305,7 +306,7 @@ export function Sidebar() {
                       <span className={cn(
                         "relative z-10 w-6 flex items-center justify-center transition-all",
                         isAdminActive && isLuxury ? "text-[#D4AF37]" : "",
-                        (isNeon && isAdminActive) ? "drop-shadow-[0_0_10px_rgba(99,102,241,0.9)]" : ""
+                        (isNeon && isAdminActive) ? "drop-shadow-[0_0_12px_rgb(var(--color-accent-500)/0.9)]" : ""
                       )}>
                         {(isNeon && isAdminActive) ? (
                           <>
@@ -385,7 +386,7 @@ export function Sidebar() {
       <div className={`p-4 border-t border-black/10 dark:border-white/5 mt-auto overflow-hidden ${!isSidebarOpen ? 'flex justify-center px-0' : ''}`}>
         {user ? (
           <div className={`flex items-center ${isSidebarOpen ? 'justify-between w-full' : 'justify-center w-full'}`}>
-            <div className={`flex items-center ${isSidebarOpen ? 'gap-3' : 'justify-center'}`}>
+            <Link href="/profile" className={`flex items-center ${isSidebarOpen ? 'gap-3' : 'justify-center'} cursor-pointer hover:opacity-80 transition-opacity`}>
               <div className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center font-bold overflow-hidden ${
                 isLuxury ? 'bg-gradient-to-tr from-[#C5A028] to-[#D4AF37] text-black' : 'bg-gradient-to-tr from-purple-500 to-indigo-500 text-white'
               }`}>
@@ -408,7 +409,7 @@ export function Sidebar() {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </Link>
             
             <AnimatePresence mode="wait">
               {isSidebarOpen && (

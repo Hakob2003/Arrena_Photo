@@ -13,6 +13,7 @@ import { templatesApi } from '../../lib/templates.api';
 import { generationsApi } from '../../lib/generations.api';
 import toast from 'react-hot-toast';
 import { useUIStore } from '../../store';
+import Link from 'next/link';
 
 function GeneratorContent() {
   const searchParams = useSearchParams();
@@ -20,14 +21,17 @@ function GeneratorContent() {
   const templateName = searchParams.get('template');
   const remixId = searchParams.get('remixId');
 
-  const { prompt, setPrompt, model, setModel, aspectRatio, setAspectRatio, resolution, setResolution, isGenerating, setGenerating, resultImage, resultDriveFileId, setResult, initImage, setInitImage } = useGenerationStore();
-  const { user, deductCredits, setCredits } = useAuthStore();
+  const { prompt, setPrompt, model, setModel, aspectRatio, setAspectRatio, resolution, setResolution, isGenerating, setGenerating, resultImage, resultDriveFileId, setResult, initImage, setInitImage, progress, setProgress } = useGenerationStore();
+  const { user, deductCredits, setCredits, planId } = useAuthStore();
   const { t } = useTranslation();
   const [loadingText, setLoadingText] = useState('');
   const [models, setModels] = useState<any[]>([]);
   const [history, setHistory] = useState<any[]>([]);
   const [cost, setCost] = useState(5);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [activeGenerationId, setActiveGenerationId] = useState<string | null>(null);
+  const pollRef = React.useRef<NodeJS.Timeout | null>(null);
   const [mounted, setMounted] = useState(false);
   const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
 
@@ -40,10 +44,17 @@ function GeneratorContent() {
     try {
       const res = await api.get('/generations/history');
       setHistory(res.data);
+      
+      // Sync credits and planId from backend to avoid state mismatch
+      const meRes = await api.get('/auth/me');
+      if (typeof meRes.data.credits === 'number') setCredits(meRes.data.credits);
+      if (meRes.data.planId && meRes.data.planId !== useAuthStore.getState().planId) {
+        useAuthStore.setState({ planId: meRes.data.planId });
+      }
     } catch (e) {
-      console.error('Failed to fetch history', e);
+      console.log('Failed to fetch history or sync profile', e);
     }
-  }, [user]);
+  }, [user, setCredits]);
 
   // 0. Prefill template if passed
   React.useEffect(() => {
@@ -58,18 +69,25 @@ function GeneratorContent() {
             } else if (tpl.prompt) {
               setPrompt(tpl.prompt);
             }
+            
             if (tpl.recommendedModels?.[0]) {
               setModel(tpl.recommendedModels[0]);
             }
-            if (tpl.price !== undefined && tpl.price !== null) {
-              setCost(tpl.price);
-            }
+            
+            const fetchedCost = tpl.price !== undefined && tpl.price !== null ? tpl.price : 5;
+            setCost(fetchedCost);
+            
+            // Mark as premium template in the global store and persist ID/cost so it stays valid during SPA navigation
+            useGenerationStore.getState().setPremiumTemplate(true, templateId, fetchedCost);
           }
         } catch (error) {
-          console.error("Failed to load template details:", error);
+          console.log("Failed to load template details:", error);
         }
       } else if (templateName && !prompt) {
         setPrompt(`Style of ${templateName}, detailed, masterpiece, 8k resolution, highly realistic...`);
+      } else if (useGenerationStore.getState().isPremiumTemplate && useGenerationStore.getState().activeTemplateCost !== null) {
+        // If navigating back to generate page via SPA and premium template is still active
+        setCost(useGenerationStore.getState().activeTemplateCost as number);
       }
     };
 
@@ -84,7 +102,7 @@ function GeneratorContent() {
             if (gen.aiModelId) setModel(gen.aiModelId);
           }
         } catch (e) {
-          console.error("Failed to load remix data", e);
+          console.log("Failed to load remix data", e);
         }
       }
     };
@@ -116,7 +134,7 @@ function GeneratorContent() {
           }
         }
       } catch (err) {
-        console.error('Failed to fetch AI models', err);
+        console.log('Failed to fetch AI models', err);
         // Fallback for development if backend is down
         setModels([
           { id: 'sdxl-1.0', name: 'Stable Diffusion XL 1.0 (Fallback)' },
@@ -145,6 +163,34 @@ function GeneratorContent() {
     noClick: !!initImage,
   });
 
+
+  const handleStopRequest = () => {
+    setShowCancelModal(true);
+  };
+
+  const confirmStop = async () => {
+    if (pollRef.current) clearInterval(pollRef.current);
+    
+    if (activeGenerationId) {
+      try {
+        await api.post(`/generations/${activeGenerationId}/cancel`);
+      } catch (err) {
+        console.log('Failed to cancel generation on backend', err);
+      }
+      setActiveGenerationId(null);
+    }
+
+    setShowCancelModal(false);
+    setGenerating(false);
+    setProgress(0);
+    setLoadingText('');
+    toast.error('Генерация отменена. Кредиты не возвращены.');
+  };
+
+  const cancelStop = () => {
+    setShowCancelModal(false);
+  };
+
   const handleGenerate = async () => {
     if (!user) {
       window.location.href = '/login';
@@ -156,27 +202,36 @@ function GeneratorContent() {
     setLoadingText(t('gen.sendingPrompt'));
     
     try {
+      const storeTemplateId = useGenerationStore.getState().activeTemplateId;
+      const finalTemplateId = storeTemplateId || ((templateId && templateId !== 'null' && templateId !== 'undefined' && templateId.length > 20) ? templateId : undefined);
+
       // Note: We're mapping 'sdxl-1.0' to the actual DB ID. Since we seeded it, we need the UUID.
       const res = await api.post('/generations', {
         prompt,
         negativePrompt: '',
         aiModelId: model,
-        templateId: (templateId && templateId !== 'null' && templateId !== 'undefined' && templateId.length > 20) ? templateId : undefined,
+        templateId: finalTemplateId,
         aspectRatio,
         resolution,
-        initImage: initImage
+        initImage: initImage,
+        skin: useUIStore.getState().preferences.skin
       });
 
       const generationId = res.data.id;
+      setActiveGenerationId(generationId);
       deductCredits(cost); // Deduct only after backend accepted the request
       setLoadingText(t('gen.inQueue'));
 
       // Poll every 1.5 seconds, max 60 seconds
       let elapsed = 0;
-      const poll = setInterval(async () => {
+      setProgress(0);
+      const estimatedTotalTime = (planId === 'FREE' || planId === 'free') ? 30000 : (planId === 'STARTER' || planId === 'starter') ? 15000 : (planId === 'PRO' || planId === 'pro') ? 10000 : 5000;
+      
+      pollRef.current = setInterval(async () => {
         elapsed += 1500;
+        setProgress(Math.min(99, Math.floor((elapsed / estimatedTotalTime) * 100)));
         if (elapsed > 60000) {
-          clearInterval(poll);
+          if (pollRef.current) clearInterval(pollRef.current);
           setGenerating(false);
           toast.error(t('gen.timeoutError'));
           return;
@@ -188,9 +243,12 @@ function GeneratorContent() {
           if (status === 'PROCESSING') {
             setLoadingText(t('gen.generatingStatus'));
           } else if (status === 'DONE') {
-            clearInterval(poll);
-            setResult(statusRes.data.result.imageUrl, statusRes.data.result.driveFileId);
-            setGenerating(false);
+            if (pollRef.current) clearInterval(pollRef.current);
+            setProgress(100);
+            setTimeout(() => {
+              setResult(statusRes.data.result.imageUrl, statusRes.data.result.driveFileId);
+              setGenerating(false);
+            }, 500);
             fetchHistory();
             // Sync credits from backend
             try {
@@ -198,12 +256,12 @@ function GeneratorContent() {
               if (typeof meRes.data.credits === 'number') setCredits(meRes.data.credits);
             } catch (_) {}
           } else if (status === 'FAILED') {
-            clearInterval(poll);
+            if (pollRef.current) clearInterval(pollRef.current);
             toast.error(t('gen.failedError'));
             setGenerating(false);
           }
         } catch (pollErr) {
-          console.error('Polling error:', pollErr);
+          console.log('Polling error:', pollErr);
         }
       }, 1500);
 
@@ -224,7 +282,34 @@ function GeneratorContent() {
     fetchHistory();
   }, [fetchHistory]);
 
-  const ratios = ['1:1', '4:3', '3:4', '16:9', '9:16'];
+
+  React.useEffect(() => {
+    const allRatios = ['1:1', '4:3', '3:4', '16:9', '9:16'];
+    const validRatios = (planId === 'FREE' || planId === 'free') ? ['1:1'] : (planId === 'STARTER' || planId === 'starter') ? ['1:1', '4:3', '3:4'] : allRatios;
+    if (!validRatios.includes(aspectRatio)) {
+      setAspectRatio('1:1');
+    }
+    const allRes = ['1K', '2K', '4K'];
+    const validRes = (planId === 'FREE' || planId === 'free') ? ['1K'] : (planId === 'STARTER' || planId === 'starter') ? ['1K', '2K'] : allRes;
+    if (!validRes.includes(resolution)) {
+      setResolution('1K');
+    }
+  }, [planId, aspectRatio, resolution, setAspectRatio, setResolution]);
+
+  const allRatios = ['1:1', '4:3', '3:4', '16:9', '9:16'];
+  const allowedRatios = (planId === 'FREE' || planId === 'free') 
+    ? ['1:1']
+    : (planId === 'STARTER' || planId === 'starter') 
+      ? ['1:1', '4:3', '3:4']
+      : allRatios;
+
+  const allResolutions = ['1K', '2K', '4K'];
+  const allowedResolutions = (planId === 'FREE' || planId === 'free') 
+    ? ['1K']
+    : (planId === 'STARTER' || planId === 'starter') 
+      ? ['1K', '2K']
+      : allResolutions;
+
 
   return (
     <div className="h-full flex flex-col lg:flex-row gap-3 sm:gap-4 xl:gap-6 p-3 sm:p-4 xl:p-6 overflow-y-auto lg:overflow-hidden">
@@ -262,13 +347,45 @@ function GeneratorContent() {
         </div>
 
         <div className="glass-card p-5 rounded-2xl shrink-0">
-          <h2 className="text-lg font-bold mb-4">{t('gen.promptTitle')}</h2>
-          <textarea 
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder={t('gen.promptPlaceholder')}
-            className={`w-full h-40 bg-transparent/50 border border-black/10 dark:border-white/10 rounded-xl p-4 text-slate-900 dark:text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 resize-none ${isLuxury ? 'focus:ring-[#D4AF37]' : 'focus:ring-indigo-500'}`}
-          />
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-bold">{t('gen.promptTitle')}</h2>
+            {useGenerationStore.getState().isPremiumTemplate && (
+              <button 
+                onClick={() => {
+                  setPrompt('');
+                  useGenerationStore.getState().setPremiumTemplate(false);
+                  setCost(5); // Reset to base cost
+                  if (typeof window !== 'undefined') window.history.pushState({}, '', '/generate');
+                }} 
+                className="text-xs text-red-500 hover:text-red-400 font-medium px-2 py-1 bg-red-500/10 rounded-lg transition-colors"
+              >
+                Очистить промпт
+              </button>
+            )}
+          </div>
+          <div className="relative">
+            <textarea 
+              value={(!!templateId || useGenerationStore.getState().isPremiumTemplate) && (planId === 'FREE' || planId === 'STARTER' || planId === 'free' || planId === 'starter') ? '******************************************************************' : prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder={t('gen.promptPlaceholder')}
+              readOnly={(!!templateId || useGenerationStore.getState().isPremiumTemplate) && (planId === 'FREE' || planId === 'STARTER' || planId === 'free' || planId === 'starter')}
+              disabled={(!!templateId || useGenerationStore.getState().isPremiumTemplate) && (planId === 'FREE' || planId === 'STARTER' || planId === 'free' || planId === 'starter')}
+              className={`w-full h-40 bg-transparent/50 border border-black/10 dark:border-white/10 rounded-xl p-4 text-slate-900 dark:text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 resize-none ${isLuxury ? 'focus:ring-[#D4AF37]' : 'focus:ring-indigo-500'} ${
+                (!!templateId || useGenerationStore.getState().isPremiumTemplate) && (planId === 'FREE' || planId === 'STARTER' || planId === 'free' || planId === 'starter') 
+                  ? 'blur-md select-none pointer-events-none opacity-50' 
+                  : ''
+              }`}
+            />
+            {(!!templateId || useGenerationStore.getState().isPremiumTemplate) && (planId === 'FREE' || planId === 'STARTER' || planId === 'free' || planId === 'starter') && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-black/20 dark:bg-black/40 rounded-xl backdrop-blur-[2px]">
+                 <svg className="w-8 h-8 text-white/70 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                 </svg>
+                 <p className="text-white text-center text-sm font-medium mb-3">Промпт скрыт на бесплатном тарифе</p>
+                 <Link href="/profile/billing" className="px-4 py-2 bg-white text-black text-xs font-bold rounded-full hover:scale-105 transition-transform">Перейти к тарифам</Link>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="glass-card p-5 rounded-2xl shrink-0">
@@ -291,7 +408,7 @@ function GeneratorContent() {
                 <span>{aspectRatio}</span>
               </div>
               <div className="flex gap-2 flex-wrap">
-                {ratios.map((ratio) => (
+                {allowedRatios.map((ratio) => (
                   <button
                     key={ratio}
                     onClick={() => setAspectRatio(ratio)}
@@ -314,7 +431,7 @@ function GeneratorContent() {
                 <span>{resolution}</span>
               </div>
               <div className="flex gap-2 flex-wrap">
-                {['1K', '2K', '4K', '8K'].map((resOption) => (
+                {allowedResolutions.map((resOption) => (
                   <button
                     key={resOption}
                     onClick={() => setResolution(resOption)}
@@ -376,7 +493,7 @@ function GeneratorContent() {
                        return;
                      }
                    } catch (err: any) {
-                     if (err.name !== 'AbortError') console.error('Save failed', err);
+                     if (err.name !== 'AbortError') console.log('Save failed', err);
                      return;
                    }
                    // Fallback for browsers without showSaveFilePicker
@@ -406,8 +523,11 @@ function GeneratorContent() {
         {/* Content Area */}
         <div className="flex-1 min-h-0 min-w-0 flex items-center justify-center p-3 sm:p-4 lg:p-6 preview-area-compact bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/[0.02] to-transparent">
           {isGenerating ? (
-            <div className="flex flex-col items-center gap-4 sm:gap-6">
-              <div className={`w-12 h-12 sm:w-16 sm:h-16 border-4 border-black/10 dark:border-white/10 rounded-full animate-spin ${isLuxury ? 'border-t-[#D4AF37]' : 'border-t-indigo-500'}`} />
+            <div className="flex flex-col items-center gap-4 sm:gap-6 w-full max-w-sm">
+              <div className={`relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center`}>
+                <div className={`absolute inset-0 border-4 border-black/10 dark:border-white/10 rounded-full animate-spin ${isLuxury ? 'border-t-[#D4AF37]' : 'border-t-indigo-500'}`} />
+                <span className={`text-lg font-bold ${isLuxury ? 'text-[#D4AF37]' : 'text-indigo-400'}`}>{progress}%</span>
+              </div>
               <motion.p 
                 key={loadingText}
                 initial={{ opacity: 0, y: 10 }}
@@ -416,6 +536,20 @@ function GeneratorContent() {
               >
                 {loadingText}
               </motion.p>
+              
+              <div className="w-full bg-black/10 dark:bg-white/10 rounded-full h-2.5 mt-2 overflow-hidden">
+                <div 
+                  className={`h-2.5 rounded-full transition-all duration-300 ease-out ${isLuxury ? 'bg-[#D4AF37]' : 'bg-indigo-500'}`} 
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+              
+              <button 
+                onClick={handleStopRequest}
+                className="mt-4 px-6 py-2 rounded-full font-bold bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/50 transition-all shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)]"
+              >
+                Отменить генерацию
+              </button>
             </div>
           ) : resultImage ? (
             <motion.div 
@@ -496,6 +630,48 @@ function GeneratorContent() {
         </AnimatePresence>,
         document.body
       )}
+
+      {/* Cancel Modal */}
+      <AnimatePresence>
+        {showCancelModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={cancelStop}
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className={`relative w-full max-w-md p-6 rounded-2xl border shadow-2xl ${isLuxury ? 'bg-[#111] border-[#D4AF37]/30' : 'bg-[#0a0a0a] border-white/10'}`}
+            >
+              <h3 className={`text-xl font-bold mb-4 ${isLuxury ? 'text-[#D4AF37]' : 'text-white'}`}>
+                Внимание
+              </h3>
+              <p className="text-gray-300 mb-6 leading-relaxed">
+                Вы уверены, что хотите отменить генерацию? Списанные кредиты не будут возвращены.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button 
+                  onClick={cancelStop}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${isLuxury ? 'bg-white/5 hover:bg-white/10 text-white/90' : 'bg-white/5 hover:bg-white/10 text-white'}`}
+                >
+                  Продолжить
+                </button>
+                <button 
+                  onClick={confirmStop}
+                  className="px-4 py-2 rounded-lg font-medium bg-red-500/90 hover:bg-red-500 text-white transition-colors shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.5)]"
+                >
+                  Да, отменить
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

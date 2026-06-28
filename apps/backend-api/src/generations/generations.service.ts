@@ -55,6 +55,28 @@ export class GenerationsService {
       }
     }
 
+    // Tariff limits
+    const subscription = await this.billingService.getSubscription(userId);
+    const plan = subscription?.plan || 'FREE';
+    
+    let maxTasks = 1;
+    let priority = 3; // 3 is standard, lower is higher priority in BullMQ
+
+    if (plan === 'STARTER') { maxTasks = 2; priority = 3; }
+    else if (plan === 'PRO') { maxTasks = 5; priority = 2; }
+    else if (plan === 'BUSINESS') { maxTasks = 20; priority = 1; }
+
+    const activeTasks = await this.prisma.generation.count({
+      where: {
+        userId,
+        status: { in: ['PENDING', 'PROCESSING'] }
+      }
+    });
+
+    if (activeTasks >= maxTasks) {
+      throw new Error(`Concurrent generation limit reached for your plan (${plan}). Max allowed: ${maxTasks}`);
+    }
+
     // Deduct credits before generating
     await this.billingService.deductCredits(userId, generationCost, 'Image Generation');
 
@@ -82,8 +104,10 @@ export class GenerationsService {
       negativePrompt: dto.negativePrompt,
       initImage: dto.initImage,
       aspectRatio: dto.aspectRatio,
-      resolution: dto.resolution
+      resolution: dto.resolution,
+      skin: dto.skin
     }, {
+      priority,
       attempts: 3,
       backoff: { type: 'exponential', delay: 1000 }
     });
@@ -236,5 +260,13 @@ export class GenerationsService {
         createdAt: g.createdAt
       };
     });
+  }
+
+  async cancel(id: string, userId: string) {
+    await this.prisma.generation.updateMany({
+      where: { id, userId, status: { in: ['PENDING', 'PROCESSING'] } },
+      data: { status: 'FAILED' }
+    });
+    return { success: true };
   }
 }

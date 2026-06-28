@@ -15,6 +15,24 @@ export class BillingService {
     return sub;
   }
 
+  async upgradeSubscription(userId: string, plan: SubscriptionPlan) {
+    const sub = await this.prisma.subscription.findUnique({ where: { userId } });
+    if (sub) {
+      return this.prisma.subscription.update({
+        where: { id: sub.id },
+        data: { plan, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) }
+      });
+    } else {
+      return this.prisma.subscription.create({
+        data: {
+          userId,
+          plan,
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        }
+      });
+    }
+  }
+
   async getCreditHistory(userId: string) {
     return this.prisma.creditTransaction.findMany({
       where: { userId },

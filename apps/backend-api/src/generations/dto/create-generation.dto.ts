@@ -34,4 +34,9 @@ export class CreateGenerationDto {
   @IsOptional()
   @IsString()
   resolution?: string;
+
+  @ApiPropertyOptional({ description: 'The UI skin to use for watermarking (e.g., NEON, LUXURY)' })
+  @IsOptional()
+  @IsString()
+  skin?: string;
 }

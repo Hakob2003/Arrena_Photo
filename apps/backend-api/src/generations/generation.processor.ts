@@ -6,7 +6,8 @@ import { ModuleRef } from '@nestjs/core';
 import { GoogleDriveService } from '../integrations/google-drive/google-drive.service';
 import { ImageProviderFactory } from './providers/image-provider.factory';
 import { EncryptionUtil } from '../common/utils/encryption.util';
-
+import { WatermarkService } from './watermark.service';
+import axios from 'axios';
 @Processor('generations')
 export class GenerationProcessor extends WorkerHost {
   private readonly logger = new Logger(GenerationProcessor.name);
@@ -29,6 +30,9 @@ export class GenerationProcessor extends WorkerHost {
       include: {
         aiModel: {
           include: { provider: true }
+        },
+        user: {
+          include: { subscription: true }
         }
       }
     });
@@ -61,17 +65,36 @@ export class GenerationProcessor extends WorkerHost {
         this.logger.warn(`No API key configured for provider ${generation.aiModel.provider.name}. Falling back to MOCK provider.`);
         
         // Check local memory settings for mock type
-        const usePicsumMock = (global as any).usePicsumMock === true;
+        const usePicsumMock = (global as any).usePicsumMock !== false;
         providerFactory = ImageProviderFactory.create('mock', 'mock-key', { usePicsumMock });
       } else {
         const apiKey = connection?.encryptedApiKey 
           ? EncryptionUtil.decrypt(connection.encryptedApiKey)
           : '';
-        const usePicsumMock = (global as any).usePicsumMock === true;
+        const usePicsumMock = (global as any).usePicsumMock !== false;
         providerFactory = ImageProviderFactory.create(generation.aiModel.provider.name, apiKey, { usePicsumMock });
       }
       
       const startTime = Date.now();
+
+      // --- Simulate generation time based on plan ---
+      const plan = generation.user?.subscription?.plan || 'FREE';
+      let delayMs = 30000;
+      if (plan === 'STARTER') delayMs = 15000;
+      else if (plan === 'PRO') delayMs = 10000;
+      else if (plan === 'BUSINESS') delayMs = Math.floor(Math.random() * 4000) + 1000; // 1 to 5 seconds
+      
+      this.logger.log(`Simulating generation time for ${plan} plan: ${delayMs}ms`);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+
+      // Check if cancelled during wait
+      const currentStatus = await this.prisma.generation.findUnique({ where: { id: generationId }, select: { status: true }});
+      if (currentStatus?.status === 'FAILED') {
+        this.logger.log(`Generation ${generationId} was cancelled during wait. Aborting.`);
+        return;
+      }
+      // ----------------------------------------------
+
       const generatedUrls = await providerFactory.generateImage(job.data.prompt, generation.aiModel.slug, {
         initImage: initImage,
         negativePrompt: job.data.negativePrompt,
@@ -83,8 +106,36 @@ export class GenerationProcessor extends WorkerHost {
         throw new Error('Provider returned empty image list');
       }
 
-      const randomImage = generatedUrls[0];
+      let finalImageUrl = generatedUrls[0];
       const durationMs = Date.now() - startTime;
+
+      // Apply watermark if user is on FREE plan
+      if (!generation.user?.subscription || generation.user.subscription.plan === 'FREE') {
+        try {
+          const watermarkService = this.moduleRef.get(WatermarkService, { strict: false });
+          if (watermarkService) {
+            this.logger.log(`Applying watermark for FREE user ${generation.userId}...`);
+            let imageBuffer: Buffer;
+            
+            if (finalImageUrl.startsWith('data:image')) {
+              const base64Data = finalImageUrl.split(',')[1];
+              imageBuffer = Buffer.from(base64Data, 'base64');
+            } else {
+              const res = await axios.get(finalImageUrl, { responseType: 'arraybuffer' });
+              imageBuffer = Buffer.from(res.data);
+            }
+            
+            const skin = job.data.skin || 'NEON';
+            const watermarkedBuffer = await watermarkService.applyWatermark(imageBuffer, skin);
+            const base64String = watermarkedBuffer.toString('base64');
+            finalImageUrl = `data:image/jpeg;base64,${base64String}`;
+          }
+        } catch (e: any) {
+          this.logger.warn(`Failed to apply watermark, falling back to original. Error: ${e?.message}`);
+        }
+      }
+
+      const randomImage = finalImageUrl;
 
       // 4. Try saving to Google Drive
       let driveFileId: string | null = null;

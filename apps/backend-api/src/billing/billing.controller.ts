@@ -16,6 +16,12 @@ export class BillingController {
     return this.billingService.getSubscription(req.user.id);
   }
 
+  @Put('subscription/upgrade')
+  @ApiOperation({ summary: 'Upgrade user subscription' })
+  upgradeSubscription(@Request() req, @Body('plan') plan: any) {
+    return this.billingService.upgradeSubscription(req.user.id, plan);
+  }
+
   @Get('history')
   @ApiOperation({ summary: 'Get credit transaction history' })
   getCreditHistory(@Request() req) {

@@ -126,13 +126,15 @@ export function Topbar() {
 
         {user ? (
           /* Credits Pill */
-          <div className={cn(
-            "flex items-center gap-1 sm:gap-2 border px-2 sm:px-3 py-1 sm:py-1.5 rounded-full",
-            isLuxury ? "bg-[#D4AF37]/10 border-[#D4AF37]/20" : "bg-indigo-500/10 border-indigo-500/20"
+          <Link href="/profile/billing" className={cn(
+            "flex items-center gap-1 sm:gap-2 border px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all hover:scale-105 cursor-pointer",
+            isLuxury 
+              ? "bg-[#D4AF37]/10 border-[#D4AF37]/20 hover:bg-[#D4AF37]/20" 
+              : "bg-indigo-500/10 border-indigo-500/20 hover:bg-indigo-500/20"
           )}>
             <span className={cn("text-xs sm:text-sm font-bold", isLuxury ? "text-[#D4AF37]" : "text-indigo-600 dark:text-indigo-400")}>⚡ {credits?.toLocaleString('en-US') || 0}</span>
             <span className={cn("text-[10px] sm:text-xs uppercase hidden sm:inline", isLuxury ? "text-[#D4AF37]/70" : "text-indigo-500/70 dark:text-indigo-300/70")}>{t('auth.credits')}</span>
-          </div>
+          </Link>
         ) : (
           <div className="flex items-center gap-3">
             <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white transition-colors">

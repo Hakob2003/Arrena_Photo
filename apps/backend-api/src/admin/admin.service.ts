@@ -159,7 +159,10 @@ export class AdminService {
     });
 
     // Validate plan name
-    const validPlan = plan === 'PRO' || plan === 'ENTERPRISE' ? plan : 'FREE';
+    let validPlan: 'FREE' | 'STARTER' | 'PRO' | 'BUSINESS' = 'FREE';
+    if (plan === 'STARTER' || plan === 'PRO' || plan === 'BUSINESS') {
+      validPlan = plan as any;
+    }
 
     if (existingSub) {
       await this.prisma.subscription.update({

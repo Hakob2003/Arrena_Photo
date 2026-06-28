@@ -93,6 +93,15 @@
     --sidebar: oklch(0.16 0 0);
     --sidebar-primary: oklch(0.75 0.15 80);
   }
+  
+  html.dark[data-skin="neon"] {
+    --background: oklch(0.16 0 0); /* #050505 */
+    --card: oklch(0.19 0 0); /* #0A0A0A */
+    --popover: oklch(0.19 0 0);
+    --border: oklch(1 0 0 / 8%);
+    --sidebar: oklch(0.16 0 0);
+  }
+
   html[data-skin="luxury"] {
     --color-accent-300: 240 216 168; /* Champagne Gold */
     --color-accent-400: 220 185 100;
@@ -181,6 +190,11 @@
   html[data-skin="luxury"] .neon-text {
     @apply text-transparent bg-clip-text bg-gradient-to-r from-[#F0D8A8] via-[#D4AF37] to-[#B8860B];
   }
+  html[data-skin="neon"] .neon-text {
+    background: linear-gradient(to right, rgb(var(--color-accent-400)), rgb(var(--color-accent-600)), rgb(var(--color-accent-300)));
+    -webkit-background-clip: text;
+    color: transparent;
+  }
   
   .neon-glow {
     box-shadow: 0 0 12px rgba(99,102,241,0.15), 0 0 24px rgba(99,102,241,0.08);
@@ -190,6 +204,9 @@
   }
   html[data-skin="luxury"] .neon-glow, html[data-skin="luxury"].dark .neon-glow {
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.2), 0 0 40px rgba(240, 216, 168, 0.1) !important;
+  }
+  html[data-skin="neon"] .neon-glow, html[data-skin="neon"].dark .neon-glow {
+    box-shadow: 0 0 20px rgb(var(--color-accent-500)/0.5), 0 0 40px rgb(var(--color-accent-400)/0.3) !important;
   }
   
   /* Luxury gradients */
@@ -362,3 +379,33 @@
     }
   }
 }
+
+@keyframes neon-drift-1 {
+  0%, 100% { opacity: 1; transform: translate(0, 0) scale(1); }
+  25% { opacity: 0.2; transform: translate(8%, 12%) scale(1.2); }
+  50% { opacity: 0.9; transform: translate(-10%, 5%) scale(0.85); }
+  75% { opacity: 0.1; transform: translate(5%, -8%) scale(1.3); }
+}
+@keyframes neon-drift-2 {
+  0%, 100% { opacity: 0.8; transform: translate(0, 0) scale(1.1); }
+  30% { opacity: 0.1; transform: translate(-12%, -8%) scale(0.8); }
+  60% { opacity: 1; transform: translate(8%, 10%) scale(1.25); }
+  85% { opacity: 0.2; transform: translate(-5%, 12%) scale(0.9); }
+}
+@keyframes neon-drift-3 {
+  0%, 100% { opacity: 0.6; transform: translate(0, 0) scale(0.9); }
+  20% { opacity: 1; transform: translate(10%, -10%) scale(1.3); }
+  45% { opacity: 0.15; transform: translate(-8%, 8%) scale(0.85); }
+  70% { opacity: 0.9; transform: translate(5%, 5%) scale(1.1); }
+}
+@keyframes neon-drift-4 {
+  0%, 100% { opacity: 0.7; transform: translate(0, 0) scale(1); }
+  35% { opacity: 0.1; transform: translate(-10%, 12%) scale(1.25); }
+  55% { opacity: 1; transform: translate(12%, -5%) scale(0.8); }
+  80% { opacity: 0.2; transform: translate(-5%, -10%) scale(1.2); }
+}
+
+.animate-neon-shimmer-1 { animation: neon-drift-1 5s ease-in-out infinite; }
+.animate-neon-shimmer-2 { animation: neon-drift-2 7s ease-in-out infinite; }
+.animate-neon-shimmer-3 { animation: neon-drift-3 6s ease-in-out infinite; }
+.animate-neon-shimmer-4 { animation: neon-drift-4 8s ease-in-out infinite; }

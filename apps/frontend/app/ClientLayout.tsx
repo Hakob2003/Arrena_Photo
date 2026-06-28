@@ -4,7 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from '../components/layout/Sidebar';
 import { useAuthStore, useUIStore } from '../store';
 import { Topbar } from '../components/layout/Topbar';
-import { LayoutGroup } from 'framer-motion';
+import { LayoutGroup, motion } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 import { SwipeHint } from '../components/ui/SwipeHint';
 import { useIdleLogout } from '../hooks/useIdleLogout';
@@ -40,6 +40,11 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   const [touchStartScrollY, setTouchStartScrollY] = useState<number>(0);
   const [isPinch, setIsPinch] = useState<boolean>(false);
   const [touchStartFingers, setTouchStartFingers] = useState<{ id: number, y: number }[]>([]);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -84,7 +89,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                }
             })
             .catch(err => {
-              console.error('Failed to fetch user profile:', err);
+              console.log('Failed to fetch user profile:', err);
               // Token might be expired — clear it
               if (err.response?.status === 401) {
                 localStorage.removeItem('token');
@@ -126,7 +131,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
              }
           })
           .catch(err => {
-            console.error('Failed to fetch user profile:', err);
+            console.log('Failed to fetch user profile:', err);
             if (err.response?.status === 401) {
               localStorage.removeItem('token');
               useAuthStore.getState().logout();
@@ -284,32 +289,71 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {user && <Sidebar />}
+        {mounted && user && <Sidebar />}
         <div className="flex-1 flex flex-col min-w-0 relative">
-          {/* Background Glow for Consumer App */}
-          {preferences.skin === 'NEON' ? (
-            <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-b from-[#0f0c29]/80 via-[#302b63]/40 to-[#24243e]/80 bg-[length:100%_125%] animate-gradient-y" />
-              <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] bg-indigo-600/20 blur-[40px] rounded-full mix-blend-screen animate-pulse-glow" />
-              <div className="absolute bottom-[-20%] right-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] bg-cyan-600/20 blur-[40px] rounded-full mix-blend-screen animate-pulse-glow" style={{ animationDelay: '2s' }} />
-              <div className="absolute top-[40%] right-[30%] w-[50vw] h-[50vw] md:w-[30vw] md:h-[30vw] bg-purple-600/15 blur-[30px] rounded-full mix-blend-screen animate-pulse-glow" style={{ animationDelay: '4s' }} />
+          {mounted && preferences.skin === 'NEON' ? (
+            <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-background">
+              <motion.div 
+                className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] rounded-full" 
+                style={{ background: 'rgb(var(--color-accent-500) / 0.35)', filter: 'blur(80px)' }}
+                animate={{
+                  opacity: [1, 0.2, 0.9, 0.1, 1],
+                  scale: [1, 1.2, 0.85, 1.3, 1],
+                  x: ['0%', '8%', '-10%', '5%', '0%'],
+                  y: ['0%', '12%', '5%', '-8%', '0%']
+                }}
+                transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              <motion.div 
+                className="absolute bottom-[-20%] right-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] rounded-full" 
+                style={{ background: 'rgb(var(--color-accent-400) / 0.3)', filter: 'blur(80px)' }}
+                animate={{
+                  opacity: [0.8, 0.1, 1, 0.2, 0.8],
+                  scale: [1.1, 0.8, 1.25, 0.9, 1.1],
+                  x: ['0%', '-12%', '8%', '-5%', '0%'],
+                  y: ['0%', '-8%', '10%', '12%', '0%']
+                }}
+                transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              <motion.div 
+                className="absolute top-[40%] right-[30%] w-[50vw] h-[50vw] md:w-[30vw] md:h-[30vw] rounded-full" 
+                style={{ background: 'rgb(var(--color-accent-300) / 0.25)', filter: 'blur(70px)' }}
+                animate={{
+                  opacity: [0.6, 1, 0.15, 0.9, 0.6],
+                  scale: [0.9, 1.3, 0.85, 1.1, 0.9],
+                  x: ['0%', '10%', '-8%', '5%', '0%'],
+                  y: ['0%', '-10%', '8%', '5%', '0%']
+                }}
+                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+              />
+              <motion.div 
+                className="absolute bottom-[30%] left-[20%] w-[40vw] h-[40vw] md:w-[25vw] md:h-[25vw] rounded-full" 
+                style={{ background: 'rgb(var(--color-accent-600) / 0.3)', filter: 'blur(70px)' }}
+                animate={{
+                  opacity: [0.7, 0.1, 1, 0.2, 0.7],
+                  scale: [1, 1.25, 0.8, 1.2, 1],
+                  x: ['0%', '-10%', '12%', '-5%', '0%'],
+                  y: ['0%', '12%', '-5%', '-10%', '0%']
+                }}
+                transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+              />
             </div>
-          ) : preferences.skin !== 'LUXURY' ? (
+          ) : mounted && preferences.skin !== 'LUXURY' ? (
             <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
               <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[40px] rounded-full" />
               <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[40px] rounded-full" />
             </div>
           ) : null}
           
-          <div className="flex items-center w-full z-20 relative">
+          <div className="flex items-center w-full z-20 relative min-h-[64px]">
             <div className="flex-1">
-              <Topbar />
+              {mounted && <Topbar />}
             </div>
           </div>
           
           <main id="main-scroll-container" className="flex-1 overflow-y-auto relative z-10 custom-scrollbar pb-20">
             <div className="pb-10">
-              {children}
+              {mounted ? children : <div className="animate-pulse flex space-x-4 p-6"><div className="flex-1 space-y-6 py-1"><div className="h-4 bg-slate-800 rounded w-3/4"></div><div className="space-y-3"><div className="h-4 bg-slate-800 rounded"></div><div className="h-4 bg-slate-800 rounded w-5/6"></div></div></div></div>}
             </div>
           </main>
         </div>

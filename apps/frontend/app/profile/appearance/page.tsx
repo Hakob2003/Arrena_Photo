@@ -23,7 +23,7 @@ export default function AppearanceProfilePage() {
       fontSize: 'MEDIUM',
       compactMode: false,
       animationsEnabled: true,
-      skin: 'LUXURY',
+      skin: 'NEON',
     }
   });
 
@@ -57,7 +57,7 @@ export default function AppearanceProfilePage() {
           fontSize: data.fontSize || 'MEDIUM',
           compactMode: !!data.compactMode,
           animationsEnabled: data.animationsEnabled !== false,
-          skin: data.skin || 'LUXURY',
+          skin: data.skin || 'NEON',
         };
         reset(fetchedPrefs);
         setPreferences(fetchedPrefs);
@@ -192,26 +192,28 @@ export default function AppearanceProfilePage() {
         </div>
 
         {/* Accent Color */}
-        <div className="space-y-4 pt-6 border-t border-black/10 dark:border-white/10">
-          <div>
-            <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">{t('profile.appearance.accent')}</h3>
-            <p className="text-sm text-slate-500 dark:text-gray-400">Choose your primary brand color.</p>
+        {watchSkin !== 'LUXURY' && (
+          <div className="space-y-4 pt-6 border-t border-black/10 dark:border-white/10">
+            <div>
+              <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">{t('profile.appearance.accent')}</h3>
+              <p className="text-sm text-slate-500 dark:text-gray-400">Choose your primary brand color.</p>
+            </div>
+            <div className="flex items-center gap-4">
+              {colors.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setValue('accentColor', c.id, { shouldDirty: true })}
+                  className={cn(
+                    "w-10 h-10 rounded-full flex items-center justify-center transition-transform",
+                    c.bg,
+                    watchAccent === c.id ? "ring-2 ring-white ring-offset-2 ring-offset-[#111] scale-110" : "hover:scale-110"
+                  )}
+                />
+              ))}
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            {colors.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => setValue('accentColor', c.id, { shouldDirty: true })}
-                className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center transition-transform",
-                  c.bg,
-                  watchAccent === c.id ? "ring-2 ring-white ring-offset-2 ring-offset-[#111] scale-110" : "hover:scale-110"
-                )}
-              />
-            ))}
-          </div>
-        </div>
+        )}
 
         {/* Font Size */}
         <div className="space-y-4 pt-6 border-t border-black/10 dark:border-white/10">

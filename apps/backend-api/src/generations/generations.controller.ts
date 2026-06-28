@@ -56,4 +56,11 @@ export class GenerationsController {
   toggleLike(@Req() req: any, @Param('id') id: string) {
     return this.generationsService.toggleLike(id, req.user.id);
   }
+
+  @Post(':id/cancel')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Cancel a pending or processing generation' })
+  cancel(@Req() req: any, @Param('id') id: string) {
+    return this.generationsService.cancel(id, req.user.id);
+  }
 }

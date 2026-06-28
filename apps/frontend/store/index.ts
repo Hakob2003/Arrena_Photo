@@ -115,6 +115,10 @@ interface GenerationState {
   setProgress: (v: number) => void;
   setResult: (url: string, driveFileId?: string) => void;
   setInitImage: (v: string | null) => void;
+  isPremiumTemplate: boolean;
+  activeTemplateId: string | null;
+  activeTemplateCost: number | null;
+  setPremiumTemplate: (isPremium: boolean, templateId?: string, cost?: number) => void;
 }
 
 export const useGenerationStore = create<GenerationState>((set) => ({
@@ -130,6 +134,10 @@ export const useGenerationStore = create<GenerationState>((set) => ({
   resultDriveFileId: null,
   initImage: null,
 
+  isPremiumTemplate: false,
+  activeTemplateId: null,
+  activeTemplateCost: null,
+
   setPrompt: (prompt) => set({ prompt }),
   setNegativePrompt: (negativePrompt) => set({ negativePrompt }),
   setModel: (model) => set({ model }),
@@ -140,6 +148,11 @@ export const useGenerationStore = create<GenerationState>((set) => ({
   setProgress: (progress) => set({ progress }),
   setResult: (resultImage, resultDriveFileId = undefined) => set({ resultImage, resultDriveFileId: resultDriveFileId ?? null }),
   setInitImage: (initImage) => set({ initImage }),
+  setPremiumTemplate: (isPremiumTemplate, templateId, cost) => set({ 
+    isPremiumTemplate, 
+    activeTemplateId: isPremiumTemplate ? (templateId ?? null) : null,
+    activeTemplateCost: isPremiumTemplate ? (cost ?? null) : null
+  }),
 }));
 
 // --- UI Store ---
@@ -171,30 +184,38 @@ const getInitialLocale = (): 'ru' | 'en' => {
   return 'ru'; // Always return 'ru' initially to prevent hydration mismatch
 };
 
-export const useUIStore = create<UIState>((set) => ({
-  isSidebarOpen: true,
-  setSidebarOpen: (isSidebarOpen) => set({ isSidebarOpen }),
-  isMobile: false,
-  setIsMobile: (isMobile) => set({ isMobile }),
-  locale: getInitialLocale(),
-  setLocale: (locale) => {
-    if (typeof window !== 'undefined') localStorage.setItem('locale', locale);
-    set({ locale });
-  },
-  preferences: {
-    theme: 'DARK',
-    accentColor: 'INDIGO',
-    fontSize: 'MEDIUM',
-    compactMode: false,
-    animationsEnabled: true,
-    skin: 'NEON',
-  },
-  setPreferences: (prefs) => set((state) => ({ preferences: { ...state.preferences, ...prefs } })),
-  hasSeenSwipeHints: false, // We'll initialize from localStorage in ClientLayout
-  setHasSeenSwipeHints: (hasSeenSwipeHints) => {
-    if (typeof window !== 'undefined') localStorage.setItem('hasSeenSwipeHints', hasSeenSwipeHints ? 'true' : 'false');
-    set({ hasSeenSwipeHints });
-  },
-  showSwipeHints: false,
-  setShowSwipeHints: (showSwipeHints) => set({ showSwipeHints }),
-}));
+export const useUIStore = create<UIState>()(
+  persist(
+    (set) => ({
+      isSidebarOpen: true,
+      setSidebarOpen: (isSidebarOpen) => set({ isSidebarOpen }),
+      isMobile: false,
+      setIsMobile: (isMobile) => set({ isMobile }),
+      locale: getInitialLocale(),
+      setLocale: (locale) => {
+        if (typeof window !== 'undefined') localStorage.setItem('locale', locale);
+        set({ locale });
+      },
+      preferences: {
+        theme: 'DARK',
+        accentColor: 'INDIGO',
+        fontSize: 'MEDIUM',
+        compactMode: false,
+        animationsEnabled: true,
+        skin: 'NEON',
+      },
+      setPreferences: (prefs) => set((state) => ({ preferences: { ...state.preferences, ...prefs } })),
+      hasSeenSwipeHints: false,
+      setHasSeenSwipeHints: (hasSeenSwipeHints) => {
+        if (typeof window !== 'undefined') localStorage.setItem('hasSeenSwipeHints', hasSeenSwipeHints ? 'true' : 'false');
+        set({ hasSeenSwipeHints });
+      },
+      showSwipeHints: false,
+      setShowSwipeHints: (showSwipeHints) => set({ showSwipeHints }),
+    }),
+    {
+      name: 'ui-storage',
+      partialize: (state) => ({ preferences: state.preferences }),
+    }
+  )
+);
