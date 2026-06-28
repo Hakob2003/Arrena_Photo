@@ -66,6 +66,20 @@ export class GenerationsService {
     else if (plan === 'PRO') { maxTasks = 5; priority = 2; }
     else if (plan === 'BUSINESS') { maxTasks = 20; priority = 1; }
 
+    // Auto-clear stuck tasks (older than 5 minutes)
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+    await this.prisma.generation.updateMany({
+      where: {
+        userId,
+        status: { in: ['PENDING', 'PROCESSING'] },
+        createdAt: { lt: fiveMinutesAgo }
+      },
+      data: {
+        status: 'FAILED',
+        error: 'Generation timed out'
+      }
+    });
+
     const activeTasks = await this.prisma.generation.count({
       where: {
         userId,
@@ -98,19 +112,28 @@ export class GenerationsService {
     });
 
     // 3. Add to BullMQ Queue
-    await this.generationsQueue.add('generate-image', {
-      generationId: generation.id,
-      prompt: dto.prompt,
-      negativePrompt: dto.negativePrompt,
-      initImage: dto.initImage,
-      aspectRatio: dto.aspectRatio,
-      resolution: dto.resolution,
-      skin: dto.skin
-    }, {
-      priority,
-      attempts: 3,
-      backoff: { type: 'exponential', delay: 1000 }
-    });
+    try {
+      await this.generationsQueue.add('generate-image', {
+        generationId: generation.id,
+        prompt: dto.prompt,
+        negativePrompt: dto.negativePrompt,
+        initImage: dto.initImage,
+        aspectRatio: dto.aspectRatio,
+        resolution: dto.resolution,
+        skin: dto.skin
+      }, {
+        priority,
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 1000 }
+      });
+    } catch (error) {
+      // If adding to queue fails (e.g. Redis is down), fail the generation immediately
+      await this.prisma.generation.update({
+        where: { id: generation.id },
+        data: { status: 'FAILED', error: 'Failed to queue generation. Please try again later.' }
+      });
+      throw new BadRequestException('Generation service is temporarily unavailable.');
+    }
 
     return generation;
   }
