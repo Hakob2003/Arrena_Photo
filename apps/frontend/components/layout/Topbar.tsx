@@ -64,7 +64,7 @@ export function Topbar() {
             <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen && isMobile ? 'pointer-events-none' : 'pointer-events-auto'}`}>
               {isNeon ? (
                 <div 
-                  className="h-[18px] sm:h-7 w-24 hidden dark:block relative overflow-hidden masked-logo-parent"
+                  className="h-[18px] sm:h-7 w-24 relative overflow-hidden masked-logo-parent"
                   style={{
                     WebkitMask: `url(/logo2.png) no-repeat center / contain`,
                     mask: `url(/logo2.png) no-repeat center / contain`
@@ -92,18 +92,26 @@ export function Topbar() {
                     }}
                   />
                 </div>
-              ) : (
+              ) : isLuxury ? (
                 <img 
-                  src={isLuxury ? "/logoG2.png" : "/logo2.png"} 
+                  src="/logoG2.png" 
                   alt="Arrena Photo Text" 
-                  className="h-[18px] sm:h-7 w-auto object-contain hidden dark:block" 
+                  className="h-[18px] sm:h-7 w-auto object-contain" 
                 />
+              ) : (
+                <>
+                  <img 
+                    src="/logo2.png" 
+                    alt="Arrena Photo Text" 
+                    className="h-[18px] sm:h-7 w-auto object-contain hidden dark:block" 
+                  />
+                  <img 
+                    src="/logo2-light.png" 
+                    alt="Arrena Photo Text" 
+                    className="h-[18px] sm:h-7 w-auto object-contain block dark:hidden" 
+                  />
+                </>
               )}
-              <img 
-                src={isLuxury ? "/logoG2.png" : "/logo2-light.png"} 
-                alt="Arrena Photo Text" 
-                className="h-[18px] sm:h-7 w-auto object-contain block dark:hidden" 
-              />
             </Link>
           </motion.div>
         </div>
@@ -112,7 +120,7 @@ export function Topbar() {
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
             {isNeon ? (
               <div 
-                className="h-6 sm:h-8 w-32 hidden dark:block relative overflow-hidden masked-logo-parent"
+                className="h-6 sm:h-8 w-32 relative overflow-hidden masked-logo-parent"
                 style={{
                   WebkitMask: `url(/logo.png) no-repeat center / contain`,
                   mask: `url(/logo.png) no-repeat center / contain`
@@ -140,18 +148,26 @@ export function Topbar() {
                   }}
                 />
               </div>
-            ) : (
+            ) : isLuxury ? (
               <img 
-                src={isLuxury ? "/logoG.png" : "/logo.png"} 
+                src="/logoG.png" 
                 alt="Arrena Photo Logo" 
-                className="h-6 sm:h-8 w-auto object-contain hidden dark:block" 
+                className="h-6 sm:h-8 w-auto object-contain" 
               />
+            ) : (
+              <>
+                <img 
+                  src="/logo.png" 
+                  alt="Arrena Photo Logo" 
+                  className="h-6 sm:h-8 w-auto object-contain hidden dark:block" 
+                />
+                <img 
+                  src="/logo-light.png" 
+                  alt="Arrena Photo Logo" 
+                  className="h-6 sm:h-8 w-auto object-contain block dark:hidden" 
+                />
+              </>
             )}
-            <img 
-              src={isLuxury ? "/logoG.png" : "/logo-light.png"} 
-              alt="Arrena Photo Logo" 
-              className="h-6 sm:h-8 w-auto object-contain block dark:hidden" 
-            />
           </Link>
         </div>
       )}

@@ -204,7 +204,7 @@ export function Sidebar() {
                   >
                     {isNeon ? (
                        <div 
-                         className="w-8 h-8 hidden dark:block relative overflow-hidden masked-logo-parent"
+                         className="w-8 h-8 relative overflow-hidden masked-logo-parent"
                          style={{
                            WebkitMask: `url(/logo1.png) no-repeat center / contain`,
                            mask: `url(/logo1.png) no-repeat center / contain`
@@ -232,18 +232,26 @@ export function Sidebar() {
                            }}
                          />
                        </div>
+                    ) : isLuxury ? (
+                       <img 
+                         src="/logoG1.png" 
+                         alt="Arrena Photo Icon" 
+                         className="w-8 h-8 object-contain" 
+                       />
                     ) : (
-                      <img 
-                        src={isLuxury ? "/logoG1.png" : "/logo1.png"} 
-                        alt="Arrena Photo Icon" 
-                        className="w-8 h-8 object-contain hidden dark:block" 
-                      />
+                      <>
+                        <img 
+                          src="/logo1.png" 
+                          alt="Arrena Photo Icon" 
+                          className="w-8 h-8 object-contain hidden dark:block" 
+                        />
+                        <img 
+                          src="/logo1-light.png" 
+                          alt="Arrena Photo Icon" 
+                          className="w-8 h-8 object-contain block dark:hidden" 
+                        />
+                      </>
                     )}
-                    <img 
-                      src={isLuxury ? "/logoG1.png" : "/logo1-light.png"} 
-                      alt="Arrena Photo Icon" 
-                      className="w-8 h-8 object-contain block dark:hidden" 
-                    />
                   </motion.div>
                 )}
                 {isSidebarOpen && (
@@ -256,7 +264,7 @@ export function Sidebar() {
                   >
                     {isNeon ? (
                        <div 
-                         className={cn("hidden dark:block relative overflow-hidden masked-logo-parent", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
+                         className={cn("relative overflow-hidden masked-logo-parent", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
                          style={{
                            WebkitMask: `url(/logo.png) no-repeat center / contain`,
                            mask: `url(/logo.png) no-repeat center / contain`
@@ -284,18 +292,26 @@ export function Sidebar() {
                            }}
                          />
                        </div>
+                    ) : isLuxury ? (
+                       <img 
+                         src="/logoG.png" 
+                         alt="Arrena Photo Logo" 
+                         className={cn("object-contain", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
+                       />
                     ) : (
-                      <img 
-                        src={isLuxury ? "/logoG.png" : "/logo.png"} 
-                        alt="Arrena Photo Logo" 
-                        className={cn("object-contain hidden dark:block", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
-                      />
+                      <>
+                        <img 
+                          src="/logo.png" 
+                          alt="Arrena Photo Logo" 
+                          className={cn("object-contain hidden dark:block", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
+                        />
+                        <img 
+                          src="/logo-light.png" 
+                          alt="Arrena Photo Logo" 
+                          className={cn("object-contain block dark:hidden", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
+                        />
+                      </>
                     )}
-                    <img 
-                      src={isLuxury ? "/logoG.png" : "/logo-light.png"} 
-                      alt="Arrena Photo Logo" 
-                      className={cn("object-contain block dark:hidden", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
-                    />
                   </motion.div>
                 )}
               </AnimatePresence>
