@@ -95,11 +95,11 @@
   }
   
   html.dark[data-skin="neon"] {
-    --background: oklch(0.16 0 0); /* #050505 */
-    --card: oklch(0.19 0 0); /* #0A0A0A */
-    --popover: oklch(0.19 0 0);
+    --background: oklch(0.22 0 0); /* Lighter dark */
+    --card: oklch(0.25 0 0); 
+    --popover: oklch(0.25 0 0);
     --border: oklch(1 0 0 / 8%);
-    --sidebar: oklch(0.16 0 0);
+    --sidebar: oklch(0.22 0 0);
   }
 
   html[data-skin="luxury"] {
