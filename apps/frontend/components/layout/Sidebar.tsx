@@ -81,8 +81,8 @@ export function Sidebar() {
                       <mask id={`icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')}`}>
                         <svg width="32" height="32" viewBox="0 0 32 32">
                           <rect width="32" height="32" fill="black" />
-                          <g transform="translate(6, 6)" style={{ color: "white" }} stroke="white" fill="none">
-                            {React.cloneElement(link.icon as React.ReactElement, { style: { overflow: "visible" } })}
+                          <g transform="translate(6, 6)" style={{ color: "white", transition: "none" }} stroke="white" fill="none">
+                            {React.cloneElement(link.icon as React.ReactElement, { style: { overflow: "visible", transition: "none" } })}
                           </g>
                         </svg>
                       </mask>
@@ -91,7 +91,8 @@ export function Sidebar() {
                       className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 pointer-events-none"
                       style={{ 
                         WebkitMask: `url(#icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')})`,
-                        mask: `url(#icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')})`
+                        mask: `url(#icon-mask-${link.href.replace(/[^a-zA-Z0-9]/g, '-')})`,
+                        transition: 'none'
                       }}
                     >
                       <div 
