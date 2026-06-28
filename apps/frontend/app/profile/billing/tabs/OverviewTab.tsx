@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '../../../../store';
 import { useTranslation } from '../../../../lib/i18n';
 import { useUIStore } from '../../../../store';
+import { api } from '../../../../lib/api';
 
 const PLAN_DETAILS: Record<string, { name: string, limit: number, price: string, features: string[] }> = {
   free: { name: 'Free', limit: 100, price: '$0.00', features: ['До 1 задачи', 'Стандартная скорость', 'Водяной знак'] },
