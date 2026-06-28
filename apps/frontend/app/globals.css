@@ -219,28 +219,7 @@
     -webkit-text-fill-color: transparent;
   }
 
-  /* Neon Logo Shimmer Effect */
-  @keyframes logo-shimmer-sweep-new {
-    0% { left: -100%; }
-    100% { left: 200%; }
-  }
-  .logo-shimmer {
-    background-image: linear-gradient(to right, rgb(var(--color-accent-500)), rgb(var(--color-accent-600)), rgb(var(--color-accent-500)));
-    background-size: 100% 100%;
-    overflow: hidden;
-  }
-  .logo-shimmer::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
-    animation: logo-shimmer-sweep-new 2.5s ease-in-out infinite;
-    transform: skewX(-20deg);
-    will-change: left;
-  }
+
 
   /* Specific override for hydration-safe text gradients */
   html[data-skin="luxury"] .luxury-override-text-gradient {
@@ -432,3 +411,26 @@
 .animate-neon-shimmer-2 { animation: neon-drift-2 7s ease-in-out infinite; }
 .animate-neon-shimmer-3 { animation: neon-drift-3 6s ease-in-out infinite; }
 .animate-neon-shimmer-4 { animation: neon-drift-4 8s ease-in-out infinite; }
+
+/* Neon Logo Shimmer Effect */
+@keyframes logo-shimmer-sweep-new {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+.logo-shimmer {
+  background-image: linear-gradient(to right, rgb(var(--color-accent-500)), rgb(var(--color-accent-600)), rgb(var(--color-accent-500)));
+  background-size: 100% 100%;
+  overflow: hidden;
+}
+.logo-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.8), transparent);
+  animation: logo-shimmer-sweep-new 2.5s ease-in-out infinite;
+  transform: skewX(-20deg);
+  will-change: left;
+}
