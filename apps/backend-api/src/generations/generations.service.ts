@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
@@ -74,7 +74,7 @@ export class GenerationsService {
     });
 
     if (activeTasks >= maxTasks) {
-      throw new Error(`Concurrent generation limit reached for your plan (${plan}). Max allowed: ${maxTasks}`);
+      throw new BadRequestException(`Concurrent generation limit reached for your plan (${plan}). Max allowed: ${maxTasks}`);
     }
 
     // Deduct credits before generating
