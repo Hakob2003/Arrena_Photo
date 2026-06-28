@@ -75,8 +75,7 @@ export class GenerationsService {
         createdAt: { lt: fiveMinutesAgo }
       },
       data: {
-        status: 'FAILED',
-        error: 'Generation timed out'
+        status: 'FAILED'
       }
     });
 
@@ -130,7 +129,7 @@ export class GenerationsService {
       // If adding to queue fails (e.g. Redis is down), fail the generation immediately
       await this.prisma.generation.update({
         where: { id: generation.id },
-        data: { status: 'FAILED', error: 'Failed to queue generation. Please try again later.' }
+        data: { status: 'FAILED' }
       });
       throw new BadRequestException('Generation service is temporarily unavailable.');
     }
