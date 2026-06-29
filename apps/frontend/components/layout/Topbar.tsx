@@ -23,7 +23,9 @@ export function Topbar() {
   }, [isSidebarOpen]);
 
   const toggleLocale = () => {
-    setLocale(locale === 'ru' ? 'en' : 'ru');
+    if (locale === 'ru') setLocale('en');
+    else if (locale === 'en') setLocale('hy');
+    else setLocale('ru');
   };
 
   return (
@@ -33,6 +35,7 @@ export function Topbar() {
           <button 
             className="p-2 -ml-2 text-slate-900 dark:text-white hover:text-slate-500 dark:hover:text-gray-300"
             onClick={() => setSidebarOpen(true)}
+            aria-label="Open sidebar"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -93,11 +96,34 @@ export function Topbar() {
                   />
                 </div>
               ) : isLuxury ? (
-                <img 
-                  src="/logoG2.png" 
-                  alt="Arrena Photo Text" 
-                  className="h-[27px] sm:h-[42px] w-auto object-contain" 
-                />
+                <div 
+                  className="relative overflow-hidden inline-block"
+                  style={{
+                    WebkitMask: `url(/logoG2.png) no-repeat center / contain`,
+                    mask: `url(/logoG2.png) no-repeat center / contain`
+                  }}
+                >
+                  <img 
+                    src="/logoG2.png" 
+                    alt="Arrena Photo Text" 
+                    className="h-[27px] sm:h-[42px] w-auto object-contain" 
+                  />
+                  <motion.div
+                    className="absolute inset-y-0 w-12 pointer-events-none"
+                    initial={{ left: "-100%" }}
+                    animate={{ left: "200%" }}
+                    transition={{
+                      duration: 2,
+                      ease: "easeInOut",
+                      repeat: Infinity,
+                      repeatDelay: 3
+                    }}
+                    style={{
+                      background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8) 50%, transparent)",
+                      transform: "skewX(-20deg)"
+                    }}
+                  />
+                </div>
               ) : (
                 <>
                   <img 
@@ -149,11 +175,34 @@ export function Topbar() {
                 />
               </div>
             ) : isLuxury ? (
-              <img 
-                src="/logoG.png" 
-                alt="Arrena Photo Logo" 
-                className="h-6 sm:h-8 w-auto object-contain" 
-              />
+                <div 
+                  className="relative overflow-hidden inline-block"
+                  style={{
+                    WebkitMask: `url(/logoG.png) no-repeat center / contain`,
+                    mask: `url(/logoG.png) no-repeat center / contain`
+                  }}
+                >
+                  <img 
+                    src="/logoG.png" 
+                    alt="Arrena Photo Logo" 
+                    className="h-6 sm:h-8 w-auto object-contain" 
+                  />
+                  <motion.div
+                    className="absolute inset-y-0 w-12 pointer-events-none"
+                    initial={{ left: "-100%" }}
+                    animate={{ left: "200%" }}
+                    transition={{
+                      duration: 2,
+                      ease: "easeInOut",
+                      repeat: Infinity,
+                      repeatDelay: 3
+                    }}
+                    style={{
+                      background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8) 50%, transparent)",
+                      transform: "skewX(-20deg)"
+                    }}
+                  />
+                </div>
             ) : (
               <>
                 <img 
@@ -182,6 +231,7 @@ export function Topbar() {
             onClick={() => useUIStore.getState().setShowSwipeHints(true)}
             className="flex items-center justify-center bg-black/[0.05] dark:bg-white/10 border border-black/10 dark:border-white/10 w-7 h-7 sm:w-8 sm:h-8 rounded-full hover:bg-black/10 dark:hover:bg-white/5 transition-colors shrink-0"
             title="Подсказки жестов"
+            aria-label="Show gesture hints"
           >
             <svg className="w-4 h-4 text-slate-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -198,11 +248,13 @@ export function Topbar() {
               ? "dark:bg-black/5 border-black/10 dark:border-[#D4AF37]/20 hover:bg-black/10 dark:hover:border-[#D4AF37]/50" 
               : "dark:bg-white/10 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/5"
           )}
-          title={locale === 'ru' ? 'Switch to English' : 'Переключить на русский'}
+          title={locale === 'ru' ? 'Сменить язык' : locale === 'en' ? 'Switch Language' : 'Փոխել լեզուն'}
         >
           <span className={`text-xs sm:text-sm font-bold transition-colors ${locale === 'ru' ? (isLuxury ? 'text-[#D4AF37]' : 'text-indigo-600 dark:text-indigo-400') : 'text-slate-400 dark:text-gray-500'}`}>RU</span>
           <span className="text-slate-300 dark:text-gray-600 text-xs">/</span>
           <span className={`text-xs sm:text-sm font-bold transition-colors ${locale === 'en' ? (isLuxury ? 'text-[#D4AF37]' : 'text-indigo-600 dark:text-indigo-400') : 'text-slate-400 dark:text-gray-500'}`}>EN</span>
+          <span className="text-slate-300 dark:text-gray-600 text-xs">/</span>
+          <span className={`text-xs sm:text-sm font-bold transition-colors ${locale === 'hy' ? (isLuxury ? 'text-[#D4AF37]' : 'text-indigo-600 dark:text-indigo-400') : 'text-slate-400 dark:text-gray-500'}`}>HY</span>
         </button>
 
         {user ? (

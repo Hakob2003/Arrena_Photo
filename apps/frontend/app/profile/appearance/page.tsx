@@ -95,6 +95,21 @@ export default function AppearanceProfilePage() {
     { id: 'EMERALD', bg: 'bg-emerald-500' },
     { id: 'AMBER', bg: 'bg-amber-500' },
     { id: 'BLUE', bg: 'bg-blue-500' },
+    { id: 'SUNSET', bg: 'bg-gradient-to-br from-orange-400 to-rose-500' },
+    { id: 'OCEAN', bg: 'bg-gradient-to-br from-cyan-400 to-blue-500' },
+    { id: 'AMETHYST', bg: 'bg-gradient-to-br from-fuchsia-500 to-purple-600' },
+    { id: 'FLAME', bg: 'bg-gradient-to-br from-yellow-400 to-red-600' },
+    { id: 'GALAXY', bg: 'bg-gradient-to-br from-indigo-600 to-purple-800' },
+    { id: 'PEACH', bg: 'bg-gradient-to-br from-rose-300 to-orange-300' },
+    { id: 'CANDY', bg: 'bg-gradient-to-br from-pink-400 to-violet-400' },
+    { id: 'MINT', bg: 'bg-gradient-to-br from-emerald-300 to-cyan-400' },
+    { id: 'FOREST', bg: 'bg-gradient-to-br from-green-500 to-emerald-700' },
+    { id: 'BERRY', bg: 'bg-gradient-to-br from-rose-500 to-purple-700' },
+    { id: 'DAWN', bg: 'bg-gradient-to-br from-yellow-300 to-pink-300' },
+    { id: 'LAGOON', bg: 'bg-gradient-to-br from-cyan-500 to-blue-700' },
+    { id: 'MANGO', bg: 'bg-gradient-to-br from-yellow-400 to-orange-500' },
+    { id: 'GRAPE', bg: 'bg-gradient-to-br from-purple-400 to-indigo-600' },
+    { id: 'ROSEGOLD', bg: 'bg-gradient-to-br from-rose-300 to-amber-200' },
   ];
 
   const fonts = [
@@ -119,8 +134,8 @@ export default function AppearanceProfilePage() {
         {/* Skin Selector */}
         <div className="space-y-4">
           <div>
-            <h3 className="text-base font-medium text-slate-900 dark:text-white mb-1">Скин сайта (Стиль)</h3>
-            <p className="text-sm text-slate-500 dark:text-gray-400">Выберите общую стилистику интерфейса.</p>
+            <h3 className="text-base font-medium text-slate-900 dark:text-white mb-1">{t('profile.appearance.skinTitle')}</h3>
+            <p className="text-sm text-slate-500 dark:text-gray-400">{t('profile.appearance.skinDesc')}</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button
@@ -138,7 +153,7 @@ export default function AppearanceProfilePage() {
                 <span className={cn("font-medium text-lg", watchSkin === 'LUXURY' ? "text-[#D4AF37]" : "text-gray-300")}>Luxury Gold</span>
                 {watchSkin === 'LUXURY' && <div className="w-3 h-3 rounded-full bg-[#D4AF37] shadow-[0_0_10px_#D4AF37]" />}
               </div>
-              <p className="text-xs text-gray-400">Премиальный темный интерфейс с металлическими акцентами.</p>
+              <p className="text-xs text-gray-400">{t('profile.appearance.skinLuxuryDesc')}</p>
             </button>
 
             <button
@@ -156,7 +171,7 @@ export default function AppearanceProfilePage() {
                 <span className={cn("font-medium text-lg", watchSkin === 'NEON' ? "text-indigo-500 dark:text-indigo-400" : "")}>Neon Cyberpunk</span>
                 {watchSkin === 'NEON' && <div className="w-3 h-3 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.8)]" />}
               </div>
-              <p className="text-xs text-slate-500 dark:text-gray-400">Яркий стиль с неоновыми свечениями и ярким акцентным цветом.</p>
+              <p className="text-xs text-slate-500 dark:text-gray-400">{t('profile.appearance.skinNeonDesc')}</p>
             </button>
           </div>
         </div>

@@ -233,11 +233,34 @@ export function Sidebar() {
                          />
                        </div>
                     ) : isLuxury ? (
-                       <img 
-                         src="/logoG1.png" 
-                         alt="Arrena Photo Icon" 
-                         className="w-8 h-8 object-contain" 
-                       />
+                        <div 
+                          className="relative overflow-hidden inline-block"
+                          style={{
+                            WebkitMask: `url(/logoG1.png) no-repeat center / contain`,
+                            mask: `url(/logoG1.png) no-repeat center / contain`
+                          }}
+                        >
+                          <img 
+                            src="/logoG1.png" 
+                            alt="Arrena Photo Icon" 
+                            className="w-8 h-8 object-contain" 
+                          />
+                          <motion.div
+                            className="absolute inset-y-0 w-12 pointer-events-none"
+                            initial={{ left: "-100%" }}
+                            animate={{ left: "200%" }}
+                            transition={{
+                              duration: 0.5,
+                              ease: "easeInOut",
+                              repeat: Infinity,
+                              repeatDelay: 3
+                            }}
+                            style={{
+                              background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8) 50%, transparent)",
+                              transform: "skewX(-20deg)"
+                            }}
+                          />
+                        </div>
                     ) : (
                       <>
                         <img 
@@ -293,11 +316,34 @@ export function Sidebar() {
                          />
                        </div>
                     ) : isLuxury ? (
-                       <img 
-                         src="/logoG.png" 
-                         alt="Arrena Photo Logo" 
-                         className={cn("object-contain", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
-                       />
+                        <div 
+                          className={cn("relative overflow-hidden inline-block", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
+                          style={{
+                            WebkitMask: `url(/logoG.png) no-repeat center / contain`,
+                            mask: `url(/logoG.png) no-repeat center / contain`
+                          }}
+                        >
+                          <img 
+                            src="/logoG.png" 
+                            alt="Arrena Photo Logo" 
+                            className="w-full h-full object-contain" 
+                          />
+                          <motion.div
+                            className="absolute inset-y-0 w-12 pointer-events-none"
+                            initial={{ left: "-100%" }}
+                            animate={{ left: "200%" }}
+                            transition={{
+                              duration: 1.5,
+                              ease: "easeInOut",
+                              repeat: Infinity,
+                              repeatDelay: 3
+                            }}
+                            style={{
+                              background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8) 50%, transparent)",
+                              transform: "skewX(-20deg)"
+                            }}
+                          />
+                        </div>
                     ) : (
                       <>
                         <img 
@@ -321,6 +367,7 @@ export function Sidebar() {
           <button 
             className={`text-slate-500 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white transition-opacity ${!isMobile ? 'block' : (isSidebarOpen ? 'block' : 'hidden')} ${isSidebarOpen ? 'p-2' : 'absolute right-2 p-1'}`}
             onClick={() => setSidebarOpen(!isSidebarOpen)}
+            aria-label="Toggle sidebar"
           >
             {isMobile ? (
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

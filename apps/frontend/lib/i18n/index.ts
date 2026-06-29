@@ -1,10 +1,11 @@
 import { useUIStore } from '../../store';
 import ru from './ru';
 import en from './en';
+import hy from './hy';
 
-export type Locale = 'ru' | 'en';
+export type Locale = 'ru' | 'en' | 'hy';
 
-const dictionaries: Record<Locale, Record<string, string>> = { ru, en };
+const dictionaries: Record<Locale, Record<string, string>> = { ru, en, hy };
 
 export function useTranslation() {
   const locale = useUIStore((state) => state.locale);

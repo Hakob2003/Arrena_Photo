@@ -2,8 +2,10 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '../../store';
+import { useTranslation } from '../../lib/i18n';
 
 export function AdminTopbar() {
+  const { t } = useTranslation();
   const pathname = usePathname();
   const { user, logout } = useAuthStore();
   
@@ -25,8 +27,8 @@ export function AdminTopbar() {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4 shrink-0 ml-2">
-        <button className="hidden sm:block text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white text-sm">Feedback</button>
-        <button className="hidden sm:block text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white text-sm">Docs</button>
+        <button className="hidden sm:block text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white text-sm">{t('admin.topbar.feedback') || 'Feedback'}</button>
+        <button className="hidden sm:block text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white text-sm">{t('admin.topbar.docs') || 'Docs'}</button>
         <button 
           onClick={() => {
             logout();
@@ -35,7 +37,7 @@ export function AdminTopbar() {
           }}
           className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white text-xs sm:text-sm transition-colors"
         >
-          Выйти
+          {t('admin.topbar.logout')}
         </button>
         <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-gray-700 to-gray-500 flex items-center justify-center text-xs font-bold text-slate-900 dark:text-slate-900 dark:text-white border border-black/10 dark:border-white/10 cursor-pointer shrink-0">
           {user?.name?.charAt(0)?.toUpperCase() || 'A'}

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useTranslation } from '../lib/i18n';
 
 export default function HomePage() {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   return (
     <div className="min-h-full flex flex-col items-center justify-center p-8 text-center relative overflow-hidden">
@@ -17,8 +17,9 @@ export default function HomePage() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="z-10 max-w-4xl"
       >
-        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black tracking-tighter mb-6 break-words">
-          {t('home.heroTitle1')} <br />
+        <h1 className={`font-black tracking-tighter mb-6 ${locale === 'hy' ? 'break-normal text-3xl sm:text-5xl md:text-6xl lg:text-7xl' : 'break-words text-4xl sm:text-6xl md:text-8xl'}`}>
+          {t('home.heroTitle1')}
+          {locale !== 'hy' ? <br /> : ' '}
           <span className="neon-text">{t('home.heroTitle2')}</span>
         </h1>
         <p className="text-lg sm:text-xl md:text-2xl text-slate-500 dark:text-gray-400 mb-8 sm:mb-10 max-w-2xl mx-auto font-light leading-relaxed px-4">
@@ -46,7 +47,7 @@ export default function HomePage() {
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-[10%] left-[10%] w-64 h-64 rounded-3xl overflow-hidden glass p-2"
         >
-          <img src="https://picsum.photos/seed/home1/400/400" className="w-full h-full object-cover rounded-2xl" />
+          <img src="https://picsum.photos/seed/home1/400/400" alt="Sample photography 1" className="w-full h-full object-cover rounded-2xl" />
         </motion.div>
         
         <motion.div 
@@ -54,7 +55,7 @@ export default function HomePage() {
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
           className="absolute bottom-[20%] right-[10%] w-80 h-96 rounded-3xl overflow-hidden glass p-2"
         >
-          <img src="https://picsum.photos/seed/home2/400/400" className="w-full h-full object-cover rounded-2xl" />
+          <img src="https://picsum.photos/seed/home2/400/400" alt="Sample photography 2" className="w-full h-full object-cover rounded-2xl" />
         </motion.div>
       </div>
 

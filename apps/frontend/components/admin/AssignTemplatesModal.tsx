@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../../lib/i18n';
 
 interface TemplateAssignment {
   id: string;
@@ -16,6 +17,7 @@ interface AssignTemplatesModalProps {
 }
 
 export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTemplatesModalProps) {
+  const { t } = useTranslation();
   const [templates, setTemplates] = useState<TemplateAssignment[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -41,7 +43,7 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
         });
         setSelectedIds(initialSelected);
       } catch (e) {
-        toast.error('Ошибка загрузки шаблонов');
+        toast.error(t('admin.templates.errorLoad'));
       } finally {
         setLoading(false);
       }
@@ -84,10 +86,10 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
       await api.post(`/admin/ai-models/${model.id}/assign-templates`, {
         templateIds: Array.from(selectedIds)
       });
-      toast.success('Модель успешно назначена шаблонам');
+      toast.success(t('admin.templates.successSave'));
       onSuccess();
     } catch (e) {
-      toast.error('Ошибка сохранения');
+      toast.error(t('admin.templates.errorSave'));
     } finally {
       setSaving(false);
     }
@@ -102,9 +104,9 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-black/10 dark:border-white/10 shrink-0">
           <div>
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-900 dark:text-white">Назначение шаблонам</h3>
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-900 dark:text-white">{t('admin.templates.title')}</h3>
             <p className="text-xs text-slate-500 dark:text-gray-400 mt-1">
-              Модель: <span className="text-indigo-400 font-medium">{model.provider.name} - {model.name}</span>
+              {t('admin.templates.model')}: <span className="text-indigo-400 font-medium">{model.provider.name} - {model.name}</span>
             </p>
           </div>
           <button onClick={onClose} className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white p-1">
@@ -126,7 +128,7 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="Поиск по названию шаблона или категории..."
+                placeholder={t('admin.templates.searchPlaceholder')}
                 className="w-full pl-10 pr-4 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-900 dark:text-white text-sm placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 transition-colors"
               />
             </div>
@@ -135,8 +137,8 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
               className="px-3 py-2 text-sm text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10 rounded-lg transition-colors whitespace-nowrap"
             >
               {selectedIds.size === filteredTemplates.length && filteredTemplates.length > 0 
-                ? 'Снять выбор' 
-                : 'Выбрать все'
+                ? t('admin.templates.deselectAll') 
+                : t('admin.templates.selectAll')
               }
             </button>
           </div>
@@ -147,12 +149,12 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
               <div className="h-full flex items-center justify-center">
                 <div className="flex items-center gap-3">
                   <div className="w-5 h-5 border-2 border-black/10 dark:border-white/10 border-t-indigo-500 rounded-full animate-spin" />
-                  <span className="text-slate-500 dark:text-gray-400 text-sm">Загрузка шаблонов...</span>
+                  <span className="text-slate-500 dark:text-gray-400 text-sm">{t('admin.templates.loading')}</span>
                 </div>
               </div>
             ) : filteredTemplates.length === 0 ? (
               <div className="h-full flex items-center justify-center text-slate-400 dark:text-gray-500 text-sm">
-                Шаблоны не найдены
+                {t('admin.templates.notFound')}
               </div>
             ) : (
               <div className="divide-y divide-white/5">
@@ -180,7 +182,7 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
                         {t.name}
                       </div>
                       <div className="text-xs text-slate-400 dark:text-gray-500 mt-0.5">
-                        Категория: <span className="text-slate-500 dark:text-gray-400">{t.category?.name || 'Без категории'}</span>
+                        {t('admin.templates.category')}: <span className="text-slate-500 dark:text-gray-400">{t.category?.name || t('admin.templates.noCategory')}</span>
                       </div>
                     </div>
                   </label>
@@ -190,7 +192,7 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
           </div>
           
           <div className="text-xs text-slate-400 dark:text-gray-500">
-            Выбрано {selectedIds.size} из {templates.length} шаблонов
+            {t('admin.templates.selected')} {selectedIds.size} {t('admin.templates.of')} {templates.length}
           </div>
         </div>
 
@@ -200,7 +202,7 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
             onClick={onClose}
             className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white transition-colors"
           >
-            Отмена
+            {t('ui.confirmDelete.cancel')}
           </button>
           <button
             onClick={handleSave}
@@ -208,7 +210,7 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
             className="px-5 py-2 bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
           >
             {saving && <div className="w-4 h-4 border-2 border-black/20 dark:border-white/20 border-t-white rounded-full animate-spin" />}
-            Сохранить привязки
+            {t('admin.templates.saveLinks')}
           </button>
         </div>
       </div>

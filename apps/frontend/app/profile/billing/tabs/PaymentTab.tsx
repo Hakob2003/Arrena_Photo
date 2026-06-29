@@ -196,10 +196,10 @@ export function PaymentTab() {
                     }} className="text-[10px] bg-slate-200 text-slate-700 dark:bg-white/10 dark:text-white px-2 py-0.5 rounded-full font-medium hover:bg-slate-300 dark:hover:bg-white/5 transition-colors shrink-0">{t('billing.payment.makeDefault')}</button>
                   )}
                   {isCardExpired(pm.expiry) && (
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0 ${isLuxury ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'}`}>Expired</span>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0 ${isLuxury ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400'}`}>{t('billing.payment.expired')}</span>
                   )}
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0 ${isLuxury ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400'}`}>Limit: ${pm.limit}</span>
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0 ${isLuxury ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400'}`}>Balance: ${pm.balance}</span>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0 ${isLuxury ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400'}`}>{t('billing.payment.limit')}: ${pm.limit}</span>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0 ${isLuxury ? 'bg-[#D4AF37]/10 text-[#D4AF37]' : 'bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400'}`}>{t('billing.payment.balance')}: ${pm.balance}</span>
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button onClick={() => { setEditingCard(pm); setEditModalOpen(true); }} className={`text-slate-400 transition-colors ${isLuxury ? 'hover:text-[#D4AF37]' : 'hover:text-indigo-500'}`} title="Change limit">
@@ -301,37 +301,37 @@ export function PaymentTab() {
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/5 backdrop-blur-none" onClick={() => setAddModalOpen(false)} />
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl p-6 w-full max-w-md relative z-10 border border-black/10 dark:border-white/10">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Add Card</h2>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">{t('billing.payment.addCardTitle')}</h2>
               <form onSubmit={handleAddCardSubmit} className="flex flex-col gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Card Number</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">{t('billing.payment.cardNumber')}</label>
                   <input required type="text" value={newCard.number} onChange={handleNumberChange} placeholder="0000 0000 0000 0000" className={`w-full bg-slate-50 dark:bg-black/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} />
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Expiry Date</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">{t('billing.payment.expiryDate')}</label>
                     <input required type="text" value={newCard.expiry} onChange={handleExpiryChange} placeholder="MM/YY" className={`w-full bg-slate-50 dark:bg-black/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} />
                   </div>
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">CVV</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">{t('billing.payment.cvv')}</label>
                     <input required type="text" value={newCard.cvv} onChange={handleCvvChange} placeholder="123" className={`w-full bg-slate-50 dark:bg-black/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} />
                   </div>
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Max Limit ($)</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">{t('billing.payment.maxLimit')}</label>
                     <input required type="number" min="0" value={newCard.limit} onChange={e => setNewCard({...newCard, limit: Number(e.target.value)})} placeholder="100" className={`w-full bg-slate-50 dark:bg-black/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} />
                   </div>
                   <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Card Balance ($)</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">{t('billing.payment.cardBalance')}</label>
                     <input required type="number" min="0" value={newCard.balance} onChange={e => setNewCard({...newCard, balance: Number(e.target.value)})} placeholder="250" className={`w-full bg-slate-50 dark:bg-black/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} />
                   </div>
                 </div>
                 <div className="flex gap-3 mt-4">
                   <button type="submit" className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                     isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                  }`}>Save</button>
-                  <button type="button" onClick={() => setAddModalOpen(false)} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/5 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">Cancel</button>
+                  }`}>{t('billing.payment.save')}</button>
+                  <button type="button" onClick={() => setAddModalOpen(false)} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/5 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">{t('ui.confirmDelete.cancel')}</button>
                 </div>
               </form>
             </motion.div>
@@ -345,17 +345,17 @@ export function PaymentTab() {
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/5 backdrop-blur-none" onClick={() => setEditModalOpen(false)} />
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl p-6 w-full max-w-md relative z-10 border border-black/10 dark:border-white/10">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Edit Max Limit</h2>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">{t('billing.payment.editMaxLimit')}</h2>
               <form onSubmit={handleEditLimitSubmit} className="flex flex-col gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">Max Limit ($)</label>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">{t('billing.payment.maxLimit')}</label>
                   <input required type="number" min="0" value={editingCard.limit} onChange={e => setEditingCard({...editingCard, limit: Number(e.target.value)})} placeholder="100" className={`w-full bg-slate-50 dark:bg-black/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? 'focus:border-[#D4AF37]' : 'focus:border-indigo-500'}`} />
                 </div>
                 <div className="flex gap-3 mt-4">
                   <button type="submit" className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                     isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black' : 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                  }`}>Save Limit</button>
-                  <button type="button" onClick={() => setEditModalOpen(false)} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/5 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">Cancel</button>
+                  }`}>{t('billing.payment.saveLimit')}</button>
+                  <button type="button" onClick={() => setEditModalOpen(false)} className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/5 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors">{t('ui.confirmDelete.cancel')}</button>
                 </div>
               </form>
             </motion.div>

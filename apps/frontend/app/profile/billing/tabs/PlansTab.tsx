@@ -90,10 +90,10 @@ export function PlansTab() {
   };
 
   const plans = [
-    { id: 'free', name: 'Free', price: '$0', priceNum: 0, credits: `100 ${t('billing.plans.perMonth')}`, models: 'Basic', features: ['Up to 1 task', 'Standard speed', 'Watermark'] },
-    { id: 'starter', name: 'Starter', price: '$9', priceNum: 9, credits: `1000 ${t('billing.plans.perMonth')}`, models: 'All', features: ['Up to 2 tasks', 'Standard speed', 'No watermark'] },
-    { id: 'pro', name: 'Pro Creator', price: '$29', priceNum: 29, credits: `5000 ${t('billing.plans.perMonth')}`, models: 'All + Exclusive', features: ['Up to 5 tasks', 'High speed', 'Commercial license'] },
-    { id: 'business', name: 'Business', price: '$99', priceNum: 99, credits: 'Unlimited', models: 'All + Exclusive', features: ['Up to 20 tasks', 'Max speed', 'API access'] },
+    { id: 'free', name: 'Free', price: '$0', priceNum: 0, credits: `100 ${t('billing.plans.perMonth')}`, models: 'Basic', features: ['billing.plans.features.free.1', 'billing.plans.features.free.2', 'billing.plans.features.free.3'] },
+    { id: 'starter', name: 'Starter', price: '$9', priceNum: 9, credits: `1000 ${t('billing.plans.perMonth')}`, models: 'All', features: ['billing.plans.features.starter.1', 'billing.plans.features.starter.2', 'billing.plans.features.starter.3'] },
+    { id: 'pro', name: 'Pro Creator', price: '$29', priceNum: 29, credits: `5000 ${t('billing.plans.perMonth')}`, models: 'All + Exclusive', features: ['billing.plans.features.pro.1', 'billing.plans.features.pro.2', 'billing.plans.features.pro.3'] },
+    { id: 'business', name: 'Business', price: '$99', priceNum: 99, credits: 'Unlimited', models: 'All + Exclusive', features: ['billing.plans.features.business.1', 'billing.plans.features.business.2', 'billing.plans.features.business.3'] },
   ];
 
   const creditPackages = [
@@ -138,7 +138,7 @@ export function PlansTab() {
                   <ul className="text-sm text-slate-600 dark:text-gray-400 space-y-2 mt-2">
                     {plan.features.map((f, i) => (
                       <li key={i} className="flex items-center gap-2">
-                        <span className={`${isLuxury ? 'text-[#D4AF37]' : 'text-green-500'} text-xs`}>✓</span> {f}
+                        <span className={`${isLuxury ? 'text-[#D4AF37]' : 'text-green-500'} text-xs`}>✓</span> {t(f)}
                       </li>
                     ))}
                   </ul>
@@ -242,23 +242,23 @@ export function PlansTab() {
               className={`relative w-full max-w-md p-6 rounded-2xl border shadow-2xl ${isLuxury ? 'bg-[#111] border-[#D4AF37]/30' : 'bg-[#0a0a0a] border-white/10'}`}
             >
               <h3 className={`text-xl font-bold mb-4 ${isLuxury ? 'text-[#D4AF37]' : 'text-white'}`}>
-                Внимание
+                {t('billing.plans.downgrade.title')}
               </h3>
               <p className="text-gray-300 mb-6 leading-relaxed">
-                Вы переходите на бесплатный тариф. Обратите внимание: возврат средств за оставшийся период не производится.
+                {t('billing.plans.downgrade.desc')}
               </p>
               <div className="flex gap-3 justify-end">
                 <button 
                   onClick={() => setShowDowngradeModal(false)}
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${isLuxury ? 'bg-white/5 hover:bg-white/10 text-white/90' : 'bg-white/5 hover:bg-white/10 text-white'}`}
                 >
-                  Отмена
+                  {t('ui.confirmDelete.cancel')}
                 </button>
                 <button 
                   onClick={confirmDowngrade}
                   className="px-4 py-2 rounded-lg font-medium bg-red-500/90 hover:bg-red-500 text-white transition-colors shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.5)]"
                 >
-                  Подтвердить
+                  {t('ui.confirmDelete.confirm')}
                 </button>
               </div>
             </motion.div>

@@ -119,7 +119,8 @@ export class GenerationsService {
         initImage: dto.initImage,
         aspectRatio: dto.aspectRatio,
         resolution: dto.resolution,
-        skin: dto.skin
+        skin: dto.skin,
+        accentColor: dto.accentColor
       }, {
         priority,
         attempts: 3,

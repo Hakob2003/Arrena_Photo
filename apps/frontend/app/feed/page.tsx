@@ -121,7 +121,7 @@ export default function FeedPage() {
                     <div className="flex items-center gap-2">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden ${isLuxury ? 'bg-[#D4AF37]' : 'bg-indigo-500'}`}>
                         {gen.user?.image ? (
-                           <img src={gen.user.image} alt="User" className="w-full h-full object-cover" />
+                           <img src={gen.user.image} alt={gen.user?.name ? `Avatar of ${gen.user.name}` : "User Avatar"} className="w-full h-full object-cover" />
                         ) : (
                            gen.user?.name?.charAt(0).toUpperCase() || 'U'
                         )}
@@ -134,6 +134,7 @@ export default function FeedPage() {
                       <button 
                         onClick={(e) => handleLike(e, gen.id)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-none transition-colors ${gen.isLiked ? 'bg-red-500/20 text-red-400' : 'bg-white/5 text-white hover:bg-white/5'}`}
+                        aria-label={gen.isLiked ? 'Unlike post' : 'Like post'}
                       >
                         <Heart className={`w-4 h-4 ${gen.isLiked ? 'fill-current' : ''}`} />
                         <span className="text-xs font-bold">{gen.likesCount || 0}</span>

@@ -49,7 +49,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
               key={tab.id}
               href={tab.href}
               className={cn(
-                "relative flex items-center gap-3 px-4 py-3 rounded-xl transition-colors whitespace-nowrap",
+                "relative flex items-center gap-3 px-4 py-3 rounded-xl transition-colors whitespace-nowrap md:whitespace-normal",
                 isActive ? "text-slate-900 dark:text-white" : "text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-gray-200 hover:bg-black/[0.03] dark:hover:bg-white/5"
               )}
             >
@@ -61,8 +61,8 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
-              <Icon className="w-5 h-5 relative z-10" />
-              <span className="font-medium relative z-10">{tab.label}</span>
+              <Icon className="w-5 h-5 relative z-10 shrink-0" />
+              <span className="font-medium relative z-10 break-words leading-tight">{tab.label}</span>
             </Link>
           );
         })}

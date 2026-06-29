@@ -7,10 +7,10 @@ import { useUIStore } from '../../../../store';
 import { api } from '../../../../lib/api';
 
 const PLAN_DETAILS: Record<string, { name: string, limit: number, price: string, features: string[] }> = {
-  free: { name: 'Free', limit: 100, price: '$0.00', features: ['До 1 задачи', 'Стандартная скорость', 'Водяной знак'] },
-  starter: { name: 'Starter', limit: 1000, price: '$9.00', features: ['До 2 задач', 'Стандартная скорость', 'Без водяного знака'] },
-  pro: { name: 'Pro Creator', limit: 5000, price: '$29.00', features: ['До 5 задач', 'Высокая скорость', 'Коммерческая лицензия'] },
-  business: { name: 'Business', limit: 999999, price: '$99.00', features: ['До 20 задач', 'Макс. скорость', 'API доступ'] },
+  free: { name: 'Free', limit: 100, price: '$0.00', features: ['billing.plans.features.free.1', 'billing.plans.features.free.2', 'billing.plans.features.free.3'] },
+  starter: { name: 'Starter', limit: 1000, price: '$9.00', features: ['billing.plans.features.starter.1', 'billing.plans.features.starter.2', 'billing.plans.features.starter.3'] },
+  pro: { name: 'Pro Creator', limit: 5000, price: '$29.00', features: ['billing.plans.features.pro.1', 'billing.plans.features.pro.2', 'billing.plans.features.pro.3'] },
+  business: { name: 'Business', limit: 999999, price: '$99.00', features: ['billing.plans.features.business.1', 'billing.plans.features.business.2', 'billing.plans.features.business.3'] },
 };
 
 export function OverviewTab({ onNavigateToPlans }: { onNavigateToPlans?: () => void }) {
@@ -42,7 +42,7 @@ export function OverviewTab({ onNavigateToPlans }: { onNavigateToPlans?: () => v
                   {isActive ? t('billing.overview.active') : t('billing.overview.free')}
                 </span>
               </h2>
-              {isActive && <p className="text-slate-500 dark:text-gray-400 text-sm mt-1">{t('billing.overview.activeUntil')} 21 Июля 2026</p>}
+              {isActive && <p className="text-slate-500 dark:text-gray-400 text-sm mt-1">{t('billing.overview.activeUntil')} {t('billing.overview.date')}</p>}
             </div>
             <div className="text-left sm:text-right">
               <p className="text-2xl font-bold text-slate-900 dark:text-white">{currentPlan.price} <span className="text-sm font-normal text-slate-500">{t('billing.overview.perMonth')}</span></p>
@@ -64,7 +64,7 @@ export function OverviewTab({ onNavigateToPlans }: { onNavigateToPlans?: () => v
             <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">{t('billing.overview.features')}</h4>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-slate-600 dark:text-gray-300">
               {currentPlan.features.map((feature, idx) => (
-                <li key={idx} className="flex items-center gap-2"><span className={isLuxury ? "text-[#D4AF37]" : "text-green-500"}>✓</span> {feature}</li>
+                <li key={idx} className="flex items-center gap-2"><span className={isLuxury ? "text-[#D4AF37]" : "text-green-500"}>✓</span> {t(feature)}</li>
               ))}
             </ul>
           </div>
@@ -157,7 +157,7 @@ export function OverviewTab({ onNavigateToPlans }: { onNavigateToPlans?: () => v
             >
               <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{t('billing.overview.cancelModalTitle')}</h2>
               <p className="text-slate-600 dark:text-gray-300 text-sm mb-6 leading-relaxed">
-                Вы отменяете подписку <strong>{currentPlan.name}</strong>. Обратите внимание: возврат средств за оставшийся период не производится.
+                {t('billing.overview.cancelModalDesc1')} <strong>{currentPlan.name}</strong>. {t('billing.overview.cancelModalDesc2')}
               </p>
 
               <div className="flex flex-col gap-3">

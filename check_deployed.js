@@ -1,0 +1,1 @@
+const fetch = require("node-fetch"); fetch("https://arrena-photo-frontend-o4xg.onrender.com/").then(res => res.text()).then(html => { if(html.includes("overflow:visible") || html.includes("overflow:\\"visible\\"")) console.log("FIX DEPLOYED!"); else console.log("FIX NOT FOUND OR MINIFIED"); }).catch(console.error);

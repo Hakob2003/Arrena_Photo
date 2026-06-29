@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore } from '../../store';
+import { useTranslation } from '../../lib/i18n';
 
 const HandIcon = ({ className }: { className?: string }) => (
   <svg 
@@ -14,53 +15,54 @@ const HandIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const SLIDES = [
-  {
-    id: 1,
-    title: "Свайп вправо",
-    description: "Открывает главное меню приложения",
-    animation: {
-      x: [-50, 50, -50], // Moves left to right
-      y: [0, 0, 0]
-    },
-    fingers: 1
-  },
-  {
-    id: 2,
-    title: "Свайп влево",
-    description: "Закрывает меню и возвращает к контенту",
-    animation: {
-      x: [50, -50, 50], // Moves right to left
-      y: [0, 0, 0]
-    },
-    fingers: 1
-  },
-  {
-    id: 3,
-    title: "Свайп вниз",
-    description: "Обновление страницы сверху",
-    animation: {
-      x: [0, 0, 0],
-      y: [-40, 40, -40] // Moves top to bottom
-    },
-    fingers: 1
-  },
-  {
-    id: 4,
-    title: "Свайп двумя пальцами",
-    description: "Быстрое переключение между страницами (вверх/вниз)",
-    animation: {
-      x: [0, 0, 0],
-      y: [40, -40, 40] // Moves bottom to top (or up/down)
-    },
-    fingers: 2
-  }
-];
-
 export function SwipeHint() {
+  const { t } = useTranslation();
   const { isMobile, showSwipeHints, setShowSwipeHints, setHasSeenSwipeHints, preferences } = useUIStore();
   const isLuxury = preferences?.skin === 'LUXURY';
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  const SLIDES = [
+    {
+      id: 1,
+      title: t('ui.swipeHint.right.title'),
+      description: t('ui.swipeHint.right.desc'),
+      animation: {
+        x: [-50, 50, -50], // Moves left to right
+        y: [0, 0, 0]
+      },
+      fingers: 1
+    },
+    {
+      id: 2,
+      title: t('ui.swipeHint.left.title'),
+      description: t('ui.swipeHint.left.desc'),
+      animation: {
+        x: [50, -50, 50], // Moves right to left
+        y: [0, 0, 0]
+      },
+      fingers: 1
+    },
+    {
+      id: 3,
+      title: t('ui.swipeHint.down.title'),
+      description: t('ui.swipeHint.down.desc'),
+      animation: {
+        x: [0, 0, 0],
+        y: [-40, 40, -40] // Moves top to bottom
+      },
+      fingers: 1
+    },
+    {
+      id: 4,
+      title: t('ui.swipeHint.twoFingers.title'),
+      description: t('ui.swipeHint.twoFingers.desc'),
+      animation: {
+        x: [0, 0, 0],
+        y: [40, -40, 40] // Moves bottom to top (or up/down)
+      },
+      fingers: 2
+    }
+  ];
 
   // If not mobile or not showing hints, render nothing
   if (!isMobile || !showSwipeHints) return null;
@@ -96,7 +98,7 @@ export function SwipeHint() {
             onClick={handleClose}
             className="absolute -top-16 right-6 text-slate-300 hover:text-white text-sm"
           >
-            Пропустить
+            {t('ui.swipeHint.skip')}
           </button>
 
           {/* Animation Container */}
@@ -151,7 +153,7 @@ export function SwipeHint() {
               onClick={handleNext}
               className={`w-full py-3.5 rounded-xl font-medium transition-colors ${isLuxury ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-none' : 'bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-[0_0_20px_rgba(79,70,229,0.3)]'}`}
             >
-              {currentSlide < SLIDES.length - 1 ? 'Далее' : 'Понятно!'}
+              {currentSlide < SLIDES.length - 1 ? t('ui.swipeHint.next') : t('ui.swipeHint.gotIt')}
             </button>
             
             {/* Dots */}

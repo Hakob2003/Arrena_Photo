@@ -158,7 +158,7 @@ export const useGenerationStore = create<GenerationState>((set) => ({
 // --- UI Store ---
 interface UIPreferences {
   theme: 'LIGHT' | 'DARK' | 'SYSTEM';
-  accentColor: 'INDIGO' | 'ROSE' | 'EMERALD' | 'AMBER' | 'BLUE';
+  accentColor: 'INDIGO' | 'ROSE' | 'EMERALD' | 'AMBER' | 'BLUE' | 'SUNSET' | 'OCEAN' | 'AMETHYST' | 'FLAME' | 'GALAXY' | 'PEACH' | 'CANDY' | 'MINT' | 'FOREST' | 'BERRY' | 'DAWN' | 'LAGOON' | 'MANGO' | 'GRAPE' | 'ROSEGOLD';
   fontSize: 'SMALL' | 'MEDIUM' | 'LARGE';
   compactMode: boolean;
   animationsEnabled: boolean;
@@ -170,8 +170,8 @@ interface UIState {
   setSidebarOpen: (v: boolean) => void;
   isMobile: boolean;
   setIsMobile: (v: boolean) => void;
-  locale: 'ru' | 'en';
-  setLocale: (v: 'ru' | 'en') => void;
+  locale: 'ru' | 'en' | 'hy';
+  setLocale: (v: 'ru' | 'en' | 'hy') => void;
   preferences: UIPreferences;
   setPreferences: (prefs: Partial<UIPreferences>) => void;
   hasSeenSwipeHints: boolean;
@@ -180,7 +180,7 @@ interface UIState {
   setShowSwipeHints: (show: boolean) => void;
 }
 
-const getInitialLocale = (): 'ru' | 'en' => {
+const getInitialLocale = (): 'ru' | 'en' | 'hy' => {
   return 'ru'; // Always return 'ru' initially to prevent hydration mismatch
 };
 

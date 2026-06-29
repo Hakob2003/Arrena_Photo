@@ -4,44 +4,46 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useAuthStore, useUIStore } from '../../store';
+import { useTranslation } from '../../lib/i18n';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { cn } from '../../lib/utils';
 
-const ADMIN_LINKS = [
-  { section: 'Overview', items: [
-    { name: 'Dashboard', href: '/admin', icon: '📊' },
-    { name: 'Analytics', href: '/admin/analytics', icon: '📈' },
-  ]},
-  { section: 'Management', items: [
-    { name: 'Users', href: '/admin/users', icon: '👥' },
-    { name: 'Templates', href: '/admin/templates', icon: '🎨' },
-    { name: 'Marketplace', href: '/admin/marketplace', icon: '🛒' },
-    { name: 'Generations', href: '/admin/generations', icon: '⚡' },
-  ]},
-  { section: 'Configuration', items: [
-    { name: 'AI Models', href: '/admin/ai-models', icon: '🧠' },
-    { name: 'AI Providers', href: '/admin/ai-providers', icon: '🤖' },
-    { name: 'API Keys', href: '/admin/api-keys', icon: '🔑' },
-    { name: 'Cloud Storage', href: '/admin/cloud', icon: '☁️' },
-  ]},
-  { section: 'Подписки и платежи', items: [
-    { name: 'Тарифы и лимиты', href: '/admin/billing/tariffs', icon: '💳' },
-    { name: 'История платежей', href: '/admin/billing/history', icon: '📜' },
-    { name: 'Промокоды и купоны', href: '/admin/billing/promocodes', icon: '🎟️' },
-  ]},
-  { section: 'System', items: [
-    { name: 'Audit Logs', href: '/admin/audit-logs', icon: '📋' },
-    { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
-  ]}
-];
-
 export function AdminSidebar() {
+  const { t } = useTranslation();
   const pathname = usePathname();
   const { isSidebarOpen, setSidebarOpen } = useUIStore();
   const isMobile = useIsMobile();
   const showSidebarLogo = !isMobile || isSidebarOpen;
   const { user } = useAuthStore();
+
+  const ADMIN_LINKS = [
+    { section: 'Overview', items: [
+      { name: 'Dashboard', href: '/admin', icon: '📊' },
+      { name: 'Analytics', href: '/admin/analytics', icon: '📈' },
+    ]},
+    { section: 'Management', items: [
+      { name: 'Users', href: '/admin/users', icon: '👥' },
+      { name: 'Templates', href: '/admin/templates', icon: '🎨' },
+      { name: 'Marketplace', href: '/admin/marketplace', icon: '🛒' },
+      { name: 'Generations', href: '/admin/generations', icon: '⚡' },
+    ]},
+    { section: 'Configuration', items: [
+      { name: 'AI Models', href: '/admin/ai-models', icon: '🧠' },
+      { name: 'AI Providers', href: '/admin/ai-providers', icon: '🤖' },
+      { name: 'API Keys', href: '/admin/api-keys', icon: '🔑' },
+      { name: 'Cloud Storage', href: '/admin/cloud', icon: '☁️' },
+    ]},
+    { section: t('admin.sidebar.billing.title'), items: [
+      { name: t('admin.sidebar.billing.tariffs'), href: '/admin/billing/tariffs', icon: '💳' },
+      { name: t('admin.sidebar.billing.history'), href: '/admin/billing/history', icon: '📜' },
+      { name: t('admin.sidebar.billing.promocodes'), href: '/admin/billing/promocodes', icon: '🎟️' },
+    ]},
+    { section: 'System', items: [
+      { name: 'Audit Logs', href: '/admin/audit-logs', icon: '📋' },
+      { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
+    ]}
+  ];
 
   const handleLogout = () => {
     useAuthStore.getState().logout();
@@ -81,7 +83,7 @@ export function AdminSidebar() {
       <div className="py-4 flex items-center justify-between px-6 border-b border-black/5 dark:border-white/5 h-[80px]">
         <AnimatePresence>
           {showSidebarLogo && (
-            <Link href="/" className="flex items-center gap-2 w-full hover:opacity-80 transition-opacity" title="Вернуться на главную">
+            <Link href="/" className="flex items-center gap-2 w-full hover:opacity-80 transition-opacity" title={t('admin.sidebar.backToHome')}>
               <motion.img 
                 layoutId="app-logo"
                 src="/logo.png" 

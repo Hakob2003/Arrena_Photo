@@ -184,7 +184,7 @@ function GeneratorContent() {
     setGenerating(false);
     setProgress(0);
     setLoadingText('');
-    toast.error('Генерация отменена. Кредиты не возвращены.');
+    toast.error(t('generate.cancelError'));
   };
 
   const cancelStop = () => {
@@ -205,7 +205,7 @@ function GeneratorContent() {
       const storeTemplateId = useGenerationStore.getState().activeTemplateId;
       const finalTemplateId = storeTemplateId || ((templateId && templateId !== 'null' && templateId !== 'undefined' && templateId.length > 20) ? templateId : undefined);
 
-      // Note: We're mapping 'sdxl-1.0' to the actual DB ID. Since we seeded it, we need the UUID.
+      const prefs = useUIStore.getState().preferences;
       const res = await api.post('/generations', {
         prompt,
         negativePrompt: '',
@@ -214,7 +214,8 @@ function GeneratorContent() {
         aspectRatio,
         resolution,
         initImage: initImage,
-        skin: useUIStore.getState().preferences.skin
+        skin: prefs.skin,
+        accentColor: prefs.accentColor
       });
 
       const generationId = res.data.id;
@@ -359,7 +360,7 @@ function GeneratorContent() {
                 }} 
                 className="text-xs text-red-500 hover:text-red-400 font-medium px-2 py-1 bg-red-500/10 rounded-lg transition-colors"
               >
-                Очистить промпт
+                {t('generate.clearPrompt')}
               </button>
             )}
           </div>
@@ -381,8 +382,8 @@ function GeneratorContent() {
                  <svg className="w-8 h-8 text-white/70 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                  </svg>
-                 <p className="text-white text-center text-sm font-medium mb-3">Промпт скрыт на бесплатном тарифе</p>
-                 <Link href="/profile/billing" className="px-4 py-2 bg-white text-black text-xs font-bold rounded-full hover:scale-105 transition-transform">Перейти к тарифам</Link>
+                 <p className="text-white text-center text-sm font-medium mb-3">{t('generate.hiddenPrompt')}</p>
+                 <Link href="/profile/billing" className="px-4 py-2 bg-white text-black text-xs font-bold rounded-full hover:scale-105 transition-transform">{t('generate.goToPlans')}</Link>
               </div>
             )}
           </div>
@@ -548,7 +549,7 @@ function GeneratorContent() {
                 onClick={handleStopRequest}
                 className="mt-4 px-6 py-2 rounded-full font-bold bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/50 transition-all shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_25px_rgba(239,68,68,0.6)]"
               >
-                Отменить генерацию
+                {t('generate.cancelGeneration')}
               </button>
             </div>
           ) : resultImage ? (
@@ -649,23 +650,23 @@ function GeneratorContent() {
               className={`relative w-full max-w-md p-6 rounded-2xl border shadow-2xl ${isLuxury ? 'bg-[#111] border-[#D4AF37]/30' : 'bg-[#0a0a0a] border-white/10'}`}
             >
               <h3 className={`text-xl font-bold mb-4 ${isLuxury ? 'text-[#D4AF37]' : 'text-white'}`}>
-                Внимание
+                {t('generate.warning')}
               </h3>
               <p className="text-gray-300 mb-6 leading-relaxed">
-                Вы уверены, что хотите отменить генерацию? Списанные кредиты не будут возвращены.
+                {t('generate.cancelConfirmText')}
               </p>
               <div className="flex gap-3 justify-end">
                 <button 
                   onClick={cancelStop}
                   className={`px-4 py-2 rounded-lg font-medium transition-colors ${isLuxury ? 'bg-white/5 hover:bg-white/10 text-white/90' : 'bg-white/5 hover:bg-white/10 text-white'}`}
                 >
-                  Продолжить
+                  {t('generate.continue')}
                 </button>
                 <button 
                   onClick={confirmStop}
                   className="px-4 py-2 rounded-lg font-medium bg-red-500/90 hover:bg-red-500 text-white transition-colors shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_20px_rgba(239,68,68,0.5)]"
                 >
-                  Да, отменить
+                  {t('generate.yesCancel')}
                 </button>
               </div>
             </motion.div>

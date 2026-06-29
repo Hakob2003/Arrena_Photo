@@ -39,4 +39,9 @@ export class CreateGenerationDto {
   @IsOptional()
   @IsString()
   skin?: string;
+
+  @ApiPropertyOptional({ description: 'The accent color from UI preferences' })
+  @IsOptional()
+  @IsString()
+  accentColor?: string;
 }

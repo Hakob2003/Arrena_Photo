@@ -126,7 +126,8 @@ export class GenerationProcessor extends WorkerHost {
             }
             
             const skin = job.data.skin || 'NEON';
-            const watermarkedBuffer = await watermarkService.applyWatermark(imageBuffer, skin);
+            const accentColor = job.data.accentColor;
+            const watermarkedBuffer = await watermarkService.applyWatermark(imageBuffer, skin, accentColor);
             const base64String = watermarkedBuffer.toString('base64');
             finalImageUrl = `data:image/jpeg;base64,${base64String}`;
           }
