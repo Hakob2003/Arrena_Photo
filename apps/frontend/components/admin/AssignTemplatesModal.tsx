@@ -158,13 +158,13 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
               </div>
             ) : (
               <div className="divide-y divide-white/5">
-                {filteredTemplates.map(t => (
-                  <label key={t.id} className="flex items-center gap-3 p-3 hover:bg-white/[0.03] cursor-pointer transition-colors group">
+                {filteredTemplates.map(template => (
+                  <label key={template.id} className="flex items-center gap-3 p-3 hover:bg-white/[0.03] cursor-pointer transition-colors group">
                     <div className="relative flex items-center justify-center">
                       <input
                         type="checkbox"
-                        checked={selectedIds.has(t.id)}
-                        onChange={() => toggleSelection(t.id)}
+                        checked={selectedIds.has(template.id)}
+                        onChange={() => toggleSelection(template.id)}
                         className="peer appearance-none w-5 h-5 border border-black/20 dark:border-white/20 rounded bg-[#fafafa] dark:bg-black/5 checked:bg-indigo-500 checked:border-indigo-500 transition-colors cursor-pointer"
                       />
                       <svg 
@@ -179,10 +179,10 @@ export function AssignTemplatesModal({ model, onClose, onSuccess }: AssignTempla
                     </div>
                     <div>
                       <div className="text-sm font-medium text-slate-900 dark:text-slate-900 dark:text-white group-hover:text-indigo-300 transition-colors">
-                        {t.name}
+                        {template.name}
                       </div>
                       <div className="text-xs text-slate-400 dark:text-gray-500 mt-0.5">
-                        {t('admin.templates.category')}: <span className="text-slate-500 dark:text-gray-400">{t.category?.name || t('admin.templates.noCategory')}</span>
+                        {t('admin.templates.category')}: <span className="text-slate-500 dark:text-gray-400">{template.category?.name || t('admin.templates.noCategory')}</span>
                       </div>
                     </div>
                   </label>
