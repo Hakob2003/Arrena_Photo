@@ -159,9 +159,8 @@ const ru: Record<string, string> = {
   'billing.overview.imagesGenerated': 'Генерации изображений',
   'billing.overview.viewStats': 'Смотреть детальную статистику →',
   'billing.overview.cancelModalTitle': 'Отмена подписки',
-  'billing.overview.cancelModalDesc1': 'Вы уверены, что хотите отменить подписку',
-  'billing.overview.cancelModalDesc2': 'У вас останется доступ к функциям до конца оплаченного периода',
-  'billing.overview.cancelModalDesc3': 'после чего тариф будет изменен на Free, а неиспользованные кредиты сгорят.',
+  'billing.overview.cancelModalDesc1': 'Вы отменяете подписку',
+  'billing.overview.cancelModalDesc2': 'Обратите внимание: возврат средств за оставшийся период не производится.',
   'billing.overview.yesCancel': 'Да, отменить подписку',
   'billing.overview.noCancel': 'Я передумал(а)',
 
@@ -319,8 +318,7 @@ const ru: Record<string, string> = {
   'billing.payment.save': 'Сохранить',
   'billing.payment.editMaxLimit': 'Изменить максимальный лимит',
   'billing.payment.saveLimit': 'Сохранить лимит',
-  'billing.overview.cancelModalDesc1': 'Вы отменяете подписку',
-  'billing.overview.cancelModalDesc2': 'Обратите внимание: возврат средств за оставшийся период не производится.',
+
   'billing.plans.features.free.1': 'До 1 задачи',
   'billing.plans.features.free.2': 'Стандартная скорость',
   'billing.plans.features.free.3': 'Водяной знак',

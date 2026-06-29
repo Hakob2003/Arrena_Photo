@@ -159,9 +159,8 @@ const hy: Record<string, string> = {
   'billing.overview.imagesGenerated': 'Ստեղծված պատկերներ',
   'billing.overview.viewStats': 'Դիտել մանրամասն վիճակագրությունը →',
   'billing.overview.cancelModalTitle': 'Չեղարկել բաժանորդագրությունը',
-  'billing.overview.cancelModalDesc1': 'Համոզվա՞ծ եք, որ ցանկանում եք չեղարկել բաժանորդագրությունը',
-  'billing.overview.cancelModalDesc2': 'Դուք կունենաք մուտք հնարավորություններին մինչև վճարված ժամանակահատվածի ավարտը',
-  'billing.overview.cancelModalDesc3': 'որից հետո պլանը կփոխվի Անվճարի, և չօգտագործված կրեդիտների ժամկետը կսպառվի:',
+  'billing.overview.cancelModalDesc1': 'Դուք չեղարկում եք',
+  'billing.overview.cancelModalDesc2': 'բաժանորդագրությունը: Նկատի ունեցեք, որ մնացած ժամանակահատվածի համար գումարի վերադարձ չի կատարվում:',
   'billing.overview.yesCancel': 'Այո, չեղարկել բաժանորդագրությունը',
   'billing.overview.noCancel': 'Ես փոխեցի իմ որոշումը',
 
@@ -319,8 +318,7 @@ const hy: Record<string, string> = {
   'billing.payment.save': 'Պահպանել',
   'billing.payment.editMaxLimit': 'Փոխել առավելագույն լիմիտը',
   'billing.payment.saveLimit': 'Պահպանել լիմիտը',
-  'billing.overview.cancelModalDesc1': 'Դուք չեղարկում եք',
-  'billing.overview.cancelModalDesc2': 'բաժանորդագրությունը: Նկատի ունեցեք, որ մնացած ժամանակահատվածի համար գումարի վերադարձ չի կատարվում:',
+
   'billing.plans.features.free.1': 'Մինչև 1 առաջադրանք',
   'billing.plans.features.free.2': 'Ստանդարտ արագություն',
   'billing.plans.features.free.3': 'Ջրանիշ',

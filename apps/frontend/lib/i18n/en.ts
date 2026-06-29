@@ -159,9 +159,8 @@ const en: Record<string, string> = {
   'billing.overview.imagesGenerated': 'Images generated',
   'billing.overview.viewStats': 'View detailed statistics →',
   'billing.overview.cancelModalTitle': 'Cancel Subscription',
-  'billing.overview.cancelModalDesc1': 'Are you sure you want to cancel the subscription',
-  'billing.overview.cancelModalDesc2': 'You will have access to features until the end of the paid period',
-  'billing.overview.cancelModalDesc3': 'after which the plan will be changed to Free, and unused credits will expire.',
+  'billing.overview.cancelModalDesc1': 'You are canceling the',
+  'billing.overview.cancelModalDesc2': 'subscription. Note: no refunds are issued for the remaining period.',
   'billing.overview.yesCancel': 'Yes, cancel subscription',
   'billing.overview.noCancel': 'I changed my mind',
 
@@ -319,8 +318,7 @@ const en: Record<string, string> = {
   'billing.payment.save': 'Save',
   'billing.payment.editMaxLimit': 'Edit Max Limit',
   'billing.payment.saveLimit': 'Save Limit',
-  'billing.overview.cancelModalDesc1': 'You are canceling the',
-  'billing.overview.cancelModalDesc2': 'subscription. Note: no refunds are issued for the remaining period.',
+
   'billing.plans.features.free.1': 'Up to 1 task',
   'billing.plans.features.free.2': 'Standard speed',
   'billing.plans.features.free.3': 'Watermark',
