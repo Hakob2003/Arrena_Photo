@@ -1,12 +1,13 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { OverviewTab } from './tabs/OverviewTab';
 import { PlansTab } from './tabs/PlansTab';
 import { UsageTab } from './tabs/UsageTab';
 import { PaymentTab } from './tabs/PaymentTab';
 import { useTranslation } from '../../../lib/i18n';
-import { useUIStore } from '../../../store';
+import { useUIStore, useAuthStore } from '../../../store';
+import { api } from '../../../lib/api';
 
 type Tab = 'overview' | 'plans' | 'usage' | 'payment';
 
@@ -14,6 +15,19 @@ export default function UserBillingPage() {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const { t } = useTranslation();
   const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
+
+  // Sync planId and credits from server on page load
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await api.get('/auth/me');
+        if (data.planId) useAuthStore.getState().setPlanId(data.planId);
+        if (data.credits != null) useAuthStore.getState().setCredits(data.credits);
+      } catch (e) {
+        // Ignore — user may not be authenticated
+      }
+    })();
+  }, []);
 
   const tabs = [
     { id: 'overview', label: t('billing.overview') },

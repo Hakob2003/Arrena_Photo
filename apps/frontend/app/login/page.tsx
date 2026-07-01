@@ -53,14 +53,9 @@ function LoginContent() {
       const token = res.data.access_token;
       localStorage.setItem('token', token);
       
-      // Decode JWT token
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const user = {
-        id: payload.sub,
-        email: payload.email,
-        role: typeof payload.role === 'object' && payload.role !== null ? payload.role.name : payload.role,
-        name: payload.email?.split('@')[0] || 'User',
-      };
+      // Fetch full user profile (includes planId, credits, etc.)
+      const meRes = await api.get('/auth/me');
+      const user = meRes.data;
 
       login(user, token);
       if (user.role === 'ADMIN') {
