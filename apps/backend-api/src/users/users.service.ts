@@ -30,4 +30,19 @@ export class UsersService {
 
     return user;
   }
+
+  async updateLimits(userId: string, data: any) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        maxConcurrentOverride: data.maxConcurrentOverride,
+        queueDelayOverride: data.queueDelayOverride,
+        priorityOverride: data.priorityOverride
+      }
+    });
+  }
 }
+

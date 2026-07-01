@@ -1,8 +1,11 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Put, Param, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RoleName } from '@prisma/client';
 
 @ApiTags('Users')
 @Controller('users')
@@ -16,4 +19,13 @@ export class UsersController {
   async getProfile(@CurrentUser() user: any) {
     return this.usersService.getProfile(user.id);
   }
+
+  @Put(':id/limits')
+  @ApiOperation({ summary: 'Update user generation limits (Admin)' })
+  @UseGuards(RolesGuard)
+  @Roles(RoleName.ADMIN)
+  async updateLimits(@Param('id') id: string, @Body() data: any) {
+    return this.usersService.updateLimits(id, data);
+  }
 }
+

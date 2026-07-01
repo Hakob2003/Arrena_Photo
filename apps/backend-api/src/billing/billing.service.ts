@@ -234,4 +234,42 @@ export class BillingService {
       return { user: updatedUser, transaction: txRecord };
     });
   }
+
+  // --- Plan Configurations ---
+  
+  async getPlanConfigs() {
+    return this.prisma.planConfig.findMany({
+      orderBy: { price: 'asc' }
+    });
+  }
+
+  async updatePlanConfig(plan: SubscriptionPlan, data: any) {
+    return this.prisma.planConfig.upsert({
+      where: { plan },
+      update: {
+        name: data.name,
+        price: data.price,
+        monthlyCredits: data.monthlyCredits,
+        maxConcurrent: data.maxConcurrent,
+        queueDelay: data.queueDelay,
+        priority: data.priority,
+        modelsAccess: data.modelsAccess,
+        stripePriceId: data.stripePriceId,
+        isActive: data.isActive
+      },
+      create: {
+        plan,
+        name: data.name || plan,
+        price: data.price || '$0',
+        monthlyCredits: data.monthlyCredits || 0,
+        maxConcurrent: data.maxConcurrent || 1,
+        queueDelay: data.queueDelay || 30000,
+        priority: data.priority || 3,
+        modelsAccess: data.modelsAccess || 'Base Only',
+        stripePriceId: data.stripePriceId,
+        isActive: data.isActive ?? true
+      }
+    });
+  }
 }
+

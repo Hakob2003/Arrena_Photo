@@ -21,6 +21,10 @@ export const adminApi = {
     const res = await api.post(`/admin/users/import`, { emails });
     return res.data;
   },
+  updateUserLimits: async (id: string, limits: any) => {
+    const res = await api.put(`/users/${id}/limits`, limits);
+    return res.data;
+  },
   banUser: async (id: string) => {
     const res = await api.post(`/admin/users/${id}/ban`);
     return res.data;

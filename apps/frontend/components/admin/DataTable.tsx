@@ -12,9 +12,10 @@ interface DataTableProps<T> {
   columns: Column<T>[];
   onSelectionChange?: (selectedIds: string[]) => void;
   actions?: React.ReactNode;
+  isLoading?: boolean;
 }
 
-export function DataTable<T extends { id: string }>({ data, columns, onSelectionChange, actions }: DataTableProps<T>) {
+export function DataTable<T extends { id: string }>({ data, columns, onSelectionChange, actions, isLoading }: DataTableProps<T>) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {

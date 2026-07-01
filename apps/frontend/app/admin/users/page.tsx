@@ -21,6 +21,9 @@ type User = {
   role: { name: string };
   plan: string;
   generationCount: number;
+  maxConcurrentOverride?: number | null;
+  queueDelayOverride?: number | null;
+  priorityOverride?: number | null;
 };
 
 const columnHelper = createColumnHelper<User>();
@@ -36,6 +39,7 @@ export default function AdminUsersPage() {
   // Modals state
   const [editingCredits, setEditingCredits] = useState<User | null>(null);
   const [changingPlan, setChangingPlan] = useState<User | null>(null);
+  const [editingLimits, setEditingLimits] = useState<User | null>(null);
   const [importing, setImporting] = useState(false);
   const [importText, setImportText] = useState('');
   const [userToDelete, setUserToDelete] = useState<{id: string, email: string} | null>(null);
@@ -109,6 +113,27 @@ export default function AdminUsersPage() {
     }
   };
 
+  const handleUpdateLimits = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingLimits) return;
+    const form = e.target as HTMLFormElement;
+    const maxConcurrentOverride = form.maxConcurrentOverride.value ? Number(form.maxConcurrentOverride.value) : null;
+    const queueDelayOverride = form.queueDelayOverride.value ? Number(form.queueDelayOverride.value) : null;
+    const priorityOverride = form.priorityOverride.value ? Number(form.priorityOverride.value) : null;
+    
+    try {
+      await adminApi.updateUserLimits(editingLimits.id, {
+        maxConcurrentOverride,
+        queueDelayOverride,
+        priorityOverride
+      });
+      setEditingLimits(null);
+      loadData();
+    } catch (err) {
+      alert('Error updating limits');
+    }
+  };
+
   const confirmDelete = async () => {
     if (!userToDelete) return;
     try {
@@ -160,6 +185,26 @@ export default function AdminUsersPage() {
         </span>
       ),
     }),
+    columnHelper.display({
+      id: 'limits',
+      header: 'Limits',
+      cell: (props) => {
+        const user = props.row.original;
+        const hasOverrides = user.maxConcurrentOverride != null || user.queueDelayOverride != null || user.priorityOverride != null;
+        
+        if (!hasOverrides) {
+          return <span className="text-xs text-slate-400">Default</span>;
+        }
+
+        return (
+          <div className="flex flex-col text-xs text-purple-400 font-mono">
+            {user.maxConcurrentOverride != null && <span>Max: {user.maxConcurrentOverride}</span>}
+            {user.queueDelayOverride != null && <span>Delay: {user.queueDelayOverride}ms</span>}
+            {user.priorityOverride != null && <span>Pri: {user.priorityOverride}</span>}
+          </div>
+        );
+      }
+    }),
     columnHelper.accessor('credits', {
       header: 'Credits / Gens',
       cell: info => {
@@ -190,6 +235,12 @@ export default function AdminUsersPage() {
               className="text-xs bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-2 py-1 rounded transition-colors"
             >
               Plan
+            </button>
+            <button 
+              onClick={() => setEditingLimits(user)}
+              className="text-xs bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 px-2 py-1 rounded transition-colors"
+            >
+              Limits
             </button>
             {user.status === 'BANNED' ? (
               <button 
@@ -402,6 +453,64 @@ export default function AdminUsersPage() {
                   type="button" 
                   onClick={() => setChangingPlan(null)}
                   className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  className="px-4 py-2 bg-white text-black text-sm font-medium rounded-md hover:bg-gray-200"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Override Limits Modal */}
+      {editingLimits && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-transparent/80 p-4">
+          <div className="bg-[#111] border border-black/10 dark:border-white/10 rounded-xl p-6 w-full max-w-md">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-900 dark:text-white mb-2">Override Limits</h3>
+            <p className="text-sm text-slate-500 dark:text-gray-400 mb-6">Set custom limits for {editingLimits.email}. Leave blank to use plan defaults.</p>
+            
+            <form onSubmit={handleUpdateLimits} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Max Concurrent Tasks</label>
+                <input 
+                  type="number" 
+                  name="maxConcurrentOverride" 
+                  defaultValue={(editingLimits as any).maxConcurrentOverride ?? ''}
+                  className="w-full bg-transparent border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+                  placeholder="e.g. 5"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Queue Delay (ms)</label>
+                <input 
+                  type="number" 
+                  name="queueDelayOverride" 
+                  defaultValue={(editingLimits as any).queueDelayOverride ?? ''}
+                  className="w-full bg-transparent border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+                  placeholder="e.g. 0"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">Priority (BullMQ)</label>
+                <input 
+                  type="number" 
+                  name="priorityOverride" 
+                  defaultValue={(editingLimits as any).priorityOverride ?? ''}
+                  className="w-full bg-transparent border border-black/10 dark:border-white/10 rounded-md px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-white/30"
+                  placeholder="e.g. 1 (lower is higher)"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button 
+                  type="button" 
+                  onClick={() => setEditingLimits(null)}
+                  className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-white"
                 >
                   Cancel
                 </button>

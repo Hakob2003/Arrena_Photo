@@ -59,12 +59,16 @@ export class GenerationsService {
     const subscription = await this.billingService.getSubscription(userId);
     const plan = subscription?.plan || 'FREE';
     
-    let maxTasks = 1;
-    let priority = 3; // 3 is standard, lower is higher priority in BullMQ
+    const [planConfig, user] = await Promise.all([
+      this.prisma.planConfig.findUnique({ where: { plan } }),
+      this.prisma.user.findUnique({ 
+        where: { id: userId }, 
+        select: { maxConcurrentOverride: true, queueDelayOverride: true, priorityOverride: true } 
+      })
+    ]);
 
-    if (plan === 'STARTER') { maxTasks = 2; priority = 3; }
-    else if (plan === 'PRO') { maxTasks = 5; priority = 2; }
-    else if (plan === 'BUSINESS') { maxTasks = 20; priority = 1; }
+    const maxTasks = user?.maxConcurrentOverride ?? planConfig?.maxConcurrent ?? (plan === 'FREE' ? 1 : 2);
+    const priority = user?.priorityOverride ?? planConfig?.priority ?? 3;
 
     // Auto-clear stuck tasks (older than 5 minutes)
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
@@ -111,11 +115,10 @@ export class GenerationsService {
     });
 
     // Calculate delay based on plan (WRK-026)
-    let queueDelay = 0;
-    if (plan === 'FREE') queueDelay = 30000;
-    else if (plan === 'STARTER') queueDelay = 15000;
-    else if (plan === 'PRO') queueDelay = 10000;
-    else if (plan === 'BUSINESS') queueDelay = Math.floor(Math.random() * 4000) + 1000;
+    let queueDelay = user?.queueDelayOverride ?? planConfig?.queueDelay ?? 30000;
+    if (plan === 'BUSINESS' && !user?.queueDelayOverride && !planConfig) {
+      queueDelay = Math.floor(Math.random() * 4000) + 1000;
+    }
 
     // 3. Add to BullMQ Queue
     try {

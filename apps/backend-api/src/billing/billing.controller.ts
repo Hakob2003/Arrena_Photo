@@ -2,6 +2,9 @@ import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Request } f
 import { BillingService } from './billing.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RoleName } from '@prisma/client';
 
 @ApiTags('billing')
 @ApiBearerAuth()
@@ -9,6 +12,11 @@ import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 @Controller('billing')
 export class BillingController {
   constructor(private readonly billingService: BillingService) {}
+
+  @Get('debug')
+  debugEndpoint() {
+    return { ok: true };
+  }
 
   @Get('subscription')
   @ApiOperation({ summary: 'Get current user subscription status' })
@@ -69,4 +77,23 @@ export class BillingController {
   addCredits(@Request() req, @Body('amount') amount: number, @Body('reason') reason: string) {
     return this.billingService.addCredits(req.user.id, amount, reason);
   }
+
+  // --- Plan Configuration Admin Endpoints ---
+
+  @Get('plans')
+  @ApiOperation({ summary: 'Get all plan configurations (Admin)' })
+  @UseGuards(RolesGuard)
+  @Roles(RoleName.ADMIN)
+  getPlanConfigs() {
+    return this.billingService.getPlanConfigs();
+  }
+
+  @Put('plans/:plan')
+  @ApiOperation({ summary: 'Update a plan configuration (Admin)' })
+  @UseGuards(RolesGuard)
+  @Roles(RoleName.ADMIN)
+  updatePlanConfig(@Param('plan') plan: any, @Body() data: any) {
+    return this.billingService.updatePlanConfig(plan, data);
+  }
 }
+

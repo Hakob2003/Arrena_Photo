@@ -127,7 +127,10 @@ export class AdminService {
       credits: u.credits,
       role: u.role,
       plan: u.subscription?.plan || 'FREE',
-      generationCount: u._count.generations
+      generationCount: u._count.generations,
+      maxConcurrentOverride: u.maxConcurrentOverride,
+      queueDelayOverride: u.queueDelayOverride,
+      priorityOverride: u.priorityOverride
     }));
     
     return { users: mappedUsers, total, page, limit };

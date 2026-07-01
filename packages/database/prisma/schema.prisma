@@ -68,6 +68,11 @@ model User {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 
+  // --- Generation Limit Overrides ---
+  maxConcurrentOverride Int?
+  queueDelayOverride    Int?
+  priorityOverride      Int?
+
   // --- Personal Info ---
   nickname    String? @unique
   surname     String?
@@ -436,6 +441,22 @@ model CreditTransaction {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model PlanConfig {
+  id              String           @id @default(uuid())
+  plan            SubscriptionPlan @unique
+  name            String
+  price           String           // e.g. "$0", "$9/mo"
+  monthlyCredits  Int
+  maxConcurrent   Int              @default(1)
+  queueDelay      Int              @default(30000)
+  priority        Int              @default(3)
+  modelsAccess    String           @default("Base Only")
+  stripePriceId   String?
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model PaymentMethod {
