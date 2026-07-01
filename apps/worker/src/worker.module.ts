@@ -42,9 +42,11 @@ import { StorageService } from './storage/storage.service';
       },
       inject: [ConfigService],
     }),
+    BullModule.registerQueue({ name: 'generations' }),
     PrismaModule,
     BillingModule,
   ],
   providers: [GenerationProcessor, WatermarkService, GoogleDriveService, StorageService],
 })
 export class WorkerModule {}
+
