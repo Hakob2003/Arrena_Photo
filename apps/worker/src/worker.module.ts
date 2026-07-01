@@ -16,13 +16,30 @@ import { StorageService } from './storage/storage.service';
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        connection: {
-          host: configService.get<string>('REDIS_HOST', 'localhost'),
-          port: configService.get<number>('REDIS_PORT', 6379),
-          password: configService.get<string>('REDIS_PASSWORD'),
-        },
-      }),
+      useFactory: async (configService: ConfigService): Promise<any> => {
+        const redisUrl = configService.get('REDIS_URL');
+        if (redisUrl) {
+          const url = new URL(redisUrl);
+          const tlsConfig = url.protocol === 'rediss:' ? { rejectUnauthorized: false } : undefined;
+          
+          const conn = {
+            host: url.hostname,
+            port: parseInt(url.port, 10),
+            username: url.username ? decodeURIComponent(url.username) : undefined,
+            password: configService.get('REDIS_PASSWORD') || (url.password ? decodeURIComponent(url.password) : undefined),
+            tls: tlsConfig,
+          };
+          
+          return { connection: conn as any };
+        }
+        return {
+          connection: {
+            host: configService.get('REDIS_HOST', 'localhost'),
+            port: configService.get<number>('REDIS_PORT', 6379),
+            password: configService.get<string>('REDIS_PASSWORD') || undefined,
+          },
+        };
+      },
       inject: [ConfigService],
     }),
     PrismaModule,
