@@ -21,22 +21,9 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
 
-    app.use((req: any, res: any, next: any) => {
-      res.setHeader('Set-Cookie', ['very-first-test=value']);
-      next();
-    });
-
     // Global Middlewares
     app.use(helmet({ crossOriginResourcePolicy: false }));
     app.use(cookieParser());
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const csurf = require('csurf');
-    app.use(csurf({ cookie: true }));
-    app.use((req: any, res: any, next: any) => {
-      const token = req.csrfToken();
-      res.cookie('XSRF-TOKEN', token);
-      next();
-    });
     app.enableCors({
       origin: [
         'http://localhost:3000',
