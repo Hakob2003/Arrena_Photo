@@ -1,7 +1,8 @@
 import { IsString, IsOptional, IsUUID } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ICreateGenerationRequest } from '@arrena-photo/shared-types';
 
-export class CreateGenerationDto {
+export class CreateGenerationDto implements ICreateGenerationRequest {
   @ApiPropertyOptional({ description: 'ID of the template to use (optional)' })
   @IsOptional()
   @IsUUID()

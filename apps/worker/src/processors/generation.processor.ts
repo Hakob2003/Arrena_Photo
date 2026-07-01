@@ -1,22 +1,56 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ModuleRef } from '@nestjs/core';
 import { GoogleDriveService } from '../integrations/google-drive/google-drive.service';
-import { ImageProviderFactory } from './providers/image-provider.factory';
+import { ImageProviderFactory } from '../providers/image-provider.factory';
 import { EncryptionUtil } from '../common/utils/encryption.util';
-import { WatermarkService } from './watermark.service';
+import { WatermarkService } from '../watermark/watermark.service';
+import { BillingService } from '../billing/billing.service';
+import { StorageService } from '../storage/storage.service';
 import axios from 'axios';
+
 @Processor('generations')
 export class GenerationProcessor extends WorkerHost {
   private readonly logger = new Logger(GenerationProcessor.name);
 
   constructor(
     private readonly prisma: PrismaService,
-    private moduleRef: ModuleRef
+    private moduleRef: ModuleRef,
+    private readonly billingService: BillingService,
+    private readonly storageService: StorageService
   ) {
     super();
+  }
+
+  @OnWorkerEvent('failed')
+  async onFailed(job: Job, error: Error) {
+    this.logger.error(`Job ${job.id} failed after ${job.attemptsMade} attempts: ${error.message}`);
+    // Check if this was the last attempt
+    if (job.attemptsMade >= (job.opts.attempts || 1)) {
+      this.logger.log(`Final attempt failed for job ${job.id}. Initiating refund (WRK-028).`);
+      
+      const { generationId } = job.data;
+      if (!generationId) return;
+
+      const generation = await this.prisma.generation.findUnique({ where: { id: generationId }});
+      if (!generation) return;
+
+      // Determine cost
+      let cost = 5;
+      if (generation.templateId) {
+        const template = await this.prisma.template.findUnique({ where: { id: generation.templateId }});
+        if (template?.price) cost = template.price;
+      }
+
+      try {
+        await this.billingService.addCredits(generation.userId, cost, 'Refund for failed generation');
+        this.logger.log(`Refunded ${cost} credits to user ${generation.userId}.`);
+      } catch (e: any) {
+        this.logger.error(`Failed to refund credits: ${e.message}`);
+      }
+    }
   }
 
   async process(job: Job<any, any, string>): Promise<any> {
@@ -77,23 +111,7 @@ export class GenerationProcessor extends WorkerHost {
       
       const startTime = Date.now();
 
-      // --- Simulate generation time based on plan ---
-      const plan = generation.user?.subscription?.plan || 'FREE';
-      let delayMs = 30000;
-      if (plan === 'STARTER') delayMs = 15000;
-      else if (plan === 'PRO') delayMs = 10000;
-      else if (plan === 'BUSINESS') delayMs = Math.floor(Math.random() * 4000) + 1000; // 1 to 5 seconds
-      
-      this.logger.log(`Simulating generation time for ${plan} plan: ${delayMs}ms`);
-      await new Promise(resolve => setTimeout(resolve, delayMs));
-
-      // Check if cancelled during wait
-      const currentStatus = await this.prisma.generation.findUnique({ where: { id: generationId }, select: { status: true }});
-      if (currentStatus?.status === 'FAILED') {
-        this.logger.log(`Generation ${generationId} was cancelled during wait. Aborting.`);
-        return;
-      }
-      // ----------------------------------------------
+      // Simulated wait has been moved to Producer (BullMQ delay) - WRK-025 / WRK-026
 
       const generatedUrls = await providerFactory.generateImage(job.data.prompt, generation.aiModel.slug, {
         initImage: initImage,
@@ -153,22 +171,47 @@ export class GenerationProcessor extends WorkerHost {
         this.logger.warn(`Could not save to Google Drive for user ${generation.userId}. Falling back to default URL. Error: ${e?.message || e}`);
       }
 
+      // 4.5. Upload to S3
+      let s3Url = null;
+      let s3Bucket = null;
+      try {
+        let uploadBuffer: Buffer;
+        if (randomImage.startsWith('data:image')) {
+          const base64Data = randomImage.split(',')[1];
+          uploadBuffer = Buffer.from(base64Data, 'base64');
+        } else {
+          const res = await axios.get(randomImage, { responseType: 'arraybuffer' });
+          uploadBuffer = Buffer.from(res.data);
+        }
+
+        const filename = `generations/${generation.userId}/${generationId}.jpg`;
+        const s3Result = await this.storageService.uploadFile(uploadBuffer, filename, 'image/jpeg');
+        s3Url = s3Result.url;
+        s3Bucket = s3Result.bucket;
+      } catch (e: any) {
+        this.logger.error(`Failed to upload generation ${generationId} to S3: ${e.message}`);
+      }
+
       // Find or create a default storage provider for the result
-      let storageProvider = await this.prisma.storageProvider.findFirst();
+      let storageProvider = await this.prisma.storageProvider.findFirst({
+        where: { name: 'S3 MinIO' }
+      });
       if (!storageProvider) {
         storageProvider = await this.prisma.storageProvider.create({
           data: {
-            name: 'Mock Storage',
-            baseUrl: 'https://mock.storage'
+            name: 'S3 MinIO',
+            baseUrl: 'http://localhost:9000/ai-studio'
           }
         });
       }
 
-      // Always keep the original image URL as fallback; store driveFileId separately
+      // Store S3 URL, and keep imageUrl empty to save db space
       await this.prisma.generationResult.create({
         data: {
           generationId,
-          imageUrl: randomImage,
+          imageUrl: '', 
+          s3ImageUrl: s3Url,
+          s3Bucket: s3Bucket,
           driveFileId: driveFileId,
           durationMs: durationMs,
           storageProviderId: storageProvider.id

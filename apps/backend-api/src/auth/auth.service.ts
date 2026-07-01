@@ -5,6 +5,7 @@ import { RegisterDto, LoginDto } from './dto/auth.dto';
 import { MailService } from '../mail/mail.service';
 import * as bcrypt from 'bcryptjs';
 import { randomBytes } from 'crypto';
+import { EncryptionUtil } from '../common/utils/encryption.util';
 
 @Injectable()
 export class AuthService {
@@ -83,27 +84,6 @@ export class AuthService {
     return { message: 'Registration successful. Please check your email to verify your account.' };
   }
 
-  async setupAdmin() {
-    const adminHash = '$2a$10$EAlG/EoWQ9dTZ8JiIaeAY.k5IDkxmz.HT0EKpq.y2ZI9.H1bkUV9S'; // admin123
-    let adminRole = await this.prisma.role.findUnique({ where: { name: 'ADMIN' } });
-    if (!adminRole) {
-      adminRole = await this.prisma.role.create({
-        data: { name: 'ADMIN', permissions: ['admin:all', 'templates:read', 'generations:create'] },
-      });
-    }
-    const adminUser = await this.prisma.user.upsert({
-      where: { email: 'admin@arrena.com' },
-      update: { passwordHash: adminHash, roleId: adminRole.id, emailVerified: new Date() },
-      create: {
-        email: 'admin@arrena.com',
-        passwordHash: adminHash,
-        name: 'Admin',
-        roleId: adminRole.id,
-        emailVerified: new Date(),
-      },
-    });
-    return { message: 'Admin account setup complete', email: adminUser.email };
-  }
 
   async verifyEmail(token: string) {
     const verification = await this.prisma.verificationToken.findUnique({
@@ -143,6 +123,25 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Auto-rehash weak passwords on successful login
+    try {
+      const rounds = bcrypt.getRounds(user.passwordHash);
+      if (rounds < 10) {
+        const newHash = await bcrypt.hash(dto.password, 10);
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: { passwordHash: newHash },
+        });
+      }
+    } catch (e) {
+      // If getRounds throws (e.g. invalid hash format but compare succeeded?), just ignore or rehash
+      const newHash = await bcrypt.hash(dto.password, 10);
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { passwordHash: newHash },
+      });
+    }
+
     return this.generateTokens(user.id, user.email, user.role.name);
   }
 
@@ -154,6 +153,9 @@ export class AuthService {
     }
 
     let user = await this.prisma.user.findUnique({ where: { email }, include: { role: true } });
+
+    const encryptedAccessToken = EncryptionUtil.encrypt(accessToken);
+    const encryptedRefreshToken = refreshToken ? EncryptionUtil.encrypt(refreshToken) : undefined;
 
     if (!user) {
       let userRole = await this.prisma.role.findUnique({ where: { name: 'USER' } });
@@ -173,8 +175,8 @@ export class AuthService {
             create: {
               provider,
               providerAccountId,
-              accessToken,
-              refreshToken,
+              accessToken: encryptedAccessToken,
+              refreshToken: encryptedRefreshToken,
             },
           },
         },
@@ -187,15 +189,15 @@ export class AuthService {
       });
       if (!existingOAuth) {
         await this.prisma.oAuthAccount.create({
-          data: { userId: user.id, provider, providerAccountId, accessToken, refreshToken }
+          data: { userId: user.id, provider, providerAccountId, accessToken: encryptedAccessToken, refreshToken: encryptedRefreshToken }
         });
       } else {
         // Update tokens if they changed
         await this.prisma.oAuthAccount.update({
           where: { id: existingOAuth.id },
           data: { 
-            accessToken, 
-            ...(refreshToken ? { refreshToken } : {}) 
+            accessToken: encryptedAccessToken, 
+            ...(encryptedRefreshToken ? { refreshToken: encryptedRefreshToken } : {}) 
           }
         });
       }
@@ -212,17 +214,67 @@ export class AuthService {
   }
 
   private async generateTokens(userId: string, email: string, role: string) {
-    const payload = { sub: userId, email, role };
-    const token = this.jwtService.sign(payload);
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { tokenVersion: true }
+    });
+    const payload = { sub: userId, email, role, tokenVersion: user?.tokenVersion || 0 };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
 
     await this.prisma.session.create({
       data: {
         userId,
-        token,
+        token: refreshToken,
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
       },
     });
 
-    return { access_token: token };
+    return { access_token: accessToken, refresh_token: refreshToken };
+  }
+
+  async refreshTokens(refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('No refresh token provided');
+    }
+
+    try {
+      const payload = this.jwtService.verify(refreshToken);
+      
+      const session = await this.prisma.session.findUnique({
+        where: { token: refreshToken }
+      });
+
+      if (!session) {
+        // Reuse detection: Token is mathematically valid but not in DB
+        await this.prisma.session.deleteMany({
+          where: { userId: payload.sub }
+        });
+        throw new UnauthorizedException('Token reuse detected. All sessions revoked.');
+      }
+
+      // Valid rotation: delete old session
+      await this.prisma.session.delete({ where: { id: session.id } });
+
+      return this.generateTokens(payload.sub, payload.email, payload.role);
+    } catch (e) {
+      if (e instanceof UnauthorizedException) {
+        throw e;
+      }
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+  }
+
+  async logoutEverywhere(userId: string) {
+    // Increment tokenVersion to invalidate all existing JWTs immediately
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { tokenVersion: { increment: 1 } }
+    });
+
+    // Also delete all active sessions (refresh tokens) from the database
+    await this.prisma.session.deleteMany({
+      where: { userId }
+    });
   }
 }

@@ -4,6 +4,8 @@ import { RegisterDto, LoginDto } from './dto/auth.dto';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { IJwtPayload } from '@arrena-photo/shared-types';
 import { Throttle } from '@nestjs/throttler';
 
 @ApiTags('Auth')
@@ -19,32 +21,73 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
+  private setCookies(res: any, tokens: { access_token: string, refresh_token: string }) {
+    const isProd = process.env.NODE_ENV === 'production';
+    const secureAttr = isProd ? '; Secure' : '';
+    
+    const accessCookie = `access_token=${tokens.access_token}; HttpOnly${secureAttr}; SameSite=Lax; Path=/; Max-Age=900`;
+    const refreshCookie = `refresh_token=${tokens.refresh_token}; HttpOnly${secureAttr}; SameSite=Lax; Path=/v1/auth/refresh; Max-Age=604800`;
+    
+    // In Express 5 / NestJS, setting an array works for multiple Set-Cookie headers
+    res.setHeader('Set-Cookie', [accessCookie, refreshCookie]);
+  }
+
+  @Get('test-cookie')
+  testCookie(@Res() res) {
+    res.setHeader('Set-Cookie', 'test=value; HttpOnly');
+    res.json({ success: true });
+  }
+
   @Post('login')
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login and get JWT token' })
   @ApiResponse({ status: 200, description: 'Login successful' })
-  async login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+  async login(@Body() dto: LoginDto, @Res() res) {
+    const result = await this.authService.login(dto);
+    this.setCookies(res, result);
+    return res.json({ success: true, access_token: result.access_token });
+  }
+
+  @Post('refresh')
+  @ApiOperation({ summary: 'Refresh JWT token' })
+  @HttpCode(HttpStatus.OK)
+  async refresh(@Req() req, @Res({ passthrough: true }) res) {
+    const refreshToken = req.cookies['refresh_token'];
+    const result = await this.authService.refreshTokens(refreshToken);
+    this.setCookies(res, result);
+    return { success: true, access_token: result.access_token };
+  }
+
+  @Post('logout-everywhere')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Invalidate all sessions (Logout Everywhere)' })
+  @HttpCode(HttpStatus.OK)
+  async logoutEverywhere(@CurrentUser() user: IJwtPayload, @Res({ passthrough: true }) res) {
+    await this.authService.logoutEverywhere(user.id);
+    res.clearCookie('access_token', { path: '/' });
+    res.clearCookie('refresh_token', { path: '/v1/auth/refresh' });
+    return { success: true };
   }
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get current user profile including credits' })
-  async getMe(@Req() req) {
-    return this.authService.getMe(req.user.id);
+  async getMe(@CurrentUser() user: IJwtPayload) {
+    return this.authService.getMe(user.id);
   }
 
-  @Get('setup-admin')
-  @ApiOperation({ summary: 'Setup initial admin account' })
-  async setupAdmin() {
-    return this.authService.setupAdmin();
-  }
 
   @Get('verify')
   @ApiOperation({ summary: 'Verify email token' })
   async verifyEmail(@Query('token') token: string) {
     return this.authService.verifyEmail(token);
+  }
+
+  @Get('csrf')
+  @ApiOperation({ summary: 'Get CSRF token' })
+  getCsrfToken(@Req() req: any) {
+    return { csrfToken: req.csrfToken() };
   }
 
   // --- GOOGLE ---
@@ -57,9 +100,9 @@ export class AuthController {
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthCallback(@Req() req, @Res() res) {
-    const { access_token } = await this.authService.handleOAuthLogin('google', req.user);
-    // Redirect back to frontend with token
-    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?token=${access_token}`);
+    const result = await this.authService.handleOAuthLogin('google', req.user);
+    this.setCookies(res, result);
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?token=${result.access_token}`);
   }
 
   // --- VK ---
@@ -72,8 +115,9 @@ export class AuthController {
   @Get('vk/callback')
   @UseGuards(AuthGuard('vkontakte'))
   async vkAuthCallback(@Req() req, @Res() res) {
-    const { access_token } = await this.authService.handleOAuthLogin('vk', req.user);
-    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?token=${access_token}`);
+    const result = await this.authService.handleOAuthLogin('vk', req.user);
+    this.setCookies(res, result);
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?token=${result.access_token}`);
   }
 
   // --- FACEBOOK ---
@@ -86,7 +130,8 @@ export class AuthController {
   @Get('facebook/callback')
   @UseGuards(AuthGuard('facebook'))
   async facebookAuthCallback(@Req() req, @Res() res) {
-    const { access_token } = await this.authService.handleOAuthLogin('facebook', req.user);
-    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?token=${access_token}`);
+    const result = await this.authService.handleOAuthLogin('facebook', req.user);
+    this.setCookies(res, result);
+    res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?token=${result.access_token}`);
   }
 }

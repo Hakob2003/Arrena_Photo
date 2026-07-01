@@ -206,7 +206,7 @@ function GeneratorContent() {
       const finalTemplateId = storeTemplateId || ((templateId && templateId !== 'null' && templateId !== 'undefined' && templateId.length > 20) ? templateId : undefined);
 
       const prefs = useUIStore.getState().preferences;
-      const res = await api.post('/generations', {
+      const payload: import('@arrena-photo/shared-types').ICreateGenerationRequest = {
         prompt,
         negativePrompt: '',
         aiModelId: model,
@@ -216,7 +216,8 @@ function GeneratorContent() {
         initImage: initImage,
         skin: prefs.skin,
         accentColor: prefs.accentColor
-      });
+      };
+      const res = await api.post('/generations', payload);
 
       const generationId = res.data.id;
       setActiveGenerationId(generationId);

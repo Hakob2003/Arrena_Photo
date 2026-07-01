@@ -1,0 +1,18 @@
+{
+  "name": "@arrena-photo/shared-types",
+  "version": "1.0.0",
+  "description": "Shared DTOs and interfaces for Arrena Photo",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "class-validator": "^0.14.1",
+    "class-transformer": "^0.5.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

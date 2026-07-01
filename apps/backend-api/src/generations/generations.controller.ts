@@ -1,8 +1,13 @@
-import { Controller, Post, Get, Body, Param, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, UseGuards } from '@nestjs/common';
 import { GenerationsService } from './generations.service';
 import { CreateGenerationDto } from './dto/create-generation.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { RoleName } from '@prisma/client';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { IJwtPayload } from '@arrena-photo/shared-types';
 
 @ApiTags('Generations')
 @ApiBearerAuth()
@@ -11,10 +16,11 @@ export class GenerationsController {
   constructor(private readonly generationsService: GenerationsService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @Roles(RoleName.ADMIN, RoleName.MODERATOR, RoleName.CREATOR, RoleName.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Request a new image generation (async)' })
-  create(@Req() req: any, @Body() createGenerationDto: CreateGenerationDto) {
-    return this.generationsService.create(req.user.id, createGenerationDto);
+  create(@CurrentUser() user: IJwtPayload, @Body() createGenerationDto: CreateGenerationDto) {
+    return this.generationsService.create(user.id, createGenerationDto);
   }
 
   @Get('models')
@@ -24,43 +30,48 @@ export class GenerationsController {
   }
 
   @Get('history')
-  @UseGuards(JwtAuthGuard)
+  @Roles(RoleName.ADMIN, RoleName.MODERATOR, RoleName.CREATOR, RoleName.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get generation history for user' })
-  getHistory(@Req() req: any) {
-    return this.generationsService.getHistory(req.user.id);
+  getHistory(@CurrentUser() user: IJwtPayload) {
+    return this.generationsService.getHistory(user.id);
   }
 
   @Get('feed/public')
   @ApiOperation({ summary: 'Get public generations feed' })
-  getFeed(@Req() req: any) {
+  getFeed() {
     return this.generationsService.getFeed();
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @Roles(RoleName.ADMIN, RoleName.MODERATOR, RoleName.CREATOR, RoleName.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get generation status and result' })
-  getStatus(@Req() req: any, @Param('id') id: string) {
-    return this.generationsService.getStatus(id, req.user.id);
+  getStatus(@CurrentUser() user: IJwtPayload, @Param('id') id: string) {
+    return this.generationsService.getStatus(id, user.id);
   }
 
   @Post(':id/publish')
-  @UseGuards(JwtAuthGuard)
+  @Roles(RoleName.ADMIN, RoleName.MODERATOR, RoleName.CREATOR, RoleName.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Toggle publish status of generation' })
-  publish(@Req() req: any, @Param('id') id: string, @Body('isPublic') isPublic: boolean) {
-    return this.generationsService.publish(id, req.user.id, isPublic);
+  publish(@CurrentUser() user: IJwtPayload, @Param('id') id: string, @Body('isPublic') isPublic: boolean) {
+    return this.generationsService.publish(id, user.id, isPublic);
   }
 
   @Post(':id/like')
-  @UseGuards(JwtAuthGuard)
+  @Roles(RoleName.ADMIN, RoleName.MODERATOR, RoleName.CREATOR, RoleName.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Toggle like on generation' })
-  toggleLike(@Req() req: any, @Param('id') id: string) {
-    return this.generationsService.toggleLike(id, req.user.id);
+  toggleLike(@CurrentUser() user: IJwtPayload, @Param('id') id: string) {
+    return this.generationsService.toggleLike(id, user.id);
   }
 
   @Post(':id/cancel')
-  @UseGuards(JwtAuthGuard)
+  @Roles(RoleName.ADMIN, RoleName.MODERATOR, RoleName.CREATOR, RoleName.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Cancel a pending or processing generation' })
-  cancel(@Req() req: any, @Param('id') id: string) {
-    return this.generationsService.cancel(id, req.user.id);
+  cancel(@CurrentUser() user: IJwtPayload, @Param('id') id: string) {
+    return this.generationsService.cancel(id, user.id);
   }
 }

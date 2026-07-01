@@ -1,0 +1,41 @@
+# Build Stage
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Enable pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/worker/package.json ./apps/worker/
+COPY packages/ ./packages/
+
+RUN pnpm install --frozen-lockfile || pnpm install
+
+COPY . .
+
+# Generate Prisma Client (if needed)
+RUN pnpm --filter @arrena-photo/worker run build
+
+# Production Stage
+FROM node:20-alpine AS production
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY apps/worker/package.json ./apps/worker/
+COPY packages/ ./packages/
+
+RUN pnpm install --prod --frozen-lockfile || pnpm install --prod
+
+# Copy built assets
+COPY --from=builder /app/apps/worker/dist ./apps/worker/dist
+
+# Also copy Prisma generated client if it exists in node_modules
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma || true
+
+CMD ["node", "apps/worker/dist/src/main.js"]

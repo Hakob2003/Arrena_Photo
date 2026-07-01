@@ -1,4 +1,8 @@
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const prisma = new PrismaClient();
 
@@ -16,30 +20,39 @@ async function main() {
   });
 
   // 2. Create Admin User
-  // Password is 'admin123'
-  const adminHash = '$2a$10$EAlG/EoWQ9dTZ8JiIaeAY.k5IDkxmz.HT0EKpq.y2ZI9.H1bkUV9S'; // pre-computed hash for admin123
-  
-  const adminRole = await prisma.role.upsert({
-    where: { name: 'ADMIN' },
-    update: {},
-    create: {
-      name: 'ADMIN',
-      permissions: ['admin:all', 'templates:read', 'generations:create'],
-    },
-  });
+  const adminEmail = process.env.SUPERADMIN_EMAIL;
+  const adminPassword = process.env.SUPERADMIN_PASSWORD;
 
-  const adminUser = await prisma.user.upsert({
-    where: { email: 'admin@arrena.com' },
-    update: {},
-    create: {
-      email: 'admin@arrena.com',
-      passwordHash: adminHash,
-      name: 'Admin',
-      roleId: adminRole.id,
-      emailVerified: new Date(),
-    },
-  });
-  console.log('Admin User created:', adminUser.email);
+  if (!adminEmail || !adminPassword) {
+    console.warn('SUPERADMIN_EMAIL or SUPERADMIN_PASSWORD not set. Skipping Admin User creation.');
+  } else {
+    const adminRole = await prisma.role.upsert({
+      where: { name: 'ADMIN' },
+      update: {},
+      create: {
+        name: 'ADMIN',
+        permissions: ['admin:all', 'templates:read', 'generations:create'],
+      },
+    });
+
+    const adminHash = await bcrypt.hash(adminPassword, 12);
+
+    const adminUser = await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: {
+        passwordHash: adminHash,
+        roleId: adminRole.id,
+      },
+      create: {
+        email: adminEmail,
+        passwordHash: adminHash,
+        name: 'Admin',
+        roleId: adminRole.id,
+        emailVerified: new Date(),
+      },
+    });
+    console.log(`Admin User seeded/updated: ${adminUser.email}`);
+  }
 
   // 3. Create Storage Provider (needed for generations)
   const storage = await prisma.storageProvider.upsert({

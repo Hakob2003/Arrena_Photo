@@ -3,9 +3,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { GenerationsController } from './generations.controller';
 import { GenerationsService } from './generations.service';
 import { PrismaModule } from '../prisma/prisma.module';
-import { GenerationProcessor } from './generation.processor';
 import { BillingModule } from '../billing/billing.module';
-import { WatermarkService } from './watermark.service';
 
 @Module({
   imports: [
@@ -16,7 +14,7 @@ import { WatermarkService } from './watermark.service';
     BillingModule,
   ],
   controllers: [GenerationsController],
-  providers: [GenerationsService, GenerationProcessor, WatermarkService],
+  providers: [GenerationsService],
   exports: [GenerationsService],
 })
 export class GenerationsModule {}

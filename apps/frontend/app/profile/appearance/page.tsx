@@ -213,7 +213,7 @@ export default function AppearanceProfilePage() {
               <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">{t('profile.appearance.accent')}</h3>
               <p className="text-sm text-slate-500 dark:text-gray-400">Choose your primary brand color.</p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="grid grid-rows-2 grid-flow-col gap-4 overflow-x-auto no-scrollbar pb-2 pt-2 px-1">
               {colors.map((c) => (
                 <button
                   key={c.id}

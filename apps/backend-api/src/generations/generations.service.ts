@@ -110,6 +110,13 @@ export class GenerationsService {
       }
     });
 
+    // Calculate delay based on plan (WRK-026)
+    let queueDelay = 0;
+    if (plan === 'FREE') queueDelay = 30000;
+    else if (plan === 'STARTER') queueDelay = 15000;
+    else if (plan === 'PRO') queueDelay = 10000;
+    else if (plan === 'BUSINESS') queueDelay = Math.floor(Math.random() * 4000) + 1000;
+
     // 3. Add to BullMQ Queue
     try {
       await this.generationsQueue.add('generate-image', {
@@ -123,8 +130,9 @@ export class GenerationsService {
         accentColor: dto.accentColor
       }, {
         priority,
+        delay: queueDelay,
         attempts: 3,
-        backoff: { type: 'exponential', delay: 1000 }
+        backoff: { type: 'exponential', delay: 2000 } // WRK-027
       });
     } catch (error) {
       // If adding to queue fails (e.g. Redis is down), fail the generation immediately
@@ -150,7 +158,7 @@ export class GenerationsService {
     });
 
     return generations.map(g => {
-      let imageUrl = g.result?.imageUrl;
+      let imageUrl = (g.result as any)?.s3ImageUrl || g.result?.imageUrl;
       let driveFileId = g.result?.driveFileId;
 
       // Handle legacy records where imageUrl was saved as a relative Drive proxy path
@@ -262,7 +270,7 @@ export class GenerationsService {
     }
 
     return generations.map(g => {
-      let imageUrl = g.result?.imageUrl;
+      let imageUrl = (g.result as any)?.s3ImageUrl || g.result?.imageUrl;
       let driveFileId = g.result?.driveFileId;
       const drivePathPrefix = '/api/integrations/google-drive/file/';
       if (imageUrl && imageUrl.startsWith(drivePathPrefix) && !driveFileId) {

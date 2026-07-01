@@ -25,15 +25,11 @@
     "prettier": "^3.2.5",
     "typescript": "^5.4.5"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@nestjs/core",
-      "@prisma/client",
-      "@prisma/engines",
-      "msgpackr-extract",
-      "prisma",
-      "unrs-resolver"
-    ]
+  "pnpm.overrides": {
+    "multer": "1.4.5-lts.1",
+    "nodemailer": "^9.0.1",
+    "undici": "^6.27.0",
+    "cross-spawn": "^7.0.5"
   },
   "dependencies": {
     "form-data": "^4.0.6",

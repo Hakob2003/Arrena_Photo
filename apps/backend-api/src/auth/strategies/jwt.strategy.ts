@@ -11,19 +11,35 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private prisma: PrismaService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: any) => {
+          let token = null;
+          if (request && request.cookies) {
+            token = request.cookies['access_token'];
+          }
+          return token || ExtractJwt.fromAuthHeaderAsBearerToken()(request);
+        },
+      ]),
       ignoreExpiration: false,
-      secretOrKey: configService.get('JWT_SECRET', 'super-secret-key-change-me-in-production'),
+      secretOrKey: configService.get<string>('JWT_SECRET') || (() => { throw new Error('JWT_SECRET is not defined in environment variables'); })(),
     });
   }
 
-  async validate(payload: { sub: string; email: string; role: string }) {
+  async validate(payload: { sub: string; email: string; role: string; tokenVersion?: number }) {
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
+      select: { id: true, tokenVersion: true }
     });
 
     if (!user) {
       throw new UnauthorizedException();
+    }
+
+    // Check tokenVersion for Logout Everywhere functionality
+    // Allow payload.tokenVersion to be undefined for backwards compatibility with old tokens
+    // but if it is defined, it must match user.tokenVersion.
+    if (payload.tokenVersion !== undefined && payload.tokenVersion !== user.tokenVersion) {
+      throw new UnauthorizedException('Token revoked');
     }
 
     return { id: payload.sub, email: payload.email, role: payload.role };

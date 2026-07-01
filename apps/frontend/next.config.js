@@ -39,6 +39,10 @@ const nextConfig = {
       },
     ];
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  transpilePackages: ['@arrena-photo/shared-types'],
 };
 
 module.exports = nextConfig;

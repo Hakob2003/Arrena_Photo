@@ -2,11 +2,17 @@ import { Controller, Get, Post, Put, Delete, Param, Query, UseGuards, Req, Body 
 import { AdminService } from './admin.service';
 import { ProviderCheckService } from './provider-check.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { IJwtPayload } from '@arrena-photo/shared-types';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { RoleName } from '@prisma/client';
 
 @ApiTags('admin')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+@Roles(RoleName.ADMIN)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('admin')
 export class AdminController {
   constructor(
@@ -135,19 +141,19 @@ export class AdminController {
   // --- API Keys ---
   @Get('api-providers')
   @ApiOperation({ summary: 'Get list of AI Providers and global API key status' })
-  getApiProviders(@Req() req) {
-    // Assuming req.user contains the authenticated admin user
-    return this.adminService.getApiProviders(req.user.id);
+  getApiProviders(@CurrentUser() user: IJwtPayload) {
+    // Assuming user contains the authenticated admin user
+    return this.adminService.getApiProviders(user.id);
   }
 
   @Post('api-providers/:providerId/key')
   @ApiOperation({ summary: 'Set global API key for a provider' })
   updateProviderKey(
-    @Req() req,
+    @CurrentUser() user: IJwtPayload,
     @Param('providerId') providerId: string,
     @Body('apiKey') apiKey: string
   ) {
-    return this.adminService.updateGlobalApiKey(req.user.id, providerId, apiKey);
+    return this.adminService.updateGlobalApiKey(user.id, providerId, apiKey);
   }
 
   @Post('api-providers/:providerId/check')
@@ -165,11 +171,11 @@ export class AdminController {
   @Post('api-providers/:providerId/toggle-monitor')
   @ApiOperation({ summary: 'Toggle auto-monitor for provider' })
   toggleMonitor(
-    @Req() req,
+    @CurrentUser() user: IJwtPayload,
     @Param('providerId') providerId: string,
     @Body() body: { isAutoMonitorOn: boolean, monitorInterval: string }
   ) {
-    return this.adminService.toggleAutoMonitor(req.user.id, providerId, body);
+    return this.adminService.toggleAutoMonitor(user.id, providerId, body);
   }
 
   // --- Billing ---

@@ -4,14 +4,39 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { json, urlencoded } from 'express';
 import helmet from 'helmet';
+import * as cookieParser from 'cookie-parser';
+
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
-  console.log('Starting NestJS application...');
+  const logger = new Logger('Bootstrap');
+  logger.log('Starting NestJS application...');
+
+  const jwtSecret = process.env.JWT_SECRET;
+  if (!jwtSecret || jwtSecret.length < 32) {
+    logger.fatal('JWT_SECRET is missing or too short (must be at least 32 characters). Shutting down for security reasons.');
+    process.exit(1);
+  }
+
   try {
     const app = await NestFactory.create(AppModule);
 
+    app.use((req: any, res: any, next: any) => {
+      res.setHeader('Set-Cookie', ['very-first-test=value']);
+      next();
+    });
+
     // Global Middlewares
     app.use(helmet({ crossOriginResourcePolicy: false }));
+    app.use(cookieParser());
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const csurf = require('csurf');
+    app.use(csurf({ cookie: true }));
+    app.use((req: any, res: any, next: any) => {
+      const token = req.csrfToken();
+      res.cookie('XSRF-TOKEN', token);
+      next();
+    });
     app.enableCors({
       origin: [
         'http://localhost:3000',
@@ -20,6 +45,7 @@ async function bootstrap() {
         'http://127.0.0.1:3001',
         process.env.FRONTEND_URL || 'https://arrena-photo-frontend-o4xg.onrender.com',
       ],
+      methods: 'GET,POST,PUT,DELETE,PATCH,OPTIONS',
       credentials: true,
     });
     

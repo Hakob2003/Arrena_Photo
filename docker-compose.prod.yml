@@ -40,7 +40,7 @@ services:
       dockerfile: apps/backend-api/Dockerfile.prod
     container_name: ai-studio-backend
     environment:
-      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@postgres:5432/${DB_NAME}
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@pgbouncer:5432/${DB_NAME}?pgbouncer=true
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - JWT_SECRET=${JWT_SECRET}
@@ -52,6 +52,30 @@ services:
       - STORAGE_PUBLIC_URL=https://${DOMAIN}/storage/ai-studio
     expose:
       - "4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: always
+    networks:
+      - ai-studio-prod-network
+
+  # Background Worker
+  ai-worker:
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile.prod
+    container_name: ai-studio-worker
+    environment:
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@pgbouncer:5432/${DB_NAME}?pgbouncer=true
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - STORAGE_ENDPOINT=http://minio:9000
+      - STORAGE_ACCESS_KEY=${MINIO_USER}
+      - STORAGE_SECRET_KEY=${MINIO_PASSWORD}
+      - STORAGE_BUCKET=ai-studio
+      - STORAGE_PUBLIC_URL=https://${DOMAIN}/storage/ai-studio
     depends_on:
       postgres:
         condition: service_healthy
@@ -76,6 +100,26 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: always
+    networks:
+      - ai-studio-prod-network
+
+  # PgBouncer Transaction Pooling
+  pgbouncer:
+    image: edoburu/pgbouncer:1.21.0
+    container_name: ai-studio-pgbouncer
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=postgres
+      - DB_NAME=${DB_NAME}
+      - POOL_MODE=transaction
+      - MAX_CLIENT_CONN=1000
+      - DEFAULT_POOL_SIZE=20
+      - ADMIN_USERS=${DB_USER}
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: always
     networks:
       - ai-studio-prod-network

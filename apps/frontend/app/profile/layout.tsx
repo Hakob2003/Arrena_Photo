@@ -39,7 +39,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
   return (
     <div className="flex flex-col md:flex-row gap-8 w-full max-w-7xl mx-auto py-8 px-4 md:px-8">
       {/* Sidebar Navigation */}
-      <nav className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-4 md:pb-0 md:w-64 shrink-0 no-scrollbar">
+      <nav className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-4 md:pb-0 md:w-64 shrink-0 no-scrollbar md:sticky md:top-8 md:h-fit">
         {profileTabs.map((tab) => {
           const isActive = pathname === tab.href;
           const Icon = tab.icon;

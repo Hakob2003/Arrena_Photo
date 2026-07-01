@@ -15,6 +15,7 @@ enum RoleName {
   MODERATOR
   CREATOR
   USER
+  BANNED
 }
 
 enum UserStatus {
@@ -72,6 +73,9 @@ model User {
   surname     String?
   bio         String? @db.Text
   socialLinks Json? // { telegram: "", instagram: "", twitter: "", linkedin: "", website: "" }
+  
+  // --- Security ---
+  tokenVersion Int @default(0)
 
   // --- Preferences & Appearance ---
   theme             String  @default("SYSTEM") // "LIGHT", "DARK", "SYSTEM"
@@ -335,6 +339,8 @@ model GenerationResult {
   id                String   @id @default(uuid())
   generationId      String   @unique
   imageUrl          String
+  s3ImageUrl        String?  // WRK-031
+  s3Bucket          String?  // WRK-031
   driveFileId       String?
   durationMs        Int
   storageProviderId String
