@@ -206,7 +206,17 @@ function GeneratorContent() {
       const finalTemplateId = storeTemplateId || ((templateId && templateId !== 'null' && templateId !== 'undefined' && templateId.length > 20) ? templateId : undefined);
 
       const prefs = useUIStore.getState().preferences;
-      const payload: import('@arrena-photo/shared-types').ICreateGenerationRequest = {
+      const payload: {
+        prompt: string;
+        negativePrompt?: string;
+        aiModelId: string;
+        templateId?: string;
+        aspectRatio?: string;
+        resolution?: string;
+        initImage?: string;
+        skin?: string;
+        accentColor?: string;
+      } = {
         prompt,
         negativePrompt: '',
         aiModelId: model,
