@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import React, { useState, useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
-import Cropper from 'react-easy-crop';
-import getCroppedImg from './cropImage';
-import { getMediaUrl } from '../../lib/api';
-import { Camera, Trash2, X } from 'lucide-react';
-import { toast } from 'react-hot-toast';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
+import Cropper from "react-easy-crop";
+import getCroppedImg from "./cropImage";
+import { getMediaUrl } from "../../lib/api";
+import { Camera, Trash2, X } from "lucide-react";
+import { toast } from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface AvatarUploadProps {
   currentAvatarUrl?: string | null;
@@ -15,18 +15,34 @@ interface AvatarUploadProps {
   onRemove: () => Promise<void>;
 }
 
-export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: AvatarUploadProps) {
+export default function AvatarUpload({
+  currentAvatarUrl,
+  onUpload,
+  onRemove,
+}: AvatarUploadProps) {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
     if (acceptedFiles && acceptedFiles.length > 0) {
-      const reader = new FileReader();
-      reader.addEventListener('load', () => setImageSrc(reader.result as string));
-      reader.readAsDataURL(acceptedFiles[0]);
+      const file = acceptedFiles[0];
+      try {
+        const buffer = await file.arrayBuffer();
+        const memFile = new File([buffer], file.name, {
+          type: file.type || "image/jpeg",
+        });
+        const reader = new FileReader();
+        reader.addEventListener("load", () =>
+          setImageSrc(reader.result as string),
+        );
+        reader.readAsDataURL(memFile);
+      } catch (err) {
+        console.error("Avatar read error", err);
+        toast.error("Сбой чтения. Попробуйте еще раз.");
+      }
     }
   }, []);
 
@@ -34,17 +50,20 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
     noClick: true,
     noKeyboard: true,
     onDrop,
-    accept: { 'image/*': ['.jpeg', '.jpg', '.png', '.webp'] },
+    accept: { "image/*": [".jpeg", ".jpg", ".png", ".webp"] },
     maxSize: 5 * 1024 * 1024,
     multiple: false,
     onDropRejected: () => {
-      toast.error('File rejected. Max size is 5MB and must be an image.');
-    }
+      toast.error("File rejected. Max size is 5MB and must be an image.");
+    },
   });
 
-  const onCropComplete = useCallback((croppedArea: any, croppedAreaPixels: any) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
+  const onCropComplete = useCallback(
+    (croppedArea: any, croppedAreaPixels: any) => {
+      setCroppedAreaPixels(croppedAreaPixels);
+    },
+    [],
+  );
 
   const handleSaveCrop = async () => {
     try {
@@ -52,17 +71,23 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
       const croppedImage = await getCroppedImg(imageSrc!, croppedAreaPixels!);
       let fileToUpload: File | Blob = croppedImage;
       try {
-        fileToUpload = new File([croppedImage], 'avatar.jpg', { type: 'image/jpeg' });
+        fileToUpload = new File([croppedImage], "avatar.jpg", {
+          type: "image/jpeg",
+        });
       } catch (err) {
         // Fallback for mobile browsers (like Samsung Internet) that do not support the File constructor
         fileToUpload = croppedImage;
       }
       await onUpload(fileToUpload);
       setImageSrc(null);
-      toast.success('Avatar updated successfully');
+      toast.success("Avatar updated successfully");
     } catch (e: any) {
-      console.error('Avatar upload error:', e);
-      toast.error(e?.response?.data?.message || e.message || 'Failed to crop or upload image');
+      console.error("Avatar upload error:", e);
+      toast.error(
+        e?.response?.data?.message ||
+          e.message ||
+          "Failed to crop or upload image",
+      );
     } finally {
       setIsUploading(false);
     }
@@ -70,19 +95,25 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
 
   return (
     <div className="flex items-center gap-6">
-      <div 
+      <div
         {...getRootProps()}
         onClick={open}
         className="relative group cursor-pointer w-24 h-24 rounded-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden shrink-0"
       >
         <input {...getInputProps()} />
         {currentAvatarUrl ? (
-          <img 
-            src={getMediaUrl(currentAvatarUrl)} 
-            alt="User Avatar" 
-            className="w-full h-full object-cover" 
+          <img
+            src={getMediaUrl(currentAvatarUrl)}
+            alt="User Avatar"
+            className="w-full h-full object-cover"
             fetchPriority="high"
-            onError={(e) => console.error("Image failed to load:", getMediaUrl(currentAvatarUrl), e)}
+            onError={(e) =>
+              console.error(
+                "Image failed to load:",
+                getMediaUrl(currentAvatarUrl),
+                e,
+              )
+            }
           />
         ) : (
           <Camera className="w-8 h-8 text-slate-400 dark:text-gray-500" />
@@ -94,7 +125,7 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
 
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-3">
-          <button 
+          <button
             type="button"
             onClick={open}
             className="px-4 py-2 bg-white text-black font-medium rounded-lg text-sm hover:bg-gray-200 transition"
@@ -102,7 +133,7 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
             Change picture
           </button>
           {currentAvatarUrl && (
-            <button 
+            <button
               type="button"
               onClick={onRemove}
               className="p-2 text-slate-500 dark:text-gray-400 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition"
@@ -119,22 +150,22 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
       {/* Crop Modal */}
       <AnimatePresence>
         {imageSrc && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#fafafa] dark:bg-black/5 backdrop-blur-none"
           >
             <div className="bg-[#111] border border-black/10 dark:border-white/10 rounded-2xl w-full max-w-lg p-6 flex flex-col shadow-2xl relative overflow-hidden">
-              <button 
+              <button
                 onClick={() => setImageSrc(null)}
                 className="absolute top-4 right-4 z-10 p-2 bg-[#fafafa] dark:bg-black/5 hover:bg-black/[0.05] dark:bg-white/10 rounded-full text-slate-900 dark:text-slate-900 dark:text-white transition"
               >
                 <X className="w-5 h-5" />
               </button>
-              
+
               <h3 className="text-xl font-semibold mb-6">Crop your picture</h3>
-              
+
               <div className="relative w-full h-64 bg-[#fafafa] dark:bg-black/5 rounded-xl overflow-hidden mb-6">
                 {/* @ts-ignore - TS thinks Cropper is not a valid JSX element in this React version */}
                 <Cropper
@@ -165,7 +196,11 @@ export default function AvatarUpload({ currentAvatarUrl, onUpload, onRemove }: A
                   disabled={isUploading}
                   className="px-6 py-2 bg-white text-black font-medium rounded-lg text-sm hover:bg-gray-200 transition flex items-center justify-center min-w-[100px]"
                 >
-                  {isUploading ? <span className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></span> : 'Save'}
+                  {isUploading ? (
+                    <span className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></span>
+                  ) : (
+                    "Save"
+                  )}
                 </button>
               </div>
             </div>
