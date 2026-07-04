@@ -258,7 +258,11 @@ function GeneratorContent() {
             if (pollRef.current) clearInterval(pollRef.current);
             setProgress(100);
             setTimeout(() => {
-              setResult(statusRes.data.result.imageUrl, statusRes.data.result.driveFileId);
+              if (statusRes.data.result) {
+                setResult(statusRes.data.result.imageUrl, statusRes.data.result.driveFileId);
+              } else {
+                toast.error(t('gen.failedError'));
+              }
               setGenerating(false);
             }, 500);
             fetchHistory();
