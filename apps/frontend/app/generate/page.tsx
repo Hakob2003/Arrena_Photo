@@ -207,6 +207,21 @@ function GeneratorContent() {
 
           let fileToProcess: File | Blob = file;
 
+          // Read the file into memory immediately to decouple it from the volatile OS file descriptor.
+          // This prevents the dreaded Chrome Android "net::ERR_UPLOAD_FILE_CHANGED" bug when
+          // dealing with recent or cloud-synced photos from the gallery.
+          try {
+            const buffer = await file.arrayBuffer();
+            fileToProcess = new Blob([buffer], { type: file.type });
+          } catch (bufferErr) {
+            console.error("Failed to read file buffer:", bufferErr);
+            toast.dismiss("upload-toast");
+            toast.error(
+              "Сбой чтения. Если это фото из облака, сначала сохраните его в память телефона.",
+            );
+            return;
+          }
+
           // Check for HEIC/HEIF files which are common on Samsung/iOS but unsupported by web browsers natively
           const isHeic =
             file.name.toLowerCase().endsWith(".heic") ||
