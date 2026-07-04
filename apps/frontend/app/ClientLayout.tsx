@@ -6,6 +6,8 @@ import { useAuthStore, useUIStore } from '../store';
 import { Topbar } from '../components/layout/Topbar';
 import { LayoutGroup, motion } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
+import { Navigation } from '../components/ui/Navigation';
+import { parseJwtPayload } from '@/lib/utils/jwt';
 import { SwipeHint } from '../components/ui/SwipeHint';
 import { useIdleLogout } from '../hooks/useIdleLogout';
 
@@ -52,14 +54,17 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
       if (!useAuthStore.getState().user) {
         // Decode initially to render quickly
         try {
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          const user = {
-            id: payload.sub,
-            email: payload.email,
-            role: typeof payload.role === 'object' && payload.role !== null ? payload.role.name : payload.role,
-            name: payload.email?.split('@')[0] || 'User',
-          };
-          login(user, token);
+          const payload = parseJwtPayload(token);
+          if (payload) {
+            const user = {
+              id: payload.sub,
+              email: payload.email,
+              name: payload.email?.split('@')[0] || 'User',
+              role: typeof payload.role === 'object' && payload.role !== null ? payload.role.name : payload.role,
+              credits: 0,
+            };
+            useAuthStore.getState().setAuth(user, token);
+          }
           
           // Fetch fresh profile from backend (credits, name, etc.)
           api.get('/auth/me')

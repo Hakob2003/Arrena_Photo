@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { parseJwtPayload } from '@/lib/utils/jwt';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { useAuthStore, useUIStore } from '@/store';
@@ -24,7 +25,7 @@ function LoginContent() {
     if (token) {
       try {
         // Simple JWT decode to get user info
-        const payload = JSON.parse(atob(token.split('.')[1]));
+        const payload = parseJwtPayload(token);
         const user = {
           id: payload.sub,
           email: payload.email,
