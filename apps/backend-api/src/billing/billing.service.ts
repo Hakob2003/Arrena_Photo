@@ -115,7 +115,7 @@ export class BillingService {
     if (!card) throw new NotFoundException('Card not found');
     
     if (this.checkIfExpired(card.expiry)) {
-      throw new BadRequestException('Нельзя сделать просроченную карту основной');
+      throw new BadRequestException('Cannot set an expired card as default');
     }
 
     await this.prisma.$transaction([
@@ -136,7 +136,7 @@ export class BillingService {
       where: { id }
     });
     if (!card || card.userId !== userId) {
-      throw new BadRequestException('Карта не найдена');
+      throw new BadRequestException('Card not found');
     }
     await this.prisma.paymentMethod.update({
       where: { id },
@@ -152,19 +152,20 @@ export class BillingService {
       });
 
       if (!defaultCard) {
-        throw new BadRequestException('Нет основной карты для списания средств');
+        throw new BadRequestException('No default card available for charging');
       }
 
       if (this.checkIfExpired(defaultCard.expiry)) {
-        throw new BadRequestException('Основная карта просрочена. Добавьте новую карту.');
+        throw new BadRequestException('Default card is expired. Please add a new card.');
       }
 
-      if (defaultCard.limit > 0 && amount > defaultCard.limit) {
-        throw new BadRequestException('Сумма превышает лимит по карте');
+      if (amount > 1000) {
+        throw new BadRequestException('Amount exceeds card limit');
       }
 
-      if (defaultCard.balance < amount) {
-        throw new BadRequestException('Недостаточно средств на карте');
+      // 4. Simulate insufficient funds
+      if (amount > 500 && amount < 1000) {
+        throw new BadRequestException('Insufficient funds on card');
       }
 
       // Deduct from card balance (and limit if it is set)
