@@ -205,7 +205,38 @@ function GeneratorContent() {
         try {
           toast.loading("Обработка фото...", { id: "upload-toast" });
 
-          const objectUrl = URL.createObjectURL(file);
+          let fileToProcess: File | Blob = file;
+
+          // Check for HEIC/HEIF files which are common on Samsung/iOS but unsupported by web browsers natively
+          const isHeic =
+            file.name.toLowerCase().endsWith(".heic") ||
+            file.name.toLowerCase().endsWith(".heif") ||
+            file.type === "image/heic" ||
+            file.type === "image/heif";
+
+          if (isHeic) {
+            toast.loading("Конвертация HEIC формата...", {
+              id: "upload-toast",
+            });
+            try {
+              const heic2any = (await import("heic2any")).default;
+              const converted = await heic2any({
+                blob: file,
+                toType: "image/jpeg",
+                quality: 0.8,
+              });
+              fileToProcess = Array.isArray(converted)
+                ? converted[0]
+                : converted;
+            } catch (convErr) {
+              console.error("HEIC conversion error:", convErr);
+              toast.dismiss("upload-toast");
+              toast.error("Не удалось конвертировать HEIC фото");
+              return;
+            }
+          }
+
+          const objectUrl = URL.createObjectURL(fileToProcess);
           const img = new window.Image(); // use window.Image to avoid conflict with Next.js Image
 
           img.onload = () => {
