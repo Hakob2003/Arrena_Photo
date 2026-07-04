@@ -204,16 +204,55 @@ function GeneratorContent() {
         }
         try {
           toast.loading("Обработка фото...", { id: "upload-toast" });
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            toast.dismiss("upload-toast");
-            setInitImage(e.target?.result as string);
+
+          const objectUrl = URL.createObjectURL(file);
+          const img = new window.Image(); // use window.Image to avoid conflict with Next.js Image
+
+          img.onload = () => {
+            try {
+              const canvas = document.createElement("canvas");
+              let width = img.width;
+              let height = img.height;
+
+              const maxDim = 1200;
+              if (width > maxDim || height > maxDim) {
+                if (width > height) {
+                  height = Math.round((height / width) * maxDim);
+                  width = maxDim;
+                } else {
+                  width = Math.round((width / height) * maxDim);
+                  height = maxDim;
+                }
+              }
+
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext("2d");
+
+              if (ctx) {
+                ctx.drawImage(img, 0, 0, width, height);
+                // Convert to compressed JPEG to save bandwidth and memory
+                const base64 = canvas.toDataURL("image/jpeg", 0.85);
+                setInitImage(base64);
+              } else {
+                toast.error("Браузер не поддерживает обработку фото");
+              }
+            } catch (e) {
+              console.error("Canvas processing error:", e);
+              toast.error("Ошибка при сжатии фото");
+            } finally {
+              toast.dismiss("upload-toast");
+              URL.revokeObjectURL(objectUrl);
+            }
           };
-          reader.onerror = () => {
+
+          img.onerror = () => {
             toast.dismiss("upload-toast");
-            toast.error("Не удалось прочитать файл");
+            toast.error("Не удалось открыть это фото. Попробуйте другое.");
+            URL.revokeObjectURL(objectUrl);
           };
-          reader.readAsDataURL(file);
+
+          img.src = objectUrl;
         } catch (error) {
           console.log("Error processing image:", error);
           toast.error("Failed to process image. Please try another one.");
