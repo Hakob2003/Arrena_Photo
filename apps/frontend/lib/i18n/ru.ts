@@ -216,7 +216,15 @@ const ru: Record<string, string> = {
   'profile.personal.upload': 'Загрузить',
   'profile.personal.remove': 'Удалить',
   'profile.personal.name': 'Полное имя',
-  'profile.personal.email': 'Email адрес',
+  'profile.personal.firstName': 'Имя',
+  'profile.personal.lastName': 'Фамилия',
+  'profile.personal.nickname': 'Никнейм',
+  'profile.personal.bio': 'О себе',
+  'profile.personal.socialLinks': 'Социальные сети',
+  'profile.personal.telegram': 'Telegram',
+  'profile.personal.instagram': 'Instagram',
+  'profile.personal.website': 'Веб-сайт',
+  'profile.personal.email': 'Email',
   'profile.personal.save': 'Сохранить изменения',
 
   'profile.security.title': 'Безопасность',
@@ -227,6 +235,7 @@ const ru: Record<string, string> = {
   'profile.security.confirmPassword': 'Подтвердите новый пароль',
   'profile.security.sessions': 'Активные сессии',
   'profile.security.terminate': 'Завершить',
+  'profile.security.current': 'Текущий',
 
   'profile.appearance.title': 'Оформление',
   'profile.appearance.desc': 'Настройте внешний вид приложения.',
@@ -340,6 +349,8 @@ const ru: Record<string, string> = {
   'billing.plans.features.business.3': 'API доступ',
 
   'profile.appearance.skinTitle': 'Скин сайта (Стиль)',
+  'profile.appearance.skinLuxury': 'Luxury Gold',
+  'profile.appearance.skinNeon': 'Neon Cyberpunk',
   'profile.appearance.skinDesc': 'Выберите общую стилистику интерфейса.',
   'profile.appearance.skinLuxuryDesc': 'Премиальный темный интерфейс с металлическими акцентами.',
   'profile.appearance.skinNeonDesc': 'Яркий стиль с неоновыми свечениями и ярким акцентным цветом.',

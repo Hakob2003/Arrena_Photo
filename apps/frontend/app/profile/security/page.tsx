@@ -162,7 +162,7 @@ export default function SecurityProfilePage() {
                   <div className="flex items-center gap-2">
                     <p className="font-medium text-slate-900 dark:text-slate-900 dark:text-white truncate">{session.device || session.userAgent || 'Unknown Device'}</p>
                     {idx === 0 && (
-                      <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-[10px] uppercase font-bold rounded-full">Current</span>
+                      <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-[10px] uppercase font-bold rounded-full">{t('profile.security.current')}</span>
                     )}
                   </div>
                   <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-gray-400 mt-1">
