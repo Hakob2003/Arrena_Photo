@@ -24,7 +24,17 @@ export default function RegisterPage() {
       setMessage(res.data.message || t('auth.registerSuccess'));
       setError('');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed');
+      let errorMessage = 'Registration failed';
+      if (!err.response) {
+        errorMessage = 'Network error. The server might be down or waking up. Please wait a minute and try again.';
+      } else if (err.response.status === 502 || err.response.status === 503 || err.response.status === 504) {
+        errorMessage = 'Server is waking up (Render free tier). Please wait ~60 seconds and try again.';
+      } else if (err.response.data?.message) {
+        errorMessage = Array.isArray(err.response.data.message) 
+          ? err.response.data.message[0] 
+          : err.response.data.message;
+      }
+      setError(errorMessage);
       setMessage('');
     }
   };
