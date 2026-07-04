@@ -161,7 +161,7 @@ export class GenerationsService {
     });
 
     return generations.map(g => {
-      let imageUrl = (g.result as any)?.s3ImageUrl || g.result?.imageUrl;
+      let imageUrl = g.result?.s3ImageUrl || g.result?.imageUrl;
       let driveFileId = g.result?.driveFileId;
 
       // Handle legacy records where imageUrl was saved as a relative Drive proxy path
@@ -273,7 +273,7 @@ export class GenerationsService {
     }
 
     return generations.map(g => {
-      let imageUrl = (g.result as any)?.s3ImageUrl || g.result?.imageUrl;
+      let imageUrl = g.result?.s3ImageUrl || g.result?.imageUrl;
       let driveFileId = g.result?.driveFileId;
       const drivePathPrefix = '/api/integrations/google-drive/file/';
       if (imageUrl && imageUrl.startsWith(drivePathPrefix) && !driveFileId) {
