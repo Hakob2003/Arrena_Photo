@@ -197,20 +197,36 @@ function GeneratorContent() {
     async (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
       if (file) {
+        if (file.size === 0) {
+          toast.error(
+            "Фото еще загружается из облака на телефон. Подождите секунду и выберите снова.",
+          );
+          return;
+        }
         try {
           const options = {
             maxSizeMB: 1,
             maxWidthOrHeight: 1024,
             useWebWorker: false,
           };
-          const compressedFile = await imageCompression(file, options);
+
+          let fileToUpload = file;
+          try {
+            fileToUpload = await imageCompression(file, options);
+          } catch (compressErr) {
+            console.warn(
+              "Image compression failed, falling back to original file:",
+              compressErr,
+            );
+          }
+
           const reader = new FileReader();
           reader.onload = (e) => {
             setInitImage(e.target?.result as string);
           };
-          reader.readAsDataURL(compressedFile);
+          reader.readAsDataURL(fileToUpload);
         } catch (error) {
-          console.log("Error compressing image:", error);
+          console.log("Error processing image:", error);
           toast.error("Failed to process image. Please try another one.");
         }
       }
