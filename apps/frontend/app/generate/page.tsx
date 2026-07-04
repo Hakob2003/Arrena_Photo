@@ -232,7 +232,8 @@ function GeneratorContent() {
     onDrop,
     onDropRejected,
     maxFiles: 1,
-    noClick: !!initImage,
+    noClick: true,
+    noKeyboard: true,
   });
 
   const handleStopRequest = () => {
@@ -455,26 +456,25 @@ function GeneratorContent() {
                 : "border-black/20 dark:border-white/20 hover:border-white/40 bg-transparent/30"
             }`}
           >
-            <input
-              {...getInputProps({
-                accept:
+            {!initImage && (
+              <input
+                type="file"
+                accept={
                   typeof navigator !== "undefined" &&
                   /iPad|iPhone|iPod/.test(navigator.userAgent)
                     ? "image/jpeg, image/png, image/webp"
-                    : "image/*",
-                style: {
-                  display: initImage ? "none" : "block",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                  opacity: 0,
-                  cursor: "pointer",
-                  zIndex: 10,
-                },
-              })}
-            />
+                    : "image/*"
+                }
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    onDrop(Array.from(e.target.files));
+                  }
+                  e.target.value = "";
+                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10 block"
+                title=""
+              />
+            )}
             {initImage ? (
               <div className="relative group">
                 <img
