@@ -196,10 +196,6 @@ function GeneratorContent() {
     async (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
       if (file) {
-        if (!file.type.startsWith("image/") && file.type !== "") {
-          toast.error("Пожалуйста, выберите файл изображения (JPG, PNG).");
-          return;
-        }
         if (file.size === 0) {
           toast.error(
             "Фото еще загружается из облака на телефон. Подождите секунду и выберите снова.",
@@ -207,9 +203,15 @@ function GeneratorContent() {
           return;
         }
         try {
+          toast.loading("Обработка фото...", { id: "upload-toast" });
           const reader = new FileReader();
           reader.onload = (e) => {
+            toast.dismiss("upload-toast");
             setInitImage(e.target?.result as string);
+          };
+          reader.onerror = () => {
+            toast.dismiss("upload-toast");
+            toast.error("Не удалось прочитать файл");
           };
           reader.readAsDataURL(file);
         } catch (error) {
