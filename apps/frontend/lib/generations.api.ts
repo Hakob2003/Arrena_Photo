@@ -3,7 +3,7 @@ import { api } from './api';
 export const generationsApi = {
   getFeed: async () => {
     const response = await api.get('/generations/feed/public');
-    return response.data;
+    return response.data.data || response.data;
   },
   publish: async (id: string, isPublic: boolean) => {
     const response = await api.post(`/generations/${id}/publish`, { isPublic });
@@ -15,7 +15,7 @@ export const generationsApi = {
   },
   getHistory: async () => {
     const response = await api.get('/generations/history');
-    return response.data;
+    return response.data.data || response.data;
   },
   create: async (data: any) => {
     const response = await api.post('/generations', data);

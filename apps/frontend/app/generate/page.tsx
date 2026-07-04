@@ -43,7 +43,7 @@ function GeneratorContent() {
     if (!user) return;
     try {
       const res = await api.get('/generations/history');
-      setHistory(res.data);
+      setHistory(res.data.data || res.data);
       
       // Sync credits and planId from backend to avoid state mismatch
       const meRes = await api.get('/auth/me');

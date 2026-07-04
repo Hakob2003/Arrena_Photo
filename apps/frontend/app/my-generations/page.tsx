@@ -30,7 +30,7 @@ export default function MyGenerationsPage() {
     try {
       setLoading(true);
       const res = await api.get('/generations/history');
-      setGenerations(res.data);
+      setGenerations(res.data.data || res.data);
     } catch (e) {
       console.error('Failed to fetch generations:', e);
     } finally {
