@@ -4,7 +4,7 @@ import { Providers } from './providers';
 import { ClientLayout } from './ClientLayout';
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { Toaster } from "@/components/ui/sonner";
+
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -32,7 +32,6 @@ export default function RootLayout({
           <ClientLayout>
             {children}
           </ClientLayout>
-          <Toaster />
         </Providers>
       </body>
     </html>

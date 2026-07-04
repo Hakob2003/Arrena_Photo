@@ -281,7 +281,8 @@ function GeneratorContent() {
         }
       }, 1500);
 
-    } catch (err: any) {
+    } catch (error: unknown) {
+      const err = error as any;
       // Use console.log instead of console.error to avoid triggering Next.js dev overlay for expected business errors
       console.log('Generate request failed:', err.response?.data || err.message);
       
