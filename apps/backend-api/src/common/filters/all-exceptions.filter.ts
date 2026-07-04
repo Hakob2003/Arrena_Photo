@@ -23,7 +23,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     // Don't log 404s and 401s as errors
     if (status >= 500) {
-      console.error([Error]   - );
+      console.error(`[Error] - ${message}`);
       if (exception instanceof Error) {
         console.error(exception.stack);
       }

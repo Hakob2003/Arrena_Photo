@@ -150,7 +150,7 @@ export default function AppearanceProfilePage() {
             >
               <div className="absolute inset-0 bg-[#050505] -z-10" />
               <div className="w-full flex justify-between items-center mb-2">
-                <span className={cn("font-medium text-lg", watchSkin === 'LUXURY' ? "text-[#D4AF37]" : "text-gray-300")}>Luxury Gold</span>
+                <span className={cn("font-medium text-lg", watchSkin === 'LUXURY' ? "text-[#D4AF37]" : "text-gray-300")}>{t('profile.appearance.skinLuxury')}</span>
                 {watchSkin === 'LUXURY' && <div className="w-3 h-3 rounded-full bg-[#D4AF37] shadow-[0_0_10px_#D4AF37]" />}
               </div>
               <p className="text-xs text-gray-400">{t('profile.appearance.skinLuxuryDesc')}</p>
@@ -168,7 +168,7 @@ export default function AppearanceProfilePage() {
             >
               <div className="absolute inset-0 bg-[#fafafa] dark:bg-[#0A0A0A] -z-10" />
               <div className="w-full flex justify-between items-center mb-2">
-                <span className={cn("font-medium text-lg", watchSkin === 'NEON' ? "text-indigo-500 dark:text-indigo-400" : "")}>Neon Cyberpunk</span>
+                <span className={cn("font-medium text-lg", watchSkin === 'NEON' ? "text-indigo-500 dark:text-indigo-400" : "")}>{t('profile.appearance.skinNeon')}</span>
                 {watchSkin === 'NEON' && <div className="w-3 h-3 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.8)]" />}
               </div>
               <p className="text-xs text-slate-500 dark:text-gray-400">{t('profile.appearance.skinNeonDesc')}</p>

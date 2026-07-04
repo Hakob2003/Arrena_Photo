@@ -8,7 +8,8 @@ async function bootstrap() {
   console.log('Worker is running...');
 
   // Start a dummy HTTP server to satisfy Render's port scan if deployed as a Web Service
-  const port = process.env.PORT || 10000;
+  const isDev = process.env.NODE_ENV !== 'production';
+  const port = process.env.WORKER_PORT || (isDev ? 4001 : process.env.PORT || 10000);
   const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end('Worker is running and healthy\n');
