@@ -205,11 +205,15 @@ export class GenerationProcessor extends WorkerHost {
         });
       }
 
-      // Store S3 URL, and keep imageUrl empty to save db space
+      if ((s3Url || driveFileId) && finalImageUrl.startsWith('data:image')) {
+         finalImageUrl = ''; // Clear heavy base64 to save DB space if we have external storage
+      }
+
+      // Store S3 URL, and keep imageUrl empty if externally stored to save db space
       await this.prisma.generationResult.create({
         data: {
           generationId,
-          imageUrl: '', 
+          imageUrl: finalImageUrl, 
           s3ImageUrl: s3Url,
           s3Bucket: s3Bucket,
           driveFileId: driveFileId,
