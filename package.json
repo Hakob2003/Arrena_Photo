@@ -19,9 +19,12 @@
     "db:generate": "pnpm --filter @arrena-photo/database run generate",
     "db:migrate": "pnpm --filter @arrena-photo/database run migrate:deploy",
     "db:push": "pnpm --filter @arrena-photo/database run push",
-    "db:seed": "pnpm --filter @arrena-photo/database run seed"
+    "db:seed": "pnpm --filter @arrena-photo/database run seed",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5"
   },
@@ -35,5 +38,10 @@
     "form-data": "^4.0.6",
     "immer": "^11.1.8",
     "papaparse": "^5.5.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,md}": [
+      "prettier --write"
+    ]
   }
 }
