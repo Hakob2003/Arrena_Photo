@@ -235,6 +235,13 @@ const en: Record<string, string> = {
   'profile.appearance.light': 'Light',
   'profile.appearance.system': 'System',
   'profile.appearance.accent': 'Accent Color',
+  'profile.appearance.fontSize': 'Font Size',
+  'profile.appearance.fontSizeDesc': 'Adjust the interface text size.',
+  'profile.appearance.compactMode': 'Compact Mode',
+  'profile.appearance.compactModeDesc': 'Decrease spacing to fit more content on screen.',
+  'profile.appearance.animations': 'Interface Animations',
+  'profile.appearance.animationsDesc': 'Enable smooth transitions and micro-interactions.',
+  'profile.appearance.save': 'Save Preferences',
 
   'profile.notifications.title': 'Notifications',
   'profile.notifications.desc': 'Manage email and push notifications.',

@@ -235,6 +235,13 @@ const hy: Record<string, string> = {
   'profile.appearance.light': 'Լուսավոր',
   'profile.appearance.system': 'Համակարգային',
   'profile.appearance.accent': 'Շեշտադրման գույն',
+  'profile.appearance.fontSize': 'Տառաչափ',
+  'profile.appearance.fontSizeDesc': 'Կարգավորեք ինտերֆեյսի տեքստի չափը:',
+  'profile.appearance.compactMode': 'Կոմպակտ ռեժիմ',
+  'profile.appearance.compactModeDesc': 'Նվազեցրեք տարածությունը էկրանին ավելի շատ բովանդակություն տեղավորելու համար:',
+  'profile.appearance.animations': 'Ինտերֆեյսի անիմացիաներ',
+  'profile.appearance.animationsDesc': 'Միացնել սահուն անցումներն ու միկրո-փոխազդեցությունները:',
+  'profile.appearance.save': 'Պահպանել կարգավորումները',
 
   'profile.notifications.title': 'Ծանուցումներ',
   'profile.notifications.desc': 'Կառավարեք էլ. փոստի և push ծանուցումները:',

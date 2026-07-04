@@ -235,6 +235,13 @@ const ru: Record<string, string> = {
   'profile.appearance.light': 'Светлая',
   'profile.appearance.system': 'Системная',
   'profile.appearance.accent': 'Цвет акцента',
+  'profile.appearance.fontSize': 'Размер шрифта',
+  'profile.appearance.fontSizeDesc': 'Настройте размер текста интерфейса.',
+  'profile.appearance.compactMode': 'Компактный режим',
+  'profile.appearance.compactModeDesc': 'Уменьшает отступы, чтобы вместить больше контента.',
+  'profile.appearance.animations': 'Анимации интерфейса',
+  'profile.appearance.animationsDesc': 'Включить плавные переходы и микро-взаимодействия.',
+  'profile.appearance.save': 'Сохранить настройки',
 
   'profile.notifications.title': 'Уведомления',
   'profile.notifications.desc': 'Настройка email и push уведомлений.',
