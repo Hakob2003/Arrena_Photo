@@ -14,7 +14,6 @@ import { generationsApi } from "../../lib/generations.api";
 import toast from "react-hot-toast";
 import { useUIStore } from "../../store";
 import Link from "next/link";
-import imageCompression from "browser-image-compression";
 
 function GeneratorContent() {
   const searchParams = useSearchParams();
@@ -208,27 +207,11 @@ function GeneratorContent() {
           return;
         }
         try {
-          const options = {
-            maxSizeMB: 1,
-            maxWidthOrHeight: 1024,
-            useWebWorker: false,
-          };
-
-          let fileToUpload = file;
-          try {
-            fileToUpload = await imageCompression(file, options);
-          } catch (compressErr) {
-            console.warn(
-              "Image compression failed, falling back to original file:",
-              compressErr,
-            );
-          }
-
           const reader = new FileReader();
           reader.onload = (e) => {
             setInitImage(e.target?.result as string);
           };
-          reader.readAsDataURL(fileToUpload);
+          reader.readAsDataURL(file);
         } catch (error) {
           console.log("Error processing image:", error);
           toast.error("Failed to process image. Please try another one.");
