@@ -474,7 +474,11 @@ function GeneratorContent() {
           >
             <input
               {...getInputProps({
-                accept: "image/jpeg, image/png, image/webp",
+                accept:
+                  typeof navigator !== "undefined" &&
+                  /iPad|iPhone|iPod/.test(navigator.userAgent)
+                    ? "image/jpeg, image/png, image/webp"
+                    : "image/*",
               })}
             />
             {initImage ? (
