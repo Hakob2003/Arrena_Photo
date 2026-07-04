@@ -212,7 +212,9 @@ function GeneratorContent() {
           // dealing with recent or cloud-synced photos from the gallery.
           try {
             const buffer = await file.arrayBuffer();
-            fileToProcess = new Blob([buffer], { type: file.type });
+            fileToProcess = new File([buffer], file.name, {
+              type: file.type || "image/jpeg",
+            });
           } catch (bufferErr) {
             console.error("Failed to read file buffer:", bufferErr);
             toast.dismiss("upload-toast");
@@ -236,13 +238,18 @@ function GeneratorContent() {
             try {
               const heic2any = (await import("heic2any")).default;
               const converted = await heic2any({
-                blob: file,
+                blob: fileToProcess,
                 toType: "image/jpeg",
                 quality: 0.8,
               });
-              fileToProcess = Array.isArray(converted)
+              const convertedBlob = Array.isArray(converted)
                 ? converted[0]
                 : converted;
+              fileToProcess = new File(
+                [convertedBlob],
+                file.name.replace(/\.heic|\.heif$/i, ".jpg"),
+                { type: "image/jpeg" },
+              );
             } catch (convErr) {
               console.error("HEIC conversion error:", convErr);
               toast.dismiss("upload-toast");
@@ -251,54 +258,41 @@ function GeneratorContent() {
             }
           }
 
-          const objectUrl = URL.createObjectURL(fileToProcess);
-          const img = new window.Image(); // use window.Image to avoid conflict with Next.js Image
+          try {
+            toast.loading("Оптимизация размера...", { id: "upload-toast" });
+            const imageCompression = (await import("browser-image-compression"))
+              .default;
 
-          img.onload = () => {
-            try {
-              const canvas = document.createElement("canvas");
-              let width = img.width;
-              let height = img.height;
+            // Offload decompression and resizing to a Web Worker to avoid OOM crashes on mobile!
+            const compressedFile = await imageCompression(
+              fileToProcess as File,
+              {
+                maxSizeMB: 1,
+                maxWidthOrHeight: 1200,
+                useWebWorker: true,
+                fileType: "image/jpeg",
+              },
+            );
 
-              const maxDim = 1200;
-              if (width > maxDim || height > maxDim) {
-                if (width > height) {
-                  height = Math.round((height / width) * maxDim);
-                  width = maxDim;
-                } else {
-                  width = Math.round((width / height) * maxDim);
-                  height = maxDim;
-                }
-              }
-
-              canvas.width = width;
-              canvas.height = height;
-              const ctx = canvas.getContext("2d");
-
-              if (ctx) {
-                ctx.drawImage(img, 0, 0, width, height);
-                // Convert to compressed JPEG to save bandwidth and memory
-                const base64 = canvas.toDataURL("image/jpeg", 0.85);
-                setInitImage(base64);
-              } else {
-                toast.error("Браузер не поддерживает обработку фото");
-              }
-            } catch (e) {
-              console.error("Canvas processing error:", e);
-              toast.error("Ошибка при сжатии фото");
-            } finally {
+            // Now we have a tiny, highly compressed JPEG Blob (~100-300KB). Convert to Base64 safely.
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              setInitImage(reader.result as string);
               toast.dismiss("upload-toast");
-              URL.revokeObjectURL(objectUrl);
-            }
-          };
-
-          img.onerror = () => {
+            };
+            reader.onerror = () => {
+              console.error("FileReader error on compressed blob");
+              toast.dismiss("upload-toast");
+              toast.error("Ошибка чтения оптимизированного фото");
+            };
+            reader.readAsDataURL(compressedFile);
+          } catch (compErr) {
+            console.error("Image compression error:", compErr);
             toast.dismiss("upload-toast");
-            toast.error("Не удалось открыть это фото. Попробуйте другое.");
-            URL.revokeObjectURL(objectUrl);
-          };
-
-          img.src = objectUrl;
+            toast.error(
+              "Браузер не справился со сжатием. Фото слишком тяжелое.",
+            );
+          }
         } catch (error) {
           console.log("Error processing image:", error);
           toast.error("Failed to process image. Please try another one.");
