@@ -197,6 +197,10 @@ function GeneratorContent() {
     async (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
       if (file) {
+        if (!file.type.startsWith("image/") && file.type !== "") {
+          toast.error("Пожалуйста, выберите файл изображения (JPG, PNG).");
+          return;
+        }
         if (file.size === 0) {
           toast.error(
             "Фото еще загружается из облака на телефон. Подождите секунду и выберите снова.",
@@ -234,13 +238,16 @@ function GeneratorContent() {
     [setInitImage],
   );
 
+  const onDropRejected = React.useCallback((fileRejections: any[]) => {
+    console.log("File rejected:", fileRejections);
+    toast.error(
+      "Неподдерживаемый формат фото. Пожалуйста, используйте JPG или PNG.",
+    );
+  }, []);
+
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
-    accept: {
-      "image/jpeg": [".jpeg", ".jpg"],
-      "image/png": [".png"],
-      "image/webp": [".webp"],
-    },
+    onDropRejected,
     maxFiles: 1,
     noClick: !!initImage,
   });
@@ -465,7 +472,11 @@ function GeneratorContent() {
                 : "border-black/20 dark:border-white/20 hover:border-white/40 bg-transparent/30"
             }`}
           >
-            <input {...getInputProps()} />
+            <input
+              {...getInputProps({
+                accept: "image/jpeg, image/png, image/webp",
+              })}
+            />
             {initImage ? (
               <div className="relative group">
                 <img
