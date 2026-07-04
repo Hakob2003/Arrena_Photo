@@ -150,7 +150,7 @@ export default function AppearanceProfilePage() {
             >
               <div className="absolute inset-0 bg-[#050505] -z-10" />
               <div className="w-full flex justify-between items-center mb-2">
-                <span className={cn("font-medium text-lg", watchSkin === 'LUXURY' ? "text-[#D4AF37]" : "text-gray-300")}>Luxury Gold</span>
+                <span className={cn("font-medium text-lg", watchSkin === 'LUXURY' ? "text-[#D4AF37]" : "text-gray-300")}>{t('profile.appearance.skinLuxury')}</span>
                 {watchSkin === 'LUXURY' && <div className="w-3 h-3 rounded-full bg-[#D4AF37] shadow-[0_0_10px_#D4AF37]" />}
               </div>
               <p className="text-xs text-gray-400">{t('profile.appearance.skinLuxuryDesc')}</p>
@@ -168,7 +168,7 @@ export default function AppearanceProfilePage() {
             >
               <div className="absolute inset-0 bg-[#fafafa] dark:bg-[#0A0A0A] -z-10" />
               <div className="w-full flex justify-between items-center mb-2">
-                <span className={cn("font-medium text-lg", watchSkin === 'NEON' ? "text-indigo-500 dark:text-indigo-400" : "")}>Neon Cyberpunk</span>
+                <span className={cn("font-medium text-lg", watchSkin === 'NEON' ? "text-indigo-500 dark:text-indigo-400" : "")}>{t('profile.appearance.skinNeon')}</span>
                 {watchSkin === 'NEON' && <div className="w-3 h-3 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.8)]" />}
               </div>
               <p className="text-xs text-slate-500 dark:text-gray-400">{t('profile.appearance.skinNeonDesc')}</p>
@@ -233,8 +233,8 @@ export default function AppearanceProfilePage() {
         {/* Font Size */}
         <div className="space-y-4 pt-6 border-t border-black/10 dark:border-white/10">
           <div>
-            <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">Font Size</h3>
-            <p className="text-sm text-slate-500 dark:text-gray-400">Adjust the interface text size.</p>
+            <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-1">{t('profile.appearance.fontSize')}</h3>
+            <p className="text-sm text-slate-500 dark:text-gray-400">{t('profile.appearance.fontSizeDesc')}</p>
           </div>
           <div className="flex bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg p-1 w-fit">
             {fonts.map((f) => (
@@ -262,8 +262,8 @@ export default function AppearanceProfilePage() {
             render={({ field }) => (
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white">Compact Mode</h3>
-                  <p className="text-sm text-slate-500 dark:text-gray-400">Decrease spacing to fit more content on screen.</p>
+                  <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white">{t('profile.appearance.compactMode')}</h3>
+                  <p className="text-sm text-slate-500 dark:text-gray-400">{t('profile.appearance.compactModeDesc')}</p>
                 </div>
                 <Switch
                   checked={field.value}
@@ -291,8 +291,8 @@ export default function AppearanceProfilePage() {
             render={({ field }) => (
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white">Interface Animations</h3>
-                  <p className="text-sm text-slate-500 dark:text-gray-400">Enable smooth transitions and micro-interactions.</p>
+                  <h3 className="text-base font-medium text-slate-900 dark:text-slate-900 dark:text-white">{t('profile.appearance.animations')}</h3>
+                  <p className="text-sm text-slate-500 dark:text-gray-400">{t('profile.appearance.animationsDesc')}</p>
                 </div>
                 <Switch
                   checked={field.value}
@@ -321,7 +321,7 @@ export default function AppearanceProfilePage() {
             disabled={isSaving}
             className="px-6 py-2.5 bg-white text-black font-medium rounded-lg hover:bg-gray-200 transition flex items-center justify-center min-w-[120px]"
           >
-            {isSaving ? <span className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></span> : 'Save Preferences'}
+            {isSaving ? <span className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></span> : t('profile.appearance.save')}
           </button>
         </div>
       </form>

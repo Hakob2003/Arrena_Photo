@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore, useUIStore } from '../../store';
 import { AdminSidebar } from '../../components/admin/AdminSidebar';
+import { parseJwtPayload } from '@/lib/utils/jwt';
 import { AdminTopbar } from '../../components/admin/AdminTopbar';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -24,8 +25,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     // We parse token directly if user is not in state yet,
     // to prevent flashing unauthenticated state if we can avoid it.
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (payload.role !== 'ADMIN') {
+      const payload = parseJwtPayload(token);
+      if (!payload || payload.role !== 'ADMIN') {
         router.push('/');
       }
     } catch {

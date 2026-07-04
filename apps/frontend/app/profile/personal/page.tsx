@@ -117,7 +117,7 @@ export default function PersonalProfilePage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pt-6 border-t border-black/10 dark:border-white/10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">First Name</label>
+            <label className="text-sm font-medium text-gray-300">{t('profile.personal.firstName')}</label>
             <input 
               {...register('name')} 
               className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
@@ -125,7 +125,7 @@ export default function PersonalProfilePage() {
             />
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Last Name</label>
+            <label className="text-sm font-medium text-gray-300">{t('profile.personal.lastName')}</label>
             <input 
               {...register('surname')} 
               className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
@@ -135,7 +135,7 @@ export default function PersonalProfilePage() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-300">Nickname</label>
+          <label className="text-sm font-medium text-gray-300">{t('profile.personal.nickname')}</label>
           <input 
             {...register('nickname')} 
             className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2.5 text-slate-900 dark:text-slate-900 dark:text-white focus:outline-none focus:border-white/30 transition"
@@ -145,7 +145,7 @@ export default function PersonalProfilePage() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-300">Bio</label>
+          <label className="text-sm font-medium text-gray-300">{t('profile.personal.bio')}</label>
           <textarea 
             {...register('bio')} 
             rows={4}
@@ -155,14 +155,14 @@ export default function PersonalProfilePage() {
         </div>
 
         <div className="pt-6 border-t border-black/10 dark:border-white/10">
-          <h3 className="text-sm font-medium text-gray-300 mb-4">Social Links</h3>
+          <h3 className="text-sm font-medium text-gray-300 mb-4">{t('profile.personal.socialLinks')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-500 dark:text-gray-400">Telegram</label>
+              <label className="text-sm font-medium text-slate-500 dark:text-gray-400">{t('profile.personal.telegram')}</label>
               <input {...register('socialLinks.telegram')} className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:border-white/30" placeholder="t.me/username" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-500 dark:text-gray-400">Instagram</label>
+              <label className="text-sm font-medium text-slate-500 dark:text-gray-400">{t('profile.personal.instagram')}</label>
               <input {...register('socialLinks.instagram')} className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:border-white/30" placeholder="instagram.com/username" />
             </div>
             <div className="space-y-2">
@@ -170,7 +170,7 @@ export default function PersonalProfilePage() {
               <input {...register('socialLinks.twitter')} className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:border-white/30" placeholder="x.com/username" />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-500 dark:text-gray-400">Website</label>
+              <label className="text-sm font-medium text-slate-500 dark:text-gray-400">{t('profile.personal.website')}</label>
               <input {...register('socialLinks.website')} className="w-full bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg px-4 py-2 text-slate-900 dark:text-slate-900 dark:text-white focus:border-white/30" placeholder="https://yourwebsite.com" />
             </div>
           </div>

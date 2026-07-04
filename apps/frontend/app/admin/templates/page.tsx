@@ -12,7 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { MoreHorizontal, Plus, Copy, Edit, Trash, PlaySquare, ImageIcon, Search, LayoutGrid, List, Table as TableIcon, ArrowUp, ArrowDown } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import { templatesApi } from "@/lib/templates.api";
 import { TemplateModal } from "@/components/admin/TemplateModal";
 import { ImportTemplatesModal } from "@/components/admin/ImportTemplatesModal";

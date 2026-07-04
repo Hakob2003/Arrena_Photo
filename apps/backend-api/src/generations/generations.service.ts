@@ -149,19 +149,26 @@ export class GenerationsService {
     return generation;
   }
 
-  async getHistory(userId: string) {
-    const generations = await this.prisma.generation.findMany({
-      where: { userId, status: 'DONE' },
-      orderBy: { createdAt: 'desc' },
-      include: {
-        result: true,
-        aiModel: { select: { name: true } },
-        template: { select: { name: true } }
-      }
-    });
+  async getHistory(userId: string, page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+    
+    const [generations, total] = await Promise.all([
+      this.prisma.generation.findMany({
+        where: { userId, status: 'DONE' },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+        include: {
+          result: true,
+          aiModel: { select: { name: true } },
+          template: { select: { name: true } }
+        }
+      }),
+      this.prisma.generation.count({ where: { userId, status: 'DONE' } })
+    ]);
 
-    return generations.map(g => {
-      let imageUrl = (g.result as any)?.s3ImageUrl || g.result?.imageUrl;
+    const formatted = generations.map(g => {
+      let imageUrl = g.result?.s3ImageUrl || g.result?.imageUrl;
       let driveFileId = g.result?.driveFileId;
 
       // Handle legacy records where imageUrl was saved as a relative Drive proxy path
@@ -176,10 +183,18 @@ export class GenerationsService {
         imageUrl: imageUrl || 'https://picsum.photos/seed/fallback/512/512',
         driveFileId,
         model: g.aiModel.name,
-        template: g.template?.name,
-        createdAt: g.createdAt
       };
     });
+    
+    return {
+      data: formatted,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      }
+    };
   }
 
   async getStatus(id: string, userId: string) {
@@ -252,17 +267,23 @@ export class GenerationsService {
     }
   }
 
-  async getFeed(userId?: string) {
-    const generations = await this.prisma.generation.findMany({
-      where: { status: 'DONE', isPublic: true },
-      orderBy: { createdAt: 'desc' },
-      take: 50,
-      include: {
-        result: true,
-        user: { select: { name: true, avatarUrl: true } },
-        template: { select: { name: true } }
-      }
-    });
+  async getFeed(userId?: string, page = 1, limit = 20) {
+    const skip = (page - 1) * limit;
+    
+    const [generations, total] = await Promise.all([
+      this.prisma.generation.findMany({
+        where: { status: 'DONE', isPublic: true },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+        include: {
+          result: true,
+          user: { select: { name: true, avatarUrl: true } },
+          template: { select: { name: true } }
+        }
+      }),
+      this.prisma.generation.count({ where: { status: 'DONE', isPublic: true } })
+    ]);
 
     let likedSet = new Set<string>();
     if (userId) {
@@ -272,8 +293,8 @@ export class GenerationsService {
       likes.forEach(l => likedSet.add(l.generationId));
     }
 
-    return generations.map(g => {
-      let imageUrl = (g.result as any)?.s3ImageUrl || g.result?.imageUrl;
+    const formatted = generations.map(g => {
+      let imageUrl = g.result?.s3ImageUrl || g.result?.imageUrl;
       let driveFileId = g.result?.driveFileId;
       const drivePathPrefix = '/api/integrations/google-drive/file/';
       if (imageUrl && imageUrl.startsWith(drivePathPrefix) && !driveFileId) {
@@ -290,10 +311,19 @@ export class GenerationsService {
         prompt: g.prompt,
         settings: g.settings,
         likesCount: g.likesCount,
-        isLiked: likedSet.has(g.id),
-        createdAt: g.createdAt
+        isLiked: likedSet.has(g.id)
       };
     });
+    
+    return {
+      data: formatted,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      }
+    };
   }
 
   async cancel(id: string, userId: string) {

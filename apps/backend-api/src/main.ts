@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { json, urlencoded } from 'express';
 import helmet from 'helmet';
 import * as cookieParser from 'cookie-parser';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
 import { Logger } from '@nestjs/common';
 
@@ -55,6 +56,7 @@ async function bootstrap() {
         forbidNonWhitelisted: true,
       }),
     );
+    app.useGlobalFilters(new AllExceptionsFilter());
 
     // Swagger Documentation Setup
     const config = new DocumentBuilder()
