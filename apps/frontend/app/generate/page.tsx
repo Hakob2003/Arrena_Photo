@@ -447,7 +447,7 @@ function GeneratorContent() {
           <h2 className="text-lg font-bold mb-4">{t("gen.sourcePhoto")}</h2>
           <div
             {...getRootProps()}
-            className={`border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-colors ${
+            className={`relative overflow-hidden border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-colors ${
               isDragActive
                 ? isLuxury
                   ? "border-[#D4AF37] bg-[#D4AF37]/10"
@@ -462,6 +462,17 @@ function GeneratorContent() {
                   /iPad|iPhone|iPod/.test(navigator.userAgent)
                     ? "image/jpeg, image/png, image/webp"
                     : "image/*",
+                style: {
+                  display: initImage ? "none" : "block",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  opacity: 0,
+                  cursor: "pointer",
+                  zIndex: 10,
+                },
               })}
             />
             {initImage ? (
