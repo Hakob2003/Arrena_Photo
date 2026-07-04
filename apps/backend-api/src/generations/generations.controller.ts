@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, UseGuards, Query } from '@nestjs/common';
 import { GenerationsService } from './generations.service';
 import { CreateGenerationDto } from './dto/create-generation.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -33,14 +33,21 @@ export class GenerationsController {
   @Roles(RoleName.ADMIN, RoleName.MODERATOR, RoleName.CREATOR, RoleName.USER)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({ summary: 'Get generation history for user' })
-  getHistory(@CurrentUser() user: IJwtPayload) {
-    return this.generationsService.getHistory(user.id);
+  getHistory(
+    @CurrentUser() user: IJwtPayload,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.generationsService.getHistory(user.id, page ? parseInt(page, 10) : 1, limit ? parseInt(limit, 10) : 20);
   }
 
   @Get('feed/public')
   @ApiOperation({ summary: 'Get public generations feed' })
-  getFeed() {
-    return this.generationsService.getFeed();
+  getFeed(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.generationsService.getFeed(undefined, page ? parseInt(page, 10) : 1, limit ? parseInt(limit, 10) : 20);
   }
 
   @Get(':id')
