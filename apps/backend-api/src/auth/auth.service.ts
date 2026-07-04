@@ -1,11 +1,16 @@
-import { Injectable, UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../prisma/prisma.service';
-import { RegisterDto, LoginDto } from './dto/auth.dto';
-import { MailService } from '../mail/mail.service';
-import * as bcrypt from 'bcryptjs';
-import { randomBytes } from 'crypto';
-import { EncryptionUtil } from '../common/utils/encryption.util';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+  BadRequestException,
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { PrismaService } from "../prisma/prisma.service";
+import { RegisterDto, LoginDto } from "./dto/auth.dto";
+import { MailService } from "../mail/mail.service";
+import * as bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
+import { EncryptionUtil } from "../common/utils/encryption.util";
 
 @Injectable()
 export class AuthService {
@@ -20,7 +25,7 @@ export class AuthService {
       where: { id: userId },
       include: { role: true, subscription: true },
     });
-    if (!user) throw new UnauthorizedException('User not found');
+    if (!user) throw new UnauthorizedException("User not found");
     return {
       id: user.id,
       email: user.email,
@@ -28,14 +33,14 @@ export class AuthService {
       avatarUrl: user.avatarUrl,
       role: user.role.name,
       credits: user.credits,
-      planId: user.subscription?.plan || 'FREE',
+      planId: user.subscription?.plan || "FREE",
       preferences: {
         theme: user.theme,
         accentColor: user.accentColor,
         fontSize: user.fontSize,
         compactMode: user.compactMode,
         animationsEnabled: user.animationsEnabled,
-      }
+      },
     };
   }
 
@@ -45,15 +50,17 @@ export class AuthService {
     });
 
     if (exists) {
-      throw new ConflictException('Email already in use');
+      throw new ConflictException("Email already in use");
     }
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
-    
-    let userRole = await this.prisma.role.findUnique({ where: { name: 'USER' } });
+
+    let userRole = await this.prisma.role.findUnique({
+      where: { name: "USER" },
+    });
     if (!userRole) {
       userRole = await this.prisma.role.create({
-        data: { name: 'USER', permissions: ['generations:create'] },
+        data: { name: "USER", permissions: ["generations:create"] },
       });
     }
 
@@ -66,7 +73,7 @@ export class AuthService {
       },
     });
 
-    const token = randomBytes(32).toString('hex');
+    const token = randomBytes(32).toString("hex");
     await this.prisma.verificationToken.create({
       data: {
         identifier: user.email,
@@ -78,12 +85,14 @@ export class AuthService {
     try {
       await this.mailService.sendVerificationEmail(user.email, token);
     } catch (e) {
-      console.error('Failed to send email', e);
+      console.error("Failed to send email", e);
     }
 
-    return { message: 'Registration successful. Please check your email to verify your account.' };
+    return {
+      message:
+        "Registration successful. Please check your email to verify your account.",
+    };
   }
-
 
   async verifyEmail(token: string) {
     const verification = await this.prisma.verificationToken.findUnique({
@@ -91,7 +100,7 @@ export class AuthService {
     });
 
     if (!verification || verification.expires < new Date()) {
-      throw new BadRequestException('Invalid or expired verification token');
+      throw new BadRequestException("Invalid or expired verification token");
     }
 
     await this.prisma.user.update({
@@ -101,7 +110,7 @@ export class AuthService {
 
     await this.prisma.verificationToken.delete({ where: { token } });
 
-    return { message: 'Email successfully verified. You can now log in.' };
+    return { message: "Email successfully verified. You can now log in." };
   }
 
   async login(dto: LoginDto) {
@@ -111,16 +120,19 @@ export class AuthService {
     });
 
     if (!user || !user.passwordHash) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException("Invalid credentials");
     }
 
     if (!user.emailVerified) {
-      throw new UnauthorizedException('Please verify your email first');
+      throw new UnauthorizedException("Please verify your email first");
     }
 
-    const isPasswordValid = await bcrypt.compare(dto.password, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(
+      dto.password,
+      user.passwordHash,
+    );
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException("Invalid credentials");
     }
 
     // Auto-rehash weak passwords on successful login
@@ -146,22 +158,30 @@ export class AuthService {
   }
 
   async handleOAuthLogin(provider: string, profile: any) {
-    const { email, name, providerAccountId, accessToken, refreshToken } = profile;
+    const { email, name, providerAccountId, accessToken, refreshToken } =
+      profile;
 
     if (!email) {
       throw new BadRequestException(`No email provided by ${provider}`);
     }
 
-    let user = await this.prisma.user.findUnique({ where: { email }, include: { role: true } });
+    let user = await this.prisma.user.findUnique({
+      where: { email },
+      include: { role: true },
+    });
 
     const encryptedAccessToken = EncryptionUtil.encrypt(accessToken);
-    const encryptedRefreshToken = refreshToken ? EncryptionUtil.encrypt(refreshToken) : undefined;
+    const encryptedRefreshToken = refreshToken
+      ? EncryptionUtil.encrypt(refreshToken)
+      : undefined;
 
     if (!user) {
-      let userRole = await this.prisma.role.findUnique({ where: { name: 'USER' } });
+      let userRole = await this.prisma.role.findUnique({
+        where: { name: "USER" },
+      });
       if (!userRole) {
         userRole = await this.prisma.role.create({
-          data: { name: 'USER', permissions: ['generations:create'] },
+          data: { name: "USER", permissions: ["generations:create"] },
         });
       }
 
@@ -180,33 +200,41 @@ export class AuthService {
             },
           },
         },
-        include: { role: true }
+        include: { role: true },
       });
     } else {
       // Connect OAuth account if not connected
       const existingOAuth = await this.prisma.oAuthAccount.findUnique({
-        where: { provider_providerAccountId: { provider, providerAccountId } }
+        where: { provider_providerAccountId: { provider, providerAccountId } },
       });
       if (!existingOAuth) {
         await this.prisma.oAuthAccount.create({
-          data: { userId: user.id, provider, providerAccountId, accessToken: encryptedAccessToken, refreshToken: encryptedRefreshToken }
+          data: {
+            userId: user.id,
+            provider,
+            providerAccountId,
+            accessToken: encryptedAccessToken,
+            refreshToken: encryptedRefreshToken,
+          },
         });
       } else {
         // Update tokens if they changed
         await this.prisma.oAuthAccount.update({
           where: { id: existingOAuth.id },
-          data: { 
-            accessToken: encryptedAccessToken, 
-            ...(encryptedRefreshToken ? { refreshToken: encryptedRefreshToken } : {}) 
-          }
+          data: {
+            accessToken: encryptedAccessToken,
+            ...(encryptedRefreshToken
+              ? { refreshToken: encryptedRefreshToken }
+              : {}),
+          },
         });
       }
-      
+
       if (!user.emailVerified) {
-         await this.prisma.user.update({
-            where: { id: user.id },
-            data: { emailVerified: new Date() }
-         });
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: { emailVerified: new Date() },
+        });
       }
     }
 
@@ -216,11 +244,31 @@ export class AuthService {
   private async generateTokens(userId: string, email: string, role: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
-      select: { tokenVersion: true }
+      select: { tokenVersion: true },
     });
-    const payload = { sub: userId, email, role, tokenVersion: user?.tokenVersion || 0 };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+
+    // Add strict token type segregation to prevent token confusion (passing access as refresh or vice-versa)
+    const accessPayload = {
+      sub: userId,
+      email,
+      role,
+      tokenVersion: user?.tokenVersion || 0,
+      type: "access",
+    };
+    const refreshPayload = {
+      sub: userId,
+      email,
+      role,
+      tokenVersion: user?.tokenVersion || 0,
+      type: "refresh",
+    };
+
+    const accessToken = this.jwtService.sign(accessPayload, {
+      expiresIn: "15m",
+    });
+    const refreshToken = this.jwtService.sign(refreshPayload, {
+      expiresIn: "7d",
+    });
 
     await this.prisma.session.create({
       data: {
@@ -235,22 +283,29 @@ export class AuthService {
 
   async refreshTokens(refreshToken: string) {
     if (!refreshToken) {
-      throw new UnauthorizedException('No refresh token provided');
+      throw new UnauthorizedException("No refresh token provided");
     }
 
     try {
       const payload = this.jwtService.verify(refreshToken);
-      
+
+      // Strict type check to prevent using an access token as a refresh token
+      if (payload.type && payload.type !== "refresh") {
+        throw new UnauthorizedException("Invalid token type");
+      }
+
       const session = await this.prisma.session.findUnique({
-        where: { token: refreshToken }
+        where: { token: refreshToken },
       });
 
       if (!session) {
         // Reuse detection: Token is mathematically valid but not in DB
         await this.prisma.session.deleteMany({
-          where: { userId: payload.sub }
+          where: { userId: payload.sub },
         });
-        throw new UnauthorizedException('Token reuse detected. All sessions revoked.');
+        throw new UnauthorizedException(
+          "Token reuse detected. All sessions revoked.",
+        );
       }
 
       // Valid rotation: delete old session
@@ -261,7 +316,7 @@ export class AuthService {
       if (e instanceof UnauthorizedException) {
         throw e;
       }
-      throw new UnauthorizedException('Invalid or expired refresh token');
+      throw new UnauthorizedException("Invalid or expired refresh token");
     }
   }
 
@@ -269,12 +324,12 @@ export class AuthService {
     // Increment tokenVersion to invalidate all existing JWTs immediately
     await this.prisma.user.update({
       where: { id: userId },
-      data: { tokenVersion: { increment: 1 } }
+      data: { tokenVersion: { increment: 1 } },
     });
 
     // Also delete all active sessions (refresh tokens) from the database
     await this.prisma.session.deleteMany({
-      where: { userId }
+      where: { userId },
     });
   }
 }
