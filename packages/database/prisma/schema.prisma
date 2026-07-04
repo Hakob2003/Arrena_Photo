@@ -338,6 +338,8 @@ model Generation {
 
   @@index([userId])
   @@index([status])
+  @@index([createdAt])
+  @@index([userId, createdAt])
 }
 
 model GenerationResult {
