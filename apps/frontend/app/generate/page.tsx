@@ -196,105 +196,23 @@ function GeneratorContent() {
     async (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
       if (file) {
-        if (file.size === 0) {
-          toast.error(
-            "Фото еще загружается из облака на телефон. Подождите секунду и выберите снова.",
-          );
-          return;
-        }
         try {
           toast.loading("Обработка фото...", { id: "upload-toast" });
 
-          let fileToProcess: File | Blob = file;
-
-          // Read the file into memory immediately to decouple it from the volatile OS file descriptor.
-          // This prevents the dreaded Chrome Android "net::ERR_UPLOAD_FILE_CHANGED" bug when
-          // dealing with recent or cloud-synced photos from the gallery.
-          try {
-            const buffer = await file.arrayBuffer();
-            fileToProcess = new File([buffer], file.name, {
-              type: file.type || "image/jpeg",
-            });
-          } catch (bufferErr) {
-            console.error("Failed to read file buffer:", bufferErr);
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setInitImage(reader.result as string);
             toast.dismiss("upload-toast");
-            toast.error(
-              "Сбой чтения. Если это фото из облака, сначала сохраните его в память телефона.",
-            );
-            return;
-          }
-
-          // Check for HEIC/HEIF files which are common on Samsung/iOS but unsupported by web browsers natively
-          const isHeic =
-            file.name.toLowerCase().endsWith(".heic") ||
-            file.name.toLowerCase().endsWith(".heif") ||
-            file.type === "image/heic" ||
-            file.type === "image/heif";
-
-          if (isHeic) {
-            toast.loading("Конвертация HEIC формата...", {
-              id: "upload-toast",
-            });
-            try {
-              const heic2any = (await import("heic2any")).default;
-              const converted = await heic2any({
-                blob: fileToProcess,
-                toType: "image/jpeg",
-                quality: 0.8,
-              });
-              const convertedBlob = Array.isArray(converted)
-                ? converted[0]
-                : converted;
-              fileToProcess = new File(
-                [convertedBlob],
-                file.name.replace(/\.heic|\.heif$/i, ".jpg"),
-                { type: "image/jpeg" },
-              );
-            } catch (convErr) {
-              console.error("HEIC conversion error:", convErr);
-              toast.dismiss("upload-toast");
-              toast.error("Не удалось конвертировать HEIC фото");
-              return;
-            }
-          }
-
-          try {
-            toast.loading("Оптимизация размера...", { id: "upload-toast" });
-            const imageCompression = (await import("browser-image-compression"))
-              .default;
-
-            // Offload decompression and resizing to a Web Worker to avoid OOM crashes on mobile!
-            const compressedFile = await imageCompression(
-              fileToProcess as File,
-              {
-                maxSizeMB: 1,
-                maxWidthOrHeight: 1200,
-                useWebWorker: true,
-                fileType: "image/jpeg",
-              },
-            );
-
-            // Now we have a tiny, highly compressed JPEG Blob (~100-300KB). Convert to Base64 safely.
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              setInitImage(reader.result as string);
-              toast.dismiss("upload-toast");
-            };
-            reader.onerror = () => {
-              console.error("FileReader error on compressed blob");
-              toast.dismiss("upload-toast");
-              toast.error("Ошибка чтения оптимизированного фото");
-            };
-            reader.readAsDataURL(compressedFile);
-          } catch (compErr) {
-            console.error("Image compression error:", compErr);
+          };
+          reader.onerror = () => {
+            console.error("FileReader error");
             toast.dismiss("upload-toast");
-            toast.error(
-              "Браузер не справился со сжатием. Фото слишком тяжелое.",
-            );
-          }
+            toast.error("Ошибка чтения фото");
+          };
+          reader.readAsDataURL(file);
         } catch (error) {
           console.log("Error processing image:", error);
+          toast.dismiss("upload-toast");
           toast.error("Failed to process image. Please try another one.");
         }
       }
@@ -540,12 +458,7 @@ function GeneratorContent() {
             {!initImage && (
               <input
                 type="file"
-                accept={
-                  typeof navigator !== "undefined" &&
-                  /iPad|iPhone|iPod/.test(navigator.userAgent)
-                    ? "image/jpeg, image/png, image/webp"
-                    : "image/*"
-                }
+                accept="image/*"
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
                     onDrop(Array.from(e.target.files));

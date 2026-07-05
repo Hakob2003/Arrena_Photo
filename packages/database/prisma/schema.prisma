@@ -232,6 +232,9 @@ model Template {
   @@index([categoryId])
   @@index([isPublic, isApproved])
   @@index([recommendedModels], type: Gin)
+  @@index([createdAt])
+  @@index([downloadCount])
+  @@index([status])
 }
 
 model TemplateVersion {
@@ -407,6 +410,9 @@ model MarketplaceItem {
 
   template  Template   @relation(fields: [templateId], references: [id], onDelete: Cascade)
   purchases Purchase[]
+
+  @@index([isActive])
+  @@index([price])
 }
 
 model Purchase {
