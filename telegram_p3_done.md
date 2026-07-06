@@ -7,6 +7,7 @@
 Документ находится в папке `docs/02_TODO_REFACTOR.md`.
 
 Мы завершили:
+
 1. `ARCHITECTURE_VISION.md`
 2. `TECH_DEBT.md`
 3. `ROADMAP_REFACTOR.md`

@@ -1,6 +1,7 @@
 Я полностью переписал **Фазу 1** (Ядро Стратегии) на бескомпромиссном уровне Staff Engineer.
 
 Зайдите в папку `docs/` и посмотрите эти 5 документов:
+
 1. `04_ARCHITECTURE_VISION.md` (Target Scale, KEDA, Idempotency keys)
 2. `05_TECH_DEBT.md` (Business Impact, Cost of Delay, ROI)
 3. `01_ROADMAP_REFACTOR.md` (Mermaid-графы зависимостей и DoD для 5 спринтов)
