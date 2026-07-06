@@ -16,8 +16,7 @@ export function useDrumNavigation() {
     // Only enable drum navigation for the new PREMIUM skin
     if (skin !== 'PREMIUM') return;
 
-    // Determine which drum we are currently in
-    const getDrumLinks = () => {
+    const getDrumLinks = (): string[] | null => {
       // FLOW_ROUTES are now handled by VirtualCylinder, so we don't intercept here
       // You can define other flows here if needed, like settings flow
       return null;

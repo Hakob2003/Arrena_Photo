@@ -193,10 +193,10 @@ export function Sidebar() {
           !isMobile ? (
             isPremium ? 'sticky top-3 my-3 ml-3 rounded-3xl bg-[#060606]/40 backdrop-blur-2xl shadow-2xl border border-white/10 h-[calc(100vh-24px)] z-50' 
             : 'sticky top-0 bg-transparent dark:bg-transparent backdrop-blur-none shadow-lg dark:shadow-none border-r border-black/10 dark:border-white/5 h-screen z-50'
-          ) : (
+          ) : [
             'fixed inset-y-0 left-0 z-50 transform h-screen',
             isPremium ? 'bg-black/60 backdrop-blur-3xl border-r border-white/10' : 'bg-white/95 dark:bg-[#0A0A0A]/95 backdrop-blur-xl border-r border-black/10 dark:border-white/10'
-          )
+          ]
         )}
       >
         <div className={`flex items-center relative ${isSidebarOpen ? 'justify-center p-0' : 'justify-start pt-4 pb-2 px-1 border-b border-black/10 dark:border-white/5 md:border-none'}`}>

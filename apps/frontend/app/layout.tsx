@@ -33,6 +33,18 @@ export default function RootLayout({
             {children}
           </ClientLayout>
         </Providers>
+        <script src="https://telegram.org/js/telegram-web-app.js" async></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.addEventListener('load', function() {
+                if (window.Telegram && window.Telegram.WebApp) {
+                  window.Telegram.WebApp.expand();
+                }
+              });
+            `,
+          }}
+        />
       </body>
     </html>
   );

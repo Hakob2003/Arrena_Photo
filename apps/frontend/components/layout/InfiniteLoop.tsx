@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
+// @ts-ignore
 import { useLenis } from 'lenis/react';
 
 export function InfiniteLoop({ children }: { children: React.ReactNode }) {
@@ -44,7 +45,7 @@ export function InfiniteLoop({ children }: { children: React.ReactNode }) {
     }
   }, [contentHeight]);
 
-  useLenis((lenis) => {
+  useLenis((lenis: any) => {
     if (contentHeight === 0) return;
 
     const scroll = lenis.scroll;

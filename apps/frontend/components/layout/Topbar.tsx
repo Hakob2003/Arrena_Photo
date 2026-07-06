@@ -54,11 +54,12 @@ export function Topbar() {
 
       {/* Topbar Logo Text */}
       {user ? (
-        <div className={`absolute pointer-events-none h-full z-[60] flex items-center transition-all duration-500 ease-in-out ${
-          isSidebarOpen 
-            ? "left-4 md:left-8 justify-start translate-x-0" 
-            : "left-12 md:left-1/2 justify-start md:justify-center md:-translate-x-1/2"
-        }`}>
+        <div className={cn(
+          "pointer-events-none h-full z-[60] flex items-center transition-all duration-500 ease-in-out",
+          isMobile 
+            ? "relative ml-2 mr-auto justify-start" 
+            : `absolute ${isSidebarOpen ? "left-8 justify-start translate-x-0" : "left-1/2 justify-center -translate-x-1/2"}`
+        )}>
           <motion.div
             layout
             initial={false}
@@ -75,7 +76,7 @@ export function Topbar() {
             <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen && isMobile ? 'pointer-events-none' : 'pointer-events-auto'}`}>
               {isNeon || isPremium ? (
                 <div 
-                  className="h-[27px] sm:h-[42px] w-[144px] relative overflow-hidden masked-logo-parent"
+                  className="h-[27px] sm:h-[42px] w-[110px] sm:w-[144px] relative overflow-hidden masked-logo-parent"
                   style={{
                     WebkitMask: `url(/logo2.png) no-repeat center / contain`,
                     mask: `url(/logo2.png) no-repeat center / contain`

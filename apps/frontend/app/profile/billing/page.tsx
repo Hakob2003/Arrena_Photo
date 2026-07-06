@@ -16,7 +16,7 @@ export default function UserBillingPage() {
   const { t } = useTranslation();
   const preferences = useUIStore(state => state.preferences);
   const isPremium = preferences?.skin === 'PREMIUM';
-  const isLuxury = preferences?.skin === 'GOLD';
+  const isLuxury = preferences?.skin === 'LUXURY';
   // Sync planId and credits from server on page load
   useEffect(() => {
     (async () => {
@@ -61,6 +61,7 @@ export default function UserBillingPage() {
     };
 
     let touchStartY = 0;
+    let touchStartX = 0;
 
     const handleWheel = (e: WheelEvent) => {
       if (isNavigating.current) return;
@@ -72,10 +73,11 @@ export default function UserBillingPage() {
       const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) <= 2;
       const isAtTop = scrollTop <= 2;
 
-      if (e.deltaY > 0 && isAtBottom) {
+      // Vertical wheel at boundaries (or horizontal wheel, but only at boundaries)
+      if ((e.deltaY > 0 || e.deltaX > 0) && isAtBottom) {
         e.preventDefault(); 
         navigateTo('next');
-      } else if (e.deltaY < 0 && isAtTop) {
+      } else if ((e.deltaY < 0 || e.deltaX < 0) && isAtTop) {
         e.preventDefault();
         navigateTo('prev');
       }
@@ -83,13 +85,16 @@ export default function UserBillingPage() {
 
     const handleTouchStart = (e: TouchEvent) => {
       touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
     };
 
     const handleTouchMove = (e: TouchEvent) => {
       if (isNavigating.current) return;
 
       const touchEndY = e.touches[0].clientY;
+      const touchEndX = e.touches[0].clientX;
       const deltaY = touchStartY - touchEndY; 
+      const deltaX = touchStartX - touchEndX;
 
       const scrollTop = window.scrollY;
       const scrollHeight = document.body.scrollHeight;
@@ -98,10 +103,20 @@ export default function UserBillingPage() {
       const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) <= 2;
       const isAtTop = scrollTop <= 2;
 
-      if (deltaY > 30 && isAtBottom) {
-        navigateTo('next');
-      } else if (deltaY < -30 && isAtTop) {
-        navigateTo('prev');
+      const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
+
+      if (isHorizontalSwipe) {
+        if (deltaX > 40 && isAtBottom) {
+          navigateTo('next');
+        } else if (deltaX < -40 && touchStartX > 30 && isAtTop) {
+          navigateTo('prev');
+        }
+      } else {
+        if (deltaY > 30 && isAtBottom) {
+          navigateTo('next');
+        } else if (deltaY < -30 && isAtTop) {
+          navigateTo('prev');
+        }
       }
     };
 
@@ -146,10 +161,18 @@ export default function UserBillingPage() {
 
       {/* Tabs Navigation */}
       <div className="flex overflow-x-auto space-x-1 border-b border-black/10 dark:border-white/10 mb-8 custom-scrollbar pb-1">
-        {tabs.map((tb) => (
+        {tabs.map((tb, idx) => (
           <button
             key={tb.id}
-            onClick={() => setActiveTab(tb.id as Tab)}
+            onClick={() => {
+              const currentIndex = tabs.findIndex(t => t.id === activeTab);
+              if (idx > currentIndex) {
+                useUIStore.getState().setNavDirection('down');
+              } else if (idx < currentIndex) {
+                useUIStore.getState().setNavDirection('up');
+              }
+              setActiveTab(tb.id as Tab);
+            }}
             className={`whitespace-nowrap px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
               activeTab === tb.id 
                 ? (isLuxury ? 'border-[#D4AF37] text-[#D4AF37]' : 'border-indigo-500 text-indigo-600 dark:text-indigo-400')
@@ -169,15 +192,15 @@ export default function UserBillingPage() {
             custom={useUIStore.getState().navDirection}
             variants={{
               initial: (dir: 'up' | 'down' | null) => {
-                if (preferences.skin !== 'PREMIUM') return { opacity: 0, y: 10 };
-                if (!dir) return { opacity: 0, y: 0 };
-                return { opacity: 1, y: dir === 'down' ? '100%' : '-100%' };
+                if (preferences.skin !== 'PREMIUM') return { opacity: 0, x: dir === 'down' ? 20 : -20 };
+                if (!dir) return { opacity: 0, x: 0 };
+                return { opacity: 1, x: dir === 'down' ? '100%' : '-100%', scale: 0.95 };
               },
-              animate: { opacity: 1, y: 0 },
+              animate: { opacity: 1, x: 0, scale: 1 },
               exit: (dir: 'up' | 'down' | null) => {
-                if (preferences.skin !== 'PREMIUM') return { opacity: 0, y: -10 };
-                if (!dir) return { opacity: 0, y: 0 };
-                return { opacity: 1, y: dir === 'down' ? '-100%' : '100%' };
+                if (preferences.skin !== 'PREMIUM') return { opacity: 0, x: dir === 'down' ? -20 : 20 };
+                if (!dir) return { opacity: 0, x: 0 };
+                return { opacity: 1, x: dir === 'down' ? '-100%' : '100%', scale: 0.95 };
               }
             }}
             initial="initial"

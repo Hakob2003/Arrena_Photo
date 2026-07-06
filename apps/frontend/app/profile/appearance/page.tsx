@@ -189,7 +189,7 @@ export default function AppearanceProfilePage() {
                 <button
                   key={themeOption.id}
                   type="button"
-                  onClick={() => setValue('theme', themeOption.id, { shouldDirty: true })}
+                  onClick={() => setValue('theme', themeOption.id as any, { shouldDirty: true })}
                   className={cn(
                     "flex flex-col items-center justify-center gap-3 p-4 rounded-xl border transition-all",
                     isActive 
@@ -217,7 +217,7 @@ export default function AppearanceProfilePage() {
                 <button
                   key={c.id}
                   type="button"
-                  onClick={() => setValue('accentColor', c.id, { shouldDirty: true })}
+                  onClick={() => setValue('accentColor', c.id as any, { shouldDirty: true })}
                   className={cn(
                     "w-10 h-10 rounded-full flex items-center justify-center transition-transform",
                     c.bg,
@@ -240,7 +240,7 @@ export default function AppearanceProfilePage() {
               <button
                 key={f.id}
                 type="button"
-                onClick={() => setValue('fontSize', f.id, { shouldDirty: true })}
+                onClick={() => setValue('fontSize', f.id as any, { shouldDirty: true })}
                 className={cn(
                   "px-6 py-2 rounded-md transition-colors",
                   watchFont === f.id ? (watchSkin === 'LUXURY' ? "bg-[#D4AF37] text-black font-medium" : "bg-white text-black font-medium") : "text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white",

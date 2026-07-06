@@ -40,6 +40,7 @@ export class AuthService {
         fontSize: user.fontSize,
         compactMode: user.compactMode,
         animationsEnabled: user.animationsEnabled,
+        skin: user.skin,
       },
     };
   }
