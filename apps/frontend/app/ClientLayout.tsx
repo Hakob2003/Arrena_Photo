@@ -1,40 +1,40 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { flushSync } from 'react-dom';
 import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from '../components/layout/Sidebar';
 import { useAuthStore, useUIStore } from '../store';
 import { Topbar } from '../components/layout/Topbar';
-import { LayoutGroup, motion } from 'framer-motion';
+import { LayoutGroup, motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
 
 import { parseJwtPayload } from '@/lib/utils/jwt';
 import { SwipeHint } from '../components/ui/SwipeHint';
 import { useIdleLogout } from '../hooks/useIdleLogout';
+import { SmoothScrollProvider } from '../components/providers/SmoothScrollProvider';
+import { InnerScrollLenis } from '../components/providers/InnerScrollLenis';
+import { InfiniteLoop } from '../components/layout/InfiniteLoop';
+import { useDrumNavigation } from '../hooks/useDrumNavigation';
 
 import { api } from '../lib/api';
+import { FLOW_ROUTES, getAdjacentRoutes, isFlowRoute } from '@/lib/navigation/constants';
+import { VirtualCylinder } from '../components/layout/VirtualCylinder';
 
-const ALL_LINKS = [
-  '/',
-  '/generate',
-  '/templates',
-  '/marketplace',
-  '/gallery',
-  '/my-generations',
-  '/my-templates',
-  '/connections/ai',
-  '/connections/cloud',
-  '/profile',
-  '/profile/billing',
-];
+function FrozenChildren({ children }: { children: React.ReactNode }) {
+  const frozen = React.useRef(children).current;
+  return <>{frozen}</>;
+}
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   useIdleLogout();
+  useDrumNavigation();
   
   const pathname = usePathname();
   const router = useRouter();
   const isAdmin = pathname?.startsWith('/admin');
   const { user, login, setCredits } = useAuthStore();
   const { isSidebarOpen, setSidebarOpen, preferences, setPreferences } = useUIStore();
+  const navDirection = useUIStore(state => state.navDirection);
   
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
@@ -43,6 +43,11 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   const [isPinch, setIsPinch] = useState<boolean>(false);
   const [touchStartFingers, setTouchStartFingers] = useState<{ id: number, y: number }[]>([]);
   const [mounted, setMounted] = useState(false);
+
+  // Not using drumVariants anymore for the main cylinder
+  // The VirtualCylinder handles its own transitions.
+
+
 
   useEffect(() => {
     setMounted(true);
@@ -90,6 +95,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                    fontSize: data.preferences.fontSize || 'MEDIUM',
                    compactMode: !!data.preferences.compactMode,
                    animationsEnabled: data.preferences.animationsEnabled !== false,
+                   skin: data.preferences.skin || 'NEON'
                  });
                }
             })
@@ -132,6 +138,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                  fontSize: data.preferences.fontSize || 'MEDIUM',
                  compactMode: !!data.preferences.compactMode,
                  animationsEnabled: data.preferences.animationsEnabled !== false,
+                 skin: data.preferences.skin || 'NEON'
                });
              }
           })
@@ -258,18 +265,17 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     } else if (touchFingers === 2 && !isPinch) {
       if (!isHorizontal) {
         // Two-finger swipe Up/Down
-        if (Math.abs(distanceY) > 50) {
-          const currentIndex = ALL_LINKS.indexOf(pathname || '/');
-          const maxIndex = ALL_LINKS.length - 1;
+        if (Math.abs(distanceY) > 50 && !isFlowRoute(pathname || '/')) {
+          const { prev, next } = getAdjacentRoutes(pathname || '/');
           
-          if (distanceY > 50) {
+          if (distanceY > 50 && next) {
             // Swipe down -> Next link
-            const nextIndex = currentIndex === -1 ? 0 : (currentIndex === maxIndex ? 0 : currentIndex + 1);
-            router.push(ALL_LINKS[nextIndex]);
-          } else if (distanceY < -50) {
+            useUIStore.getState().setNavDirection('down');
+            router.push(next);
+          } else if (distanceY < -50 && prev) {
             // Swipe up -> Prev link
-            const prevIndex = currentIndex === -1 ? 0 : (currentIndex === 0 ? maxIndex : currentIndex - 1);
-            router.push(ALL_LINKS[prevIndex]);
+            useUIStore.getState().setNavDirection('up');
+            router.push(prev);
           }
         }
       }
@@ -287,9 +293,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <>
+    <SmoothScrollProvider>
       <div 
-        className="flex h-[100dvh] w-full overflow-hidden"
+        className={preferences.skin === 'PREMIUM' ? `flex h-[100dvh] w-full overflow-hidden theme-${preferences?.skin?.toLowerCase() || 'default'}` : `flex min-h-screen w-full theme-${preferences?.skin?.toLowerCase() || 'default'}`}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -300,71 +306,71 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
             <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-background">
               <motion.div 
                 className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] rounded-full" 
-                style={{ background: 'rgb(var(--color-accent-500) / 0.35)', filter: 'blur(80px)' }}
+                style={{ background: 'rgb(var(--color-accent-300) / 0.1)', filter: 'blur(100px)' }}
                 animate={{
-                  opacity: [1, 0.2, 0.9, 0.1, 1],
-                  scale: [1, 1.2, 0.85, 1.3, 1],
-                  x: ['0%', '8%', '-10%', '5%', '0%'],
-                  y: ['0%', '12%', '5%', '-8%', '0%']
+                  opacity: [0.3, 0.6, 0.2, 0.7, 0.3],
+                  scale: [0.9, 1.2, 0.8, 1.1, 0.9],
+                  x: ['0%', '5%', '-5%', '2%', '0%'],
+                  y: ['0%', '-5%', '5%', '-2%', '0%']
                 }}
-                transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+                transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
               />
               <motion.div 
-                className="absolute bottom-[-20%] right-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] rounded-full" 
-                style={{ background: 'rgb(var(--color-accent-400) / 0.3)', filter: 'blur(80px)' }}
+                className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] rounded-full" 
+                style={{ background: 'rgb(var(--color-accent-600) / 0.15)', filter: 'blur(100px)' }}
                 animate={{
-                  opacity: [0.8, 0.1, 1, 0.2, 0.8],
-                  scale: [1.1, 0.8, 1.25, 0.9, 1.1],
-                  x: ['0%', '-12%', '8%', '-5%', '0%'],
-                  y: ['0%', '-8%', '10%', '12%', '0%']
+                  opacity: [0.4, 0.2, 0.7, 0.3, 0.4],
+                  scale: [1, 0.8, 1.3, 0.9, 1],
+                  x: ['0%', '-8%', '5%', '-3%', '0%'],
+                  y: ['0%', '8%', '-3%', '6%', '0%']
                 }}
-                transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-              />
-              <motion.div 
-                className="absolute top-[40%] right-[30%] w-[50vw] h-[50vw] md:w-[30vw] md:h-[30vw] rounded-full" 
-                style={{ background: 'rgb(var(--color-accent-300) / 0.25)', filter: 'blur(70px)' }}
-                animate={{
-                  opacity: [0.6, 1, 0.15, 0.9, 0.6],
-                  scale: [0.9, 1.3, 0.85, 1.1, 0.9],
-                  x: ['0%', '10%', '-8%', '5%', '0%'],
-                  y: ['0%', '-10%', '8%', '5%', '0%']
-                }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-              />
-              <motion.div 
-                className="absolute bottom-[30%] left-[20%] w-[40vw] h-[40vw] md:w-[25vw] md:h-[25vw] rounded-full" 
-                style={{ background: 'rgb(var(--color-accent-600) / 0.3)', filter: 'blur(70px)' }}
-                animate={{
-                  opacity: [0.7, 0.1, 1, 0.2, 0.7],
-                  scale: [1, 1.25, 0.8, 1.2, 1],
-                  x: ['0%', '-10%', '12%', '-5%', '0%'],
-                  y: ['0%', '12%', '-5%', '-10%', '0%']
-                }}
-                transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+                transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
               />
             </div>
-          ) : mounted && preferences.skin !== 'LUXURY' ? (
+          ) : mounted && preferences.skin === 'LUXURY' ? (
+            <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
+              <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[#D4AF37]/5 blur-[60px] rounded-full" />
+              <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-[#C5A028]/10 blur-[60px] rounded-full" />
+            </div>
+          ) : mounted ? (
             <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
               <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[40px] rounded-full" />
               <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[40px] rounded-full" />
             </div>
           ) : null}
           
-          <div className="flex items-center w-full z-20 relative min-h-[64px]">
-            <div className="flex-1">
-              {mounted && <Topbar />}
-            </div>
-          </div>
-          
-          <main id="main-scroll-container" className="flex-1 overflow-y-auto relative z-10 custom-scrollbar pb-20">
-            <div className="pb-10">
-              {mounted ? children : <div className="animate-pulse flex space-x-4 p-6"><div className="flex-1 space-y-6 py-1"><div className="h-4 bg-slate-800 rounded w-3/4"></div><div className="space-y-3"><div className="h-4 bg-slate-800 rounded"></div><div className="h-4 bg-slate-800 rounded w-5/6"></div></div></div></div>}
+          <Topbar />
+          <main id="main-scroll-container" className={preferences.skin === 'PREMIUM' ? "flex-1 relative z-10 overflow-hidden" : "flex-1 overflow-y-auto relative z-10 custom-scrollbar pb-20"}>
+            <div className={preferences.skin === 'PREMIUM' ? "h-[100dvh] w-full relative" : "pb-10"}>
+              {preferences.skin === 'PREMIUM' ? (
+                mounted ? (
+                  isFlowRoute(pathname || '/') ? (
+                    <VirtualCylinder currentPathname={pathname || '/'} />
+                  ) : (
+                    <InnerScrollLenis key={pathname}>
+                      {children}
+                    </InnerScrollLenis>
+                  )
+                ) : (
+                  <div className="animate-pulse flex space-x-4 p-6">
+                    <div className="flex-1 space-y-6 py-1">
+                      <div className="h-4 bg-slate-800 rounded w-3/4"></div>
+                      <div className="space-y-3">
+                        <div className="h-4 bg-slate-800 rounded"></div>
+                        <div className="h-4 bg-slate-800 rounded w-5/6"></div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              ) : (
+                mounted ? children : <div className="animate-pulse flex space-x-4 p-6"><div className="flex-1 space-y-6 py-1"><div className="h-4 bg-slate-800 rounded w-3/4"></div><div className="space-y-3"><div className="h-4 bg-slate-800 rounded"></div><div className="h-4 bg-slate-800 rounded w-5/6"></div></div></div></div>
+              )}
             </div>
           </main>
         </div>
       </div>
       <Toaster position="bottom-right" />
       <SwipeHint />
-    </>
+    </SmoothScrollProvider>
   );
 }

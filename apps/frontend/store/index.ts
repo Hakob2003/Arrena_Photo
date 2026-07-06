@@ -162,7 +162,7 @@ interface UIPreferences {
   fontSize: 'SMALL' | 'MEDIUM' | 'LARGE';
   compactMode: boolean;
   animationsEnabled: boolean;
-  skin: 'NEON' | 'LUXURY';
+  skin: 'NEON' | 'LUXURY' | 'PREMIUM';
 }
 
 interface UIState {
@@ -178,6 +178,10 @@ interface UIState {
   setHasSeenSwipeHints: (seen: boolean) => void;
   showSwipeHints: boolean;
   setShowSwipeHints: (show: boolean) => void;
+  navDirection: 'up' | 'down' | null;
+  setNavDirection: (dir: 'up' | 'down' | null) => void;
+  isTransitioning: boolean;
+  setIsTransitioning: (v: boolean) => void;
 }
 
 const getInitialLocale = (): 'ru' | 'en' | 'hy' => {
@@ -212,6 +216,10 @@ export const useUIStore = create<UIState>()(
       },
       showSwipeHints: false,
       setShowSwipeHints: (showSwipeHints) => set({ showSwipeHints }),
+      navDirection: null,
+      setNavDirection: (navDirection) => set({ navDirection }),
+      isTransitioning: false,
+      setIsTransitioning: (isTransitioning) => set({ isTransitioning }),
     }),
     {
       name: 'ui-storage',

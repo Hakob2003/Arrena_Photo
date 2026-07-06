@@ -101,12 +101,29 @@
     --sidebar: oklch(0.22 0 0);
   }
 
+  html.dark[data-skin="premium"] {
+    --background: oklch(0.16 0 0); /* #060606 */
+    --card: oklch(0.19 0 0); /* #0E0E0E */
+    --popover: oklch(0.19 0 0);
+    --border: oklch(1 0 0 / 8%);
+    --sidebar: oklch(0.16 0 0);
+  }
+
   html[data-skin="luxury"] {
     --color-accent-300: 240 216 168; /* Champagne Gold */
     --color-accent-400: 220 185 100;
     --color-accent-500: 212 175 55;  /* Gold */
     --color-accent-600: 180 145 30;
     --color-accent-700: 140 110 20;
+  }
+  
+  html[data-skin="premium"] {
+    /* High tech premium white/grey glow by default if accent is not overriding */
+    --color-accent-300: 243 244 246; 
+    --color-accent-400: 209 213 219;
+    --color-accent-500: 156 163 175;
+    --color-accent-600: 107 114 128;
+    --color-accent-700: 75 85 99;
   }
   
   .theme {
@@ -150,6 +167,15 @@
   }
 }
 
+/* Hide scrollbar ONLY for the new Premium skin (infinite drum illusion) */
+.theme-premium ::-webkit-scrollbar {
+  display: none;
+}
+.theme-premium * {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 @layer utilities {
   .glass {
     background: rgba(255, 255, 255, 0.05);
@@ -159,6 +185,13 @@
   }
   html.dark .glass {
     @apply bg-black/5 backdrop-blur-none border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)];
+  }
+  html.dark[data-skin="premium"] .glass {
+    background: rgba(20, 20, 20, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
   }
 
   .glass-card {
@@ -182,6 +215,19 @@
     background: rgba(255, 255, 255, 0.05);
     box-shadow: none;
   }
+  html.dark[data-skin="premium"] .glass-card {
+    background: rgba(20, 20, 20, 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  html.dark[data-skin="premium"] .glass-card:hover {
+    background: rgba(30, 30, 30, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
 
   .neon-text {
     @apply text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400;
@@ -204,7 +250,7 @@
   html[data-skin="luxury"] .neon-glow, html[data-skin="luxury"].dark .neon-glow {
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.2), 0 0 40px rgba(240, 216, 168, 0.1) !important;
   }
-  html[data-skin="neon"] .neon-glow, html[data-skin="neon"].dark .neon-glow {
+  html[data-skin="neon"] .neon-glow, html[data-skin="neon"].dark .neon-glow, html[data-skin="premium"] .neon-glow, html[data-skin="premium"].dark .neon-glow {
     box-shadow: 0 0 20px rgb(var(--color-accent-500)/0.5), 0 0 40px rgb(var(--color-accent-400)/0.3) !important;
   }
   
@@ -259,6 +305,44 @@
   }
   html[data-skin="luxury"] .shadow-\[0_8px_24px_rgba\(99\,102\,241\,0\.25\)\] {
     box-shadow: 0 8px 24px rgba(212, 175, 55, 0.25) !important;
+  }
+
+  /* Magic Skin Overrides: Premium Skin */
+  html[data-skin="premium"] .bg-indigo-600, html[data-skin="premium"] .bg-indigo-500 {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #060606 !important;
+    border: 1px solid rgba(255, 255, 255, 1) !important;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.15), inset 0 1px 1px rgba(255,255,255,0.8) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+  html[data-skin="premium"] .hover\:bg-indigo-700:hover, html[data-skin="premium"] .hover\:bg-indigo-500:hover {
+    background: rgba(255, 255, 255, 1) !important;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.3), inset 0 1px 1px rgba(255,255,255,1) !important;
+    transform: translateY(-1px) !important;
+  }
+  html[data-skin="premium"] .bg-indigo-500\/10, html[data-skin="premium"] .dark\:bg-indigo-500\/10 {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+  html[data-skin="premium"] .bg-indigo-500\/20 {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  html[data-skin="premium"] .border-indigo-500\/20 {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+  }
+  html[data-skin="premium"] .border-indigo-500 {
+    border-color: rgba(255, 255, 255, 0.3) !important;
+  }
+  html[data-skin="premium"] .text-indigo-600, 
+  html[data-skin="premium"] .dark\:text-indigo-400,
+  html[data-skin="premium"] .text-indigo-500 {
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(255,255,255,0.3) !important;
+  }
+  html[data-skin="premium"] .shadow-indigo-500\/20 {
+    box-shadow: 0 4px 14px rgba(255, 255, 255, 0.1) !important;
+  }
+  html[data-skin="premium"] .shadow-\[0_8px_24px_rgba\(99\,102\,241\,0\.25\)\] {
+    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15) !important;
   }
 
   /* Custom scrollbar */

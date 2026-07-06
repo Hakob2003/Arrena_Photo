@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { api } from '@/lib/api';
@@ -12,29 +12,33 @@ import { useTranslation } from '@/lib/i18n';
 
 export default function AppearanceProfilePage() {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const { setPreferences } = useUIStore();
 
-  const { control, handleSubmit, reset, watch, setValue } = useForm({
-    defaultValues: {
-      theme: 'SYSTEM',
-      accentColor: 'INDIGO',
-      fontSize: 'MEDIUM',
-      compactMode: false,
-      animationsEnabled: true,
-      skin: 'NEON',
-    }
+  const currentPrefs = useUIStore(state => state.preferences);
+  const initialPrefs = React.useRef(useUIStore.getState().preferences).current;
+
+  const { control, handleSubmit, reset, watch, setValue, register, formState: { isDirty }, getValues } = useForm({
+    defaultValues: initialPrefs
   });
+
+  // Sync with store if it's updated externally (e.g. initial API load) and form is not dirty
+  useEffect(() => {
+    if (!isDirty && JSON.stringify(getValues()) !== JSON.stringify(currentPrefs)) {
+      reset(currentPrefs);
+    }
+  }, [currentPrefs, isDirty, reset, getValues]);
 
   const watchTheme = watch('theme');
   const watchAccent = watch('accentColor');
   const watchFont = watch('fontSize');
   const watchSkin = watch('skin');
+  console.log('RENDER', { watchSkin });
 
   // Instantly apply changes to the UI store for real-time preview
   useEffect(() => {
     const subscription = watch((value) => {
+      console.log('WATCH FIRED', value);
       setPreferences({
         theme: value.theme as any,
         accentColor: value.accentColor as any,
@@ -46,29 +50,6 @@ export default function AppearanceProfilePage() {
     });
     return () => subscription.unsubscribe();
   }, [watch, setPreferences]);
-
-  useEffect(() => {
-    const fetchPreferences = async () => {
-      try {
-        const { data } = await api.get('/profile/me');
-        const fetchedPrefs = {
-          theme: data.theme || 'SYSTEM',
-          accentColor: data.accentColor || 'INDIGO',
-          fontSize: data.fontSize || 'MEDIUM',
-          compactMode: !!data.compactMode,
-          animationsEnabled: data.animationsEnabled !== false,
-          skin: data.skin || 'NEON',
-        };
-        reset(fetchedPrefs);
-        setPreferences(fetchedPrefs);
-      } catch (error) {
-        toast.error('Failed to load preferences');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchPreferences();
-  }, [reset]);
 
   const onSubmit = async (values: any) => {
     try {
@@ -118,10 +99,6 @@ export default function AppearanceProfilePage() {
     { id: 'LARGE', label: 'Large', class: 'text-lg' },
   ];
 
-  if (isLoading) {
-    return <div className="animate-pulse space-y-8"><div className="h-40 bg-black/[0.05] dark:bg-white/10 rounded-xl"></div></div>;
-  }
-
   return (
     <div className="space-y-8 max-w-3xl">
       <div>
@@ -130,6 +107,10 @@ export default function AppearanceProfilePage() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 pt-6 border-t border-black/10 dark:border-white/10">
+        <input type="hidden" {...register('skin')} />
+        <input type="hidden" {...register('theme')} />
+        <input type="hidden" {...register('accentColor')} />
+        <input type="hidden" {...register('fontSize')} />
         
         {/* Skin Selector */}
         <div className="space-y-4">
@@ -172,6 +153,24 @@ export default function AppearanceProfilePage() {
                 {watchSkin === 'NEON' && <div className="w-3 h-3 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.8)]" />}
               </div>
               <p className="text-xs text-slate-500 dark:text-gray-400">{t('profile.appearance.skinNeonDesc')}</p>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setValue('skin', 'PREMIUM', { shouldDirty: true })}
+              className={cn(
+                "relative flex flex-col items-start gap-2 p-4 rounded-xl border transition-all overflow-hidden text-left col-span-1 sm:col-span-2",
+                watchSkin === 'PREMIUM'
+                  ? "border-gray-400 bg-gray-500/10 shadow-[0_0_20px_rgba(156,163,175,0.15)]" 
+                  : "border-black/10 dark:border-white/10 hover:border-white/30 bg-transparent text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white"
+              )}
+            >
+              <div className="absolute inset-0 bg-[#060606] -z-10" />
+              <div className="w-full flex justify-between items-center mb-2">
+                <span className={cn("font-medium text-lg", watchSkin === 'PREMIUM' ? "text-gray-200" : "")}>{t('profile.appearance.skinPremium')}</span>
+                {watchSkin === 'PREMIUM' && <div className="w-3 h-3 rounded-full bg-gray-300 shadow-[0_0_10px_rgba(209,213,219,0.8)]" />}
+              </div>
+              <p className="text-xs text-gray-400">{t('profile.appearance.skinPremiumDesc')}</p>
             </button>
           </div>
         </div>
@@ -244,7 +243,7 @@ export default function AppearanceProfilePage() {
                 onClick={() => setValue('fontSize', f.id, { shouldDirty: true })}
                 className={cn(
                   "px-6 py-2 rounded-md transition-colors",
-                  watchFont === f.id ? "bg-white text-black font-medium" : "text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white",
+                  watchFont === f.id ? (watchSkin === 'LUXURY' ? "bg-[#D4AF37] text-black font-medium" : "bg-white text-black font-medium") : "text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white",
                   f.class
                 )}
               >
@@ -269,7 +268,7 @@ export default function AppearanceProfilePage() {
                   checked={field.value}
                   onChange={field.onChange}
                   className={cn(
-                    field.value ? 'bg-white' : 'bg-gray-600',
+                    field.value ? (watchSkin === 'LUXURY' ? 'bg-[#D4AF37]' : 'bg-white') : 'bg-gray-600',
                     'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out'
                   )}
                 >
@@ -298,7 +297,7 @@ export default function AppearanceProfilePage() {
                   checked={field.value}
                   onChange={field.onChange}
                   className={cn(
-                    field.value ? 'bg-white' : 'bg-gray-600',
+                    field.value ? (watchSkin === 'LUXURY' ? 'bg-[#D4AF37]' : 'bg-white') : 'bg-gray-600',
                     'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out'
                   )}
                 >
@@ -319,7 +318,12 @@ export default function AppearanceProfilePage() {
           <button 
             type="submit" 
             disabled={isSaving}
-            className="px-6 py-2.5 bg-white text-black font-medium rounded-lg hover:bg-gray-200 transition flex items-center justify-center min-w-[120px]"
+            className={cn(
+              "px-6 py-2.5 font-medium rounded-lg transition flex items-center justify-center min-w-[120px]",
+              watchSkin === 'LUXURY' 
+                ? "bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-none" 
+                : "bg-white text-black hover:bg-gray-200"
+            )}
           >
             {isSaving ? <span className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin"></span> : t('profile.appearance.save')}
           </button>

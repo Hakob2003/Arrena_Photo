@@ -15,6 +15,7 @@ export function Topbar() {
   const isMobile = useIsMobile();
   const isLuxury = preferences.skin === 'LUXURY';
   const isNeon = preferences.skin === 'NEON';
+  const isPremium = preferences.skin === 'PREMIUM';
   const showTopbarLogo = !isSidebarOpen;
 
   // We no longer need manual targetX calculation, we will use Framer Motion layout animations.
@@ -29,7 +30,14 @@ export function Topbar() {
   };
 
   return (
-    <header className={`h-16 border-b bg-white/5 dark:bg-black/5 backdrop-blur-none flex items-center justify-between px-4 sm:px-6 sticky top-0 z-[60] shadow-sm dark:shadow-none ${isLuxury ? 'border-[#D4AF37]/20' : 'border-black/10 dark:border-white/5'}`}>
+    <header className={cn(
+      "h-16 flex items-center justify-between px-4 sm:px-6 sticky z-[60] transition-all duration-300",
+      isPremium && !isMobile ? "top-3 mx-3 mb-3 rounded-full bg-[#060606]/40 backdrop-blur-2xl border border-white/10 shadow-2xl" : "top-0 border-b shadow-sm dark:shadow-none",
+      isPremium && isMobile ? "bg-white/5 dark:bg-[#060606]/80 backdrop-blur-md border-white/5" : "",
+      !isPremium ? "bg-white/5 dark:bg-black/5 backdrop-blur-none" : "",
+      isLuxury && !isPremium ? "border-[#D4AF37]/20" : "",
+      !isLuxury && !isPremium ? "border-black/10 dark:border-white/5" : ""
+    )}>
       <div className="flex items-center gap-2 md:hidden">
         {user && (
           <button 
@@ -65,7 +73,7 @@ export function Topbar() {
             }}
           >
             <Link href="/" className={`flex items-center hover:opacity-80 transition-opacity ${isSidebarOpen && isMobile ? 'pointer-events-none' : 'pointer-events-auto'}`}>
-              {isNeon ? (
+              {isNeon || isPremium ? (
                 <div 
                   className="h-[27px] sm:h-[42px] w-[144px] relative overflow-hidden masked-logo-parent"
                   style={{
@@ -144,7 +152,7 @@ export function Topbar() {
       ) : (
         <div className="flex items-center pointer-events-auto z-[60]">
           <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-            {isNeon ? (
+            {isNeon || isPremium ? (
               <div 
                 className="h-6 sm:h-8 w-32 relative overflow-hidden masked-logo-parent"
                 style={{
@@ -244,9 +252,11 @@ export function Topbar() {
           onClick={toggleLocale}
           className={cn(
             "flex items-center gap-1.5 bg-black/[0.05] border px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full transition-colors",
-            isLuxury 
-              ? "dark:bg-black/5 border-black/10 dark:border-[#D4AF37]/20 hover:bg-black/10 dark:hover:border-[#D4AF37]/50" 
-              : "dark:bg-white/10 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/5"
+            isPremium
+              ? "dark:bg-white/5 border-white/10 hover:bg-white/10"
+              : isLuxury 
+                ? "dark:bg-black/5 border-black/10 dark:border-[#D4AF37]/20 hover:bg-black/10 dark:hover:border-[#D4AF37]/50" 
+                : "dark:bg-white/10 border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/5"
           )}
           title={locale === 'ru' ? 'Сменить язык' : locale === 'en' ? 'Switch Language' : 'Փոխել լեզուն'}
         >
@@ -261,12 +271,14 @@ export function Topbar() {
           /* Credits Pill */
           <Link href="/profile/billing" className={cn(
             "flex items-center gap-1 sm:gap-2 border px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all hover:scale-105 cursor-pointer",
-            isLuxury 
-              ? "bg-[#D4AF37]/10 border-[#D4AF37]/20 hover:bg-[#D4AF37]/20" 
-              : "bg-indigo-500/10 border-indigo-500/20 hover:bg-indigo-500/20"
+            isPremium
+              ? "bg-white/10 border-white/20 hover:bg-white/20 text-white"
+              : isLuxury 
+                ? "bg-[#D4AF37]/10 border-[#D4AF37]/20 hover:bg-[#D4AF37]/20" 
+                : "bg-indigo-500/10 border-indigo-500/20 hover:bg-indigo-500/20"
           )}>
-            <span className={cn("text-xs sm:text-sm font-bold", isLuxury ? "text-[#D4AF37]" : "text-indigo-600 dark:text-indigo-400")}>⚡ {credits?.toLocaleString('en-US') || 0}</span>
-            <span className={cn("text-[10px] sm:text-xs uppercase hidden sm:inline", isLuxury ? "text-[#D4AF37]/70" : "text-indigo-500/70 dark:text-indigo-300/70")}>{t('auth.credits')}</span>
+            <span className={cn("text-xs sm:text-sm font-bold", isPremium ? "text-gray-200" : isLuxury ? "text-[#D4AF37]" : "text-indigo-600 dark:text-indigo-400")}>⚡ {credits?.toLocaleString('en-US') || 0}</span>
+            <span className={cn("text-[10px] sm:text-xs uppercase hidden sm:inline", isPremium ? "text-gray-400" : isLuxury ? "text-[#D4AF37]/70" : "text-indigo-500/70 dark:text-indigo-300/70")}>{t('auth.credits')}</span>
           </Link>
         ) : (
           <div className="flex items-center gap-3">

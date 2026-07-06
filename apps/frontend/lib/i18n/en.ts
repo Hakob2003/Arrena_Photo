@@ -113,6 +113,34 @@ const en: Record<string, string> = {
   'myGen.template': 'Template',
 
   // === My Templates ===
+  'myTemplates.title': 'My Templates',
+  'myTemplates.description': 'Manage templates you have created.',
+  'myTemplates.empty': 'You have no templates yet.',
+  'myTemplates.createButton': 'Create Template',
+
+  // === AI Providers ===
+  'ai.title': 'AI Providers',
+  'ai.description': 'Connect your API keys or local instances to generate without spending platform credits.',
+  'ai.connected': 'Connected',
+  'ai.disconnected': 'Disconnected',
+  'ai.connect': 'Connect',
+  'ai.disconnect': 'Disconnect',
+
+  // === Cloud Storage ===
+  'cloud.title': 'Cloud Storage',
+  'cloud.description': 'Connect storage to automatically save generated images.',
+  'cloud.googleDriveTitle': 'Google Drive',
+  'cloud.googleDriveDesc': 'Link your Google Drive account to save generated images directly to your cloud with one click.',
+  'cloud.googleDriveConnect': 'Connect Google Drive',
+  'cloud.googleDriveDisconnect': 'Disconnect',
+  'cloud.s3Title': 'AWS S3 / Cloudflare R2 / MinIO',
+  'cloud.bucketName': 'Bucket Name',
+  'cloud.accessKey': 'Access Key ID',
+  'cloud.secretKey': 'Secret Access Key',
+  'cloud.testConnection': 'Test Connection',
+  'cloud.save': 'Save',
+
+  // === My Templates (Legacy/Alternative Keys) ===
   'myTpl.title': 'My Templates',
   'myTpl.description': 'Manage your created prompts and templates.',
   'myTpl.create': '+ Create',
@@ -353,7 +381,9 @@ const en: Record<string, string> = {
   'profile.appearance.skinNeon': 'Neon Cyberpunk',
   'profile.appearance.skinDesc': 'Choose the overall interface styling.',
   'profile.appearance.skinLuxuryDesc': 'Premium dark interface with metallic accents.',
-  'profile.appearance.skinNeonDesc': 'Vibrant style with neon glows and a bright accent color.',
+  'profile.appearance.skinNeonDesc': 'Vibrant style with neon glows and bright accent color.',
+  'profile.appearance.skinPremium': 'Premium Editions',
+  'profile.appearance.skinPremiumDesc': 'High-tech premium interface with frosted glass effects and 3D components.',
 
   'generate.cancelError': 'Generation cancelled. Credits are not refunded.',
   'generate.clearPrompt': 'Clear prompt',

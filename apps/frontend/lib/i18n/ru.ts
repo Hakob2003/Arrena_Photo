@@ -113,6 +113,34 @@ const ru: Record<string, string> = {
   'myGen.template': 'Шаблон',
 
   // === My Templates ===
+  'myTemplates.title': 'Мои шаблоны',
+  'myTemplates.description': 'Управляйте созданными вами шаблонами.',
+  'myTemplates.empty': 'У вас пока нет своих шаблонов.',
+  'myTemplates.createButton': 'Создать шаблон',
+
+  // === AI Providers ===
+  'ai.title': 'AI Провайдеры',
+  'ai.description': 'Подключите свои API-ключи или локальные инстансы для генерации без траты кредитов платформы.',
+  'ai.connected': 'Подключено',
+  'ai.disconnected': 'Отключено',
+  'ai.connect': 'Подключить',
+  'ai.disconnect': 'Отключить',
+
+  // === Cloud Storage ===
+  'cloud.title': 'Облачное хранилище',
+  'cloud.description': 'Подключите хранилище для автоматического сохранения сгенерированных изображений.',
+  'cloud.googleDriveTitle': 'Google Drive',
+  'cloud.googleDriveDesc': 'Привяжите свой аккаунт Google Drive, чтобы сохранять сгенерированные изображения прямо в свое облако одним кликом.',
+  'cloud.googleDriveConnect': 'Привязать Google Drive',
+  'cloud.googleDriveDisconnect': 'Отключить',
+  'cloud.s3Title': 'AWS S3 / Cloudflare R2 / MinIO',
+  'cloud.bucketName': 'Название бакета',
+  'cloud.accessKey': 'Access Key ID',
+  'cloud.secretKey': 'Secret Access Key',
+  'cloud.testConnection': 'Тест соединения',
+  'cloud.save': 'Сохранить',
+
+  // === My Templates (Legacy/Alternative) ===
   'myTpl.title': 'Мои шаблоны',
   'myTpl.description': 'Управление созданными промптами и шаблонами.',
   'myTpl.create': '+ Создать',
@@ -354,6 +382,8 @@ const ru: Record<string, string> = {
   'profile.appearance.skinDesc': 'Выберите общую стилистику интерфейса.',
   'profile.appearance.skinLuxuryDesc': 'Премиальный темный интерфейс с металлическими акцентами.',
   'profile.appearance.skinNeonDesc': 'Яркий стиль с неоновыми свечениями и ярким акцентным цветом.',
+  'profile.appearance.skinPremium': 'Premium Editions',
+  'profile.appearance.skinPremiumDesc': 'Высокотехнологичный премиальный интерфейс с эффектами матового стекла и 3D-компонентами.',
 
   'generate.cancelError': 'Генерация отменена. Кредиты не возвращены.',
   'generate.clearPrompt': 'Очистить промпт',

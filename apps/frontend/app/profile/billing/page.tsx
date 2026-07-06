@@ -14,8 +14,9 @@ type Tab = 'overview' | 'plans' | 'usage' | 'payment';
 export default function UserBillingPage() {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
   const { t } = useTranslation();
-  const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
-
+  const preferences = useUIStore(state => state.preferences);
+  const isPremium = preferences?.skin === 'PREMIUM';
+  const isLuxury = preferences?.skin === 'GOLD';
   // Sync planId and credits from server on page load
   useEffect(() => {
     (async () => {
@@ -27,6 +28,92 @@ export default function UserBillingPage() {
         // Ignore — user may not be authenticated
       }
     })();
+  }, []);
+
+  // Small Drum Navigation (Tabs)
+  const isNavigating = React.useRef(false);
+  useEffect(() => {
+    if (!isPremium) return; // Only enable for Premium skin
+
+    const tabKeys: Tab[] = ['overview', 'plans', 'usage', 'payment'];
+    
+    const navigateTo = (direction: 'next' | 'prev') => {
+      if (isNavigating.current) return;
+      isNavigating.current = true;
+
+      useUIStore.getState().setNavDirection(direction === 'next' ? 'down' : 'up');
+
+      setActiveTab((prev) => {
+        const currentIndex = tabKeys.indexOf(prev);
+        let nextIndex = 0;
+        if (direction === 'next') {
+          nextIndex = (currentIndex + 1) % tabKeys.length;
+        } else {
+          nextIndex = (currentIndex - 1 + tabKeys.length) % tabKeys.length;
+        }
+        return tabKeys[nextIndex];
+      });
+
+      // Cooldown timer to prevent multiple jumps
+      setTimeout(() => {
+        isNavigating.current = false;
+      }, 1200); 
+    };
+
+    let touchStartY = 0;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (isNavigating.current) return;
+
+      const scrollTop = window.scrollY;
+      const scrollHeight = document.body.scrollHeight;
+      const clientHeight = window.innerHeight;
+
+      const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) <= 2;
+      const isAtTop = scrollTop <= 2;
+
+      if (e.deltaY > 0 && isAtBottom) {
+        e.preventDefault(); 
+        navigateTo('next');
+      } else if (e.deltaY < 0 && isAtTop) {
+        e.preventDefault();
+        navigateTo('prev');
+      }
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isNavigating.current) return;
+
+      const touchEndY = e.touches[0].clientY;
+      const deltaY = touchStartY - touchEndY; 
+
+      const scrollTop = window.scrollY;
+      const scrollHeight = document.body.scrollHeight;
+      const clientHeight = window.innerHeight;
+
+      const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) <= 2;
+      const isAtTop = scrollTop <= 2;
+
+      if (deltaY > 30 && isAtBottom) {
+        navigateTo('next');
+      } else if (deltaY < -30 && isAtTop) {
+        navigateTo('prev');
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+    };
   }, []);
 
   const tabs = [
@@ -75,14 +162,33 @@ export default function UserBillingPage() {
       </div>
 
       {/* Tab Content Area */}
-      <div className="min-h-[500px]">
-        <AnimatePresence mode="wait">
+      <div className="min-h-[500px] relative">
+        <AnimatePresence mode={preferences.skin === 'PREMIUM' ? "popLayout" : "wait"}>
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
+            custom={useUIStore.getState().navDirection}
+            variants={{
+              initial: (dir: 'up' | 'down' | null) => {
+                if (preferences.skin !== 'PREMIUM') return { opacity: 0, y: 10 };
+                if (!dir) return { opacity: 0, y: 0 };
+                return { opacity: 1, y: dir === 'down' ? '100%' : '-100%' };
+              },
+              animate: { opacity: 1, y: 0 },
+              exit: (dir: 'up' | 'down' | null) => {
+                if (preferences.skin !== 'PREMIUM') return { opacity: 0, y: -10 };
+                if (!dir) return { opacity: 0, y: 0 };
+                return { opacity: 1, y: dir === 'down' ? '-100%' : '100%' };
+              }
+            }}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={
+              preferences.skin === 'PREMIUM' 
+              ? { duration: 0.6, ease: [0.22, 1, 0.36, 1] } 
+              : { duration: 0.2 }
+            }
+            className="w-full"
           >
             {activeTab === 'overview' && <OverviewTab onNavigateToPlans={() => setActiveTab('plans')} />}
             {activeTab === 'plans' && <PlansTab />}

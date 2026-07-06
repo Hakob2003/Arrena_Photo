@@ -3,6 +3,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { FLOW_ROUTES } from '../../lib/navigation/constants';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUIStore, useAuthStore } from '../../store';
 import { useTranslation } from '../../lib/i18n';
@@ -19,6 +20,7 @@ export function Sidebar() {
   const isMobile = useIsMobile();
   const isLuxury = preferences?.skin === 'LUXURY';
   const isNeon = preferences?.skin === 'NEON';
+  const isPremium = preferences?.skin === 'PREMIUM';
   const showSidebarLogo = isSidebarOpen;
 
   const MAIN_LINKS = [
@@ -53,26 +55,38 @@ export function Sidebar() {
           <li key={link.href}>
             <Link 
               href={isActive ? '#' : link.href}
-              onClick={(e) => { if (isActive) e.preventDefault(); }}
+              onClick={(e) => {
+                if (isActive) {
+                  e.preventDefault();
+                  return;
+                }
+                const targetIndex = FLOW_ROUTES.indexOf(link.href);
+                const currentIndex = FLOW_ROUTES.indexOf(pathname);
+                if (targetIndex !== -1 && currentIndex !== -1) {
+                   useUIStore.getState().setNavDirection(targetIndex > currentIndex ? 'down' : 'up');
+                }
+              }}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative group ${
                 isActive ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[#fafafa] dark:hover:bg-white/5'
               } ${!isSidebarOpen ? 'justify-center !px-0' : ''}`}
             >
               {isActive && (
-                <motion.div 
-                  layoutId="sidebar-active" 
-                  className={cn(
-                    "absolute inset-0 rounded-lg border-l-2",
-                    isLuxury ? "bg-gradient-to-r from-[#D4AF37]/5 to-transparent border-[#D4AF37]" : 
-                    isNeon ? "bg-gradient-to-r from-[rgb(var(--color-accent-500)/0.05)] to-transparent border-[rgb(var(--color-accent-500))] shadow-[inset_4px_0_15px_rgb(var(--color-accent-500)/0.25)]" :
-                    "bg-gradient-to-r from-[rgb(var(--color-accent-500)/0.05)] dark:from-[rgb(var(--color-accent-500)/0.1)] to-transparent border-[rgb(var(--color-accent-500))]"
-                  )}
-                  transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                />
+                  <motion.div 
+                    layoutId="sidebar-active" 
+                    className={cn(
+                      "absolute inset-0 rounded-lg border-l-2",
+                      isPremium ? "bg-gradient-to-r from-white/10 to-transparent border-white shadow-[inset_4px_0_15px_rgba(255,255,255,0.1)]" :
+                      isLuxury ? "bg-gradient-to-r from-[#D4AF37]/5 to-transparent border-[#D4AF37]" : 
+                      isNeon ? "bg-gradient-to-r from-[rgb(var(--color-accent-500)/0.05)] to-transparent border-[rgb(var(--color-accent-500))] shadow-[inset_4px_0_15px_rgb(var(--color-accent-500)/0.25)]" :
+                      "bg-gradient-to-r from-[rgb(var(--color-accent-500)/0.05)] dark:from-[rgb(var(--color-accent-500)/0.1)] to-transparent border-[rgb(var(--color-accent-500))]"
+                    )}
+                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                  />
               )}
               <span className={cn(
                 "relative z-10 w-6 flex items-center justify-center transition-transform duration-300 origin-center group-hover:scale-110", 
                 isActive ? "scale-110" : "",
+                isActive && isPremium ? "text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]" : "",
                 isActive && isLuxury ? "text-[#D4AF37]" : ""
               )}>
                 {(isNeon && isActive) ? (
@@ -175,9 +189,14 @@ export function Sidebar() {
           mass: 0.8
         }}
         className={cn(
-          "fixed inset-y-0 left-0 z-50 border-r flex flex-col overflow-hidden",
-          !isMobile ? 'relative bg-transparent dark:bg-transparent backdrop-blur-none shadow-lg dark:shadow-none' : 'bg-[#fafafa] dark:bg-[#050505] shadow-2xl',
-          isLuxury ? 'border-[#D4AF37]/20' : 'border-black/10 dark:border-white/5'
+          "shrink-0 flex flex-col overflow-hidden transition-all duration-300",
+          !isMobile ? (
+            isPremium ? 'sticky top-3 my-3 ml-3 rounded-3xl bg-[#060606]/40 backdrop-blur-2xl shadow-2xl border border-white/10 h-[calc(100vh-24px)] z-50' 
+            : 'sticky top-0 bg-transparent dark:bg-transparent backdrop-blur-none shadow-lg dark:shadow-none border-r border-black/10 dark:border-white/5 h-screen z-50'
+          ) : (
+            'fixed inset-y-0 left-0 z-50 transform h-screen',
+            isPremium ? 'bg-black/60 backdrop-blur-3xl border-r border-white/10' : 'bg-white/95 dark:bg-[#0A0A0A]/95 backdrop-blur-xl border-r border-black/10 dark:border-white/10'
+          )
         )}
       >
         <div className={`flex items-center relative ${isSidebarOpen ? 'justify-center p-0' : 'justify-start pt-4 pb-2 px-1 border-b border-black/10 dark:border-white/5 md:border-none'}`}>
@@ -202,7 +221,7 @@ export function Sidebar() {
                     transition={{ duration: 0.2 }}
                     className="absolute flex justify-center w-full cursor-pointer"
                   >
-                    {isNeon ? (
+                    {isNeon || isPremium ? (
                        <div 
                          className="w-8 h-8 relative overflow-hidden masked-logo-parent"
                          style={{
@@ -285,7 +304,7 @@ export function Sidebar() {
                     transition={{ duration: 0.2 }}
                     className="absolute inset-0 flex items-center justify-center w-full h-full cursor-pointer"
                   >
-                    {isNeon ? (
+                    {isNeon || isPremium ? (
                        <div 
                          className={cn("relative overflow-hidden masked-logo-parent", isLuxury ? "w-[130px] h-[130px]" : "w-[160px] h-[60px]")}
                          style={{
@@ -424,6 +443,7 @@ export function Sidebar() {
                           layoutId="sidebar-active" 
                           className={cn(
                             "absolute inset-0 rounded-lg border-l-2",
+                            isPremium ? "bg-gradient-to-r from-white/10 to-transparent border-white shadow-[inset_4px_0_15px_rgba(255,255,255,0.1)]" :
                             isLuxury ? "bg-gradient-to-r from-[#D4AF37]/5 to-transparent border-[#D4AF37]" : 
                             isNeon ? "bg-gradient-to-r from-[rgb(var(--color-accent-500)/0.05)] to-transparent border-[rgb(var(--color-accent-500))] shadow-[inset_4px_0_15px_rgb(var(--color-accent-500)/0.25)]" :
                             "bg-gradient-to-r from-[rgb(var(--color-accent-500)/0.05)] dark:from-[rgb(var(--color-accent-500)/0.1)] to-transparent border-[rgb(var(--color-accent-500))]"

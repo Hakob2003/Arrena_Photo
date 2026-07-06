@@ -113,6 +113,34 @@ const hy: Record<string, string> = {
   'myGen.template': 'Ձևանմուշ',
 
   // === My Templates ===
+  'myTemplates.title': 'Իմ Ձևանմուշները',
+  'myTemplates.description': 'Կառավարեք ձեր ստեղծած ձևանմուշները:',
+  'myTemplates.empty': 'Դուք դեռ չունեք ձևանմուշներ:',
+  'myTemplates.createButton': 'Ստեղծել Ձևանմուշ',
+
+  // === AI Providers ===
+  'ai.title': 'AI Մատակարարներ',
+  'ai.description': 'Միացրեք ձեր API բանալիները կամ լոկալ ծրագրերը՝ գեներատորներ ստեղծելու համար առանց հարթակի կրեդիտներ ծախսելու:',
+  'ai.connected': 'Միացված է',
+  'ai.disconnected': 'Անջատված է',
+  'ai.connect': 'Միացնել',
+  'ai.disconnect': 'Անջատել',
+
+  // === Cloud Storage ===
+  'cloud.title': 'Ամպային Պահեստավորում',
+  'cloud.description': 'Միացրեք պահեստավորումը՝ գեներացված նկարները ավտոմատ պահպանելու համար:',
+  'cloud.googleDriveTitle': 'Google Drive',
+  'cloud.googleDriveDesc': 'Կապեք ձեր Google Drive հաշիվը՝ գեներացված նկարները մեկ սեղմումով պահպանելու համար:',
+  'cloud.googleDriveConnect': 'Միացնել Google Drive',
+  'cloud.googleDriveDisconnect': 'Անջատել',
+  'cloud.s3Title': 'AWS S3 / Cloudflare R2 / MinIO',
+  'cloud.bucketName': 'Bucket Անուն',
+  'cloud.accessKey': 'Access Key ID',
+  'cloud.secretKey': 'Secret Access Key',
+  'cloud.testConnection': 'Ստուգել Կապը',
+  'cloud.save': 'Պահպանել',
+
+  // === My Templates ===
   'myTpl.title': 'Իմ ձևանմուշները',
   'myTpl.description': 'Կառավարեք ձեր ստեղծած հուշումներն ու ձևանմուշները:',
   'myTpl.create': '+ Ստեղծել',
@@ -352,8 +380,10 @@ const hy: Record<string, string> = {
   'profile.appearance.skinLuxury': 'Luxury Gold',
   'profile.appearance.skinNeon': 'Neon Cyberpunk',
   'profile.appearance.skinDesc': 'Ընտրեք ինտերֆեյսի ընդհանուր ոճը:',
-  'profile.appearance.skinLuxuryDesc': 'Պրեմիում մուգ ինտերֆեյս մետաղական շեշտադրումներով:',
-  'profile.appearance.skinNeonDesc': 'Վառ ոճ նեոնային փայլով և վառ շեշտադրվող գույնով:',
+  'profile.appearance.skinLuxuryDesc': 'Պրեմիում մուգ ինտերֆեյս՝ մետաղական շեշտադրումներով:',
+  'profile.appearance.skinNeonDesc': 'Վառ ոճ նեոնային փայլով և վառ շեշտադրման գույնով:',
+  'profile.appearance.skinPremium': 'Premium Editions',
+  'profile.appearance.skinPremiumDesc': 'Բարձր տեխնոլոգիական պրեմիում ինտերֆեյս՝ փայլատ ապակու էֆեկտներով և 3D բաղադրիչներով:',
 
   'generate.cancelError': 'Գեներացիան չեղարկվել է: Գումարը չի վերադարձվում:',
   'generate.clearPrompt': 'Մաքրել հուշումը',
