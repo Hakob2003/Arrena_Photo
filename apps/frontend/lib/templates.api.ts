@@ -1,4 +1,4 @@
-import { api } from './api';
+import { api } from "./api";
 
 export interface TemplateDto {
   name: string;
@@ -13,19 +13,23 @@ export interface TemplateDto {
   price?: number;
   oldPrice?: number;
   status?: string;
-  settings?: any;
+  settings?: Record<string, unknown>;
 }
 
 export const templatesApi = {
   // Get Categories
   getCategories: async () => {
-    const res = await api.get('/templates/categories');
+    const res = await api.get("/templates/categories");
     return res.data;
   },
 
   // Get Templates (with filtering)
-  getTemplates: async (params: any = {}) => {
-    const query = new URLSearchParams(params).toString();
+  getTemplates: async (
+    params: Record<string, string | number | boolean> = {},
+  ) => {
+    const query = new URLSearchParams(
+      params as Record<string, string>,
+    ).toString();
     const res = await api.get(`/templates?${query}`);
     return res.data;
   },
@@ -38,7 +42,7 @@ export const templatesApi = {
 
   // Create template
   createTemplate: async (data: TemplateDto) => {
-    const res = await api.post('/templates', data);
+    const res = await api.post("/templates", data);
     return res.data;
   },
 
@@ -61,14 +65,17 @@ export const templatesApi = {
   },
 
   // Bulk action
-  bulkAction: async (action: 'PUBLISH' | 'DRAFT' | 'ARCHIVE' | 'DELETE', templateIds: string[]) => {
-    const res = await api.post('/templates/bulk', { action, templateIds });
+  bulkAction: async (
+    action: "PUBLISH" | "DRAFT" | "ARCHIVE" | "DELETE",
+    templateIds: string[],
+  ) => {
+    const res = await api.post("/templates/bulk", { action, templateIds });
     return res.data;
   },
 
   // Import templates
   importTemplates: async (templates: any[]) => {
-    const res = await api.post('/templates/bulk-import', { templates });
+    const res = await api.post("/templates/bulk-import", { templates });
     return res.data;
-  }
+  },
 };

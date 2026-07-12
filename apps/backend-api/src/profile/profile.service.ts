@@ -1,7 +1,16 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { UpdateProfileDto, UpdatePreferencesDto, UpdateNotificationsDto, UpdateSecurityDto } from './dto/profile.dto';
-import * as bcrypt from 'bcryptjs';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+import {
+  UpdateProfileDto,
+  UpdatePreferencesDto,
+  UpdateNotificationsDto,
+  UpdateSecurityDto,
+} from "./dto/profile.dto";
+import * as bcrypt from "bcryptjs";
 
 @Injectable()
 export class ProfileService {
@@ -35,23 +44,25 @@ export class ProfileService {
       },
     });
 
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException("User not found");
     return user;
   }
 
   async updatePersonalInfo(userId: string, dto: UpdateProfileDto) {
     if (dto.nickname) {
       const existing = await this.prisma.user.findFirst({
-        where: { nickname: dto.nickname, id: { not: userId } }
+        where: { nickname: dto.nickname, id: { not: userId } },
       });
-      if (existing) throw new BadRequestException('Nickname is already taken');
+      if (existing) throw new BadRequestException("Nickname is already taken");
     }
 
     return this.prisma.user.update({
       where: { id: userId },
       data: {
         ...dto,
-        socialLinks: dto.socialLinks ? JSON.stringify(dto.socialLinks) : undefined,
+        socialLinks: dto.socialLinks
+          ? JSON.stringify(dto.socialLinks)
+          : undefined,
       },
     });
   }
@@ -72,11 +83,17 @@ export class ProfileService {
 
   async updatePassword(userId: string, dto: UpdateSecurityDto) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new NotFoundException('User not found');
-    if (!user.passwordHash) throw new BadRequestException('User does not have a password set (social login)');
+    if (!user) throw new NotFoundException("User not found");
+    if (!user.passwordHash)
+      throw new BadRequestException(
+        "User does not have a password set (social login)",
+      );
 
-    const isMatch = await bcrypt.compare(dto.currentPassword, user.passwordHash);
-    if (!isMatch) throw new BadRequestException('Invalid current password');
+    const isMatch = await bcrypt.compare(
+      dto.currentPassword,
+      user.passwordHash,
+    );
+    if (!isMatch) throw new BadRequestException("Invalid current password");
 
     const newHash = await bcrypt.hash(dto.newPassword, 10);
     await this.prisma.user.update({
@@ -90,7 +107,7 @@ export class ProfileService {
   async getSessions(userId: string) {
     return this.prisma.session.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       select: {
         id: true,
         ipAddress: true,
@@ -99,7 +116,7 @@ export class ProfileService {
         device: true,
         createdAt: true,
         expiresAt: true,
-      }
+      },
     });
   }
 
@@ -107,8 +124,8 @@ export class ProfileService {
     const result = await this.prisma.session.deleteMany({
       where: {
         userId,
-        id: { not: currentSessionId }
-      }
+        id: { not: currentSessionId },
+      },
     });
     return { success: true, count: result.count };
   }
@@ -119,35 +136,35 @@ export class ProfileService {
       include: {
         _count: {
           select: { generations: true },
-        }
-      }
+        },
+      },
     });
 
     // Count successful generations
     const successfulGenerations = await this.prisma.generation.count({
-      where: { userId, status: 'DONE' }
+      where: { userId, status: "DONE" },
     });
 
     // Spent credits
     const spentCreditsAggr = await this.prisma.creditTransaction.aggregate({
       where: { userId, amount: { lt: 0 } },
-      _sum: { amount: true }
+      _sum: { amount: true },
     });
 
     // Top AI Model
     const topModelUsage = await this.prisma.generation.groupBy({
-      by: ['aiModelId'],
-      where: { userId, status: 'DONE' },
+      by: ["aiModelId"],
+      where: { userId, status: "DONE" },
       _count: { aiModelId: true },
-      orderBy: { _count: { aiModelId: 'desc' } },
-      take: 1
+      orderBy: { _count: { aiModelId: "desc" } },
+      take: 1,
     });
 
-    let favoriteModel = 'None';
+    let favoriteModel = "None";
     if (topModelUsage.length > 0) {
       const modelInfo = await this.prisma.aIModel.findUnique({
         where: { id: topModelUsage[0].aiModelId },
-        select: { name: true }
+        select: { name: true },
       });
       if (modelInfo) favoriteModel = modelInfo.name;
     }
@@ -159,54 +176,59 @@ export class ProfileService {
       successfulGenerations,
       favoriteModel,
       spentCredits: Math.abs(spentCreditsAggr._sum.amount || 0),
-      currentCredits: user?.credits || 0
+      currentCredits: user?.credits || 0,
     };
   }
 
   async getActivity(userId: string, page: number = 1, limit: number = 10) {
     const skip = (page - 1) * limit;
-    
-    // We can merge AuditLog and Sessions or just use Sessions for now if AuditLog isn't fully populated.
-    // Let's create a combined or just use Session creation as 'Login' and Generations as 'Generation'.
-    // Since AuditLog might be empty, let's query Generations and Sessions to simulate Activity.
-    
-    const [generations, sessions] = await Promise.all([
-      this.prisma.generation.findMany({
-        where: { userId },
-        orderBy: { createdAt: 'desc' },
-        take: limit,
-        select: { id: true, status: true, createdAt: true, aiModel: { select: { name: true } } }
-      }),
-      this.prisma.session.findMany({
-        where: { userId },
-        orderBy: { createdAt: 'desc' },
-        take: limit,
-        select: { id: true, device: true, ipAddress: true, createdAt: true }
-      })
-    ]);
+    const queryLimit = skip + limit;
+
+    const [generations, sessions, totalGenerations, totalSessions] =
+      await Promise.all([
+        this.prisma.generation.findMany({
+          where: { userId },
+          orderBy: { createdAt: "desc" },
+          take: queryLimit,
+          select: {
+            id: true,
+            status: true,
+            createdAt: true,
+            aiModel: { select: { name: true } },
+          },
+        }),
+        this.prisma.session.findMany({
+          where: { userId },
+          orderBy: { createdAt: "desc" },
+          take: queryLimit,
+          select: { id: true, device: true, ipAddress: true, createdAt: true },
+        }),
+        this.prisma.generation.count({ where: { userId } }),
+        this.prisma.session.count({ where: { userId } }),
+      ]);
 
     const activities = [
-      ...generations.map(g => ({
+      ...generations.map((g) => ({
         id: g.id,
-        type: 'GENERATION',
-        action: `Generated image using ${g.aiModel?.name || 'AI Model'}`,
+        type: "GENERATION",
+        action: `Generated image using ${g.aiModel?.name || "AI Model"}`,
         status: g.status,
-        date: g.createdAt
+        date: g.createdAt,
       })),
-      ...sessions.map(s => ({
+      ...sessions.map((s) => ({
         id: s.id,
-        type: 'LOGIN',
-        action: `Signed in on ${s.device || 'Unknown Device'} from ${s.ipAddress || 'Unknown IP'}`,
-        status: 'SUCCESS',
-        date: s.createdAt
-      }))
+        type: "LOGIN",
+        action: `Signed in on ${s.device || "Unknown Device"} from ${s.ipAddress || "Unknown IP"}`,
+        status: "SUCCESS",
+        date: s.createdAt,
+      })),
     ];
 
     activities.sort((a, b) => b.date.getTime() - a.date.getTime());
-    
+
     return {
       items: activities.slice(skip, skip + limit),
-      total: activities.length // Approximated for this logic
+      total: totalGenerations + totalSessions,
     };
   }
 }

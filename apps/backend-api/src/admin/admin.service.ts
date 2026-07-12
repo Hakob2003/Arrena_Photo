@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { EncryptionUtil } from '../common/utils/encryption.util';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "../prisma/prisma.service";
+import { EncryptionUtil } from "../common/utils/encryption.util";
 
 @Injectable()
 export class AdminService {
@@ -24,7 +24,7 @@ export class AdminService {
       totalRevenue,
       activeSubscriptions,
       popularTemplates,
-      aiUsageSum
+      aiUsageSum,
     ] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.user.count({ where: { createdAt: { gte: oneDayAgo } } }),
@@ -32,25 +32,25 @@ export class AdminService {
       this.prisma.user.count({ where: { createdAt: { gte: oneMonthAgo } } }),
       this.prisma.template.count(),
       this.prisma.generation.count(),
-      this.prisma.generation.count({ where: { status: 'DONE' } }),
-      this.prisma.generation.count({ where: { status: 'FAILED' } }),
+      this.prisma.generation.count({ where: { status: "DONE" } }),
+      this.prisma.generation.count({ where: { status: "FAILED" } }),
       this.prisma.purchase.aggregate({ _sum: { amount: true } }),
-      this.prisma.subscription.count({ where: { plan: { not: 'FREE' } } }),
+      this.prisma.subscription.count({ where: { plan: { not: "FREE" } } }),
       this.prisma.template.findMany({
         take: 5,
-        orderBy: { downloadCount: 'desc' },
-        select: { id: true, name: true, downloadCount: true }
+        orderBy: { downloadCount: "desc" },
+        select: { id: true, name: true, downloadCount: true },
       }),
-      this.prisma.aIUsage.aggregate({ _sum: { totalTokens: true } })
+      this.prisma.aIUsage.aggregate({ _sum: { totalTokens: true } }),
     ]);
 
     // For chart data, generating a 7-day mock trend for now.
-    // In production, this would be a group-by query using prisma.$queryRaw
+    // In production, this would be a group-by query using prisma.generation.groupBy (or Prisma.sql if strictly necessary)
     const chartData = Array.from({ length: 7 }).map((_, i) => {
       const d = new Date();
       d.setDate(d.getDate() - (6 - i));
       return {
-        date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        date: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
         users: Math.floor(Math.random() * 50) + 10,
         revenue: Math.floor(Math.random() * 500) + 50,
         generations: Math.floor(Math.random() * 200) + 100,
@@ -62,39 +62,50 @@ export class AdminService {
       newUsers: {
         day: usersDay,
         week: usersWeek,
-        month: usersMonth
+        month: usersMonth,
       },
       templates: templatesCount,
       generations: {
         total: generationsCount,
         success: generationsSuccess,
-        failed: generationsFailed
+        failed: generationsFailed,
       },
       revenue: totalRevenue._sum.amount || 0,
       activeSubscriptions,
       popularTemplates,
       apiTokensUsed: aiUsageSum._sum.totalTokens || 0,
-      chartData
+      chartData,
     };
   }
 
   async getRecentUsers() {
     return this.prisma.user.findMany({
       take: 10,
-      orderBy: { createdAt: 'desc' },
-      select: { id: true, email: true, name: true, createdAt: true, role: { select: { name: true } } },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        createdAt: true,
+        role: { select: { name: true } },
+      },
     });
   }
 
   // --- Users ---
-  async getAllUsers(page: number = 1, limit: number = 20, search?: string, roleName?: string) {
+  async getAllUsers(
+    page: number = 1,
+    limit: number = 20,
+    search?: string,
+    roleName?: string,
+  ) {
     const skip = (page - 1) * limit;
-    
+
     const where: any = {};
     if (search) {
       where.OR = [
-        { email: { contains: search, mode: 'insensitive' } },
-        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: "insensitive" } },
+        { name: { contains: search, mode: "insensitive" } },
       ];
     }
     if (roleName) {
@@ -106,18 +117,18 @@ export class AdminService {
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
-        include: { 
-          role: true, 
+        orderBy: { createdAt: "desc" },
+        include: {
+          role: true,
           subscription: true,
-          _count: { select: { generations: true } }
+          _count: { select: { generations: true } },
         },
       }),
       this.prisma.user.count({ where }),
     ]);
-    
+
     // Map the users to include generation count cleanly
-    const mappedUsers = users.map(u => ({
+    const mappedUsers = users.map((u) => ({
       id: u.id,
       email: u.email,
       name: u.name,
@@ -126,13 +137,13 @@ export class AdminService {
       status: u.status,
       credits: u.credits,
       role: u.role,
-      plan: u.subscription?.plan || 'FREE',
+      plan: u.subscription?.plan || "FREE",
       generationCount: u._count.generations,
       maxConcurrentOverride: u.maxConcurrentOverride,
       queueDelayOverride: u.queueDelayOverride,
-      priorityOverride: u.priorityOverride
+      priorityOverride: u.priorityOverride,
     }));
-    
+
     return { users: mappedUsers, total, page, limit };
   }
 
@@ -140,16 +151,16 @@ export class AdminService {
     const user = await this.prisma.user.update({
       where: { id: userId },
       data: {
-        credits: { increment: amount }
-      }
+        credits: { increment: amount },
+      },
     });
 
     await this.prisma.auditLog.create({
       data: {
         userId,
-        action: amount > 0 ? 'CREDITS_ADDED' : 'CREDITS_REMOVED',
-        details: { amount, reason }
-      }
+        action: amount > 0 ? "CREDITS_ADDED" : "CREDITS_REMOVED",
+        details: { amount, reason },
+      },
     });
 
     return user;
@@ -158,36 +169,39 @@ export class AdminService {
   async updateUserPlan(userId: string, plan: string) {
     // Basic logic: update or create a subscription
     const existingSub = await this.prisma.subscription.findFirst({
-      where: { userId }
+      where: { userId },
     });
 
     // Validate plan name
-    let validPlan: 'FREE' | 'STARTER' | 'PRO' | 'BUSINESS' = 'FREE';
-    if (plan === 'STARTER' || plan === 'PRO' || plan === 'BUSINESS') {
+    let validPlan: "FREE" | "STARTER" | "PRO" | "BUSINESS" = "FREE";
+    if (plan === "STARTER" || plan === "PRO" || plan === "BUSINESS") {
       validPlan = plan as any;
     }
 
     if (existingSub) {
       await this.prisma.subscription.update({
         where: { id: existingSub.id },
-        data: { plan: validPlan, expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) } // 30 days
+        data: {
+          plan: validPlan,
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        }, // 30 days
       });
     } else {
       await this.prisma.subscription.create({
         data: {
           userId,
           plan: validPlan,
-          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-        }
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        },
       });
     }
 
     await this.prisma.auditLog.create({
       data: {
         userId,
-        action: 'PLAN_CHANGED',
-        details: { plan }
-      }
+        action: "PLAN_CHANGED",
+        details: { plan },
+      },
     });
 
     return { success: true };
@@ -195,8 +209,8 @@ export class AdminService {
 
   async importUsers(emails: string[]) {
     // Create users with no password (they will reset it or use OAuth)
-    const role = await this.prisma.role.findUnique({ where: { name: 'USER' } });
-    if (!role) throw new NotFoundException('USER role not found');
+    const role = await this.prisma.role.findUnique({ where: { name: "USER" } });
+    if (!role) throw new NotFoundException("USER role not found");
 
     let importedCount = 0;
     for (const email of emails) {
@@ -205,9 +219,9 @@ export class AdminService {
         await this.prisma.user.create({
           data: {
             email,
-            name: email.split('@')[0],
+            name: email.split("@")[0],
             roleId: role.id,
-          }
+          },
         });
         importedCount++;
       }
@@ -218,50 +232,50 @@ export class AdminService {
 
   async banUser(userId: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new NotFoundException('User not found');
-    
+    if (!user) throw new NotFoundException("User not found");
+
     await this.prisma.user.update({
       where: { id: userId },
-      data: { status: 'BANNED' }
+      data: { status: "BANNED" },
     });
 
     await this.prisma.auditLog.create({
       data: {
         userId: user.id,
-        action: 'USER_BANNED',
-        details: { reason: 'Banned by admin' },
-      }
+        action: "USER_BANNED",
+        details: { reason: "Banned by admin" },
+      },
     });
-    
-    return { success: true, message: 'User banned successfully' };
+
+    return { success: true, message: "User banned successfully" };
   }
 
   async unbanUser(userId: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new NotFoundException('User not found');
-    
+    if (!user) throw new NotFoundException("User not found");
+
     await this.prisma.user.update({
       where: { id: userId },
-      data: { status: 'ACTIVE' }
+      data: { status: "ACTIVE" },
     });
 
     await this.prisma.auditLog.create({
       data: {
         userId: user.id,
-        action: 'USER_UNBANNED',
-        details: { reason: 'Unbanned by admin' },
-      }
+        action: "USER_UNBANNED",
+        details: { reason: "Unbanned by admin" },
+      },
     });
-    
-    return { success: true, message: 'User unbanned successfully' };
+
+    return { success: true, message: "User unbanned successfully" };
   }
 
   async deleteUser(userId: string) {
     // Delete user completely
     await this.prisma.user.delete({
-      where: { id: userId }
+      where: { id: userId },
     });
-    return { success: true, message: 'User deleted successfully' };
+    return { success: true, message: "User deleted successfully" };
   }
 
   // --- Templates ---
@@ -271,8 +285,11 @@ export class AdminService {
       this.prisma.template.findMany({
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
-        include: { creator: { select: { name: true, email: true } }, category: true },
+        orderBy: { createdAt: "desc" },
+        include: {
+          creator: { select: { name: true, email: true } },
+          category: true,
+        },
       }),
       this.prisma.template.count(),
     ]);
@@ -282,14 +299,14 @@ export class AdminService {
   async approveTemplate(templateId: string) {
     return this.prisma.template.update({
       where: { id: templateId },
-      data: { isApproved: true, status: 'PUBLISHED' },
+      data: { isApproved: true, status: "PUBLISHED" },
     });
   }
 
   async rejectTemplate(templateId: string) {
     return this.prisma.template.update({
       where: { id: templateId },
-      data: { isApproved: false, status: 'DRAFT' },
+      data: { isApproved: false, status: "DRAFT" },
     });
   }
 
@@ -300,7 +317,7 @@ export class AdminService {
       this.prisma.generation.findMany({
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         include: { user: { select: { email: true } }, aiModel: true },
       }),
       this.prisma.generation.count(),
@@ -315,7 +332,7 @@ export class AdminService {
       this.prisma.auditLog.findMany({
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         include: { user: { select: { email: true } } },
       }),
       this.prisma.auditLog.count(),
@@ -330,36 +347,36 @@ export class AdminService {
       this.prisma.payout.findMany({
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         include: { user: { select: { email: true } } },
       }),
       this.prisma.payout.count(),
       this.prisma.payout.aggregate({
         _sum: { amount: true },
-        where: { status: 'COMPLETED' }
-      })
+        where: { status: "COMPLETED" },
+      }),
     ]);
 
     // Also get pending total
     const pendingMetrics = await this.prisma.payout.aggregate({
       _sum: { amount: true },
-      where: { status: 'PENDING' }
+      where: { status: "PENDING" },
     });
 
-    return { 
-      payouts, 
-      total, 
-      page, 
+    return {
+      payouts,
+      total,
+      page,
       limit,
       totalPaid: metrics._sum.amount || 0,
-      pendingAmount: pendingMetrics._sum.amount || 0
+      pendingAmount: pendingMetrics._sum.amount || 0,
     };
   }
 
   async processPayout(payoutId: string) {
     return this.prisma.payout.update({
       where: { id: payoutId },
-      data: { status: 'COMPLETED' }
+      data: { status: "COMPLETED" },
     });
   }
 
@@ -369,48 +386,52 @@ export class AdminService {
       include: {
         connections: {
           where: { userId: adminId },
-          select: { 
-            id: true, 
+          select: {
+            id: true,
             encryptedApiKey: true,
             status: true,
             lastCheckedAt: true,
             balance: true,
             errorMessage: true,
             isAutoMonitorOn: true,
-            monitorInterval: true
-          }
-        }
-      }
+            monitorInterval: true,
+          },
+        },
+      },
     });
 
-    return providers.map(p => {
+    return providers.map((p) => {
       const conn = p.connections[0];
       return {
         id: p.id,
         name: p.name,
         isGlobal: p.isGlobal,
         hasKeySet: !!conn?.encryptedApiKey,
-        status: conn?.status || 'UNKNOWN',
+        status: conn?.status || "UNKNOWN",
         lastCheckedAt: conn?.lastCheckedAt || null,
         balance: conn?.balance || null,
         errorMessage: conn?.errorMessage || null,
         isAutoMonitorOn: conn?.isAutoMonitorOn || false,
-        monitorInterval: conn?.monitorInterval || '1h'
+        monitorInterval: conn?.monitorInterval || "1h",
       };
     });
   }
 
-  async updateGlobalApiKey(adminId: string, providerId: string, apiKey: string) {
+  async updateGlobalApiKey(
+    adminId: string,
+    providerId: string,
+    apiKey: string,
+  ) {
     const encryptedKey = EncryptionUtil.encrypt(apiKey);
 
     const existingConnection = await this.prisma.aIConnection.findUnique({
-      where: { userId_providerId: { userId: adminId, providerId } }
+      where: { userId_providerId: { userId: adminId, providerId } },
     });
 
     if (existingConnection) {
       return this.prisma.aIConnection.update({
         where: { id: existingConnection.id },
-        data: { encryptedApiKey: encryptedKey }
+        data: { encryptedApiKey: encryptedKey },
       });
     }
 
@@ -418,58 +439,68 @@ export class AdminService {
       data: {
         userId: adminId,
         providerId,
-        encryptedApiKey: encryptedKey
-      }
+        encryptedApiKey: encryptedKey,
+      },
     });
   }
 
-  async toggleAutoMonitor(adminId: string, providerId: string, data: { isAutoMonitorOn: boolean, monitorInterval: string }) {
+  async toggleAutoMonitor(
+    adminId: string,
+    providerId: string,
+    data: { isAutoMonitorOn: boolean; monitorInterval: string },
+  ) {
     const existingConnection = await this.prisma.aIConnection.findUnique({
-      where: { userId_providerId: { userId: adminId, providerId } }
+      where: { userId_providerId: { userId: adminId, providerId } },
     });
 
     if (!existingConnection) {
-      throw new Error('API key must be set before configuring monitoring');
+      throw new Error("API key must be set before configuring monitoring");
     }
 
     return this.prisma.aIConnection.update({
       where: { id: existingConnection.id },
       data: {
         isAutoMonitorOn: data.isAutoMonitorOn,
-        monitorInterval: data.monitorInterval
-      }
+        monitorInterval: data.monitorInterval,
+      },
     });
   }
 
   // --- Billing ---
   async getBillingStats() {
-    const [totalRevenue, activeSubscriptions, recentPurchases] = await Promise.all([
-      this.prisma.purchase.aggregate({ _sum: { amount: true } }),
-      this.prisma.subscription.count({ where: { plan: { not: 'FREE' } } }),
-      this.prisma.purchase.findMany({
-        take: 10,
-        orderBy: { purchasedAt: 'desc' },
-        include: { user: { select: { email: true } } }
-      })
-    ]);
+    const [totalRevenue, activeSubscriptions, recentPurchases] =
+      await Promise.all([
+        this.prisma.purchase.aggregate({ _sum: { amount: true } }),
+        this.prisma.subscription.count({ where: { plan: { not: "FREE" } } }),
+        this.prisma.purchase.findMany({
+          take: 10,
+          orderBy: { purchasedAt: "desc" },
+          include: { user: { select: { email: true } } },
+        }),
+      ]);
 
     return {
       revenue: totalRevenue._sum.amount || 0,
       activeSubscriptions,
-      recentPurchases
+      recentPurchases,
     };
   }
 
   // --- AI Models ---
-  async getAIModels(page: number = 1, limit: number = 50, search?: string, providerId?: string) {
+  async getAIModels(
+    page: number = 1,
+    limit: number = 50,
+    search?: string,
+    providerId?: string,
+  ) {
     const skip = (page - 1) * limit;
     const where: any = {};
-    
+
     if (search) {
       where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { slug: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
+        { name: { contains: search, mode: "insensitive" } },
+        { slug: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
       ];
     }
     if (providerId) {
@@ -481,16 +512,16 @@ export class AdminService {
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         include: {
           provider: { select: { id: true, name: true } },
-          _count: { select: { generations: true } }
-        }
+          _count: { select: { generations: true } },
+        },
       }),
-      this.prisma.aIModel.count({ where })
+      this.prisma.aIModel.count({ where }),
     ]);
 
-    const mappedModels = models.map(m => ({
+    const mappedModels = models.map((m) => ({
       id: m.id,
       name: m.name,
       slug: m.slug,
@@ -503,7 +534,7 @@ export class AdminService {
       provider: m.provider,
       requestCount: m._count.generations,
       createdAt: m.createdAt,
-      updatedAt: m.updatedAt
+      updatedAt: m.updatedAt,
     }));
 
     return { models: mappedModels, total, page, limit };
@@ -511,8 +542,13 @@ export class AdminService {
 
   async getAIProvidersList() {
     return this.prisma.aIProvider.findMany({
-      select: { id: true, name: true, isGlobal: true, _count: { select: { models: true } } },
-      orderBy: { name: 'asc' }
+      select: {
+        id: true,
+        name: true,
+        isGlobal: true,
+        _count: { select: { models: true } },
+      },
+      orderBy: { name: "asc" },
     });
   }
 
@@ -528,14 +564,18 @@ export class AdminService {
     speed?: string;
   }) {
     // Ensure provider exists, create if not
-    let provider = await this.prisma.aIProvider.findUnique({ where: { id: data.providerId } });
+    let provider = await this.prisma.aIProvider.findUnique({
+      where: { id: data.providerId },
+    });
     if (!provider) {
       // Try finding by name
-      provider = await this.prisma.aIProvider.findUnique({ where: { name: data.providerId } });
+      provider = await this.prisma.aIProvider.findUnique({
+        where: { name: data.providerId },
+      });
     }
     if (!provider) {
       provider = await this.prisma.aIProvider.create({
-        data: { name: data.providerId, isGlobal: true }
+        data: { name: data.providerId, isGlobal: true },
       });
     }
 
@@ -549,28 +589,31 @@ export class AdminService {
         isFree: data.isFree ?? false,
         isActive: data.isActive ?? true,
         costPerToken: data.costPerToken ?? 0,
-        speed: data.speed ?? 'medium',
+        speed: data.speed ?? "medium",
       },
       include: {
         provider: { select: { id: true, name: true } },
-        _count: { select: { generations: true } }
-      }
+        _count: { select: { generations: true } },
+      },
     });
   }
 
-  async updateAIModel(id: string, data: {
-    name?: string;
-    slug?: string;
-    providerId?: string;
-    endpoint?: string;
-    description?: string;
-    isFree?: boolean;
-    isActive?: boolean;
-    costPerToken?: number;
-    speed?: string;
-  }) {
+  async updateAIModel(
+    id: string,
+    data: {
+      name?: string;
+      slug?: string;
+      providerId?: string;
+      endpoint?: string;
+      description?: string;
+      isFree?: boolean;
+      isActive?: boolean;
+      costPerToken?: number;
+      speed?: string;
+    },
+  ) {
     const model = await this.prisma.aIModel.findUnique({ where: { id } });
-    if (!model) throw new NotFoundException('AI Model not found');
+    if (!model) throw new NotFoundException("AI Model not found");
 
     return this.prisma.aIModel.update({
       where: { id },
@@ -579,104 +622,113 @@ export class AdminService {
         ...(data.slug !== undefined && { slug: data.slug }),
         ...(data.providerId !== undefined && { providerId: data.providerId }),
         ...(data.endpoint !== undefined && { endpoint: data.endpoint }),
-        ...(data.description !== undefined && { description: data.description }),
+        ...(data.description !== undefined && {
+          description: data.description,
+        }),
         ...(data.isFree !== undefined && { isFree: data.isFree }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
-        ...(data.costPerToken !== undefined && { costPerToken: data.costPerToken }),
+        ...(data.costPerToken !== undefined && {
+          costPerToken: data.costPerToken,
+        }),
         ...(data.speed !== undefined && { speed: data.speed }),
       },
       include: {
         provider: { select: { id: true, name: true } },
-        _count: { select: { generations: true } }
-      }
+        _count: { select: { generations: true } },
+      },
     });
   }
 
   async toggleAIModel(id: string) {
     const model = await this.prisma.aIModel.findUnique({ where: { id } });
-    if (!model) throw new NotFoundException('AI Model not found');
+    if (!model) throw new NotFoundException("AI Model not found");
 
     return this.prisma.aIModel.update({
       where: { id },
       data: { isActive: !model.isActive },
       include: {
         provider: { select: { id: true, name: true } },
-        _count: { select: { generations: true } }
-      }
+        _count: { select: { generations: true } },
+      },
     });
   }
 
   async deleteAIModel(id: string) {
     const model = await this.prisma.aIModel.findUnique({ where: { id } });
-    if (!model) throw new NotFoundException('AI Model not found');
+    if (!model) throw new NotFoundException("AI Model not found");
 
     await this.prisma.aIModel.delete({ where: { id } });
-    return { success: true, message: 'AI Model deleted' };
+    return { success: true, message: "AI Model deleted" };
   }
 
   // --- AI Model & Template Assignment ---
-  
+
   async getTemplatesForAssignment() {
     return this.prisma.template.findMany({
       select: {
         id: true,
         name: true,
         recommendedModels: true,
-        category: { select: { name: true } }
+        category: { select: { name: true } },
       },
-      orderBy: { name: 'asc' }
+      orderBy: { name: "asc" },
     });
   }
 
   async assignModelToTemplates(modelId: string, templateIds: string[]) {
-    const model = await this.prisma.aIModel.findUnique({ where: { id: modelId } });
-    if (!model) throw new NotFoundException('AI Model not found');
+    const model = await this.prisma.aIModel.findUnique({
+      where: { id: modelId },
+    });
+    if (!model) throw new NotFoundException("AI Model not found");
 
     const slug = model.slug;
 
     // Get all templates that currently have this model slug in recommendedModels
     const currentTemplates = await this.prisma.template.findMany({
       where: { recommendedModels: { has: slug } },
-      select: { id: true, recommendedModels: true }
+      select: { id: true, recommendedModels: true },
     });
 
-    const currentIds = currentTemplates.map(t => t.id);
+    const currentIds = currentTemplates.map((t) => t.id);
 
     // Templates to add slug to
-    const toAdd = templateIds.filter(id => !currentIds.includes(id));
+    const toAdd = templateIds.filter((id) => !currentIds.includes(id));
     // Templates to remove slug from
-    const toRemove = currentIds.filter(id => !templateIds.includes(id));
+    const toRemove = currentIds.filter((id) => !templateIds.includes(id));
 
     // Update templates to add slug
     for (const tId of toAdd) {
-      const t = await this.prisma.template.findUnique({ where: { id: tId }, select: { recommendedModels: true } });
+      const t = await this.prisma.template.findUnique({
+        where: { id: tId },
+        select: { recommendedModels: true },
+      });
       if (t) {
         await this.prisma.template.update({
           where: { id: tId },
           data: {
             recommendedModels: {
-              set: [...t.recommendedModels, slug]
-            }
-          }
+              set: [...t.recommendedModels, slug],
+            },
+          },
         });
       }
     }
 
     // Update templates to remove slug
     for (const tId of toRemove) {
-      const t = currentTemplates.find(ct => ct.id === tId);
+      const t = currentTemplates.find((ct) => ct.id === tId);
       if (t) {
         await this.prisma.template.update({
           where: { id: tId },
           data: {
             recommendedModels: {
-              set: t.recommendedModels.filter(s => s !== slug)
-            }
-          }
+              set: t.recommendedModels.filter((s) => s !== slug),
+            },
+          },
         });
       }
     }
 
-    return { success: true, message: 'Model assignments updated' };
+    return { success: true, message: "Model assignments updated" };
   }
 }

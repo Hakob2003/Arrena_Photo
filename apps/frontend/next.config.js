@@ -31,13 +31,7 @@ const nextConfig = {
     ],
   },
   async redirects() {
-    return [
-      {
-        source: "/profile",
-        destination: "/profile/personal",
-        permanent: false,
-      },
-    ];
+    return [];
   },
   eslint: {
     ignoreDuringBuilds: true,

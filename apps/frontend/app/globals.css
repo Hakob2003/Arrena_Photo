@@ -5,13 +5,13 @@
 
 @layer base {
   :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
+    --background: 0 0% 98%; /* #FAFAFA */
+    --foreground: 222.2 84% 4.9%; /* #0F172A */
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
     --primary-foreground: oklch(0.985 0 0);
     --secondary: oklch(0.97 0 0);
     --secondary-foreground: oklch(0.205 0 0);
@@ -74,7 +74,7 @@
     --chart-5: oklch(0.269 0 0);
     --sidebar: oklch(0.205 0 0);
     --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary: 271.5 81.3% 55.9%;
     --sidebar-primary-foreground: oklch(0.985 0 0);
     --sidebar-accent: oklch(0.269 0 0);
     --sidebar-accent-foreground: oklch(0.985 0 0);
@@ -83,30 +83,30 @@
   }
   
   html.dark[data-skin="luxury"] {
-    --background: oklch(0.16 0 0); /* #050505 */
-    --card: oklch(0.19 0 0); /* #0A0A0A */
-    --popover: oklch(0.19 0 0);
-    --primary: oklch(0.75 0.15 80); /* Gold */
-    --ring: oklch(0.75 0.15 80);
-    --border: oklch(1 0 0 / 8%);
-    --sidebar: oklch(0.16 0 0);
-    --sidebar-primary: oklch(0.75 0.15 80);
+    --background: 0 0% 2.4%; /* #050505 */
+    --card: 0 0% 3.9%; /* #0A0A0A */
+    --popover: 0 0% 3.9%;
+    --primary: 46 65% 52%; /* Gold */
+    --ring: 46 65% 52%;
+    --border: 0 0% 15%;
+    --sidebar: 0 0% 2.4%;
+    --sidebar-primary: 46 65% 52%;
   }
   
   html.dark[data-skin="neon"] {
-    --background: oklch(0.22 0 0); /* Lighter dark */
-    --card: oklch(0.25 0 0); 
-    --popover: oklch(0.25 0 0);
-    --border: oklch(1 0 0 / 8%);
-    --sidebar: oklch(0.22 0 0);
+    --background: 0 0% 6.7%; /* Lighter dark */
+    --card: 0 0% 9.0%; 
+    --popover: 0 0% 9.0%;
+    --border: 0 0% 15%;
+    --sidebar: 0 0% 6.7%;
   }
 
   html.dark[data-skin="premium"] {
-    --background: oklch(0.16 0 0); /* #060606 */
-    --card: oklch(0.19 0 0); /* #0E0E0E */
-    --popover: oklch(0.19 0 0);
-    --border: oklch(1 0 0 / 8%);
-    --sidebar: oklch(0.16 0 0);
+    --background: 0 0% 2.4%; /* #060606 */
+    --card: 0 0% 3.9%; /* #0E0E0E */
+    --popover: 0 0% 3.9%;
+    --border: 0 0% 15%;
+    --sidebar: 0 0% 2.4%;
   }
 
   html[data-skin="luxury"] {
@@ -155,8 +155,8 @@
   }
   
   html:not(.dark) body {
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    color: #0f172a;
+    background-color: var(--background);
+    color: var(--foreground);
     min-height: 100vh;
   }
   
@@ -195,15 +195,17 @@
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(1px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 4px 24px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.04);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.02);
     transition: all 0.2s ease-in-out;
   }
   .glass-card:hover {
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+    background: rgba(255, 255, 255, 1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.03);
   }
   html.dark .glass-card {
     background: rgba(255, 255, 255, 0.03);
@@ -386,8 +388,8 @@
   /* Accent Colors (override primary and ring, though many elements use hardcoded bg-indigo-600) */
   /* This is a best-effort approach for Shadcn components */
   html[data-accent="rose"] {
-    --primary: oklch(0.601 0.203 14.615); /* rose-600 */
-    --ring: oklch(0.601 0.203 14.615);
+    --primary: 346.8 77.2% 49.8%; /* rose-600 */
+    --ring: 346.8 77.2% 49.8%;
     selection:bg-rose-500/30;
     --color-accent-300: 253 164 175;
     --color-accent-400: 251 113 133;
@@ -396,8 +398,8 @@
     --color-accent-700: 190 18 60;
   }
   html[data-accent="emerald"] {
-    --primary: oklch(0.605 0.148 152.016); /* emerald-600 */
-    --ring: oklch(0.605 0.148 152.016);
+    --primary: 160 84% 39%; /* emerald-600 */
+    --ring: 160 84% 39%;
     selection:bg-emerald-500/30;
     --color-accent-300: 110 231 183;
     --color-accent-400: 52 211 153;
@@ -406,8 +408,8 @@
     --color-accent-700: 4 120 87;
   }
   html[data-accent="amber"] {
-    --primary: oklch(0.706 0.165 67.288); /* amber-600 */
-    --ring: oklch(0.706 0.165 67.288);
+    --primary: 38 92% 50%; /* amber-600 */
+    --ring: 38 92% 50%;
     selection:bg-amber-500/30;
     --color-accent-300: 252 211 77;
     --color-accent-400: 251 191 36;
@@ -416,8 +418,8 @@
     --color-accent-700: 180 83 9;
   }
   html[data-accent="blue"] {
-    --primary: oklch(0.556 0.218 259.043); /* blue-600 */
-    --ring: oklch(0.556 0.218 259.043);
+    --primary: 221.2 83.2% 53.3%; /* blue-600 */
+    --ring: 221.2 83.2% 53.3%;
     selection:bg-blue-500/30;
     --color-accent-300: 147 197 253;
     --color-accent-400: 96 165 250;
@@ -426,8 +428,8 @@
     --color-accent-700: 29 78 216;
   }
   html[data-accent="sunset"] {
-    --primary: oklch(0.601 0.203 14.615); /* rose-600 */
-    --ring: oklch(0.601 0.203 14.615);
+    --primary: 346.8 77.2% 49.8%; /* rose-600 */
+    --ring: 346.8 77.2% 49.8%;
     selection:bg-rose-500/30;
     --color-accent-300: 251 146 60;
     --color-accent-400: 251 146 60;
@@ -436,8 +438,8 @@
     --color-accent-700: 225 29 72;
   }
   html[data-accent="ocean"] {
-    --primary: oklch(0.556 0.218 259.043); /* blue-600 */
-    --ring: oklch(0.556 0.218 259.043);
+    --primary: 221.2 83.2% 53.3%; /* blue-600 */
+    --ring: 221.2 83.2% 53.3%;
     selection:bg-blue-500/30;
     --color-accent-300: 34 211 238;
     --color-accent-400: 34 211 238;
@@ -446,8 +448,8 @@
     --color-accent-700: 37 99 235;
   }
   html[data-accent="amethyst"] {
-    --primary: oklch(0.488 0.243 264.376); /* purple-600 */
-    --ring: oklch(0.488 0.243 264.376);
+    --primary: 271.5 81.3% 55.9%; /* purple-600 */
+    --ring: 271.5 81.3% 55.9%;
     selection:bg-purple-500/30;
     --color-accent-300: 217 70 239;
     --color-accent-400: 217 70 239;
@@ -456,8 +458,8 @@
     --color-accent-700: 126 34 206;
   }
   html[data-accent="flame"] {
-    --primary: oklch(0.601 0.203 14.615); /* rose-600 */
-    --ring: oklch(0.601 0.203 14.615);
+    --primary: 346.8 77.2% 49.8%; /* rose-600 */
+    --ring: 346.8 77.2% 49.8%;
     selection:bg-red-500/30;
     --color-accent-300: 250 204 21;
     --color-accent-400: 250 204 21;
@@ -466,8 +468,8 @@
     --color-accent-700: 185 28 28;
   }
   html[data-accent="galaxy"] {
-    --primary: oklch(0.488 0.243 264.376); /* purple-600 */
-    --ring: oklch(0.488 0.243 264.376);
+    --primary: 271.5 81.3% 55.9%; /* purple-600 */
+    --ring: 271.5 81.3% 55.9%;
     selection:bg-indigo-500/30;
     --color-accent-300: 79 70 229;
     --color-accent-400: 79 70 229;
@@ -476,8 +478,8 @@
     --color-accent-700: 88 28 135;
   }
   html[data-accent="peach"] {
-    --primary: oklch(0.706 0.165 67.288); /* amber-600 */
-    --ring: oklch(0.706 0.165 67.288);
+    --primary: 38 92% 50%; /* amber-600 */
+    --ring: 38 92% 50%;
     selection:bg-orange-500/30;
     --color-accent-300: 253 164 175;
     --color-accent-400: 253 164 175;
@@ -486,8 +488,8 @@
     --color-accent-700: 249 115 22;
   }
   html[data-accent="candy"] {
-    --primary: oklch(0.488 0.243 264.376); /* purple-600 */
-    --ring: oklch(0.488 0.243 264.376);
+    --primary: 271.5 81.3% 55.9%; /* purple-600 */
+    --ring: 271.5 81.3% 55.9%;
     selection:bg-pink-500/30;
     --color-accent-300: 244 114 182;
     --color-accent-400: 244 114 182;
@@ -496,8 +498,8 @@
     --color-accent-700: 139 92 246;
   }
   html[data-accent="mint"] {
-    --primary: oklch(0.605 0.148 152.016);
-    --ring: oklch(0.605 0.148 152.016);
+    --primary: 160 84% 39%;
+    --ring: 160 84% 39%;
     selection:bg-emerald-500/30;
     --color-accent-300: 110 231 183;
     --color-accent-400: 110 231 183;
@@ -506,8 +508,8 @@
     --color-accent-700: 6 182 212;
   }
   html[data-accent="forest"] {
-    --primary: oklch(0.605 0.148 152.016);
-    --ring: oklch(0.605 0.148 152.016);
+    --primary: 160 84% 39%;
+    --ring: 160 84% 39%;
     selection:bg-green-500/30;
     --color-accent-300: 34 197 94;
     --color-accent-400: 34 197 94;
@@ -516,8 +518,8 @@
     --color-accent-700: 2 44 34;
   }
   html[data-accent="berry"] {
-    --primary: oklch(0.601 0.203 14.615);
-    --ring: oklch(0.601 0.203 14.615);
+    --primary: 346.8 77.2% 49.8%;
+    --ring: 346.8 77.2% 49.8%;
     selection:bg-rose-500/30;
     --color-accent-300: 244 63 94;
     --color-accent-400: 244 63 94;
@@ -526,8 +528,8 @@
     --color-accent-700: 88 28 135;
   }
   html[data-accent="dawn"] {
-    --primary: oklch(0.706 0.165 67.288);
-    --ring: oklch(0.706 0.165 67.288);
+    --primary: 38 92% 50%;
+    --ring: 38 92% 50%;
     selection:bg-yellow-500/30;
     --color-accent-300: 253 224 71;
     --color-accent-400: 253 224 71;
@@ -536,8 +538,8 @@
     --color-accent-700: 244 114 182;
   }
   html[data-accent="lagoon"] {
-    --primary: oklch(0.556 0.218 259.043);
-    --ring: oklch(0.556 0.218 259.043);
+    --primary: 221.2 83.2% 53.3%;
+    --ring: 221.2 83.2% 53.3%;
     selection:bg-cyan-500/30;
     --color-accent-300: 6 182 212;
     --color-accent-400: 6 182 212;
@@ -546,8 +548,8 @@
     --color-accent-700: 30 58 138;
   }
   html[data-accent="mango"] {
-    --primary: oklch(0.706 0.165 67.288);
-    --ring: oklch(0.706 0.165 67.288);
+    --primary: 38 92% 50%;
+    --ring: 38 92% 50%;
     selection:bg-orange-500/30;
     --color-accent-300: 250 204 21;
     --color-accent-400: 250 204 21;
@@ -556,8 +558,10 @@
     --color-accent-700: 194 65 12;
   }
   html[data-accent="grape"] {
-    --primary: oklch(0.488 0.243 264.376);
-    --ring: oklch(0.488 0.243 264.376);
+    --border: 214.3 31.8% 91.4%; /* #E2E8F0 */
+    --input: 214.3 31.8% 91.4%;
+    --primary: 271.5 81.3% 55.9%;
+    --ring: 271.5 81.3% 55.9%;
     selection:bg-purple-500/30;
     --color-accent-300: 192 132 252;
     --color-accent-400: 192 132 252;
@@ -566,8 +570,8 @@
     --color-accent-700: 49 46 129;
   }
   html[data-accent="rosegold"] {
-    --primary: oklch(0.601 0.203 14.615);
-    --ring: oklch(0.601 0.203 14.615);
+    --primary: 346.8 77.2% 49.8%;
+    --ring: 346.8 77.2% 49.8%;
     selection:bg-rose-500/30;
     --color-accent-300: 253 164 175;
     --color-accent-400: 253 164 175;

@@ -1,24 +1,33 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
-import { flushSync } from 'react-dom';
-import { usePathname, useRouter } from 'next/navigation';
-import { Sidebar } from '../components/layout/Sidebar';
-import { useAuthStore, useUIStore } from '../store';
-import { Topbar } from '../components/layout/Topbar';
-import { LayoutGroup, motion, AnimatePresence, useAnimation } from 'framer-motion';
-import { Toaster } from 'react-hot-toast';
+import React, { useState, useEffect, useRef } from "react";
+import { flushSync } from "react-dom";
+import { usePathname, useRouter } from "next/navigation";
+import { Sidebar } from "../components/layout/Sidebar";
+import { useAuthStore, useUIStore } from "../store";
+import { Topbar } from "../components/layout/Topbar";
+import {
+  LayoutGroup,
+  motion,
+  AnimatePresence,
+  useAnimation,
+} from "framer-motion";
+import { Toaster } from "react-hot-toast";
 
-import { parseJwtPayload } from '@/lib/utils/jwt';
-import { SwipeHint } from '../components/ui/SwipeHint';
-import { useIdleLogout } from '../hooks/useIdleLogout';
-import { SmoothScrollProvider } from '../components/providers/SmoothScrollProvider';
-import { InnerScrollLenis } from '../components/providers/InnerScrollLenis';
-import { InfiniteLoop } from '../components/layout/InfiniteLoop';
-import { useDrumNavigation } from '../hooks/useDrumNavigation';
+import { parseJwtPayload } from "@/lib/utils/jwt";
+import { SwipeHint } from "../components/ui/SwipeHint";
+import { useIdleLogout } from "../hooks/useIdleLogout";
+import { SmoothScrollProvider } from "../components/providers/SmoothScrollProvider";
+import { InnerScrollLenis } from "../components/providers/InnerScrollLenis";
+import { InfiniteLoop } from "../components/layout/InfiniteLoop";
+import { useDrumNavigation } from "../hooks/useDrumNavigation";
 
-import { api } from '../lib/api';
-import { FLOW_ROUTES, getAdjacentRoutes, isFlowRoute } from '@/lib/navigation/constants';
-import { VirtualCylinder } from '../components/layout/VirtualCylinder';
+import { api } from "../lib/api";
+import {
+  FLOW_ROUTES,
+  getAdjacentRoutes,
+  isFlowRoute,
+} from "@/lib/navigation/constants";
+import { VirtualCylinder } from "../components/layout/VirtualCylinder";
 
 function FrozenChildren({ children }: { children: React.ReactNode }) {
   const frozen = React.useRef(children).current;
@@ -28,33 +37,34 @@ function FrozenChildren({ children }: { children: React.ReactNode }) {
 export function ClientLayout({ children }: { children: React.ReactNode }) {
   useIdleLogout();
   useDrumNavigation();
-  
+
   const pathname = usePathname();
   const router = useRouter();
-  const isAdmin = pathname?.startsWith('/admin');
+  const isAdmin = pathname?.startsWith("/admin");
   const { user, login, setCredits } = useAuthStore();
-  const { isSidebarOpen, setSidebarOpen, preferences, setPreferences } = useUIStore();
-  const navDirection = useUIStore(state => state.navDirection);
-  
+  const { isSidebarOpen, setSidebarOpen, preferences, setPreferences } =
+    useUIStore();
+  const navDirection = useUIStore((state) => state.navDirection);
+
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [touchFingers, setTouchFingers] = useState<number>(0);
   const [touchStartScrollY, setTouchStartScrollY] = useState<number>(0);
   const [isPinch, setIsPinch] = useState<boolean>(false);
-  const [touchStartFingers, setTouchStartFingers] = useState<{ id: number, y: number }[]>([]);
+  const [touchStartFingers, setTouchStartFingers] = useState<
+    { id: number; y: number }[]
+  >([]);
   const [mounted, setMounted] = useState(false);
 
   // Not using drumVariants anymore for the main cylinder
   // The VirtualCylinder handles its own transitions.
-
-
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
       if (!useAuthStore.getState().user) {
         // Decode initially to render quickly
@@ -64,88 +74,95 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
             const user = {
               id: payload.sub,
               email: payload.email,
-              name: payload.email?.split('@')[0] || 'User',
-              role: typeof payload.role === 'object' && payload.role !== null ? payload.role.name : payload.role,
+              name: payload.email?.split("@")[0] || "User",
+              role:
+                typeof payload.role === "object" && payload.role !== null
+                  ? payload.role.name
+                  : payload.role,
               credits: 0,
             };
             useAuthStore.getState().login(user, token);
           }
-          
+
           // Fetch fresh profile from backend (credits, name, etc.)
-          api.get('/auth/me')
-            .then(res => {
-               const data = res.data;
-               const freshUser = { 
-                 id: data.id,
-                 email: data.email,
-                 name: data.name || data.email?.split('@')[0] || 'User',
-                 image: data.avatarUrl,
-                 role: typeof data.role === 'object' ? data.role.name : data.role,
-                 credits: data.credits,
-                 planId: useAuthStore.getState().planId, // Preserve planId
-               };
-               login(freshUser, token);
-               if (typeof data.credits === 'number') {
-                 setCredits(data.credits);
-               }
-               if (data.preferences) {
-                 setPreferences({
-                   theme: data.preferences.theme || 'DARK',
-                   accentColor: data.preferences.accentColor || 'INDIGO',
-                   fontSize: data.preferences.fontSize || 'MEDIUM',
-                   compactMode: !!data.preferences.compactMode,
-                   animationsEnabled: data.preferences.animationsEnabled !== false,
-                   skin: data.preferences.skin || 'NEON'
-                 });
-               }
+          api
+            .get("/auth/me")
+            .then((res) => {
+              const data = res.data;
+              const freshUser = {
+                id: data.id,
+                email: data.email,
+                name: data.name || data.email?.split("@")[0] || "User",
+                image: data.avatarUrl,
+                role:
+                  typeof data.role === "object" ? data.role.name : data.role,
+                credits: data.credits,
+                planId: useAuthStore.getState().planId, // Preserve planId
+              };
+              login(freshUser, token);
+              if (typeof data.credits === "number") {
+                setCredits(data.credits);
+              }
+              if (data.preferences) {
+                setPreferences({
+                  theme: data.preferences.theme || "DARK",
+                  accentColor: data.preferences.accentColor || "INDIGO",
+                  fontSize: data.preferences.fontSize || "MEDIUM",
+                  compactMode: !!data.preferences.compactMode,
+                  animationsEnabled:
+                    data.preferences.animationsEnabled !== false,
+                  skin: data.preferences.skin || "NEON",
+                });
+              }
             })
-            .catch(err => {
-              console.log('Failed to fetch user profile:', err);
+            .catch((err) => {
+              console.log("Failed to fetch user profile:", err);
               // Token might be expired — clear it
               if (err.response?.status === 401) {
-                localStorage.removeItem('token');
+                localStorage.removeItem("token");
                 useAuthStore.getState().logout();
               }
             });
         } catch (err) {
-          localStorage.removeItem('token');
+          localStorage.removeItem("token");
         }
       } else {
         // user is cached, but token might not be in zustand
-        login(useAuthStore.getState().user, token);
-        
+        login(useAuthStore.getState().user as any, token);
+
         // Still fetch fresh profile to keep credits updated
-        api.get('/auth/me')
-          .then(res => {
-             const data = res.data;
-             const freshUser = { 
-               id: data.id,
-               email: data.email,
-               name: data.name || data.email?.split('@')[0] || 'User',
-               image: data.avatarUrl,
-               role: typeof data.role === 'object' ? data.role.name : data.role,
-               credits: data.credits,
-               planId: useAuthStore.getState().planId, // Preserve planId
-             };
-             login(freshUser, token);
-             if (typeof data.credits === 'number') {
-               setCredits(data.credits);
-             }
-             if (data.preferences) {
-               setPreferences({
-                 theme: data.preferences.theme || 'DARK',
-                 accentColor: data.preferences.accentColor || 'INDIGO',
-                 fontSize: data.preferences.fontSize || 'MEDIUM',
-                 compactMode: !!data.preferences.compactMode,
-                 animationsEnabled: data.preferences.animationsEnabled !== false,
-                 skin: data.preferences.skin || 'NEON'
-               });
-             }
+        api
+          .get("/auth/me")
+          .then((res) => {
+            const data = res.data;
+            const freshUser = {
+              id: data.id,
+              email: data.email,
+              name: data.name || data.email?.split("@")[0] || "User",
+              image: data.avatarUrl,
+              role: typeof data.role === "object" ? data.role.name : data.role,
+              credits: data.credits,
+              planId: useAuthStore.getState().planId, // Preserve planId
+            };
+            login(freshUser, token);
+            if (typeof data.credits === "number") {
+              setCredits(data.credits);
+            }
+            if (data.preferences) {
+              setPreferences({
+                theme: data.preferences.theme || "DARK",
+                accentColor: data.preferences.accentColor || "INDIGO",
+                fontSize: data.preferences.fontSize || "MEDIUM",
+                compactMode: !!data.preferences.compactMode,
+                animationsEnabled: data.preferences.animationsEnabled !== false,
+                skin: data.preferences.skin || "NEON",
+              });
+            }
           })
-          .catch(err => {
-            console.log('Failed to fetch user profile:', err);
+          .catch((err) => {
+            console.log("Failed to fetch user profile:", err);
             if (err.response?.status === 401) {
-              localStorage.removeItem('token');
+              localStorage.removeItem("token");
               useAuthStore.getState().logout();
             }
           });
@@ -160,8 +177,8 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   // Hydrate locale from localStorage
   useEffect(() => {
-    const savedLocale = localStorage.getItem('locale');
-    if (savedLocale === 'en' || savedLocale === 'ru') {
+    const savedLocale = localStorage.getItem("locale");
+    if (savedLocale === "en" || savedLocale === "ru") {
       useUIStore.getState().setLocale(savedLocale);
     }
   }, []);
@@ -170,32 +187,39 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const root = document.documentElement;
     // Theme
-    if (preferences.theme === 'DARK' || (preferences.theme === 'SYSTEM' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      root.classList.add('dark');
+    if (
+      preferences.theme === "DARK" ||
+      (preferences.theme === "SYSTEM" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      root.classList.add("dark");
     } else {
-      root.classList.remove('dark');
+      root.classList.remove("dark");
     }
-    
+
     // Set custom data attributes for CSS overrides
-    root.setAttribute('data-accent', preferences.accentColor.toLowerCase());
-    root.setAttribute('data-font-size', preferences.fontSize.toLowerCase());
-    root.setAttribute('data-skin', preferences.skin ? preferences.skin.toLowerCase() : 'luxury');
+    root.setAttribute("data-accent", preferences.accentColor.toLowerCase());
+    root.setAttribute("data-font-size", preferences.fontSize.toLowerCase());
+    root.setAttribute(
+      "data-skin",
+      preferences.skin ? preferences.skin.toLowerCase() : "luxury",
+    );
     if (preferences.compactMode) {
-      root.classList.add('compact-mode');
+      root.classList.add("compact-mode");
     } else {
-      root.classList.remove('compact-mode');
+      root.classList.remove("compact-mode");
     }
     if (!preferences.animationsEnabled) {
-      root.classList.add('disable-animations');
+      root.classList.add("disable-animations");
     } else {
-      root.classList.remove('disable-animations');
+      root.classList.remove("disable-animations");
     }
   }, [preferences]);
 
   // Show swipe hints on first load on mobile
   useEffect(() => {
-    if (typeof window !== 'undefined' && user) {
-      const hasSeen = localStorage.getItem('hasSeenSwipeHints') === 'true';
+    if (typeof window !== "undefined" && user) {
+      const hasSeen = localStorage.getItem("hasSeenSwipeHints") === "true";
       if (!hasSeen) {
         useUIStore.getState().setShowSwipeHints(true);
       } else {
@@ -209,25 +233,33 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     setTouchStartY(e.touches[0].clientY);
     setTouchFingers(e.touches.length);
     setIsPinch(false);
-    
+
     // Track initial Y positions of all fingers for pinch detection
-    setTouchStartFingers(Array.from(e.touches).map(t => ({ id: t.identifier, y: t.clientY })));
-    
+    setTouchStartFingers(
+      Array.from(e.touches).map((t) => ({ id: t.identifier, y: t.clientY })),
+    );
+
     // Get scroll position of the main scroll container
-    const mainScroll = document.getElementById('main-scroll-container');
-    setTouchStartScrollY(mainScroll ? mainScroll.scrollTop : window.scrollY);
+    const mainScroll = document.getElementById("main-scroll-container");
+    setTouchStartScrollY(
+      mainScroll ? mainScroll.scrollTop || window.scrollY : window.scrollY,
+    );
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (e.touches.length === 2 && touchStartFingers.length === 2) {
       const currentFingers = Array.from(e.touches);
-      const f1Start = touchStartFingers.find(f => f.id === currentFingers[0].identifier);
-      const f2Start = touchStartFingers.find(f => f.id === currentFingers[1].identifier);
-      
+      const f1Start = touchStartFingers.find(
+        (f) => f.id === currentFingers[0].identifier,
+      );
+      const f2Start = touchStartFingers.find(
+        (f) => f.id === currentFingers[1].identifier,
+      );
+
       if (f1Start && f2Start) {
         const dy1 = currentFingers[0].clientY - f1Start.y;
         const dy2 = currentFingers[1].clientY - f2Start.y;
-        
+
         // If fingers move in opposite vertical directions, it's a pinch
         if (dy1 * dy2 < 0) {
           setIsPinch(true);
@@ -238,13 +270,13 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStartX === null || touchStartY === null) return;
-    
+
     const touchEndX = e.changedTouches[0].clientX;
     const touchEndY = e.changedTouches[0].clientY;
-    
+
     const distanceX = touchEndX - touchStartX;
     const distanceY = touchEndY - touchStartY;
-    
+
     const isHorizontal = Math.abs(distanceX) > Math.abs(distanceY);
 
     if (touchFingers === 1) {
@@ -265,16 +297,16 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     } else if (touchFingers === 2 && !isPinch) {
       if (!isHorizontal) {
         // Two-finger swipe Up/Down
-        if (Math.abs(distanceY) > 50 && !isFlowRoute(pathname || '/')) {
-          const { prev, next } = getAdjacentRoutes(pathname || '/');
-          
+        if (Math.abs(distanceY) > 50 && !isFlowRoute(pathname || "/")) {
+          const { prev, next } = getAdjacentRoutes(pathname || "/");
+
           if (distanceY > 50 && next) {
             // Swipe down -> Next link
-            useUIStore.getState().setNavDirection('down');
+            useUIStore.getState().setNavDirection("down");
             router.push(next);
           } else if (distanceY < -50 && prev) {
             // Swipe up -> Prev link
-            useUIStore.getState().setNavDirection('up');
+            useUIStore.getState().setNavDirection("up");
             router.push(prev);
           }
         }
@@ -294,40 +326,58 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <SmoothScrollProvider>
-      <div 
-        className={preferences.skin === 'PREMIUM' ? `flex h-[100dvh] w-full overflow-hidden theme-${preferences?.skin?.toLowerCase() || 'default'}` : `flex min-h-screen w-full theme-${preferences?.skin?.toLowerCase() || 'default'}`}
+      <div
+        className={
+          preferences.skin === "PREMIUM"
+            ? `flex h-[100dvh] w-full overflow-hidden theme-${preferences?.skin?.toLowerCase() || "default"}`
+            : `flex min-h-screen w-full theme-${preferences?.skin?.toLowerCase() || "default"}`
+        }
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
         {mounted && user && <Sidebar />}
         <div className="flex-1 flex flex-col min-w-0 relative">
-          {mounted && preferences.skin === 'NEON' ? (
+          {mounted && preferences.skin === "NEON" ? (
             <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-background">
-              <motion.div 
-                className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] rounded-full" 
-                style={{ background: 'rgb(var(--color-accent-300) / 0.1)', filter: 'blur(100px)' }}
+              <motion.div
+                className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] rounded-full"
+                style={{
+                  background: "rgb(var(--color-accent-300) / 0.1)",
+                  filter: "blur(100px)",
+                }}
                 animate={{
                   opacity: [0.3, 0.6, 0.2, 0.7, 0.3],
                   scale: [0.9, 1.2, 0.8, 1.1, 0.9],
-                  x: ['0%', '5%', '-5%', '2%', '0%'],
-                  y: ['0%', '-5%', '5%', '-2%', '0%']
+                  x: ["0%", "5%", "-5%", "2%", "0%"],
+                  y: ["0%", "-5%", "5%", "-2%", "0%"],
                 }}
-                transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+                transition={{
+                  duration: 15,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               />
-              <motion.div 
-                className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] rounded-full" 
-                style={{ background: 'rgb(var(--color-accent-600) / 0.15)', filter: 'blur(100px)' }}
+              <motion.div
+                className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] rounded-full"
+                style={{
+                  background: "rgb(var(--color-accent-600) / 0.15)",
+                  filter: "blur(100px)",
+                }}
                 animate={{
                   opacity: [0.4, 0.2, 0.7, 0.3, 0.4],
                   scale: [1, 0.8, 1.3, 0.9, 1],
-                  x: ['0%', '-8%', '5%', '-3%', '0%'],
-                  y: ['0%', '8%', '-3%', '6%', '0%']
+                  x: ["0%", "-8%", "5%", "-3%", "0%"],
+                  y: ["0%", "8%", "-3%", "6%", "0%"],
                 }}
-                transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+                transition={{
+                  duration: 20,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               />
             </div>
-          ) : mounted && preferences.skin === 'LUXURY' ? (
+          ) : mounted && preferences.skin === "LUXURY" ? (
             <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
               <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[#D4AF37]/5 blur-[60px] rounded-full" />
               <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-[#C5A028]/10 blur-[60px] rounded-full" />
@@ -338,14 +388,27 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
               <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[40px] rounded-full" />
             </div>
           ) : null}
-          
+
           <Topbar />
-          <main id="main-scroll-container" className={preferences.skin === 'PREMIUM' ? "flex-1 relative z-10 overflow-hidden" : "flex-1 overflow-y-auto relative z-10 custom-scrollbar pb-20"}>
-            <div className={preferences.skin === 'PREMIUM' ? "h-[100dvh] w-full relative" : "pb-10"}>
-              {preferences.skin === 'PREMIUM' ? (
+          <main
+            id="main-scroll-container"
+            className={
+              preferences.skin === "PREMIUM"
+                ? "flex-1 relative z-10 overflow-hidden"
+                : "flex-1 relative z-10 custom-scrollbar pb-20"
+            }
+          >
+            <div
+              className={
+                preferences.skin === "PREMIUM"
+                  ? "h-[100dvh] w-full relative"
+                  : "pb-10"
+              }
+            >
+              {preferences.skin === "PREMIUM" ? (
                 mounted ? (
-                  isFlowRoute(pathname || '/') ? (
-                    <VirtualCylinder currentPathname={pathname || '/'} />
+                  isFlowRoute(pathname || "/") ? (
+                    <VirtualCylinder currentPathname={pathname || "/"} />
                   ) : (
                     <InnerScrollLenis key={pathname}>
                       {children}
@@ -362,8 +425,18 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
                 )
+              ) : mounted ? (
+                children
               ) : (
-                mounted ? children : <div className="animate-pulse flex space-x-4 p-6"><div className="flex-1 space-y-6 py-1"><div className="h-4 bg-slate-800 rounded w-3/4"></div><div className="space-y-3"><div className="h-4 bg-slate-800 rounded"></div><div className="h-4 bg-slate-800 rounded w-5/6"></div></div></div></div>
+                <div className="animate-pulse flex space-x-4 p-6">
+                  <div className="flex-1 space-y-6 py-1">
+                    <div className="h-4 bg-slate-800 rounded w-3/4"></div>
+                    <div className="space-y-3">
+                      <div className="h-4 bg-slate-800 rounded"></div>
+                      <div className="h-4 bg-slate-800 rounded w-5/6"></div>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
           </main>

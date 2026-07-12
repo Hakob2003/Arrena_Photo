@@ -1,4 +1,41 @@
-import { IsString, IsOptional, IsBoolean, IsObject, MaxLength, MinLength } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsObject,
+  MaxLength,
+  MinLength,
+  IsUrl,
+  ValidateNested,
+} from "class-validator";
+import { Type } from "class-transformer";
+
+export class SocialLinksDto {
+  @IsOptional()
+  @IsString()
+  @IsUrl()
+  telegram?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsUrl()
+  instagram?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsUrl()
+  twitter?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsUrl()
+  linkedin?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsUrl()
+  website?: string;
+}
 
 export class UpdateProfileDto {
   @IsOptional()
@@ -23,8 +60,9 @@ export class UpdateProfileDto {
   bio?: string;
 
   @IsOptional()
-  @IsObject()
-  socialLinks?: Record<string, string>;
+  @ValidateNested()
+  @Type(() => SocialLinksDto)
+  socialLinks?: SocialLinksDto;
 }
 
 export class UpdatePreferencesDto {

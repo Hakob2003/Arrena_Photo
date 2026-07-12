@@ -1,4 +1,4 @@
-import { api } from './api';
+import { api } from "./api";
 
 export const adminApi = {
   // Users
@@ -10,7 +10,10 @@ export const adminApi = {
     return res.data;
   },
   updateUserCredits: async (id: string, amount: number, reason: string) => {
-    const res = await api.post(`/admin/users/${id}/credits`, { amount, reason });
+    const res = await api.post(`/admin/users/${id}/credits`, {
+      amount,
+      reason,
+    });
     return res.data;
   },
   updateUserPlan: async (id: string, plan: string) => {
@@ -21,7 +24,10 @@ export const adminApi = {
     const res = await api.post(`/admin/users/import`, { emails });
     return res.data;
   },
-  updateUserLimits: async (id: string, limits: any) => {
+  updateUserLimits: async (
+    id: string,
+    limits: Record<string, number | null>,
+  ) => {
     const res = await api.put(`/users/${id}/limits`, limits);
     return res.data;
   },
@@ -37,7 +43,7 @@ export const adminApi = {
     const res = await api.delete(`/admin/users/${id}`);
     return res.data;
   },
-  
+
   // Templates
   getTemplates: async (page = 1, limit = 20) => {
     const res = await api.get(`/admin/templates?page=${page}&limit=${limit}`);
@@ -66,7 +72,7 @@ export const adminApi = {
 
   // Dashboard Stats
   getDashboardStats: async () => {
-    const res = await api.get('/admin/dashboard');
+    const res = await api.get("/admin/dashboard");
     return res.data;
   },
 
@@ -78,6 +84,5 @@ export const adminApi = {
   processPayout: async (id: string) => {
     const res = await api.post(`/admin/payouts/${id}/process`);
     return res.data;
-  }
+  },
 };
-

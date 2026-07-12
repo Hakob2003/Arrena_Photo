@@ -40,7 +40,7 @@ export function Topbar() {
         isPremium && isMobile
           ? "bg-white/5 dark:bg-[#060606]/80 backdrop-blur-md border-white/5"
           : "",
-        !isPremium ? "bg-white/5 dark:bg-black/5 backdrop-blur-none" : "",
+        !isPremium ? "bg-white/70 dark:bg-[#0A0A0A]/70 backdrop-blur-xl" : "",
         isLuxury && !isPremium ? "border-[#D4AF37]/20" : "",
         !isLuxury && !isPremium ? "border-black/10 dark:border-white/5" : "",
       )}
@@ -330,7 +330,7 @@ export function Topbar() {
         {user ? (
           /* Credits Pill */
           <Link
-            href="/profile/billing"
+            href="/billing"
             className={cn(
               "flex items-center gap-1 sm:gap-2 border px-2 sm:px-3 py-1 sm:py-1.5 rounded-full transition-all hover:scale-105 cursor-pointer",
               isPremium
