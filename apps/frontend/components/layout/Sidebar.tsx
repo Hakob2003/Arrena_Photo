@@ -282,7 +282,7 @@ export function Sidebar() {
       {isSidebarOpen && (
         <div
           className={cn(
-            "fixed inset-0 z-40 transition-opacity",
+            "fixed inset-0 z-[60] transition-opacity",
             isMobile ? "bg-black/60 backdrop-blur-sm" : "bg-transparent",
           )}
           onClick={() => setSidebarOpen(false)}
@@ -308,7 +308,7 @@ export function Sidebar() {
               ? "sticky top-3 my-3 ml-3 rounded-3xl bg-[#060606]/40 backdrop-blur-2xl shadow-2xl border border-white/10 h-[calc(100vh-24px)] z-50"
               : "sticky top-0 bg-white/70 dark:bg-[#0A0A0A]/70 backdrop-blur-xl shadow-lg dark:shadow-none border-r border-black/10 dark:border-white/5 h-screen z-50"
             : [
-                "fixed inset-y-0 left-0 z-50 transform h-screen",
+                "fixed inset-y-0 left-0 z-[70] transform h-screen",
                 isPremium
                   ? "bg-black/60 backdrop-blur-3xl border-r border-white/10"
                   : "bg-white/70 dark:bg-[#0A0A0A]/70 backdrop-blur-xl border-r border-black/10 dark:border-white/10",
