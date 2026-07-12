@@ -136,7 +136,17 @@ export default function BillingLayout({
             <Link
               key={tab.id}
               href={tab.href}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={(e) => {
+                setActiveTab(tab.id);
+                if (tab.href.startsWith("#")) {
+                  e.preventDefault();
+                  const target = document.querySelector(tab.href);
+                  if (target) {
+                    target.scrollIntoView({ behavior: "smooth" });
+                    window.history.pushState(null, "", tab.href);
+                  }
+                }
+              }}
               className={cn(
                 "relative flex items-center gap-3 px-4 py-3 rounded-xl transition-colors whitespace-nowrap md:whitespace-normal group",
                 isActive
