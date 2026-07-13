@@ -129,11 +129,15 @@ export function GenerationModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="!max-w-none w-screen h-[100dvh] m-0 p-4 sm:p-6 bg-black/95 border-none flex flex-col rounded-none"
-        showCloseButton={true}
+        className="!max-w-none w-screen h-[100dvh] m-0 p-4 sm:p-6 bg-black/20 dark:bg-black/60 backdrop-blur-xl border-none flex flex-col items-center justify-center rounded-none shadow-none"
+        showCloseButton={false}
+        onClick={() => onClose()}
       >
-        <div className="flex flex-col gap-6 flex-1 min-h-0">
-          <div className="relative w-full flex-1 rounded-xl overflow-hidden bg-black/5 dark:bg-black/20 flex items-center justify-center min-h-0">
+        <div
+          className="flex flex-col gap-4 sm:gap-6 flex-1 min-h-0 w-full items-center justify-center"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="relative w-full max-w-[95vw] sm:max-w-[90vw] flex-1 flex items-center justify-center min-h-0">
             <AuthImage
               driveFileId={
                 generation.driveFileId !== "saved"
@@ -142,12 +146,12 @@ export function GenerationModal({
               }
               fallbackUrl={generation.imageUrl}
               alt="Generated"
-              className="w-full h-full object-contain rounded-xl shadow-lg"
+              className="max-w-full max-h-full object-contain rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.5)]"
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shrink-0">
-            <div>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0 w-full max-w-[95vw] sm:max-w-4xl bg-white/80 dark:bg-black/50 backdrop-blur-md p-4 rounded-2xl border border-white/20 dark:border-white/10 shadow-xl">
+            <div className="flex flex-col w-full sm:w-auto text-center sm:text-left">
               <p
                 className={`text-xl font-bold ${isLuxury ? "text-[#D4AF37]" : "text-indigo-600 dark:text-indigo-400"}`}
               >
@@ -160,11 +164,11 @@ export function GenerationModal({
               )}
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 w-full sm:w-auto">
               <button
                 onClick={handleDownload}
                 disabled={downloading}
-                className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all shadow-md ${
+                className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all shadow-md ${
                   isLuxury
                     ? "bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-none"
                     : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-[0_4px_12px_rgba(99,102,241,0.25)] dark:shadow-none"
@@ -183,7 +187,7 @@ export function GenerationModal({
 
               <button
                 onClick={handleShare}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-gray-900 dark:text-white"
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all bg-gray-200 hover:bg-gray-300 dark:bg-white/10 dark:hover:bg-white/20 text-gray-900 dark:text-white"
                 title="Share"
               >
                 <Share2 className="w-5 h-5" />
