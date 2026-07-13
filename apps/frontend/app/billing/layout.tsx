@@ -7,7 +7,7 @@ import { LayoutDashboard, CreditCard, Activity, Receipt } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "../../store";
 import { useTranslation } from "../../lib/i18n";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useUIStore } from "../../store";
 import { useIsMobile } from "../../hooks/useIsMobile";
 
@@ -20,6 +20,8 @@ export default function BillingLayout({
   const { user } = useAuthStore();
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("overview");
+  const isClickScrolling = useRef(false);
+  const scrollTimeout = useRef<NodeJS.Timeout>();
   const preferences = useUIStore((state) => state.preferences);
   const [mounted, setMounted] = useState(false);
   const isMobile = useIsMobile();
@@ -74,7 +76,7 @@ export default function BillingLayout({
     billingTabs.forEach((tab) => {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && !isClickScrolling.current) {
             setActiveTab(tab.id);
             // Optionally update URL without jumping
             history.replaceState(null, "", `#${tab.id}`);
@@ -154,6 +156,14 @@ export default function BillingLayout({
                 setActiveTab(tab.id);
                 if (tab.href.startsWith("#")) {
                   e.preventDefault();
+
+                  // Disable intersection observer temporarily
+                  isClickScrolling.current = true;
+                  clearTimeout(scrollTimeout.current);
+                  scrollTimeout.current = setTimeout(() => {
+                    isClickScrolling.current = false;
+                  }, 1000);
+
                   const target = document.querySelector(tab.href);
                   if (target) {
                     target.scrollIntoView({ behavior: "smooth" });
