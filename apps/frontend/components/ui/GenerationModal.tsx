@@ -129,11 +129,11 @@ export function GenerationModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="max-w-5xl w-full p-4 sm:p-6 bg-white dark:bg-[#0A0A0A] border-gray-200 dark:border-white/10"
+        className="max-w-[95vw] w-full h-[95vh] p-4 sm:p-6 bg-white dark:bg-[#0A0A0A] border-gray-200 dark:border-white/10 flex flex-col"
         showCloseButton={true}
       >
-        <div className="flex flex-col gap-6">
-          <div className="relative w-full rounded-xl overflow-hidden bg-black/5 dark:bg-black/20 flex items-center justify-center min-h-[50vh]">
+        <div className="flex flex-col gap-6 flex-1 min-h-0">
+          <div className="relative w-full flex-1 rounded-xl overflow-hidden bg-black/5 dark:bg-black/20 flex items-center justify-center min-h-0">
             <AuthImage
               driveFileId={
                 generation.driveFileId !== "saved"
@@ -142,11 +142,11 @@ export function GenerationModal({
               }
               fallbackUrl={generation.imageUrl}
               alt="Generated"
-              className="max-w-full max-h-[70vh] object-contain rounded-xl shadow-lg"
+              className="w-full h-full object-contain rounded-xl shadow-lg"
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shrink-0">
             <div>
               <p
                 className={`text-xl font-bold ${isLuxury ? "text-[#D4AF37]" : "text-indigo-600 dark:text-indigo-400"}`}
