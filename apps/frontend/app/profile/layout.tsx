@@ -129,12 +129,11 @@ export default function ProfileLayout({
   useEffect(() => {
     if (typeof window !== "undefined") {
       const el = document.getElementById(`tab-${activeTab}`);
-      if (el) {
-        el.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-          inline: "center",
-        });
+      const container = el?.closest("nav");
+      if (el && container) {
+        const scrollLeft =
+          el.offsetLeft - container.offsetWidth / 2 + el.offsetWidth / 2;
+        container.scrollTo({ left: scrollLeft, behavior: "smooth" });
       }
     }
   }, [activeTab]);
