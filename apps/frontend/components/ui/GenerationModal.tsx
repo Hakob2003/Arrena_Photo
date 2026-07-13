@@ -129,7 +129,7 @@ export function GenerationModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="!max-w-[95vw] w-[95vw] h-[95vh] p-4 sm:p-6 bg-white dark:bg-[#0A0A0A] border-gray-200 dark:border-white/10 flex flex-col"
+        className="!max-w-none w-screen h-[100dvh] m-0 p-4 sm:p-6 bg-black/95 border-none flex flex-col rounded-none"
         showCloseButton={true}
       >
         <div className="flex flex-col gap-6 flex-1 min-h-0">
