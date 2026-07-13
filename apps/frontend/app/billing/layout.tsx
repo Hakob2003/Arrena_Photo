@@ -104,6 +104,20 @@ export default function BillingLayout({
     }
   }, []);
 
+  // Scroll active tab into view within the horizontal nav
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const el = document.getElementById(`tab-${activeTab}`);
+      if (el) {
+        el.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "center",
+        });
+      }
+    }
+  }, [activeTab]);
+
   if (!user) return null;
 
   return (
@@ -135,6 +149,7 @@ export default function BillingLayout({
           return (
             <Link
               key={tab.id}
+              id={`tab-${tab.id}`}
               href={tab.href}
               onClick={(e) => {
                 setActiveTab(tab.id);
