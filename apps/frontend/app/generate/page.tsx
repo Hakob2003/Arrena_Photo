@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, Maximize2, X } from "lucide-react";
+import { downloadImage } from "@/lib/download";
 import { useGenerationStore, useAuthStore } from "../../store";
 import { useTranslation } from "../../lib/i18n";
 import { useSearchParams } from "next/navigation";
@@ -682,51 +683,11 @@ function GeneratorContent() {
             <div className="flex gap-2">
               <button
                 onClick={async () => {
-                  try {
-                    if ("showSaveFilePicker" in window) {
-                      let blob;
-                      if (resultImage.startsWith("data:")) {
-                        const res = await fetch(resultImage);
-                        blob = await res.blob();
-                      } else if (
-                        resultDriveFileId &&
-                        resultDriveFileId !== "saved"
-                      ) {
-                        const res = await api.get(
-                          `/integrations/google-drive/file/${resultDriveFileId}`,
-                          { responseType: "blob" },
-                        );
-                        blob = res.data;
-                      } else {
-                        const res = await fetch(resultImage);
-                        blob = await res.blob();
-                      }
-                      const handle = await (window as any).showSaveFilePicker({
-                        suggestedName: `generation-${Date.now()}.png`,
-                        types: [
-                          {
-                            description: "PNG Image",
-                            accept: { "image/png": [".png"] },
-                          },
-                        ],
-                      });
-                      const writable = await handle.createWritable();
-                      await writable.write(blob);
-                      await writable.close();
-                      return;
-                    }
-                  } catch (err: any) {
-                    if (err.name !== "AbortError")
-                      console.log("Save failed", err);
-                    return;
-                  }
-                  // Fallback for browsers without showSaveFilePicker
-                  const a = document.createElement("a");
-                  a.href = resultImage;
-                  a.download = `generation-${Date.now()}.png`;
-                  document.body.appendChild(a);
-                  a.click();
-                  document.body.removeChild(a);
+                  await downloadImage(
+                    resultImage,
+                    `generation-${Date.now()}.png`,
+                    resultDriveFileId || undefined,
+                  );
                 }}
                 className="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/5 transition-colors"
                 title="Download Image"
