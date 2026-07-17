@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { flushSync } from "react-dom";
 import { usePathname, useRouter } from "next/navigation";
 import { Sidebar } from "../components/layout/Sidebar";
+import { Footer } from "../components/layout/Footer";
 import { useAuthStore, useUIStore } from "../store";
 import { Topbar } from "../components/layout/Topbar";
 import {
@@ -411,7 +412,10 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                     <VirtualCylinder currentPathname={pathname || "/"} />
                   ) : (
                     <InnerScrollLenis key={pathname}>
-                      {children}
+                      <div className="flex flex-col min-h-full">
+                        <div className="flex-1">{children}</div>
+                        <Footer />
+                      </div>
                     </InnerScrollLenis>
                   )
                 ) : (
@@ -426,7 +430,10 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                   </div>
                 )
               ) : mounted ? (
-                children
+                <div className="flex flex-col min-h-full">
+                  <div className="flex-1">{children}</div>
+                  <Footer />
+                </div>
               ) : (
                 <div className="animate-pulse flex space-x-4 p-6">
                   <div className="flex-1 space-y-6 py-1">
