@@ -449,6 +449,31 @@ const en: Record<string, string> = {
   "payment.modal.initFailed": "Failed to initialize payment",
   "payment.modal.initLoading": "Preparing payment...",
   "payment.modal.genericError": "An error occurred. Please try again.",
+
+  // === Checkout & Legal ===
+  "checkout.termsAgree": "I have read and agree to the Terms of Service, Privacy Policy, and Billing & Refund Policy.",
+  "checkout.subAgree": "I understand that my subscription will automatically renew until cancelled. The subscription cost will be automatically charged to my payment method according to the selected plan.",
+  "checkout.disclaimerTitle": "By clicking \"Pay\", you confirm that:",
+  "checkout.disclaimer1": "the provided card details are valid;",
+  "checkout.disclaimer2": "you authorize HSHA Sandbox to charge the current payment amount;",
+  "checkout.disclaimer3": "if a subscription plan is selected, you authorize automatic charges for subsequent periods until the subscription is cancelled;",
+  "checkout.disclaimer4": "you have read and agree to the Terms of Service, Privacy Policy, and Billing & Refund Policy.",
+  "checkout.legal.terms": "Terms of Service",
+  "checkout.legal.privacy": "Privacy Policy",
+  "checkout.legal.billing": "Billing Policy",
+  "checkout.legal.refund": "Refund Policy",
+
+  "legal.terms.title": "Terms of Service",
+  "legal.terms.content": "1. General Provisions\n\n2. Account Registration\n\n3. Subscriptions\n\n4. Payment\n\n5. Automatic Renewal\nAll subscriptions automatically renew for the next billing period.\nRenewal is automatic using the payment method provided by the user.\nThe user may cancel the subscription at any time via account settings.\nUpon cancellation, automatic renewal stops, but the paid period remains active until it ends.\n\n6. Cancellation\n\n7. Refunds\n\n8. Liability\n\n9. Limitation of Liability\n\n10. Price Changes\n\n11. Termination\n\n12. Contact Information",
+  
+  "legal.privacy.title": "Privacy Policy",
+  "legal.privacy.content": "HSHA Sandbox collects data to provide services.\n\nHSHA Sandbox does not store full credit card numbers.\nPayment processing is handled by a certified payment provider.\n\nContact...",
+
+  "legal.billing.title": "Billing Policy",
+  "legal.billing.content": "Payment is made using bank cards and supported payment services.\n\nBy subscribing, the user authorizes the automatic charging of the selected plan's cost until the subscription is cancelled.\n\nFunds are charged on the subscription renewal date.\n\nThe cost is displayed before confirming payment.\n\nAfter subscribing, HSHA Sandbox automatically charges the cost of each subsequent billing period.\nIf a charge fails, the system may retry several times.\nUpon prolonged failure to pay, access to the subscription may be restricted.",
+
+  "legal.refund.title": "Refund Policy",
+  "legal.refund.content": "Unless otherwise required by law, paid subscriptions are non-refundable once the digital service has begun.\n\nRefunds are possible in cases of:\n• double billing;\n• technical errors;\n• accidental payments;\n• other cases provided by law.\n\nNon-refundable:\n• used credits;\n• completed generations;\n• active subscriptions after service provision has started (unless law provides otherwise)."
 };
 
 export default en;
