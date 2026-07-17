@@ -20,6 +20,7 @@ import { useAuthStore, useUIStore } from "../../store";
 import { useTranslation } from "../../lib/i18n";
 import type { Locale } from "../../lib/i18n";
 import { ProviderCardForm } from "./ProviderCardForm";
+import { LegalCheckboxes, LegalDisclaimer } from "./LegalCompliance";
 import { CREDIT_PACKAGES } from "../../config/pricing";
 import type { CreditPackage } from "../../config/pricing";
 
@@ -44,6 +45,7 @@ export function PaymentModal({ isOpen, onClose, type, planName, initialCreditAmo
   const [config, setConfig] = useState<any>(null);
   const [stripePromise, setStripePromise] = useState<any>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   
   const [selectedPack, setSelectedPack] = useState<CreditPackage>(CREDIT_PACKAGES[0]);
   const [isInitializing, setIsInitializing] = useState(false);
@@ -107,6 +109,7 @@ export function PaymentModal({ isOpen, onClose, type, planName, initialCreditAmo
       setIsSuccess(false);
       setInitError(null);
       setIsProcessingWallet(false);
+      setTermsAccepted(false);
     }
   }, [isOpen]);
 
@@ -460,40 +463,60 @@ export function PaymentModal({ isOpen, onClose, type, planName, initialCreditAmo
                               appearance: { theme: isDark ? "night" : "stripe" },
                             }}
                           >
-                          <ProviderCardForm clientSecret={clientSecret} onSuccess={handleSuccess} />
+                          <ProviderCardForm 
+                            clientSecret={clientSecret} 
+                            onSuccess={handleSuccess} 
+                            termsAccepted={termsAccepted}
+                            setTermsAccepted={setTermsAccepted}
+                            isSubscription={type === "SUBSCRIPTION"}
+                          />
                         </Elements>
                      )
                   )}
 
                   {/* Google Pay View */}
                   {method === 'google' && config && (
-                    <div className="flex flex-col items-center justify-center py-10 w-full px-4">
+                    <div className="flex flex-col items-center justify-center py-6 w-full px-4">
+                      <div className="w-full text-left mb-4">
+                        <LegalCheckboxes termsAccepted={termsAccepted} setTermsAccepted={setTermsAccepted} isSubscription={type === "SUBSCRIPTION"} />
+                      </div>
                       {isProcessingWallet ? (
                         <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
                       ) : (
                         <button
+                          disabled={!termsAccepted}
                           onClick={handleCustomGooglePay}
-                          className="bg-black text-white w-[240px] h-[40px] rounded-md font-semibold flex items-center justify-center gap-2 hover:bg-black/90 transition-colors"
+                          className="bg-black text-white w-full h-[40px] rounded-md font-semibold flex items-center justify-center gap-2 hover:bg-black/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                            <GoogleGIcon className="w-5 h-5" /> Pay
                         </button>
                       )}
+                      <div className="w-full text-left mt-2">
+                        <LegalDisclaimer isSubscription={type === "SUBSCRIPTION"} />
+                      </div>
                     </div>
                   )}
 
                   {/* Apple Pay View */}
                   {method === 'apple' && (
-                    <div className="flex flex-col items-center justify-center py-10">
+                    <div className="flex flex-col items-center justify-center py-6 w-full px-4">
+                      <div className="w-full text-left mb-4">
+                        <LegalCheckboxes termsAccepted={termsAccepted} setTermsAccepted={setTermsAccepted} isSubscription={type === "SUBSCRIPTION"} />
+                      </div>
                        {isProcessingWallet ? (
                           <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
                        ) : (
                           <button
+                            disabled={!termsAccepted}
                             onClick={handleApplePay}
-                            className="bg-black text-white w-[240px] h-[40px] rounded-md font-semibold flex items-center justify-center gap-1 hover:bg-black/90 transition-colors"
+                            className="bg-black text-white w-full h-[40px] rounded-md font-semibold flex items-center justify-center gap-1 hover:bg-black/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                              <Apple className="w-5 h-5 fill-white" /> Pay
                           </button>
                        )}
+                       <div className="w-full text-left mt-2">
+                         <LegalDisclaimer isSubscription={type === "SUBSCRIPTION"} />
+                       </div>
                     </div>
                   )}
 

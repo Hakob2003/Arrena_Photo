@@ -9,13 +9,17 @@ import {
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "../../lib/i18n";
 import { useUIStore } from "../../store";
+import { LegalCheckboxes, LegalDisclaimer } from "./LegalCompliance";
 
 interface ProviderCardFormProps {
   clientSecret: string;
   onSuccess: () => void;
+  termsAccepted: boolean;
+  setTermsAccepted: (val: boolean) => void;
+  isSubscription: boolean;
 }
 
-export function ProviderCardForm({ clientSecret, onSuccess }: ProviderCardFormProps) {
+export function ProviderCardForm({ clientSecret, onSuccess, termsAccepted, setTermsAccepted, isSubscription }: ProviderCardFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
@@ -75,10 +79,16 @@ export function ProviderCardForm({ clientSecret, onSuccess }: ProviderCardFormPr
         </div>
       )}
 
+      <LegalCheckboxes 
+        termsAccepted={termsAccepted} 
+        setTermsAccepted={setTermsAccepted} 
+        isSubscription={isSubscription} 
+      />
+
       <button
-        disabled={isLoading || !stripe || !elements}
+        disabled={isLoading || !stripe || !elements || !termsAccepted}
         type="submit"
-        className={`w-full py-3 px-4 font-semibold rounded-xl mt-4 disabled:opacity-50 flex items-center justify-center transition-all ${
+        className={`w-full py-3 px-4 font-semibold rounded-xl mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-all ${
           isLuxury
             ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)]'
             : 'bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-gray-100'
@@ -90,6 +100,8 @@ export function ProviderCardForm({ clientSecret, onSuccess }: ProviderCardFormPr
           t("payment.modal.payNow")
         )}
       </button>
+
+      <LegalDisclaimer isSubscription={isSubscription} />
     </form>
   );
 }
