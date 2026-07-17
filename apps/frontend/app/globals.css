@@ -663,3 +663,8 @@
   outline: 2px solid rgb(var(--color-accent-500));
   outline-offset: 2px;
 }
+
+/* Fix for React 18 Strict Mode double Google Pay button rendering */
+.gpay-wrapper button ~ button {
+  display: none !important;
+}

@@ -7,13 +7,15 @@ export type Locale = 'ru' | 'en' | 'hy';
 
 const dictionaries: Record<Locale, Record<string, string>> = { ru, en, hy };
 
+import { useCallback } from 'react';
+
 export function useTranslation() {
   const locale = useUIStore((state) => state.locale);
   const dict = dictionaries[locale] || dictionaries.ru;
 
-  const t = (key: string): string => {
+  const t = useCallback((key: string): string => {
     return dict[key] || key;
-  };
+  }, [dict]);
 
   return { t, locale };
 }

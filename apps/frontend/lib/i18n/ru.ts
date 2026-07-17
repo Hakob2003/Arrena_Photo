@@ -118,6 +118,13 @@ const ru: Record<string, string> = {
   "myGen.alreadySaved": "Уже сохранено",
   "myGen.saveToDrive": "Сохранить на Google Drive",
   "myGen.template": "Шаблон",
+  "myGen.shareText": "Зацени эту генерацию из Arrena Photo!",
+  "myGen.shareTitle": "Arrena Генерация",
+  "myGen.shareFailed": "Не удалось поделиться",
+  "myGen.downloadTooltip": "Скачать",
+  "myGen.shareTooltip": "Поделиться",
+  "myGen.closeTooltip": "Закрыть",
+  "myGen.aiModel": "AI Модель",
 
   // === My Templates ===
   "myTemplates.title": "Мои шаблоны",
@@ -226,6 +233,9 @@ const ru: Record<string, string> = {
   "billing.plans.promoNext": "Будет применена к следующему списанию.",
   "billing.plans.free100": "Вам начислено 100 кредитов!",
   "billing.plans.upgradeSuccess": "Тариф успешно изменен!",
+  "billing.plans.updateFailed": "Не удалось обновить подписку на сервере",
+  "billing.plans.downgradeButton": "Перейти",
+  "billing.plans.upgradeButton": "Улучшить",
   "billing.plans.paymentError": "Ошибка оплаты",
   "billing.plans.creditsSuccess": "Кредиты успешно начислены!",
 
@@ -427,6 +437,23 @@ const ru: Record<string, string> = {
   "templates.perPage": "на странице",
   "common.prev": "Назад",
   "common.next": "Вперед",
+
+  // === Модальное окно оплаты ===
+  "payment.modal.buyCredits": "Купить кредиты",
+  "payment.modal.upgradePlan": "Обновить план",
+  "payment.modal.creditsDesc": "Выберите пакет кредитов для продолжения генераций.",
+  "payment.modal.upgradeDesc": "Обновитесь до {plan} для расширенных возможностей и кредитов.",
+  "payment.modal.popular": "Популярное",
+  "payment.modal.credits": "кредитов",
+  "payment.modal.orPayWithCard": "Или оплатить картой",
+  "payment.modal.payNow": "Оплатить",
+  "payment.modal.securePayment": "Безопасная оплата через",
+  "payment.modal.success": "Оплата прошла успешно!",
+  "payment.modal.creditsAdded": "Кредиты добавлены на ваш аккаунт.",
+  "payment.modal.subActive": "Ваша подписка активирована!",
+  "payment.modal.initFailed": "Не удалось подготовить оплату",
+  "payment.modal.initLoading": "Подготовка оплаты...",
+  "payment.modal.genericError": "Произошла ошибка. Попробуйте снова.",
 };
 
 export default ru;

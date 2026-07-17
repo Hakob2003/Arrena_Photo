@@ -64,7 +64,7 @@ export function GenerationModal({
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
     const url = getValidUrl(generation.imageUrl);
-    const shareText = "Check out this generation from Arrena Photo!";
+    const shareText = t("myGen.shareText") || "Check out this generation from Arrena Photo!";
 
     if (navigator.share && navigator.canShare) {
       try {
@@ -84,7 +84,7 @@ export function GenerationModal({
           navigator.canShare({ files: filesArray })
         ) {
           await navigator.share({
-            title: "Arrena Generation",
+            title: t("myGen.shareTitle") || "Arrena Generation",
             text: shareText,
             files: filesArray,
           });
@@ -92,7 +92,7 @@ export function GenerationModal({
         } else {
           if (url.startsWith("http") && !url.includes("localhost")) {
             await navigator.share({
-              title: "Arrena Generation",
+              title: t("myGen.shareTitle") || "Arrena Generation",
               text: shareText,
               url: url,
             });
@@ -113,7 +113,7 @@ export function GenerationModal({
       );
       toast.success(t("myGen.linkCopied") || "Link copied to clipboard!");
     } catch (err) {
-      toast.error("Failed to share");
+      toast.error(t("myGen.shareFailed") || "Failed to share");
     }
   };
 
@@ -133,7 +133,7 @@ export function GenerationModal({
               className="w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors backdrop-blur-md"
               onClick={handleDownload}
               disabled={downloading}
-              title="Download"
+              title={t("myGen.downloadTooltip") || "Download"}
             >
               {downloading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -145,7 +145,7 @@ export function GenerationModal({
             <button
               className="w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors backdrop-blur-md"
               onClick={handleShare}
-              title="Share"
+              title={t("myGen.shareTooltip") || "Share"}
             >
               <Share2 size={22} />
             </button>
@@ -153,7 +153,7 @@ export function GenerationModal({
             <button
               className="w-12 h-12 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors backdrop-blur-md ml-2"
               onClick={onClose}
-              title="Close"
+              title={t("myGen.closeTooltip") || "Close"}
             >
               <X size={24} />
             </button>
@@ -185,7 +185,7 @@ export function GenerationModal({
                 <p
                   className={`text-lg font-bold shadow-black drop-shadow-md ${isLuxury ? "text-[#D4AF37]" : "text-white"}`}
                 >
-                  {generation.model || "AI Model"}
+                  {generation.model || (t("myGen.aiModel") || "AI Model")}
                 </p>
                 {generation.template && (
                   <p className="text-sm text-white/70 drop-shadow-md">

@@ -1,0 +1,22 @@
+﻿- [x] **Database Updates (Prisma)**
+  - [x] Add stripeCustomerId String? to User.
+  - [x] Add stripePaymentIntentId String? @unique to Purchase.
+  - [x] Add PaymentStatus enum (PENDING, SUCCEEDED, FAILED).
+  - [x] Add PaymentHistory model.
+  - [x] Add StripeWebhookEvent model.
+  - [x] Apply schema changes (prisma format, prisma db push, prisma generate).
+- [x] **Backend Implementation**
+  - [x] Update PaymentService (Customer creation, Intents, Subscriptions, Validation).
+  - [x] Update PaymentController (Endpoints for client secrets).
+  - [x] Create StripeWebhookController (Raw body handling, Signature verification, Event processing).
+  - [x] Wire webhook logic to DB (Credits top-up, Plan changes).
+- [x] **Frontend Implementation**
+  - [x] Verify Stripe packages (@stripe/react-stripe-js).
+  - [x] Create PaymentModal.tsx (Glassmorphic, Packages Left, PaymentElement Right).
+  - [x] Integrate PaymentModal into profile/billing/tabs/PlansTab.tsx.
+  - [x] Add API functions for create-payment-intent and create-subscription.
+  - [x] Add success logic (update local state / Auth store).
+- [x] **QA & Validation**
+  - [x] Linting & TypeScript checks (pnpm run lint, 
+px tsc --noEmit).
+  - [x] Both backend and frontend compile cleanly.

@@ -1,0 +1,262 @@
+Created At: 2026-07-11T20:07:15Z
+Completed At: 2026-07-11T20:07:15Z
+File Path: `file:///F:/Arrena_Photo/apps/frontend/app/profile/billing/page.tsx`
+Total Lines: 254
+Total Bytes: 9214
+Showing lines 1 to 254
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: "use client";
+2: import React, { useState, useEffect } from "react";
+3: import { motion, AnimatePresence } from "framer-motion";
+4: import { OverviewTab } from "./tabs/OverviewTab";
+5: import { PlansTab } from "./tabs/PlansTab";
+6: import { UsageTab } from "./tabs/UsageTab";
+7: import { PaymentTab } from "./tabs/PaymentTab";
+8: import { useTranslation } from "../../../lib/i18n";
+9: import { useUIStore, useAuthStore } from "../../../store";
+10: import { api } from "../../../lib/api";
+11: 
+12: type Tab = "overview" | "plans" | "usage" | "payment";
+13: 
+14: export default function UserBillingPage() {
+15:   const [activeTab, setActiveTab] = useState<Tab>("overview");
+16:   const { t } = useTranslation();
+17:   const preferences = useUIStore((state) => state.preferences);
+18:   const isPremium = preferences?.skin === "PREMIUM";
+19:   const isLuxury = preferences?.skin === "LUXURY";
+20:   // Sync planId and credits from server on page load
+21:   useEffect(() => {
+22:     (async () => {
+23:       try {
+24:         const { data } = await api.get("/auth/me");
+25:         if (data.planId) useAuthStore.getState().setPlanId(data.planId);
+26:         if (data.credits != null)
+27:           useAuthStore.getState().setCredits(data.credits);
+28:       } catch (e) {
+29:         // Ignore — user may not be authenticated
+30:       }
+31:     })();
+32:   }, []);
+33: 
+34:   // Small Drum Navigation (Tabs)
+35:   const isNavigating = React.useRef(false);
+36:   useEffect(() => {
+37:     if (!isPremium) return; // Only enable for Premium skin
+38: 
+39:     const tabKeys: Tab[] = ["overview", "plans", "usage", "payment"];
+40: 
+41:     const navigateTo = (direction: "next" | "prev") => {
+42:       if (isNavigating.current) return;
+43:       isNavigating.current = true;
+44: 
+45:       useUIStore
+46:         .getState()
+47:         .setNavDirection(direction === "next" ? "down" : "up");
+48: 
+49:       setActiveTab((prev) => {
+50:         const currentIndex = tabKeys.indexOf(prev);
+51:         let nextIndex = 0;
+52:         if (direction === "next") {
+53:           nextIndex = (currentIndex + 1) % tabKeys.length;
+54:         } else {
+55:           nextIndex = (currentIndex - 1 + tabKeys.length) % tabKeys.length;
+56:         }
+57:         return tabKeys[nextIndex];
+58:       });
+59: 
+60:       // Cooldown timer to prevent multiple jumps
+61:       setTimeout(() => {
+62:         isNavigating.current = false;
+63:       }, 1200);
+64:     };
+65: 
+66:     let touchStartY = 0;
+67:     let touchStartX = 0;
+68: 
+69:     const handleWheel = (e: WheelEvent) => {
+70:       if (isNavigating.current) return;
+71: 
+72:       const scrollTop = window.scrollY;
+73:       const scrollHeight = document.body.scrollHeight;
+74:       const clientHeight = window.innerHeight;
+75: 
+76:       const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) <= 2;
+77:       const isAtTop = scrollTop <= 2;
+78: 
+79:       // Vertical wheel at boundaries (or horizontal wheel, but only at boundaries)
+80:       if ((e.deltaY > 0 || e.deltaX > 0) && isAtBottom) {
+81:         e.preventDefault();
+82:         navigateTo("next");
+83:       } else if ((e.deltaY < 0 || e.deltaX < 0) && isAtTop) {
+84:         e.preventDefault();
+85:         navigateTo("prev");
+86:       }
+87:     };
+88: 
+89:     const handleTouchStart = (e: TouchEvent) => {
+90:       touchStartY = e.touches[0].clientY;
+91:       touchStartX = e.touches[0].clientX;
+92:     };
+93: 
+94:     const handleTouchMove = (e: TouchEvent) => {
+95:       if (isNavigating.current) return;
+96: 
+97:       const touchEndY = e.touches[0].clientY;
+98:       const touchEndX = e.touches[0].clientX;
+99:       const deltaY = touchStartY - touchEndY;
+100:       const deltaX = touchStartX - touchEndX;
+101: 
+102:       const scrollTop = window.scrollY;
+103:       const scrollHeight = document.body.scrollHeight;
+104:       const clientHeight = window.innerHeight;
+105: 
+106:       const isAtBottom = Math.abs(scrollHeight - clientHeight - scrollTop) <= 2;
+107:       const isAtTop = scrollTop <= 2;
+108: 
+109:       const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
+110: 
+111:       if (isHorizontalSwipe) {
+112:         if (deltaX > 40 && isAtBottom) {
+113:           navigateTo("next");
+114:         } else if (deltaX < -40 && touchStartX > 30 && isAtTop) {
+115:           navigateTo("prev");
+116:         }
+117:       } else {
+118:         if (deltaY > 30 && isAtBottom) {
+119:           navigateTo("next");
+120:         } else if (deltaY < -30 && isAtTop) {
+121:           navigateTo("prev");
+122:         }
+123:       }
+124:     };
+125: 
+126:     window.addEventListener("wheel", handleWheel, { passive: false });
+127:     window.addEventListener("touchstart", handleTouchStart, { passive: true });
+128:     window.addEventListener("touchmove", handleTouchMove, { passive: false });
+129: 
+130:     return () => {
+131:       window.removeEventListener("wheel", handleWheel);
+132:       window.removeEventListener("touchstart", handleTouchStart);
+133:       window.removeEventListener("touchmove", handleTouchMove);
+134:     };
+135:   }, []);
+136: 
+137:   const tabs = [
+138:     { id: "overview", label: t("billing.overview") },
+139:     { id: "plans", label: t("billing.plans") },
+140:     { id: "usage", label: t("billing.usage") },
+141:     { id: "payment", label: t("billing.payment") },
+142:   ];
+143: 
+144:   return (
+145:     <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
+146:       <div className="mb-8">
+147:         <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+148:           {t("billing.title")}
+149:         </h1>
+150:         <p className="text-slate-500 dark:text-gray-400 mt-2">
+151:           {t("billing.description")}
+152:         </p>
+153:       </div>
+154: 
+155:       {/* Warning Alert (Mock: if credits < 20%) */}
+156:       <div className="mb-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-xl p-4 flex items-start gap-3">
+157:         <span className="text-amber-500">⚠️</span>
+158:         <div>
+159:           <h4 className="text-sm font-semibold text-amber-800 dark:text-amber-300">
+160:             {t("billing.lowCreditsTitle")}
+161:           </h4>
+162:           <p className="text-sm text-amber-700 dark:text-amber-400/80 mt-1">
+163:             {t("billing.lowCreditsDescription")}
+164:           </p>
+165:         </div>
+166:         <button
+167:           onClick={() => setActiveTab("plans")}
+168:           className="ml-auto text-sm bg-amber-500 hover:bg-amber-600 text-white px-3 py-1.5 rounded-lg transition-colors font-medium"
+169:         >
+170:           {t("billing.topUp")}
+171:         </button>
+172:       </div>
+173: 
+174:       {/* Tabs Navigation */}
+175:       <div className="flex overflow-x-auto space-x-1 border-b border-black/10 dark:border-white/10 mb-8 custom-scrollbar pb-1">
+176:         {tabs.map((tb, idx) => (
+177:           <button
+178:             key={tb.id}
+179:             onClick={() => {
+180:               const currentIndex = tabs.findIndex((t) => t.id === activeTab);
+181:               if (idx > currentIndex) {
+182:                 useUIStore.getState().setNavDirection("down");
+183:               } else if (idx < currentIndex) {
+184:                 useUIStore.getState().setNavDirection("up");
+185:               }
+186:               setActiveTab(tb.id as Tab);
+187:             }}
+188:             className={`whitespace-nowrap px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+189:               activeTab === tb.id
+190:                 ? isLuxury
+191:                   ? "border-[#D4AF37] text-[#D4AF37]"
+192:                   : "border-indigo-500 text-indigo-600 dark:text-indigo-400"
+193:                 : "border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-gray-300"
+194:             }`}
+195:           >
+196:             {tb.label}
+197:           </button>
+198:         ))}
+199:       </div>
+200: 
+201:       {/* Tab Content Area */}
+202:       <div className="min-h-[500px] relative">
+203:         <AnimatePresence
+204:           mode={preferences.skin === "PREMIUM" ? "popLayout" : "wait"}
+205:         >
+206:           <motion.div
+207:             key={activeTab}
+208:             custom={useUIStore.getState().navDirection}
+209:             variants={{
+210:               initial: (dir: "up" | "down" | null) => {
+211:                 if (preferences.skin !== "PREMIUM")
+212:                   return { opacity: 0, x: dir === "down" ? 20 : -20 };
+213:                 if (!dir) return { opacity: 0, x: 0 };
+214:                 return {
+215:                   opacity: 1,
+216:                   x: dir === "down" ? "100%" : "-100%",
+217:                   scale: 0.95,
+218:                 };
+219:               },
+220:               animate: { opacity: 1, x: 0, scale: 1 },
+221:               exit: (dir: "up" | "down" | null) => {
+222:                 if (preferences.skin !== "PREMIUM")
+223:                   return { opacity: 0, x: dir === "down" ? -20 : 20 };
+224:                 if (!dir) return { opacity: 0, x: 0 };
+225:                 return {
+226:                   opacity: 1,
+227:                   x: dir === "down" ? "-100%" : "100%",
+228:                   scale: 0.95,
+229:                 };
+230:               },
+231:             }}
+232:             initial="initial"
+233:             animate="animate"
+234:             exit="exit"
+235:             transition={
+236:               preferences.skin === "PREMIUM"
+237:                 ? { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+238:                 : { duration: 0.2 }
+239:             }
+240:             className="w-full"
+241:           >
+242:             {activeTab === "overview" && (
+243:               <OverviewTab onNavigateToPlans={() => setActiveTab("plans")} />
+244:             )}
+245:             {activeTab === "plans" && <PlansTab />}
+246:             {activeTab === "usage" && <UsageTab />}
+247:             {activeTab === "payment" && <PaymentTab />}
+248:           </motion.div>
+249:         </AnimatePresence>
+250:       </div>
+251:     </div>
+252:   );
+253: }
+254: 
+The above content shows the entire, complete file contents of the requested file.

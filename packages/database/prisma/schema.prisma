@@ -51,6 +51,12 @@ enum PayoutStatus {
   REJECTED
 }
 
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
 // -----------------------------------------------------------------------------
 // CORE & RBAC
 // -----------------------------------------------------------------------------
@@ -78,7 +84,7 @@ model User {
   surname     String?
   bio         String? @db.Text
   socialLinks Json? // { telegram: "", instagram: "", twitter: "", linkedin: "", website: "" }
-  
+
   // --- Security ---
   tokenVersion Int @default(0)
 
@@ -109,6 +115,7 @@ model User {
   subscription       Subscription?
   creditTransactions CreditTransaction[]
   paymentMethods     PaymentMethod[]
+  paymentHistory     PaymentHistory[]
   reviews            Review[]
   notifications      Notification[]
   auditLogs          AuditLog[]
@@ -116,13 +123,16 @@ model User {
   storageConnections StorageConnection[]
   aiUsages           AIUsage[]
 
+  // Stripe Integration
+  stripeCustomerId String? @unique
+
   // Social & Marketplace
-  favorites   TemplateFav[]
-  collections Collection[]
-  followers   UserFollow[]     @relation("Following")
-  following   UserFollow[]     @relation("Followers")
-  payouts     Payout[]
-  reports     TemplateReport[]
+  favorites       TemplateFav[]
+  collections     Collection[]
+  followers       UserFollow[]     @relation("Following")
+  following       UserFollow[]     @relation("Followers")
+  payouts         Payout[]
+  reports         TemplateReport[]
   generationLikes GenerationLike[]
 
   @@index([email])
@@ -349,8 +359,8 @@ model GenerationResult {
   id                String   @id @default(uuid())
   generationId      String   @unique
   imageUrl          String
-  s3ImageUrl        String?  // WRK-031
-  s3Bucket          String?  // WRK-031
+  s3ImageUrl        String? // WRK-031
+  s3Bucket          String? // WRK-031
   driveFileId       String?
   durationMs        Int
   storageProviderId String
@@ -452,19 +462,19 @@ model CreditTransaction {
 }
 
 model PlanConfig {
-  id              String           @id @default(uuid())
-  plan            SubscriptionPlan @unique
-  name            String
-  price           String           // e.g. "$0", "$9/mo"
-  monthlyCredits  Int
-  maxConcurrent   Int              @default(1)
-  queueDelay      Int              @default(30000)
-  priority        Int              @default(3)
-  modelsAccess    String           @default("Base Only")
-  stripePriceId   String?
-  isActive        Boolean          @default(true)
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
+  id             String           @id @default(uuid())
+  plan           SubscriptionPlan @unique
+  name           String
+  price          String // e.g. "$0", "$9/mo"
+  monthlyCredits Int
+  maxConcurrent  Int              @default(1)
+  queueDelay     Int              @default(30000)
+  priority       Int              @default(3)
+  modelsAccess   String           @default("Base Only")
+  stripePriceId  String?
+  isActive       Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 }
 
 model PaymentMethod {
@@ -598,4 +608,30 @@ model Payout {
   updatedAt DateTime     @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PaymentHistory {
+  id                    String            @id @default(uuid())
+  userId                String
+  stripePaymentIntentId String?           @unique
+  amount                Int // amount in cents
+  currency              String            @default("usd")
+  status                PaymentStatus     @default(PENDING)
+  type                  String // "CREDITS", "SUBSCRIPTION"
+  creditsAdded          Int? // If it was a credit purchase
+  plan                  SubscriptionPlan? // If it was a subscription
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([stripePaymentIntentId])
+}
+
+model StripeWebhookEvent {
+  id        String   @id // Stripe Event ID (evt_xxx)
+  type      String
+  status    String   @default("PROCESSED") // "PROCESSED", "FAILED"
+  createdAt DateTime @default(now())
 }

@@ -13,6 +13,7 @@ allowBuilds:
   '6': sharp
   '@prisma/client': set this to true or false
   '@prisma/engines': set this to true or false
+  '@swc/core': true
   msgpackr-extract: set this to true or false
   prisma: set this to true or false
   sharp: true

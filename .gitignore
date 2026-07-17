@@ -115,5 +115,5 @@ packages/database/node_modules/
 
 # Backups
 backups/
-{_args_*
+_args_*
 repo_analysis/

@@ -1,0 +1,601 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// ENUMS
+// -----------------------------------------------------------------------------
+enum RoleName {
+  ADMIN
+  MODERATOR
+  CREATOR
+  USER
+  BANNED
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
+}
+
+enum GenerationStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+  CANCELLED
+}
+
+enum SubscriptionPlan {
+  FREE
+  STARTER
+  PRO
+  BUSINESS
+}
+
+enum TemplateStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  REJECTED
+}
+
+// -----------------------------------------------------------------------------
+// CORE & RBAC
+// -----------------------------------------------------------------------------
+
+model User {
+  id            String     @id @default(uuid())
+  email         String     @unique
+  passwordHash  String?
+  emailVerified DateTime?
+  name          String?
+  avatarUrl     String?
+  credits       Int        @default(1500)
+  status        UserStatus @default(ACTIVE)
+  lastLogin     DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  // --- Generation Limit Overrides ---
+  maxConcurrentOverride Int?
+  queueDelayOverride    Int?
+  priorityOverride      Int?
+
+  // --- Personal Info ---
+  nickname    String? @unique
+  surname     String?
+  bio         String? @db.Text
+  socialLinks Json? // { telegram: "", instagram: "", twitter: "", linkedin: "", website: "" }
+  
+  // --- Security ---
+  tokenVersion Int @default(0)
+
+  // --- Preferences & Appearance ---
+  theme             String  @default("SYSTEM") // "LIGHT", "DARK", "SYSTEM"
+  accentColor       String  @default("INDIGO")
+  fontSize          String  @default("MEDIUM") // "SMALL", "MEDIUM", "LARGE"
+  compactMode       Boolean @default(false)
+  animationsEnabled Boolean @default(true)
+  skin              String  @default("LUXURY") // "LUXURY", "NEON"
+
+  // --- Notifications ---
+  notifyEmail       Boolean @default(true)
+  notifyGenerations Boolean @default(true)
+  notifyMarketing   Boolean @default(false)
+  notifyNews        Boolean @default(true)
+  notifySystem      Boolean @default(true)
+
+  roleId String
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  sessions           Session[]
+  oauthAccounts      OAuthAccount[]
+  verificationTokens VerificationToken[]
+  templates          Template[]
+  generations        Generation[]
+  purchases          Purchase[]
+  subscription       Subscription?
+  creditTransactions CreditTransaction[]
+  paymentMethods     PaymentMethod[]
+  reviews            Review[]
+  notifications      Notification[]
+  auditLogs          AuditLog[]
+  aiConnections      AIConnection[]
+  storageConnections StorageConnection[]
+  aiUsages           AIUsage[]
+
+  // Social & Marketplace
+  favorites   TemplateFav[]
+  collections Collection[]
+  followers   UserFollow[]     @relation("Following")
+  following   UserFollow[]     @relation("Followers")
+  payouts     Payout[]
+  reports     TemplateReport[]
+  generationLikes GenerationLike[]
+
+  @@index([email])
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        RoleName @unique
+  permissions Json // Array of permissions e.g., ["templates:create", "admin:all"]
+  users       User[]
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  ipAddress String?
+  userAgent String?
+  country   String?
+  device    String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+model OAuthAccount {
+  id                String   @id @default(uuid())
+  userId            String
+  provider          String // "google", "vk", "facebook"
+  providerAccountId String // ID from provider
+  accessToken       String?
+  refreshToken      String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  user User? @relation(fields: [identifier], references: [email], onDelete: Cascade)
+
+  @@unique([identifier, token])
+}
+
+// -----------------------------------------------------------------------------
+// TEMPLATES
+// -----------------------------------------------------------------------------
+
+model TemplateCategory {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  slug      String     @unique
+  templates Template[]
+}
+
+model TemplateTag {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  templates Template[] // Implicit many-to-many relation
+}
+
+model Template {
+  id                String         @id @default(uuid())
+  name              String
+  description       String?
+  coverUrl          String?
+  galleryUrls       String[] // JSON string array mapped to pg array
+  recommendedModels String[] // e.g. ["sdxl-1.0", "dall-e-3"]
+  status            TemplateStatus @default(DRAFT)
+  isPublic          Boolean        @default(false)
+  isApproved        Boolean        @default(false) // Moderation
+  price             Float? // null means free
+  oldPrice          Float? // track price changes
+  downloadCount     Int            @default(0)
+  avgRating         Float          @default(0)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  categoryId String
+  category   TemplateCategory @relation(fields: [categoryId], references: [id])
+
+  creatorId String
+  creator   User   @relation(fields: [creatorId], references: [id])
+
+  tags        TemplateTag[]
+  versions    TemplateVersion[]
+  generations Generation[]
+  marketplace MarketplaceItem?
+  reviews     Review[]
+  favorites   TemplateFav[]
+  collections CollectionTemplate[]
+  reports     TemplateReport[]
+
+  @@index([creatorId])
+  @@index([categoryId])
+  @@index([isPublic, isApproved])
+  @@index([recommendedModels], type: Gin)
+  @@index([createdAt])
+  @@index([downloadCount])
+  @@index([status])
+}
+
+model TemplateVersion {
+  id             String   @id @default(uuid())
+  templateId     String
+  versionNumber  Int
+  prompt         String
+  negativePrompt String?
+  settings       Json // e.g. { steps: 20, guidance_scale: 7.5 }
+  createdAt      DateTime @default(now())
+
+  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@unique([templateId, versionNumber])
+}
+
+// -----------------------------------------------------------------------------
+// GENERATION & AI PROVIDERS
+// -----------------------------------------------------------------------------
+
+model AIProvider {
+  id       String  @id @default(uuid())
+  name     String  @unique // e.g. "HuggingFace", "OpenAI", "ComfyUI"
+  isGlobal Boolean @default(true) // If true, uses system-wide API keys
+
+  models      AIModel[]
+  connections AIConnection[]
+}
+
+model AIModel {
+  id           String   @id @default(uuid())
+  providerId   String
+  name         String // e.g. "sdxl-1.0", "dall-e-3"
+  slug         String   @unique // e.g. "openrouter/free"
+  endpoint     String?
+  description  String?
+  isFree       Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  costPerToken Float    @default(0) // Cost per 1k tokens in USD
+  speed        String   @default("medium") // "fast", "medium", "slow"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  provider    AIProvider   @relation(fields: [providerId], references: [id])
+  generations Generation[]
+
+  @@unique([providerId, name])
+}
+
+model AIConnection {
+  id              String @id @default(uuid())
+  userId          String
+  providerId      String
+  encryptedApiKey String
+
+  status          String    @default("UNKNOWN") // "CONNECTED", "ERROR", "UNKNOWN"
+  lastCheckedAt   DateTime?
+  balance         Float?
+  errorMessage    String?
+  isAutoMonitorOn Boolean   @default(false)
+  monitorInterval String    @default("1h") // "REALTIME", "1m", "5m", "10m", "30m", "1h"
+
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider AIProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, providerId])
+}
+
+model AIUsage {
+  id           String   @id @default(uuid())
+  userId       String
+  model        String // the model slug
+  inputTokens  Int
+  outputTokens Int
+  totalTokens  Int
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Generation {
+  id         String           @id @default(uuid())
+  userId     String
+  templateId String?
+  aiModelId  String
+  status     GenerationStatus @default(PENDING)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  user     User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template Template?         @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  aiModel  AIModel           @relation(fields: [aiModelId], references: [id])
+  result   GenerationResult?
+
+  prompt         String?
+  negativePrompt String?
+  settings       Json?
+  isPublic       Boolean @default(false)
+  likesCount     Int     @default(0)
+
+  likes GenerationLike[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([userId, createdAt])
+}
+
+model GenerationResult {
+  id                String   @id @default(uuid())
+  generationId      String   @unique
+  imageUrl          String
+  s3ImageUrl        String?  // WRK-031
+  s3Bucket          String?  // WRK-031
+  driveFileId       String?
+  durationMs        Int
+  storageProviderId String
+  createdAt         DateTime @default(now())
+
+  generation      Generation      @relation(fields: [generationId], references: [id], onDelete: Cascade)
+  storageProvider StorageProvider @relation(fields: [storageProviderId], references: [id])
+}
+
+model GenerationLike {
+  id           String   @id @default(uuid())
+  userId       String
+  generationId String
+  createdAt    DateTime @default(now())
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  generation Generation @relation(fields: [generationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, generationId])
+}
+
+// -----------------------------------------------------------------------------
+// STORAGE
+// -----------------------------------------------------------------------------
+
+model StorageProvider {
+  id      String @id @default(uuid())
+  name    String @unique // "S3", "Cloudflare R2"
+  baseUrl String
+
+  connections StorageConnection[]
+  results     GenerationResult[]
+}
+
+model StorageConnection {
+  id                   String @id @default(uuid())
+  userId               String
+  storageProviderId    String
+  encryptedCredentials Json // AES Encrypted { accessKey, secretKey, bucket }
+
+  user     User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider StorageProvider @relation(fields: [storageProviderId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, storageProviderId])
+}
+
+// -----------------------------------------------------------------------------
+// MARKETPLACE & BILLING
+// -----------------------------------------------------------------------------
+
+model MarketplaceItem {
+  id         String   @id @default(uuid())
+  templateId String   @unique
+  price      Float // USD Price
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  template  Template   @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  purchases Purchase[]
+
+  @@index([isActive])
+  @@index([price])
+}
+
+model Purchase {
+  id                String   @id @default(uuid())
+  userId            String
+  marketplaceItemId String
+  amount            Float
+  purchasedAt       DateTime @default(now())
+
+  user            User            @relation(fields: [userId], references: [id])
+  marketplaceItem MarketplaceItem @relation(fields: [marketplaceItemId], references: [id])
+
+  @@index([userId])
+}
+
+model Subscription {
+  id             String           @id @default(uuid())
+  userId         String           @unique
+  plan           SubscriptionPlan @default(FREE)
+  monthlyCredits Int              @default(20)
+  expiresAt      DateTime?
+  stripeSubId    String?          @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CreditTransaction {
+  id        String   @id @default(uuid())
+  userId    String
+  amount    Int // Negative for usage, positive for top-up
+  reason    String // "Generation", "Monthly Top-up", "Purchase"
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model PlanConfig {
+  id              String           @id @default(uuid())
+  plan            SubscriptionPlan @unique
+  name            String
+  price           String           // e.g. "$0", "$9/mo"
+  monthlyCredits  Int
+  maxConcurrent   Int              @default(1)
+  queueDelay      Int              @default(30000)
+  priority        Int              @default(3)
+  modelsAccess    String           @default("Base Only")
+  stripePriceId   String?
+  isActive        Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model PaymentMethod {
+  id             String   @id @default(uuid())
+  userId         String
+  last4          String   @default("0000")
+  brand          String   @default("visa")
+  expiry         String
+  cardholderName String
+  balance        Float    @default(0)
+  limit          Float    @default(0)
+  isDefault      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// -----------------------------------------------------------------------------
+// SOCIAL & LOGS
+// -----------------------------------------------------------------------------
+
+model Review {
+  id         String   @id @default(uuid())
+  userId     String
+  templateId String
+  rating     Int // 1-5
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, templateId])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String? // Nullable if system action
+  action    String // e.g., "TEMPLATE_DELETED"
+  details   Json
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([action])
+  @@index([createdAt])
+}
+
+model TemplateFav {
+  id         String   @id @default(uuid())
+  userId     String
+  templateId String
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, templateId])
+}
+
+model Collection {
+  id        String   @id @default(uuid())
+  name      String
+  userId    String
+  isPublic  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  templates CollectionTemplate[]
+}
+
+model CollectionTemplate {
+  id           String   @id @default(uuid())
+  collectionId String
+  templateId   String
+  addedAt      DateTime @default(now())
+
+  collection Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  template   Template   @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@unique([collectionId, templateId])
+}
+
+model UserFollow {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("Followers", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+}
+
+model TemplateReport {
+  id         String   @id @default(uuid())
+  templateId String
+  userId     String
+  reason     String // e.g., "SPAM", "NSFW", "COPYRIGHT"
+  details    String?
+  resolved   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Payout {
+  id        String       @id @default(uuid())
+  userId    String
+  amount    Float
+  status    PayoutStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

@@ -116,6 +116,13 @@ const en: Record<string, string> = {
   "myGen.alreadySaved": "Already saved",
   "myGen.saveToDrive": "Save to Google Drive",
   "myGen.template": "Template",
+  "myGen.shareText": "Check out this generation from Arrena Photo!",
+  "myGen.shareTitle": "Arrena Generation",
+  "myGen.shareFailed": "Failed to share",
+  "myGen.downloadTooltip": "Download",
+  "myGen.shareTooltip": "Share",
+  "myGen.closeTooltip": "Close",
+  "myGen.aiModel": "AI Model",
 
   // === My Templates ===
   "myTemplates.title": "My Templates",
@@ -223,6 +230,9 @@ const en: Record<string, string> = {
   "billing.plans.promoNext": "Will be applied to your next billing.",
   "billing.plans.free100": "You received 100 credits!",
   "billing.plans.upgradeSuccess": "Plan successfully changed!",
+  "billing.plans.updateFailed": "Failed to update subscription on server",
+  "billing.plans.downgradeButton": "Downgrade",
+  "billing.plans.upgradeButton": "Upgrade",
   "billing.plans.paymentError": "Payment error",
   "billing.plans.creditsSuccess": "Credits successfully added!",
 
@@ -422,6 +432,23 @@ const en: Record<string, string> = {
   "templates.perPage": "per page",
   "common.prev": "Prev",
   "common.next": "Next",
+
+  // === Payment Modal ===
+  "payment.modal.buyCredits": "Buy Credits",
+  "payment.modal.upgradePlan": "Upgrade Plan",
+  "payment.modal.creditsDesc": "Select a credit package to continue your generations.",
+  "payment.modal.upgradeDesc": "Upgrade to {plan} for more features and credits.",
+  "payment.modal.popular": "Popular",
+  "payment.modal.credits": "credits",
+  "payment.modal.orPayWithCard": "Or pay with card",
+  "payment.modal.payNow": "Pay Now",
+  "payment.modal.securePayment": "Secure payment via",
+  "payment.modal.success": "Payment Successful!",
+  "payment.modal.creditsAdded": "Credits have been added to your account.",
+  "payment.modal.subActive": "Your subscription is now active!",
+  "payment.modal.initFailed": "Failed to initialize payment",
+  "payment.modal.initLoading": "Preparing payment...",
+  "payment.modal.genericError": "An error occurred. Please try again.",
 };
 
 export default en;

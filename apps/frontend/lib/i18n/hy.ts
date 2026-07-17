@@ -117,6 +117,13 @@ const hy: Record<string, string> = {
   "myGen.alreadySaved": "Արդեն պահպանված է",
   "myGen.saveToDrive": "Պահպանել Google Drive-ում",
   "myGen.template": "Ձևանմուշ",
+  "myGen.shareText": "Տեսեք այս գեներացիան Arrena Photo-ից:",
+  "myGen.shareTitle": "Arrena Գեներացիա",
+  "myGen.shareFailed": "Չհաջողվեց կիսվել",
+  "myGen.downloadTooltip": "Ներբեռնել",
+  "myGen.shareTooltip": "Կիսվել",
+  "myGen.closeTooltip": "Փակել",
+  "myGen.aiModel": "AI Մոդել",
 
   // === My Templates ===
   "myTemplates.title": "Իմ Ձևանմուշները",
@@ -225,6 +232,9 @@ const hy: Record<string, string> = {
   "billing.plans.promoNext": "Կկիրառվի ձեր հաջորդ վճարման համար:",
   "billing.plans.free100": "Դուք ստացաք 100 կրեդիտ:",
   "billing.plans.upgradeSuccess": "Պլանը հաջողությամբ փոխվեց:",
+  "billing.plans.updateFailed": "Չհաջողվեց թարմացնել բաժանորդագրությունը սերվերում",
+  "billing.plans.downgradeButton": "Անցնել",
+  "billing.plans.upgradeButton": "Թարմացնել",
   "billing.plans.paymentError": "Վճարման սխալ",
   "billing.plans.creditsSuccess": "Կրեդիտները հաջողությամբ ավելացվեցին:",
 
@@ -425,6 +435,24 @@ const hy: Record<string, string> = {
   "templates.perPage": "էջում",
   "common.prev": "Նախորդ",
   "common.next": "Հաջորդ",
+
+
+  // === Վճարման պատուհան ===
+  "payment.modal.buyCredits": "Գնել կրեդիտներ",
+  "payment.modal.upgradePlan": "Թարմացնել պլանը",
+  "payment.modal.creditsDesc": "Ընտրեք կրեդիտների փաթեթը գեներացիաները շարունակելու համար.",
+  "payment.modal.upgradeDesc": "Թարմացրեք {plan}-ին։ ավելի շատ հնարավորությունների և կրեդիտների համար.",
+  "payment.modal.popular": "Հայտնի",
+  "payment.modal.credits": "կրեդիտ",
+  "payment.modal.orPayWithCard": "Կամ վճարել քարտով",
+  "payment.modal.payNow": "Վճարել",
+  "payment.modal.securePayment": "Անվտանգ վճարում։",
+  "payment.modal.success": "Վճարումը հաջողվեց!",
+  "payment.modal.creditsAdded": "Կրեդիտները ավելացվել են ձեր հաշվին.",
+  "payment.modal.subActive": "Ձեր բաժանորդագրությունը ակտիվացվել է!",
+  "payment.modal.initFailed": "Չհաջողվեց նախապատրաստել վճարումը",
+  "payment.modal.initLoading": "Վճարման նախապատրաստում...",
+  "payment.modal.genericError": "Սխալ տեղի ունեցավ. Փորձեք կրկին.",
 };
 
 export default hy;

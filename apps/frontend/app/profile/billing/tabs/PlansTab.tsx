@@ -6,6 +6,8 @@ import { toast } from 'react-hot-toast';
 import { useTranslation } from '../../../../lib/i18n';
 import { useUIStore } from '../../../../store';
 import { api } from '../../../../lib/api';
+import { PaymentModal } from '../../../../components/ui/PaymentModal';
+import { CREDIT_PACKAGES, SUBSCRIPTION_PLANS } from '../../../../config/pricing';
 
 export function PlansTab() {
   const { planId, setPlanId, addCredits, chargeDefaultCard } = useAuthStore();
@@ -16,6 +18,12 @@ export function PlansTab() {
   const [showDowngradeModal, setShowDowngradeModal] = useState(false);
   const [pendingPlan, setPendingPlan] = useState<string | null>(null);
   const isLuxury = useUIStore(state => state.preferences?.skin === 'LUXURY');
+  
+  // Payment Modal State
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [paymentType, setPaymentType] = useState<"CREDITS" | "SUBSCRIPTION">("CREDITS");
+  const [selectedPlanToBuy, setSelectedPlanToBuy] = useState<string | undefined>(undefined);
+  const [selectedCreditAmount, setSelectedCreditAmount] = useState<number | undefined>(undefined);
 
   const handleApplyPromo = () => {
     if (promoCode.trim().toUpperCase() === 'PROMOCODE20') {
@@ -54,11 +62,11 @@ export function PlansTab() {
     }
 
     if (price > 0) {
-      const res = await chargeDefaultCard(price, `Plan payment ${newPlanId}`);
-      if (!res.success) {
-        toast.error(res.error || t('billing.plans.paymentError'));
-        return;
-      }
+      // Open Real Stripe Checkout Modal
+      setPaymentType("SUBSCRIPTION");
+      setSelectedPlanToBuy(newPlanId.toUpperCase());
+      setIsPaymentModalOpen(true);
+      return;
     }
     
     try {
@@ -72,35 +80,18 @@ export function PlansTab() {
   };
 
   const handleBuyCredits = async (amount: number, price: number) => {
-    const res = await chargeDefaultCard(price, `Buy ${amount} credits`);
-    if (!res.success) {
-      toast.error(res.error || t('billing.plans.paymentError'));
-      return;
-    }
-    
-    try {
-      // Actually add the credits on the backend
-      await api.post('/billing/add-credits', { amount, reason: `Purchased ${amount} credits` });
-      addCredits(amount); // Update local state
-      toast.success(t('billing.plans.creditsSuccess'));
-    } catch (err) {
-      console.error('Failed to add credits to backend', err);
-      toast.error('Failed to apply credits to your account. Please contact support.');
-    }
+    // Open Real Stripe Checkout Modal
+    setSelectedCreditAmount(amount);
+    setPaymentType("CREDITS");
+    setIsPaymentModalOpen(true);
   };
 
-  const plans = [
-    { id: 'free', name: 'Free', price: '$0', priceNum: 0, credits: `100 ${t('billing.plans.perMonth')}`, models: 'Basic', features: ['billing.plans.features.free.1', 'billing.plans.features.free.2', 'billing.plans.features.free.3'] },
-    { id: 'starter', name: 'Starter', price: '$9', priceNum: 9, credits: `1000 ${t('billing.plans.perMonth')}`, models: 'All', features: ['billing.plans.features.starter.1', 'billing.plans.features.starter.2', 'billing.plans.features.starter.3'] },
-    { id: 'pro', name: 'Pro Creator', price: '$29', priceNum: 29, credits: `5000 ${t('billing.plans.perMonth')}`, models: 'All + Exclusive', features: ['billing.plans.features.pro.1', 'billing.plans.features.pro.2', 'billing.plans.features.pro.3'] },
-    { id: 'business', name: 'Business', price: '$99', priceNum: 99, credits: 'Unlimited', models: 'All + Exclusive', features: ['billing.plans.features.business.1', 'billing.plans.features.business.2', 'billing.plans.features.business.3'] },
-  ];
+  const plans = SUBSCRIPTION_PLANS.map(plan => ({
+    ...plan,
+    creditsString: `${plan.credits} ${t('billing.plans.perMonth')}`
+  }));
 
-  const creditPackages = [
-    { id: 'c500', credits: 500, price: '$8', priceNum: 8 },
-    { id: 'c2000', credits: 2000, price: '$25', priceNum: 25 },
-    { id: 'c5000', credits: 5000, price: '$60', priceNum: 60 },
-  ];
+  const creditPackages = CREDIT_PACKAGES;
 
   return (
     <div className="space-y-12">
@@ -130,7 +121,7 @@ export function PlansTab() {
 
                 <div className="space-y-3 flex-1">
                   <div className="text-sm text-slate-700 dark:text-gray-300 border-b border-black/5 dark:border-white/5 pb-2">
-                    <span className="font-semibold">{plan.credits}</span>
+                    <span className="font-semibold">{plan.creditsString}</span>
                   </div>
                   <div className="text-sm text-slate-700 dark:text-gray-300 border-b border-black/5 dark:border-white/5 pb-2">
                     <span className="font-semibold">{plan.models}</span>
@@ -177,10 +168,10 @@ export function PlansTab() {
                   <p className="font-bold text-slate-900 dark:text-white">{pkg.credits}</p>
                   <p className="text-xs text-slate-500">{t('billing.plans.credits')}</p>
                 </div>
-                <button onClick={() => handleBuyCredits(pkg.credits, pkg.priceNum)} className={`px-4 py-2 bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors ${
+                <button onClick={() => handleBuyCredits(pkg.credits, pkg.amountUsd)} className={`px-4 py-2 bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors ${
                   isLuxury ? 'hover:bg-[#D4AF37] hover:text-black' : 'hover:bg-indigo-500 hover:text-white'
                 }`}>
-                  {pkg.price}
+                  ${pkg.amountUsd}
                 </button>
               </div>
             ))}
@@ -265,6 +256,14 @@ export function PlansTab() {
           </div>
         )}
       </AnimatePresence>
+      
+      <PaymentModal 
+        isOpen={isPaymentModalOpen} 
+        onClose={() => setIsPaymentModalOpen(false)} 
+        type={paymentType}
+        planName={selectedPlanToBuy}
+        initialCreditAmount={selectedCreditAmount}
+      />
     </div>
   );
 }
