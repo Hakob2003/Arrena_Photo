@@ -59,6 +59,20 @@ export function PaymentModal({ isOpen, onClose, type, planName, initialCreditAmo
 
   const stripeLocale = STRIPE_LOCALE_MAP[locale] ?? "en";
 
+  const theme = useUIStore((state) => state.preferences?.theme);
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      setIsDark(document.documentElement.classList.contains('dark'));
+      const observer = new MutationObserver(() => {
+        setIsDark(document.documentElement.classList.contains('dark'));
+      });
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+      return () => observer.disconnect();
+    }
+  }, [theme]);
+
   useEffect(() => {
     if (isOpen && type === "CREDITS" && initialCreditAmount) {
       const pack = CREDIT_PACKAGES.find(p => p.credits === initialCreditAmount);
@@ -438,14 +452,14 @@ export function PaymentModal({ isOpen, onClose, type, planName, initialCreditAmo
                           <Loader2 className="w-8 h-8 animate-spin mb-4" />
                         </div>
                      ) : (
-                        <Elements
-                          stripe={stripePromise}
-                          options={{
-                            clientSecret,
-                            locale: stripeLocale,
-                            appearance: { theme: "stripe" },
-                          }}
-                        >
+                          <Elements
+                            stripe={stripePromise}
+                            options={{
+                              clientSecret,
+                              locale: stripeLocale,
+                              appearance: { theme: isDark ? "night" : "stripe" },
+                            }}
+                          >
                           <ProviderCardForm clientSecret={clientSecret} onSuccess={handleSuccess} />
                         </Elements>
                      )
