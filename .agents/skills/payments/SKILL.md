@@ -164,6 +164,12 @@ When using raw wallet APIs (Apple Pay JS / Google Pay) via Stripe, always adhere
 3. **Backend Token Processing**: When passing the wallet token to the Stripe API on the backend, strictly use the object format: `payment_method_data: { type: 'card', card: { token: 'tok_xxx' } }`. Passing a raw string like `payment_method: 'tok_xxx'` will cause an error.
 4. **Environment Variables**: The `STRIPE_PUBLISHABLE_KEY` MUST be present in the backend `.env` file so the backend can serve it to the frontend via API (e.g. `/payment/config`).
 5. **Mocking Apple/Google Pay Tokens**: When creating mock sessions for Apple Pay or Google Pay during local development (to support unsupported browsers), NEVER generate a fake string like `tok_mock_apple_pay_xxx`. Stripe will reject it even in `TEST` mode. Always use valid Stripe test tokens (e.g., `tok_visa`) for the mock session to successfully complete the test payment.
+6. **Wallet Subscriptions**: To process a subscription using an Apple Pay/Google Pay raw token, the backend must create a `PaymentMethod` from the token, attach it to the Stripe `Customer`, and then create a `Subscription` with that default payment method. The frontend should send a payload like `{ token, amount, type: 'SUBSCRIPTION', planName }`.
+
+# Pricing Architecture
+1. **Centralized Configuration**: NEVER hardcode prices, credits, or plan names in UI components (e.g., PaymentModal, PlansTab).
+2. **Single Source of Truth**: Always extract packages and subscription plans into a single centralized configuration file (e.g., `config/pricing.ts`).
+3. **Dynamic Evaluation**: The frontend should dynamically read from this config to determine the correct `amountUsd` to pass to the Wallet APIs or Payment UI. This ensures that users always see and pay the exact amount configured, without desyncs between components.
 
 # Final Objective
 Build a payment system that can switch from Stripe to another provider with minimal code changes while preserving the same Arrena Photo user experience.
