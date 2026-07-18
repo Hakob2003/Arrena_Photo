@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 
@@ -7,7 +8,6 @@ import { useAuthStore } from "../../../store";
 import { api } from "../../../lib/api";
 import { useTranslation } from "../../../lib/i18n";
 import { useUIStore } from "../../../store";
-
 
 export function PaymentTab() {
   const {
@@ -31,10 +31,164 @@ export function PaymentTab() {
   });
   const [editingCard, setEditingCard] = useState<any>(null);
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pageParam = searchParams?.get("page");
+
+  const [history, setHistory] = useState<any[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+  const [currentPage, setCurrentPage] = useState(
+    pageParam ? parseInt(pageParam, 10) : 1,
+  );
+  const [pageSize, setPageSize] = useState(5);
+  const [totalHistory, setTotalHistory] = useState(0);
+
+  const [filters, setFilters] = useState({
+    startDate: "",
+    endDate: "",
+    type: "",
+    plan: "",
+    minAmount: "",
+    maxAmount: "",
+    status: "",
+    txId: "",
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  });
+  const [showFilters, setShowFilters] = useState(false);
+  // Update URL when currentPage changes
+  useEffect(() => {
+    if (!searchParams) return;
+    const params = new URLSearchParams(searchParams.toString());
+    if (currentPage > 1) {
+      params.set("page", currentPage.toString());
+    } else {
+      params.delete("page");
+    }
+    const hash = window.location.hash;
+    const newUrl = params.toString()
+      ? `${window.location.pathname}?${params.toString()}${hash}`
+      : `${window.location.pathname}${hash}`;
+    router.replace(newUrl, { scroll: false });
+  }, [currentPage, searchParams, router]);
+
   useEffect(() => {
     fetchPaymentMethods().then(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    fetchHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, pageSize]);
+
+  const fetchHistory = async () => {
+    try {
+      setIsLoadingHistory(true);
+      let query = `/payment/history?page=${currentPage}&limit=${pageSize}`;
+      if (filters.startDate)
+        query += `&startDate=${encodeURIComponent(filters.startDate)}`;
+      if (filters.endDate)
+        query += `&endDate=${encodeURIComponent(filters.endDate)}`;
+      if (filters.type) query += `&type=${encodeURIComponent(filters.type)}`;
+      if (filters.plan) query += `&plan=${encodeURIComponent(filters.plan)}`;
+      if (filters.minAmount)
+        query += `&minAmount=${encodeURIComponent(filters.minAmount)}`;
+      if (filters.maxAmount)
+        query += `&maxAmount=${encodeURIComponent(filters.maxAmount)}`;
+      if (filters.status)
+        query += `&status=${encodeURIComponent(filters.status)}`;
+      if (filters.txId) query += `&txId=${encodeURIComponent(filters.txId)}`;
+      if (filters.sortBy)
+        query += `&sortBy=${encodeURIComponent(filters.sortBy)}`;
+      if (filters.sortOrder)
+        query += `&sortOrder=${encodeURIComponent(filters.sortOrder)}`;
+
+      const { data } = await api.get(query);
+      setHistory(data.data || []);
+      setTotalHistory(data.total || 0);
+    } catch (e) {
+      console.error("Failed to fetch payment history", e);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  const handleApplyFilters = () => {
+    setCurrentPage(1);
+    fetchHistory();
+  };
+
+  const handleResetFilters = () => {
+    setFilters({
+      startDate: "",
+      endDate: "",
+      type: "",
+      plan: "",
+      minAmount: "",
+      maxAmount: "",
+      status: "",
+      txId: "",
+      sortBy: "createdAt",
+      sortOrder: "desc",
+    });
+    setCurrentPage(1);
+    setTimeout(() => fetchHistory(), 0);
+  };
+
+  const handleDownloadReceipt = async (paymentId: string) => {
+    try {
+      const toastId = toast.loading(
+        t("billing.payment.downloading") || "Downloading receipt...",
+      );
+      const currentLocale =
+        typeof window !== "undefined"
+          ? localStorage.getItem("ui-storage")
+            ? JSON.parse(localStorage.getItem("ui-storage") as string).state
+                ?.locale
+            : "en"
+          : "en";
+
+      const response = await api.get(
+        `/payment/${paymentId}/receipt?lang=${currentLocale || "en"}`,
+        {
+          responseType: "blob",
+        },
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `receipt-${paymentId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      toast.success(
+        t("billing.payment.downloadSuccess") || "Receipt downloaded",
+        { id: toastId },
+      );
+    } catch (e) {
+      console.error("Failed to download receipt", e);
+      toast.error(
+        t("billing.payment.downloadFailed") || "Failed to download receipt",
+      );
+    }
+  };
+
+  const totalPages = Math.ceil(totalHistory / pageSize) || 1;
+
+  const maxVisiblePages = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+  let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+  if (endPage - startPage + 1 < maxVisiblePages) {
+    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+  }
+  const visiblePages = Array.from(
+    { length: Math.max(0, endPage - startPage + 1) },
+    (_, i) => startPage + i,
+  );
 
   useEffect(() => {
     const now = new Date();
@@ -181,40 +335,11 @@ export function PaymentTab() {
     }
   };
 
-  const transactions = [
-    {
-      id: "#INV-001",
-      date: "21 Jun 2026",
-      amount: "$29.00",
-      method: "Visa •••• 4242",
-      status: "Success",
-      plan: "Pro Creator",
-    },
-    {
-      id: "#INV-002",
-      date: "21 May 2026",
-      amount: "$29.00",
-      method: "Visa •••• 4242",
-      status: "Success",
-      plan: "Pro Creator",
-    },
-    {
-      id: "#INV-003",
-      date: "15 May 2026",
-      amount: "$15.00",
-      method: "Mastercard •••• 5555",
-      status: "Success",
-      plan: "Credits (1000)",
-    },
-    {
-      id: "#INV-004",
-      date: "21 Apr 2026",
-      amount: "$29.00",
-      method: "Visa •••• 4242",
-      status: "Failed",
-      plan: "Pro Creator",
-    },
-  ];
+  const mapStatusToUI = (status: string) => {
+    if (status === "SUCCEEDED") return "Success";
+    if (status === "PENDING") return "Pending";
+    return "Failed";
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in">
@@ -370,9 +495,232 @@ export function PaymentTab() {
 
       {/* Block 4: История платежей */}
       <div>
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
-          {t("billing.payment.billingHistory")}
-        </h2>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+            {t("billing.payment.billingHistory")}
+          </h2>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="px-4 py-2 text-sm font-medium border border-black/10 dark:border-white/10 rounded-lg bg-white dark:bg-[#1a1a1a] text-slate-700 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors flex items-center gap-2"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+              />
+            </svg>
+            {t("billing.payment.advancedFilters") || "Расширенные фильтры"}
+          </button>
+        </div>
+
+        {showFilters && (
+          <div className="mb-6 p-4 border border-black/10 dark:border-white/10 rounded-2xl bg-slate-50/50 dark:bg-white/5 animate-in fade-in slide-in-from-top-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-500 dark:text-gray-400">
+                  {t("billing.payment.filter.startDate") || "С (вкл. часы)"}
+                </label>
+                <input
+                  type="datetime-local"
+                  className="w-full text-sm p-2 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] text-slate-900 dark:text-white focus:ring-1 focus:ring-indigo-500 outline-none"
+                  value={filters.startDate}
+                  onChange={(e) =>
+                    setFilters({ ...filters, startDate: e.target.value })
+                  }
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-500 dark:text-gray-400">
+                  {t("billing.payment.filter.endDate") || "По (вкл. часы)"}
+                </label>
+                <input
+                  type="datetime-local"
+                  className="w-full text-sm p-2 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] text-slate-900 dark:text-white focus:ring-1 focus:ring-indigo-500 outline-none"
+                  value={filters.endDate}
+                  onChange={(e) =>
+                    setFilters({ ...filters, endDate: e.target.value })
+                  }
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-500 dark:text-gray-400">
+                  {t("billing.payment.filter.productType") || "Продукт"}
+                </label>
+                <select
+                  className="w-full text-sm p-2 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] text-slate-900 dark:text-white focus:ring-1 focus:ring-indigo-500 outline-none"
+                  value={filters.type}
+                  onChange={(e) =>
+                    setFilters({ ...filters, type: e.target.value })
+                  }
+                >
+                  <option value="">
+                    {t("billing.payment.filter.all") || "Все"}
+                  </option>
+                  <option value="CREDITS">
+                    {t("billing.payment.filter.credits") || "Кредиты"}
+                  </option>
+                  <option value="SUBSCRIPTION">
+                    {t("billing.payment.filter.subscription") || "Подписка"}
+                  </option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-500 dark:text-gray-400">
+                  {t("billing.payment.filter.plan") || "Тариф"}
+                </label>
+                <select
+                  className="w-full text-sm p-2 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] text-slate-900 dark:text-white focus:ring-1 focus:ring-indigo-500 outline-none"
+                  value={filters.plan}
+                  onChange={(e) =>
+                    setFilters({ ...filters, plan: e.target.value })
+                  }
+                  disabled={filters.type === "CREDITS"}
+                >
+                  <option value="">
+                    {t("billing.payment.filter.all") || "Все"}
+                  </option>
+                  <option value="STARTER">Starter</option>
+                  <option value="PRO">Pro</option>
+                  <option value="BUSINESS">Business</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-500 dark:text-gray-400">
+                  {t("billing.payment.filter.status") || "Статус"}
+                </label>
+                <select
+                  className="w-full text-sm p-2 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] text-slate-900 dark:text-white focus:ring-1 focus:ring-indigo-500 outline-none"
+                  value={filters.status}
+                  onChange={(e) =>
+                    setFilters({ ...filters, status: e.target.value })
+                  }
+                >
+                  <option value="">
+                    {t("billing.payment.filter.all") || "Все"}
+                  </option>
+                  <option value="SUCCEEDED">Успешно</option>
+                  <option value="PENDING">В обработке</option>
+                  <option value="FAILED">Ошибка</option>
+                  <option value="REFUNDED">Возврат</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-500 dark:text-gray-400">
+                  {t("billing.payment.filter.amount") || "Сумма (от - до) в $"}
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    className="w-full text-sm p-2 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] text-slate-900 dark:text-white focus:ring-1 focus:ring-indigo-500 outline-none"
+                    value={
+                      filters.minAmount ? parseInt(filters.minAmount) / 100 : ""
+                    }
+                    onChange={(e) =>
+                      setFilters({
+                        ...filters,
+                        minAmount: e.target.value
+                          ? (parseFloat(e.target.value) * 100).toString()
+                          : "",
+                      })
+                    }
+                  />
+                  <input
+                    type="number"
+                    placeholder="Max"
+                    className="w-full text-sm p-2 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] text-slate-900 dark:text-white focus:ring-1 focus:ring-indigo-500 outline-none"
+                    value={
+                      filters.maxAmount ? parseInt(filters.maxAmount) / 100 : ""
+                    }
+                    onChange={(e) =>
+                      setFilters({
+                        ...filters,
+                        maxAmount: e.target.value
+                          ? (parseFloat(e.target.value) * 100).toString()
+                          : "",
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-500 dark:text-gray-400">
+                  {t("billing.payment.filter.txId") || "ID транзакции"}
+                </label>
+                <input
+                  type="text"
+                  placeholder="pi_..."
+                  className="w-full text-sm p-2 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] text-slate-900 dark:text-white focus:ring-1 focus:ring-indigo-500 outline-none"
+                  value={filters.txId}
+                  onChange={(e) =>
+                    setFilters({ ...filters, txId: e.target.value })
+                  }
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-500 dark:text-gray-400">
+                  {t("billing.payment.filter.sortBy") || "Сортировка"}
+                </label>
+                <div className="flex gap-2">
+                  <select
+                    className="w-2/3 text-sm p-2 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] text-slate-900 dark:text-white focus:ring-1 focus:ring-indigo-500 outline-none"
+                    value={filters.sortBy}
+                    onChange={(e) =>
+                      setFilters({ ...filters, sortBy: e.target.value })
+                    }
+                  >
+                    <option value="createdAt">
+                      {t("billing.payment.date") || "Дата"}
+                    </option>
+                    <option value="amount">
+                      {t("billing.payment.amount") || "Сумма"}
+                    </option>
+                    <option value="status">
+                      {t("billing.payment.status") || "Статус"}
+                    </option>
+                  </select>
+                  <button
+                    onClick={() =>
+                      setFilters({
+                        ...filters,
+                        sortOrder: filters.sortOrder === "asc" ? "desc" : "asc",
+                      })
+                    }
+                    className="w-1/3 flex items-center justify-center border border-black/10 dark:border-white/10 rounded-lg bg-white dark:bg-[#0a0a0a] text-slate-500 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
+                    title={
+                      filters.sortOrder === "asc"
+                        ? "По возрастанию"
+                        : "По убыванию"
+                    }
+                  >
+                    {filters.sortOrder === "asc" ? "↑" : "↓"}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-black/10 dark:border-white/10">
+              <button
+                onClick={handleResetFilters}
+                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >
+                {t("billing.payment.filter.reset") || "Сбросить"}
+              </button>
+              <button
+                onClick={handleApplyFilters}
+                className="px-5 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors"
+              >
+                {t("billing.payment.filter.apply") || "Применить"}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="overflow-x-auto rounded-2xl border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a]">
           <table className="w-full text-sm text-left text-slate-600 dark:text-gray-300">
@@ -396,60 +744,167 @@ export function PaymentTab() {
               </tr>
             </thead>
             <tbody>
-              {transactions.map((tx, idx) => (
-                <tr
-                  key={idx}
-                  className="border-b border-black/5 dark:border-white/5 last:border-0 hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors"
-                >
-                  <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">
-                    {tx.id}
-                  </td>
-                  <td className="px-6 py-4">{tx.date}</td>
-                  <td className="px-6 py-4">{tx.plan}</td>
-                  <td className="px-6 py-4 font-medium">{tx.amount}</td>
-                  <td className="px-6 py-4">{tx.method}</td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
-                        tx.status === "Success"
-                          ? "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400"
-                          : "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
-                      }`}
-                    >
-                      {tx.status === "Success"
-                        ? t("billing.payment.statusSuccess")
-                        : t("billing.payment.statusFailed")}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <button
-                      className={`flex items-center justify-end gap-1 ml-auto ${
-                        isLuxury
-                          ? "text-[#D4AF37] hover:text-[#C5A028]"
-                          : "text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
-                      }`}
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                        />
-                      </svg>
-                      PDF
-                    </button>
+              {isLoadingHistory ? (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="px-6 py-8 text-center text-slate-500"
+                  >
+                    Loading history...
                   </td>
                 </tr>
-              ))}
+              ) : history.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="px-6 py-8 text-center text-slate-500"
+                  >
+                    No payment history found.
+                  </td>
+                </tr>
+              ) : (
+                history.map((tx, idx) => {
+                  const uiStatus = mapStatusToUI(tx.status);
+                  const isSuccess = uiStatus === "Success";
+                  return (
+                    <tr
+                      key={tx.id || idx}
+                      className="border-b border-black/5 dark:border-white/5 last:border-0 hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors"
+                    >
+                      <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">
+                        #INV-{tx.id.substring(0, 6).toUpperCase()}
+                      </td>
+                      <td className="px-6 py-4">
+                        {new Date(tx.createdAt).toLocaleString()}
+                      </td>
+                      <td className="px-6 py-4">
+                        {tx.type === "CREDITS"
+                          ? `Credits (${tx.creditsAdded})`
+                          : tx.plan}
+                      </td>
+                      <td className="px-6 py-4 font-medium">
+                        ${(tx.amount / 100).toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4">Online Payment</td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                            isSuccess
+                              ? "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-400"
+                              : uiStatus === "Pending"
+                                ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-400"
+                                : "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400"
+                          }`}
+                        >
+                          {isSuccess
+                            ? t("billing.payment.statusSuccess")
+                            : uiStatus === "Pending"
+                              ? "Pending" // We can add i18n for Pending if needed later
+                              : t("billing.payment.statusFailed")}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => handleDownloadReceipt(tx.id)}
+                          className={`flex items-center justify-end gap-1 ml-auto ${
+                            isLuxury
+                              ? "text-[#D4AF37] hover:text-[#C5A028]"
+                              : "text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300"
+                          }`}
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                            />
+                          </svg>
+                          PDF
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Controls */}
+        {!isLoadingHistory && history.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between mt-4 px-6 gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-slate-500 dark:text-slate-400">
+                {t("billing.payment.rowsPerPage") || "Rows per page:"}
+              </span>
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setCurrentPage(1); // Reset to first page
+                }}
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-sm px-2 py-1 outline-none focus:border-indigo-500 dark:text-white"
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={15}>15</option>
+              </select>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-slate-500 dark:text-slate-400">
+                {(t("billing.payment.pageOf") || "Page {current} of {total}")
+                  .replace("{current}", currentPage.toString())
+                  .replace("{total}", (totalPages || 1).toString())}
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(1, prev - 1))
+                  }
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-black/[0.03] dark:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/[0.05] dark:hover:bg-slate-800 transition-colors text-sm dark:text-white"
+                >
+                  {t("billing.payment.previous") || "Previous"}
+                </button>
+
+                <div className="flex gap-1 flex-wrap justify-center">
+                  {visiblePages.map((pageNum) => (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`w-8 h-8 rounded-lg transition-colors flex items-center justify-center text-sm ${
+                        currentPage === pageNum
+                          ? isLuxury
+                            ? "bg-[#D4AF37] text-black font-bold"
+                            : "bg-indigo-600 text-white font-bold shadow-md dark:shadow-none"
+                          : "border border-slate-200 dark:border-slate-700 bg-black/[0.03] dark:bg-white/5 hover:bg-black/[0.05] dark:hover:bg-slate-800 dark:text-white"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                  }
+                  disabled={currentPage === totalPages || totalPages === 0}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-black/[0.03] dark:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/[0.05] dark:hover:bg-slate-800 transition-colors text-sm dark:text-white"
+                >
+                  {t("billing.payment.next") || "Next"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Add Card Modal */}

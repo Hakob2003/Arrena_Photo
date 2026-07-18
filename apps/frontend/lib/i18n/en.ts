@@ -254,6 +254,20 @@ const en: Record<string, string> = {
   "billing.payment.makeDefault": "Make Default",
   "billing.payment.delete": "Delete",
   "billing.payment.billingHistory": "Billing History",
+  "billing.payment.advancedFilters": "Advanced Filters",
+  "billing.payment.filter.startDate": "From (incl. hours)",
+  "billing.payment.filter.endDate": "To (incl. hours)",
+  "billing.payment.filter.productType": "Product Type",
+  "billing.payment.filter.all": "All",
+  "billing.payment.filter.credits": "Credits",
+  "billing.payment.filter.subscription": "Subscription",
+  "billing.payment.filter.plan": "Plan",
+  "billing.payment.filter.status": "Status",
+  "billing.payment.filter.amount": "Amount (min - max) in $",
+  "billing.payment.filter.txId": "Transaction ID",
+  "billing.payment.filter.sortBy": "Sort By",
+  "billing.payment.filter.reset": "Reset",
+  "billing.payment.filter.apply": "Apply",
   "billing.payment.date": "Date",
   "billing.payment.amount": "Amount",
   "billing.payment.status": "Status",
@@ -261,6 +275,9 @@ const en: Record<string, string> = {
   "billing.payment.statusSuccess": "Paid",
   "billing.payment.statusFailed": "Failed",
   "billing.payment.download": "Download",
+  "billing.payment.downloading": "Generating receipt...",
+  "billing.payment.downloadSuccess": "Receipt downloaded successfully",
+  "billing.payment.downloadFailed": "Failed to download receipt",
 
   // === Profile Pages ===
   "profile.personal.title": "Personal Information",
@@ -391,6 +408,10 @@ const en: Record<string, string> = {
   "billing.payment.save": "Save",
   "billing.payment.editMaxLimit": "Edit Max Limit",
   "billing.payment.saveLimit": "Save Limit",
+  "billing.payment.rowsPerPage": "Rows per page:",
+  "billing.payment.pageOf": "Page {current} of {total}",
+  "billing.payment.previous": "Previous",
+  "billing.payment.next": "Next",
 
   "billing.plans.features.free.1": "Up to 1 task",
   "billing.plans.features.free.2": "Standard speed",
@@ -436,8 +457,10 @@ const en: Record<string, string> = {
   // === Payment Modal ===
   "payment.modal.buyCredits": "Buy Credits",
   "payment.modal.upgradePlan": "Upgrade Plan",
-  "payment.modal.creditsDesc": "Select a credit package to continue your generations.",
-  "payment.modal.upgradeDesc": "Upgrade to {plan} for more features and credits.",
+  "payment.modal.creditsDesc":
+    "Select a credit package to continue your generations.",
+  "payment.modal.upgradeDesc":
+    "Upgrade to {plan} for more features and credits.",
   "payment.modal.popular": "Popular",
   "payment.modal.credits": "credits",
   "payment.modal.orPayWithCard": "Or pay with card",
@@ -451,29 +474,38 @@ const en: Record<string, string> = {
   "payment.modal.genericError": "An error occurred. Please try again.",
 
   // === Checkout & Legal ===
-  "checkout.termsAgree": "I have read and agree to the Terms of Service, Privacy Policy, and Billing & Refund Policy.",
-  "checkout.subAgree": "I understand that my subscription will automatically renew until cancelled. The subscription cost will be automatically charged to my payment method according to the selected plan.",
-  "checkout.disclaimerTitle": "By clicking \"Pay\", you confirm that:",
+  "checkout.termsAgree":
+    "I have read and agree to the Terms of Service, Privacy Policy, and Billing & Refund Policy.",
+  "checkout.subAgree":
+    "I understand that my subscription will automatically renew until cancelled. The subscription cost will be automatically charged to my payment method according to the selected plan.",
+  "checkout.disclaimerTitle": 'By clicking "Pay", you confirm that:',
   "checkout.disclaimer1": "the provided card details are valid;",
-  "checkout.disclaimer2": "you authorize HSHA Sandbox to charge the current payment amount;",
-  "checkout.disclaimer3": "if a subscription plan is selected, you authorize automatic charges for subsequent periods until the subscription is cancelled;",
-  "checkout.disclaimer4": "you have read and agree to the Terms of Service, Privacy Policy, and Billing & Refund Policy.",
+  "checkout.disclaimer2":
+    "you authorize HSHA Sandbox to charge the current payment amount;",
+  "checkout.disclaimer3":
+    "if a subscription plan is selected, you authorize automatic charges for subsequent periods until the subscription is cancelled;",
+  "checkout.disclaimer4":
+    "you have read and agree to the Terms of Service, Privacy Policy, and Billing & Refund Policy.",
   "checkout.legal.terms": "Terms of Service",
   "checkout.legal.privacy": "Privacy Policy",
   "checkout.legal.billing": "Billing Policy",
   "checkout.legal.refund": "Refund Policy",
 
   "legal.terms.title": "Terms of Service",
-  "legal.terms.content": "1. General Provisions\n\n2. Account Registration\n\n3. Subscriptions\n\n4. Payment\n\n5. Automatic Renewal\nAll subscriptions automatically renew for the next billing period.\nRenewal is automatic using the payment method provided by the user.\nThe user may cancel the subscription at any time via account settings.\nUpon cancellation, automatic renewal stops, but the paid period remains active until it ends.\n\n6. Cancellation\n\n7. Refunds\n\n8. Liability\n\n9. Limitation of Liability\n\n10. Price Changes\n\n11. Termination\n\n12. Contact Information",
-  
+  "legal.terms.content":
+    "1. General Provisions\n\n2. Account Registration\n\n3. Subscriptions\n\n4. Payment\n\n5. Automatic Renewal\nAll subscriptions automatically renew for the next billing period.\nRenewal is automatic using the payment method provided by the user.\nThe user may cancel the subscription at any time via account settings.\nUpon cancellation, automatic renewal stops, but the paid period remains active until it ends.\n\n6. Cancellation\n\n7. Refunds\n\n8. Liability\n\n9. Limitation of Liability\n\n10. Price Changes\n\n11. Termination\n\n12. Contact Information",
+
   "legal.privacy.title": "Privacy Policy",
-  "legal.privacy.content": "HSHA Sandbox collects data to provide services.\n\nHSHA Sandbox does not store full credit card numbers.\nPayment processing is handled by a certified payment provider.\n\nContact...",
+  "legal.privacy.content":
+    "HSHA Sandbox collects data to provide services.\n\nHSHA Sandbox does not store full credit card numbers.\nPayment processing is handled by a certified payment provider.\n\nContact...",
 
   "legal.billing.title": "Billing Policy",
-  "legal.billing.content": "Payment is made using bank cards and supported payment services.\n\nBy subscribing, the user authorizes the automatic charging of the selected plan's cost until the subscription is cancelled.\n\nFunds are charged on the subscription renewal date.\n\nThe cost is displayed before confirming payment.\n\nAfter subscribing, HSHA Sandbox automatically charges the cost of each subsequent billing period.\nIf a charge fails, the system may retry several times.\nUpon prolonged failure to pay, access to the subscription may be restricted.",
+  "legal.billing.content":
+    "Payment is made using bank cards and supported payment services.\n\nBy subscribing, the user authorizes the automatic charging of the selected plan's cost until the subscription is cancelled.\n\nFunds are charged on the subscription renewal date.\n\nThe cost is displayed before confirming payment.\n\nAfter subscribing, HSHA Sandbox automatically charges the cost of each subsequent billing period.\nIf a charge fails, the system may retry several times.\nUpon prolonged failure to pay, access to the subscription may be restricted.",
 
   "legal.refund.title": "Refund Policy",
-  "legal.refund.content": "Unless otherwise required by law, paid subscriptions are non-refundable once the digital service has begun.\n\nRefunds are possible in cases of:\n• double billing;\n• technical errors;\n• accidental payments;\n• other cases provided by law.\n\nNon-refundable:\n• used credits;\n• completed generations;\n• active subscriptions after service provision has started (unless law provides otherwise)."
+  "legal.refund.content":
+    "Unless otherwise required by law, paid subscriptions are non-refundable once the digital service has begun.\n\nRefunds are possible in cases of:\n• double billing;\n• technical errors;\n• accidental payments;\n• other cases provided by law.\n\nNon-refundable:\n• used credits;\n• completed generations;\n• active subscriptions after service provision has started (unless law provides otherwise).",
 };
 
 export default en;

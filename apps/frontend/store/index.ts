@@ -32,7 +32,7 @@ interface AuthState {
   fetchPaymentMethods: () => Promise<void>;
   login: (user: NonNullable<AuthState["user"]>, token: string) => void;
   updateUser: (userUpdates: Partial<NonNullable<AuthState["user"]>>) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
   deductCredits: (amount: number) => void;
   addCredits: (amount: number) => void;
   setCredits: (amount: number) => void;
@@ -82,7 +82,12 @@ export const useAuthStore = create<AuthState>()(
         set((state) => ({
           user: state.user ? { ...state.user, ...userUpdates } : null,
         })),
-      logout: () => {
+      logout: async () => {
+        try {
+          await api.post("/auth/logout");
+        } catch (e) {
+          console.error("Logout API failed", e);
+        }
         if (typeof window !== "undefined") {
           localStorage.removeItem("token");
         }

@@ -65,31 +65,16 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      if (!useAuthStore.getState().user) {
-        // Decode initially to render quickly
-        try {
-          const payload = parseJwtPayload(token);
-          if (payload) {
-            const user = {
-              id: payload.sub,
-              email: payload.email,
-              name: payload.email?.split("@")[0] || "User",
-              role:
-                typeof payload.role === "object" && payload.role !== null
-                  ? payload.role.name
-                  : payload.role,
-              credits: 0,
-            };
-            useAuthStore.getState().login(user, token);
-          }
-
-          // Fetch fresh profile from backend (credits, name, etc.)
+    // Attempt silent refresh on initial load
+    api
+      .post("/auth/refresh")
+      .then((res) => {
+        if (res.data?.access_token) {
+          const newToken = res.data.access_token;
           api
             .get("/auth/me")
-            .then((res) => {
-              const data = res.data;
+            .then((meRes) => {
+              const data = meRes.data;
               const freshUser = {
                 id: data.id,
                 email: data.email,
@@ -98,9 +83,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                 role:
                   typeof data.role === "object" ? data.role.name : data.role,
                 credits: data.credits,
-                planId: useAuthStore.getState().planId, // Preserve planId
+                planId: data.planId || "free",
               };
-              login(freshUser, token);
+              login(freshUser, newToken);
               if (typeof data.credits === "number") {
                 setCredits(data.credits);
               }
@@ -117,59 +102,14 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
               }
             })
             .catch((err) => {
-              console.log("Failed to fetch user profile:", err);
-              // Token might be expired — clear it
-              if (err.response?.status === 401) {
-                localStorage.removeItem("token");
-                useAuthStore.getState().logout();
-              }
+              console.error("Failed to fetch fresh user data", err);
             });
-        } catch (err) {
-          localStorage.removeItem("token");
         }
-      } else {
-        // user is cached, but token might not be in zustand
-        login(useAuthStore.getState().user as any, token);
-
-        // Still fetch fresh profile to keep credits updated
-        api
-          .get("/auth/me")
-          .then((res) => {
-            const data = res.data;
-            const freshUser = {
-              id: data.id,
-              email: data.email,
-              name: data.name || data.email?.split("@")[0] || "User",
-              image: data.avatarUrl,
-              role: typeof data.role === "object" ? data.role.name : data.role,
-              credits: data.credits,
-              planId: useAuthStore.getState().planId, // Preserve planId
-            };
-            login(freshUser, token);
-            if (typeof data.credits === "number") {
-              setCredits(data.credits);
-            }
-            if (data.preferences) {
-              setPreferences({
-                theme: data.preferences.theme || "DARK",
-                accentColor: data.preferences.accentColor || "INDIGO",
-                fontSize: data.preferences.fontSize || "MEDIUM",
-                compactMode: !!data.preferences.compactMode,
-                animationsEnabled: data.preferences.animationsEnabled !== false,
-                skin: data.preferences.skin || "NEON",
-              });
-            }
-          })
-          .catch((err) => {
-            console.log("Failed to fetch user profile:", err);
-            if (err.response?.status === 401) {
-              localStorage.removeItem("token");
-              useAuthStore.getState().logout();
-            }
-          });
-      }
-    }
-  }, [login, setCredits]);
+      })
+      .catch((err) => {
+        console.log("Silent refresh failed (user not logged in)");
+      });
+  }, [login, setCredits, setPreferences]);
 
   useEffect(() => {
     // Close sidebar on navigation on mobile
@@ -199,8 +139,14 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     }
 
     // Set custom data attributes for CSS overrides
-    root.setAttribute("data-accent", preferences.accentColor.toLowerCase());
-    root.setAttribute("data-font-size", preferences.fontSize.toLowerCase());
+    root.setAttribute(
+      "data-accent",
+      (preferences.accentColor || "INDIGO").toLowerCase(),
+    );
+    root.setAttribute(
+      "data-font-size",
+      (preferences.fontSize || "MD").toLowerCase(),
+    );
     root.setAttribute(
       "data-skin",
       preferences.skin ? preferences.skin.toLowerCase() : "luxury",

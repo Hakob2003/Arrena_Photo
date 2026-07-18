@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, Suspense } from "react";
 import { OverviewTab } from "./tabs/OverviewTab";
 import { PlansTab } from "./tabs/PlansTab";
 import { UsageTab } from "./tabs/UsageTab";
@@ -105,7 +105,15 @@ export default function UserBillingPage() {
         id="payment"
         className="scroll-m-24 scroll-mt-32 bg-transparent/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl p-6 md:p-8"
       >
-        <PaymentTab />
+        <Suspense
+          fallback={
+            <div className="p-8 text-center text-slate-500">
+              Loading payment details...
+            </div>
+          }
+        >
+          <PaymentTab />
+        </Suspense>
       </section>
     </div>
   );

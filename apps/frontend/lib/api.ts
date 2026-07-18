@@ -5,7 +5,7 @@ import { useAuthStore } from "../store";
 const isRenderProd =
   typeof window !== "undefined" &&
   window.location.hostname.includes("render.com");
-const API_URL =
+export const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   (isRenderProd
     ? "https://arrena-photo-backend.onrender.com/v1"
@@ -26,12 +26,17 @@ export const api = axios.create({
   },
 });
 
+let inMemoryToken: string | null = null;
+
+export const setToken = (token: string | null) => {
+  inMemoryToken = token;
+};
+
+export const getToken = () => inMemoryToken;
+
 api.interceptors.request.use((config) => {
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+  if (inMemoryToken) {
+    config.headers.Authorization = `Bearer ${inMemoryToken}`;
   }
   return config;
 });
@@ -62,7 +67,8 @@ api.interceptors.response.use(
       error.response?.status === 401 &&
       !originalRequest._retry &&
       originalRequest.url !== "/auth/refresh" &&
-      originalRequest.url !== "/auth/login"
+      originalRequest.url !== "/auth/login" &&
+      originalRequest.url !== "/auth/logout"
     ) {
       if (isRefreshing) {
         return new Promise(function (resolve, reject) {
@@ -89,9 +95,7 @@ api.interceptors.response.use(
         );
 
         if (res.data?.access_token) {
-          if (typeof window !== "undefined") {
-            localStorage.setItem("token", res.data.access_token);
-          }
+          setToken(res.data.access_token);
           api.defaults.headers.common["Authorization"] =
             "Bearer " + res.data.access_token;
           originalRequest.headers.Authorization =
@@ -102,8 +106,8 @@ api.interceptors.response.use(
         }
       } catch (err) {
         processQueue(err as Error, null);
+        setToken(null);
         if (typeof window !== "undefined") {
-          localStorage.removeItem("token");
           useAuthStore.getState().logout();
           if (window.location.pathname !== "/login") {
             window.dispatchEvent(new Event("auth-logout"));

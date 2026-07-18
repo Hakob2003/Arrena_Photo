@@ -13,62 +13,72 @@ import { LegalCheckboxes, LegalDisclaimer } from "./LegalCompliance";
 
 interface ProviderCardFormProps {
   clientSecret: string;
-  onSuccess: () => void;
+  onSuccess: (paymentIntentId?: string) => void;
   termsAccepted: boolean;
   setTermsAccepted: (val: boolean) => void;
   isSubscription: boolean;
 }
 
-export function ProviderCardForm({ clientSecret, onSuccess, termsAccepted, setTermsAccepted, isSubscription }: ProviderCardFormProps) {
+export function ProviderCardForm({
+  clientSecret,
+  onSuccess,
+  termsAccepted,
+  setTermsAccepted,
+  isSubscription,
+}: ProviderCardFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { t } = useTranslation();
   const preferences = useUIStore((state) => state.preferences);
   const isLuxury = preferences?.skin === "PREMIUM";
 
-  const handleFormSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!stripe || !elements) return;
+  const handleFormSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!stripe || !elements) return;
 
-    setIsLoading(true);
-    setError(null);
+      setIsLoading(true);
+      setError(null);
 
-    const { error: submitError } = await elements.submit();
-    if (submitError) {
-      setError(submitError.message ?? t("payment.modal.genericError"));
-      setIsLoading(false);
-      return;
-    }
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        setError(submitError.message ?? t("payment.modal.genericError"));
+        setIsLoading(false);
+        return;
+      }
 
-    const { error: confirmError } = await stripe.confirmPayment({
-      elements,
-      clientSecret,
-      confirmParams: {
-        return_url: window.location.href,
-      },
-      redirect: "if_required",
-    });
+      const { error: confirmError, paymentIntent } =
+        await stripe.confirmPayment({
+          elements,
+          clientSecret,
+          confirmParams: {
+            return_url: window.location.href,
+          },
+          redirect: "if_required",
+        });
 
-    if (confirmError) {
-      setError(confirmError.message ?? t("payment.modal.genericError"));
-      setIsLoading(false);
-    } else {
-      onSuccess();
-    }
-  }, [stripe, elements, clientSecret, onSuccess, t]);
+      if (confirmError) {
+        setError(confirmError.message ?? t("payment.modal.genericError"));
+        setIsLoading(false);
+      } else {
+        onSuccess(paymentIntent?.id);
+      }
+    },
+    [stripe, elements, clientSecret, onSuccess, t],
+  );
 
   return (
     <form onSubmit={handleFormSubmit} className="w-full flex flex-col gap-4">
       <PaymentElement
         options={{
-          layout: 'tabs',
+          layout: "tabs",
           wallets: {
-            applePay: 'never',
-            googlePay: 'never',
-            link: 'never',
+            applePay: "never",
+            googlePay: "never",
+            link: "never",
           },
         }}
       />
@@ -79,10 +89,10 @@ export function ProviderCardForm({ clientSecret, onSuccess, termsAccepted, setTe
         </div>
       )}
 
-      <LegalCheckboxes 
-        termsAccepted={termsAccepted} 
-        setTermsAccepted={setTermsAccepted} 
-        isSubscription={isSubscription} 
+      <LegalCheckboxes
+        termsAccepted={termsAccepted}
+        setTermsAccepted={setTermsAccepted}
+        isSubscription={isSubscription}
       />
 
       <button
@@ -90,8 +100,8 @@ export function ProviderCardForm({ clientSecret, onSuccess, termsAccepted, setTe
         type="submit"
         className={`w-full py-3 px-4 font-semibold rounded-xl mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-all ${
           isLuxury
-            ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)]'
-            : 'bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-gray-100'
+            ? "bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)]"
+            : "bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-gray-100"
         }`}
       >
         {isLoading ? (

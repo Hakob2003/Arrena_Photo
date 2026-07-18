@@ -1,13 +1,17 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { useAuthStore, useUIStore } from '../../store';
-import { AdminSidebar } from '../../components/admin/AdminSidebar';
-import { parseJwtPayload } from '@/lib/utils/jwt';
-import { AdminTopbar } from '../../components/admin/AdminTopbar';
+import React, { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useAuthStore, useUIStore } from "../../store";
+import { AdminSidebar } from "../../components/admin/AdminSidebar";
+import { parseJwtPayload } from "@/lib/utils/jwt";
+import { AdminTopbar } from "../../components/admin/AdminTopbar";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useAuthStore();
@@ -15,22 +19,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [touchStart, setTouchStart] = useState<number | null>(null);
 
   useEffect(() => {
-    // Wait a brief moment to allow ClientLayout to load the token if it exists
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/login');
+    // Check role from user state directly since user is persisted.
+    // AuthInitializer handles token refreshing and global unauthenticated redirects.
+    if (!user) {
+      router.push("/login");
       return;
     }
-    
-    // We parse token directly if user is not in state yet,
-    // to prevent flashing unauthenticated state if we can avoid it.
-    try {
-      const payload = parseJwtPayload(token);
-      if (!payload || payload.role !== 'ADMIN') {
-        router.push('/');
-      }
-    } catch {
-      router.push('/login');
+
+    if (user.role !== "ADMIN") {
+      router.push("/");
     }
   }, [router, user]);
 
@@ -57,7 +54,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div 
+    <div
       className="flex h-[100dvh] w-screen max-w-full bg-[#050505] text-gray-200 overflow-hidden"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
@@ -65,7 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <AdminSidebar />
       <div className="flex-1 flex flex-col min-w-0 max-w-full overflow-hidden">
         <div className="flex items-center w-full z-20 bg-[#0a0a0a] border-b border-black/5 dark:border-white/5 md:border-none shrink-0">
-          <button 
+          <button
             className="md:hidden p-4 text-slate-900 dark:text-slate-900 dark:text-white hover:text-slate-900 dark:hover:text-gray-300"
             onClick={() => setSidebarOpen(true)}
           >
@@ -75,11 +72,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <AdminTopbar />
           </div>
         </div>
-        
+
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 md:p-8 pb-20 custom-scrollbar relative z-10">
-          <div className="w-full max-w-full pb-10">
-            {children}
-          </div>
+          <div className="w-full max-w-full pb-10">{children}</div>
         </main>
       </div>
     </div>
