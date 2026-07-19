@@ -45,6 +45,10 @@ services:
         value: "20.x"
       - key: PNPM_VERSION
         value: "8.15.6"
+      - key: STRIPE_SECRET_KEY
+        value: "sk_test_51TspzLA9uhtrETnD9RLPzQV3qEPoU6mgV8G3AyUj5r2llb1K7qVBfVGtwY2jZxOCr4aKOcvnEghX1CGTtzQtMhf200zZKbHjjQ"
+      - key: STRIPE_PUBLISHABLE_KEY
+        value: "pk_test_51TspzLA9uhtrETnDhgboVZP5GzNXGF7jGF3m5hGP8pgvxkV6KNF1aM74REp1IeyVV5QfmzwP661Tq4X8omlTUyKx00SpfdSVCN"
 
   # 4. Background Worker (BullMQ processor)
   - type: worker
@@ -78,6 +82,10 @@ services:
         sync: false
       - key: JWT_SECRET
         sync: false
+      - key: STRIPE_SECRET_KEY
+        value: "sk_test_51TspzLA9uhtrETnD9RLPzQV3qEPoU6mgV8G3AyUj5r2llb1K7qVBfVGtwY2jZxOCr4aKOcvnEghX1CGTtzQtMhf200zZKbHjjQ"
+      - key: STRIPE_PUBLISHABLE_KEY
+        value: "pk_test_51TspzLA9uhtrETnDhgboVZP5GzNXGF7jGF3m5hGP8pgvxkV6KNF1aM74REp1IeyVV5QfmzwP661Tq4X8omlTUyKx00SpfdSVCN"
 
   # 5. Frontend (Next.js)
   - type: web
@@ -100,4 +108,6 @@ services:
         value: "20.x"
       - key: PNPM_VERSION
         value: "8.15.6"
+      - key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+        value: "pk_test_51TspzLA9uhtrETnDhgboVZP5GzNXGF7jGF3m5hGP8pgvxkV6KNF1aM74REp1IeyVV5QfmzwP661Tq4X8omlTUyKx00SpfdSVCN"
 

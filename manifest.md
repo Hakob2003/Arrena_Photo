@@ -41,3 +41,13 @@
 - **Operation:** Replace
 - **Action performed:** Added `{ id: { contains: search, mode: "insensitive" } }` to user search query `where.OR`.
 - **Reason:** Enable admin search by custom user transaction prefix (`6D8A29`).
+
+## 2026-07-19 15:32
+
+### 1. Render Blueprint Config
+
+- **Original file path:** `render.yaml`
+- **Backup file path:** `/replace/render.yaml_2026-07-19_15-32.yaml`
+- **Operation:** Replace
+- **Action:** Added STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY and NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+- **Reason:** To automatically set missing Stripe variables on Render using Blueprints.
