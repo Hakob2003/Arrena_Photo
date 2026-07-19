@@ -2,13 +2,63 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  OnModuleInit,
 } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { SubscriptionPlan } from "@prisma/client";
 
 @Injectable()
-export class BillingService {
+export class BillingService implements OnModuleInit {
   constructor(private prisma: PrismaService) {}
+
+  async onModuleInit() {
+    const planConfigs = [
+      {
+        plan: SubscriptionPlan.STARTER,
+        name: "Starter",
+        price: "/mo",
+        monthlyCredits: 1500,
+        maxConcurrent: 1,
+        queueDelay: 30000,
+        priority: 3,
+        modelsAccess: "Base Only",
+        stripePriceId: "price_1Tsq8cA9uhtrETnDbzaESKaj",
+        isActive: true,
+      },
+      {
+        plan: SubscriptionPlan.PRO,
+        name: "Pro",
+        price: "/mo",
+        monthlyCredits: 5000,
+        maxConcurrent: 1,
+        queueDelay: 30000,
+        priority: 3,
+        modelsAccess: "Base Only",
+        stripePriceId: "price_1Tsq8dA9uhtrETnDmEhp2qx6",
+        isActive: true,
+      },
+      {
+        plan: SubscriptionPlan.BUSINESS,
+        name: "Business",
+        price: "/mo",
+        monthlyCredits: 20000,
+        maxConcurrent: 1,
+        queueDelay: 30000,
+        priority: 3,
+        modelsAccess: "Base Only",
+        stripePriceId: "price_1Tsq8uA9uhtrETnD26TpHdMr",
+        isActive: true,
+      },
+    ];
+
+    for (const pc of planConfigs) {
+      await this.prisma.planConfig.upsert({
+        where: { plan: pc.plan },
+        update: { stripePriceId: pc.stripePriceId },
+        create: pc,
+      });
+    }
+  }
 
   async getSubscription(userId: string) {
     const sub = await this.prisma.subscription.findUnique({
