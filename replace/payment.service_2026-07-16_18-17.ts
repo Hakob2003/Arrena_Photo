@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+﻿import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PrismaService } from "../prisma/prisma.service";
 import type { Stripe as StripeType } from "stripe";
@@ -10,11 +14,13 @@ export class PaymentService {
 
   constructor(
     private configService: ConfigService,
-    private prisma: PrismaService
+    private prisma: PrismaService,
   ) {
     const secretKey = this.configService.get("STRIPE_SECRET_KEY");
     if (!secretKey) {
-      throw new Error("STRIPE_SECRET_KEY is not configured in environment variables.");
+      throw new Error(
+        "STRIPE_SECRET_KEY is not configured in environment variables.",
+      );
     }
     this.stripe = new Stripe(secretKey, {
       apiVersion: "2024-06-20", // Pin API version to ensure payment_intent is generated on invoices
@@ -48,7 +54,11 @@ export class PaymentService {
   }
 
   // --- Credit Purchase (One-time) ---
-  async createPaymentIntentForCredits(userId: string, amountUsd: number, credits: number) {
+  async createPaymentIntentForCredits(
+    userId: string,
+    amountUsd: number,
+    credits: number,
+  ) {
     const customerId = await this.getOrCreateCustomer(userId);
 
     // Validate amount (in real app, validate against predefined packages)
@@ -60,7 +70,7 @@ export class PaymentService {
       amount: Math.round(amountUsd * 100),
       currency: "usd",
       customer: customerId,
-      payment_method_types: ['card'],
+      payment_method_types: ["card"],
       metadata: {
         userId,
         type: "CREDITS",
@@ -97,9 +107,11 @@ export class PaymentService {
     if (!planConfig) {
       throw new NotFoundException(`Plan ${planName} not found`);
     }
-    
+
     if (!planConfig.stripePriceId) {
-      throw new InternalServerErrorException("Plan does not have a Stripe Price ID configured.");
+      throw new InternalServerErrorException(
+        "Plan does not have a Stripe Price ID configured.",
+      );
     }
 
     // --- Reuse existing incomplete subscription for the same price ---
@@ -111,15 +123,17 @@ export class PaymentService {
 
     // Find an incomplete subscription that matches the requested priceId
     const reusableSub = existingStripeSubs.data.find((sub: any) =>
-      sub.items.data.some((item: any) => item.price.id === planConfig.stripePriceId)
+      sub.items.data.some(
+        (item: any) => item.price.id === planConfig.stripePriceId,
+      ),
     );
 
     if (reusableSub) {
       // Expand the latest_invoice to get the payment_intent
-      const invoice = await this.stripe.invoices.retrieve(
+      const invoice = (await this.stripe.invoices.retrieve(
         reusableSub.latest_invoice as string,
-        { expand: ["payment_intent"] }
-      ) as any;
+        { expand: ["payment_intent"] },
+      )) as any;
 
       const paymentIntent = invoice.payment_intent as any;
 
@@ -132,15 +146,18 @@ export class PaymentService {
     }
 
     // --- Cancel other incomplete subs for different plans to prevent buildup ---
-    const otherIncompleteSubs = existingStripeSubs.data.filter((sub: any) =>
-      !sub.items.data.some((item: any) => item.price.id === planConfig.stripePriceId)
+    const otherIncompleteSubs = existingStripeSubs.data.filter(
+      (sub: any) =>
+        !sub.items.data.some(
+          (item: any) => item.price.id === planConfig.stripePriceId,
+        ),
     );
 
     for (const staleSub of otherIncompleteSubs) {
       try {
         await this.stripe.subscriptions.cancel(staleSub.id);
       } catch {
-        // Non-critical — log and continue
+        // Non-critical вЂ” log and continue
       }
     }
 
@@ -154,7 +171,10 @@ export class PaymentService {
       customer: customerId,
       items: [{ price: planConfig.stripePriceId }],
       payment_behavior: "default_incomplete",
-      payment_settings: { save_default_payment_method: "on_subscription", payment_method_types: ['card'] },
+      payment_settings: {
+        save_default_payment_method: "on_subscription",
+        payment_method_types: ["card"],
+      },
       expand: ["latest_invoice.payment_intent"],
       metadata: {
         userId,
@@ -166,7 +186,9 @@ export class PaymentService {
     const paymentIntent = invoice.payment_intent as any;
 
     if (!paymentIntent) {
-      throw new InternalServerErrorException("Failed to create subscription payment intent");
+      throw new InternalServerErrorException(
+        "Failed to create subscription payment intent",
+      );
     }
 
     // Record in history
@@ -209,6 +231,3 @@ export class PaymentService {
     return this.stripe;
   }
 }
-
-
-

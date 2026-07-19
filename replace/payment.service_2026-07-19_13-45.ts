@@ -85,7 +85,7 @@ export class PaymentService {
 
     const planConfig = await this.prisma.planConfig.findFirst({
       where: {
-        plan: planName as import("@prisma/client").PlanType,
+        plan: planName as import("@prisma/client").SubscriptionPlan,
         isActive: true,
       },
     });
@@ -215,7 +215,7 @@ export class PaymentService {
 
       const planConfig = await this.prisma.planConfig.findFirst({
         where: {
-          plan: planName as import("@prisma/client").PlanType,
+          plan: planName as import("@prisma/client").SubscriptionPlan,
           isActive: true,
         },
       });
@@ -255,7 +255,7 @@ export class PaymentService {
           currency: "usd",
           status: "SUCCEEDED",
           type: "SUBSCRIPTION",
-          plan: planName.toUpperCase() as import("@prisma/client").PlanType,
+          plan: planName.toUpperCase() as import("@prisma/client").SubscriptionPlan,
         },
       });
 
@@ -265,11 +265,11 @@ export class PaymentService {
         create: {
           userId,
           stripeSubId: result.providerPaymentId,
-          plan: planName.toUpperCase() as import("@prisma/client").PlanType,
+          plan: planName.toUpperCase() as import("@prisma/client").SubscriptionPlan,
         },
         update: {
           stripeSubId: result.providerPaymentId,
-          plan: planName.toUpperCase() as import("@prisma/client").PlanType,
+          plan: planName.toUpperCase() as import("@prisma/client").SubscriptionPlan,
         },
       });
 
@@ -412,18 +412,65 @@ export class PaymentService {
     }
   }
 
-  async getPaymentHistory(userId: string, page: number = 1, limit: number = 5) {
+  async getPaymentHistory(
+    userId: string,
+    page: number = 1,
+    limit: number = 5,
+    filters?: {
+      startDate?: string;
+      endDate?: string;
+      type?: string;
+      plan?: string;
+      minAmount?: number;
+      maxAmount?: number;
+      status?: string;
+      txId?: string;
+      sortBy?: string;
+      sortOrder?: "asc" | "desc";
+    },
+  ) {
     const skip = (page - 1) * limit;
+
+    const where: any = { userId };
+
+    if (filters) {
+      if (filters.startDate || filters.endDate) {
+        where.createdAt = {};
+        if (filters.startDate)
+          where.createdAt.gte = new Date(filters.startDate);
+        if (filters.endDate) where.createdAt.lte = new Date(filters.endDate);
+      }
+      if (filters.type) where.type = filters.type;
+      if (filters.plan) where.plan = filters.plan;
+      if (filters.status) where.status = filters.status;
+      if (filters.txId) where.id = { contains: filters.txId };
+      if (filters.minAmount !== undefined || filters.maxAmount !== undefined) {
+        where.amount = {};
+        if (filters.minAmount !== undefined)
+          where.amount.gte = filters.minAmount;
+        if (filters.maxAmount !== undefined)
+          where.amount.lte = filters.maxAmount;
+      }
+    }
+
+    const validSortFields = ["createdAt", "amount", "status"];
+    const sortBy =
+      filters?.sortBy && validSortFields.includes(filters.sortBy)
+        ? filters.sortBy
+        : "createdAt";
+    const sortOrder = filters?.sortOrder === "asc" ? "asc" : "desc";
+
+    const orderBy = { [sortBy]: sortOrder };
 
     const [data, total] = await Promise.all([
       this.prisma.paymentHistory.findMany({
-        where: { userId },
-        orderBy: { createdAt: "desc" },
+        where,
+        orderBy,
         skip,
         take: limit,
       }),
       this.prisma.paymentHistory.count({
-        where: { userId },
+        where,
       }),
     ]);
 

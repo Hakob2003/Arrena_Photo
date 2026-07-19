@@ -1,4 +1,4 @@
-generator client {
+﻿generator client {
   provider = "prisma-client-js"
 }
 
@@ -611,15 +611,13 @@ model Payout {
 }
 
 model PaymentHistory {
-  id                    String            @id
+  id                    String            @id @default(uuid())
   userId                String
   stripePaymentIntentId String?           @unique
   amount                Int // amount in cents
   currency              String            @default("usd")
   status                PaymentStatus     @default(PENDING)
   type                  String // "CREDITS", "SUBSCRIPTION"
-  cardLast4             String?
-  cardBrand             String?
   creditsAdded          Int? // If it was a credit purchase
   plan                  SubscriptionPlan? // If it was a subscription
   createdAt             DateTime          @default(now())

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+﻿import { Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { EncryptionUtil } from "../common/utils/encryption.util";
 
@@ -106,7 +106,6 @@ export class AdminService {
       where.OR = [
         { email: { contains: search, mode: "insensitive" } },
         { name: { contains: search, mode: "insensitive" } },
-        { id: { contains: search, mode: "insensitive" } },
       ];
     }
     if (roleName) {

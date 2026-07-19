@@ -16,6 +16,13 @@ export class PaymentService {
     private configService: ConfigService,
   ) {}
 
+  private generateTransactionId(userId: string): string {
+    const userPrefix = userId.replace(/-/g, "").substring(0, 6).toUpperCase();
+    const timestamp = Date.now().toString(36).toUpperCase();
+    const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `TXN-${userPrefix}-${timestamp}-${randomStr}`;
+  }
+
   // --- Credit Purchase (One-time) ---
   async createPaymentIntentForCredits(
     userId: string,
@@ -52,6 +59,7 @@ export class PaymentService {
 
     await this.prisma.paymentHistory.create({
       data: {
+        id: this.generateTransactionId(userId),
         userId,
         stripePaymentIntentId: providerPaymentId, // Should be renamed to providerPaymentId
         amount: Math.round(amountUsd * 100),
@@ -161,6 +169,7 @@ export class PaymentService {
 
     await this.prisma.paymentHistory.create({
       data: {
+        id: this.generateTransactionId(userId),
         userId,
         stripePaymentIntentId: providerPaymentId,
         amount: 0, // Should be fetched from intent
@@ -249,6 +258,7 @@ export class PaymentService {
 
       await this.prisma.paymentHistory.create({
         data: {
+          id: this.generateTransactionId(userId),
           userId,
           stripePaymentIntentId: result.providerPaymentId || "",
           amount: Math.round(amountUsd * 100),
@@ -296,6 +306,7 @@ export class PaymentService {
 
     await this.prisma.paymentHistory.create({
       data: {
+        id: this.generateTransactionId(userId),
         userId,
         stripePaymentIntentId: result.providerPaymentId || "",
         amount: Math.round(amountUsd * 100),

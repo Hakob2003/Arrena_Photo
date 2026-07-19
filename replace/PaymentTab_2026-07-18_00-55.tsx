@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -291,7 +291,7 @@ export function PaymentTab() {
 
   return (
     <div className="space-y-8 animate-in fade-in">
-      {/* Block 7: Способы оплаты */}
+      {/* Block 7: РЎРїРѕСЃРѕР±С‹ РѕРїР»Р°С‚С‹ */}
       <div>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">
@@ -441,7 +441,7 @@ export function PaymentTab() {
         </div>
       </div>
 
-      {/* Block 4: История платежей */}
+      {/* Block 4: РСЃС‚РѕСЂРёСЏ РїР»Р°С‚РµР¶РµР№ */}
       <div>
         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
           {t("billing.payment.billingHistory")}

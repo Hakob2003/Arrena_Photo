@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -131,7 +131,7 @@ export default function GalleryPage() {
                   {t("gallery.remix")}
                 </button>
                 <button className="w-10 glass flex items-center justify-center rounded-lg hover:bg-white/5">
-                  ❤️
+                  вќ¤пёЏ
                 </button>
               </div>
             </div>

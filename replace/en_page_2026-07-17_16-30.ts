@@ -1,4 +1,4 @@
-// English translations
+﻿// English translations
 const en: Record<string, string> = {
   // === Navigation (Sidebar) ===
   "nav.home": "Home",
@@ -203,7 +203,7 @@ const en: Record<string, string> = {
   "billing.overview.stats": "Monthly Statistics",
   "billing.overview.usedCredits": "Credits used",
   "billing.overview.imagesGenerated": "Images generated",
-  "billing.overview.viewStats": "View detailed statistics →",
+  "billing.overview.viewStats": "View detailed statistics в†’",
   "billing.overview.cancelModalTitle": "Cancel Subscription",
   "billing.overview.cancelModalDesc1": "You are canceling the",
   "billing.overview.cancelModalDesc2":
@@ -488,7 +488,7 @@ const en: Record<string, string> = {
 
   "legal.refund.title": "Refund Policy",
   "legal.refund.content":
-    "Unless otherwise required by law, paid subscriptions are non-refundable once the digital service has begun.\n\nRefunds are possible in cases of:\n• double billing;\n• technical errors;\n• accidental payments;\n• other cases provided by law.\n\nNon-refundable:\n• used credits;\n• completed generations;\n• active subscriptions after service provision has started (unless law provides otherwise).",
+    "Unless otherwise required by law, paid subscriptions are non-refundable once the digital service has begun.\n\nRefunds are possible in cases of:\nвЂў double billing;\nвЂў technical errors;\nвЂў accidental payments;\nвЂў other cases provided by law.\n\nNon-refundable:\nвЂў used credits;\nвЂў completed generations;\nвЂў active subscriptions after service provision has started (unless law provides otherwise).",
 };
 
 export default en;

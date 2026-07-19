@@ -1,22 +1,12 @@
-import {
-  Injectable,
-  NotFoundException,
-  Inject,
-  forwardRef,
-} from "@nestjs/common";
+﻿import { Injectable, NotFoundException } from "@nestjs/common";
 import PDFDocument = require("pdfkit");
 import { PrismaService } from "../prisma/prisma.service";
-import { PaymentService } from "./payment.service";
 import { Response } from "express";
 import * as path from "path";
 
 @Injectable()
 export class PdfService {
-  constructor(
-    private prisma: PrismaService,
-    @Inject(forwardRef(() => PaymentService))
-    private paymentService: PaymentService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async generateReceipt(
     paymentId: string,
@@ -37,45 +27,6 @@ export class PdfService {
 
     if (!transaction) {
       throw new NotFoundException("Transaction not found");
-    }
-
-    let cardNumberDisplay = "";
-    if (transaction.cardLast4) {
-      cardNumberDisplay = `**** **** **** ${transaction.cardLast4}`;
-    } else if (transaction.stripePaymentIntentId) {
-      // Fallback: Fetch dynamically from Stripe API
-      const stripe = (
-        this.paymentService.getProvider() as any
-      ).getStripeInstance?.();
-      if (stripe) {
-        try {
-          if (transaction.stripePaymentIntentId.startsWith("pi_")) {
-            const pi = await stripe.paymentIntents.retrieve(
-              transaction.stripePaymentIntentId,
-              {
-                expand: ["latest_charge"],
-              },
-            );
-            const charge = pi.latest_charge as any;
-            if (charge?.payment_method_details?.card?.last4) {
-              cardNumberDisplay = `**** **** **** ${charge.payment_method_details.card.last4}`;
-            }
-          } else if (transaction.stripePaymentIntentId.startsWith("sub_")) {
-            const sub = await stripe.subscriptions.retrieve(
-              transaction.stripePaymentIntentId,
-              {
-                expand: ["latest_invoice.charge"],
-              },
-            );
-            const charge = sub.latest_invoice?.charge as any;
-            if (charge?.payment_method_details?.card?.last4) {
-              cardNumberDisplay = `**** **** **** ${charge.payment_method_details.card.last4}`;
-            }
-          }
-        } catch (e) {
-          console.log("Failed to fetch card from Stripe for receipt", e);
-        }
-      }
     }
 
     // 2. Initialize PDFKit
@@ -123,21 +74,20 @@ export class PdfService {
     // 4. Texts based on language
     const texts = {
       ru: {
-        title: "Квитанция об оплате",
-        date: "Дата",
-        transactionId: "ID транзакции",
-        amount: "Сумма",
-        status: "Статус",
-        description: "Описание",
-        customer: "Покупатель",
-        credits: "Кредиты",
-        subscription: "Подписка",
-        total: "Итого",
-        success: "Успешно",
-        pending: "В ожидании",
-        failed: "Ошибка",
-        refunded: "Возврат",
-        paymentMethod: "Способ оплаты",
+        title: "╨Ъ╨▓╨╕╤В╨░╨╜╤Ж╨╕╤П ╨╛╨▒ ╨╛╨┐╨╗╨░╤В╨╡",
+        date: "╨Ф╨░╤В╨░",
+        transactionId: "ID ╤В╤А╨░╨╜╨╖╨░╨║╤Ж╨╕╨╕",
+        amount: "╨б╤Г╨╝╨╝╨░",
+        status: "╨б╤В╨░╤В╤Г╤Б",
+        description: "╨Ю╨┐╨╕╤Б╨░╨╜╨╕╨╡",
+        customer: "╨Я╨╛╨║╤Г╨┐╨░╤В╨╡╨╗╤М",
+        credits: "╨Ъ╤А╨╡╨┤╨╕╤В╤Л",
+        subscription: "╨Я╨╛╨┤╨┐╨╕╤Б╨║╨░",
+        total: "╨Ш╤В╨╛╨│╨╛",
+        success: "╨г╤Б╨┐╨╡╤И╨╜╨╛",
+        pending: "╨Т ╨╛╨╢╨╕╨┤╨░╨╜╨╕╨╕",
+        failed: "╨Ю╤И╨╕╨▒╨║╨░",
+        refunded: "╨Т╨╛╨╖╨▓╤А╨░╤В",
       },
       en: {
         title: "Payment Receipt",
@@ -154,24 +104,22 @@ export class PdfService {
         pending: "Pending",
         failed: "Failed",
         refunded: "Refunded",
-        paymentMethod: "Payment Method",
       },
       hy: {
-        title: "Վճարման անդորրագիր",
-        date: "Ամսաթիվ",
-        transactionId: "Գործարքի ID",
-        amount: "Գումար",
-        status: "Կարգավիճակ",
-        description: "Նկարագրություն",
-        customer: "Գնորդ",
-        credits: "Կրեդիտներ",
-        subscription: "Բաժանորդագրություն",
-        total: "Ընդամենը",
-        success: "Հաջողված",
-        pending: "Սպասող",
-        failed: "Սխալ",
-        refunded: "Վերադարձված",
-        paymentMethod: "Վճարման եղանակ",
+        title: "╒О╒│╒б╓А╒┤╒б╒╢ ╒б╒╢╒д╒╕╓А╓А╒б╒г╒л╓А",
+        date: "╘▒╒┤╒╜╒б╒й╒л╒╛",
+        transactionId: "╘│╒╕╓А╒о╒б╓А╓Д╒л ID",
+        amount: "╘│╒╕╓В╒┤╒б╓А",
+        status: "╘┐╒б╓А╒г╒б╒╛╒л╒│╒б╒п",
+        description: "╒Ж╒п╒б╓А╒б╒г╓А╒╕╓В╒й╒╡╒╕╓В╒╢",
+        customer: "╘│╒╢╒╕╓А╒д",
+        credits: "╘┐╓А╒е╒д╒л╒┐╒╢╒е╓А",
+        subscription: "╘▓╒б╒к╒б╒╢╒╕╓А╒д╒б╒г╓А╒╕╓В╒й╒╡╒╕╓В╒╢",
+        total: "╘╕╒╢╒д╒б╒┤╒е╒╢╒и",
+        success: "╒А╒б╒╗╒╕╒▓╒╛╒б╒о",
+        pending: "╒Н╒║╒б╒╜╒╕╒▓",
+        failed: "╒Н╒н╒б╒м",
+        refunded: "╒О╒е╓А╒б╒д╒б╓А╒▒╒╛╒б╒о",
       },
     };
 
@@ -220,11 +168,6 @@ export class PdfService {
 
     doc.font(fontRegular).text(`${t.customer}:`, 50, startY + 60);
     doc.font(fontBold).text(transaction.user.email || "N/A", 150, startY + 60);
-
-    if (cardNumberDisplay) {
-      doc.font(fontRegular).text(`${t.paymentMethod}:`, 50, startY + 80);
-      doc.font(fontBold).text(cardNumberDisplay, 150, startY + 80);
-    }
 
     // 7. Draw Table items
     doc.moveDown(4);

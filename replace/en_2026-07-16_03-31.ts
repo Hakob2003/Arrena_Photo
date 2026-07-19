@@ -1,4 +1,4 @@
-// English translations
+﻿// English translations
 const en: Record<string, string> = {
   // === Navigation (Sidebar) ===
   "nav.home": "Home",
@@ -196,7 +196,7 @@ const en: Record<string, string> = {
   "billing.overview.stats": "Monthly Statistics",
   "billing.overview.usedCredits": "Credits used",
   "billing.overview.imagesGenerated": "Images generated",
-  "billing.overview.viewStats": "View detailed statistics →",
+  "billing.overview.viewStats": "View detailed statistics в†’",
   "billing.overview.cancelModalTitle": "Cancel Subscription",
   "billing.overview.cancelModalDesc1": "You are canceling the",
   "billing.overview.cancelModalDesc2":

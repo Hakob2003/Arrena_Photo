@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+﻿import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PrismaService } from "../prisma/prisma.service";
 import type { Stripe as StripeType } from "stripe";
@@ -10,11 +14,13 @@ export class PaymentService {
 
   constructor(
     private configService: ConfigService,
-    private prisma: PrismaService
+    private prisma: PrismaService,
   ) {
     const secretKey = this.configService.get("STRIPE_SECRET_KEY");
     if (!secretKey) {
-      throw new Error("STRIPE_SECRET_KEY is not configured in environment variables.");
+      throw new Error(
+        "STRIPE_SECRET_KEY is not configured in environment variables.",
+      );
     }
     this.stripe = new Stripe(secretKey);
   }
@@ -46,7 +52,11 @@ export class PaymentService {
   }
 
   // --- Credit Purchase (One-time) ---
-  async createPaymentIntentForCredits(userId: string, amountUsd: number, credits: number) {
+  async createPaymentIntentForCredits(
+    userId: string,
+    amountUsd: number,
+    credits: number,
+  ) {
     const customerId = await this.getOrCreateCustomer(userId);
 
     // Validate amount (in real app, validate against predefined packages)
@@ -58,7 +68,7 @@ export class PaymentService {
       amount: Math.round(amountUsd * 100),
       currency: "usd",
       customer: customerId,
-      payment_method_types: ['card'],
+      payment_method_types: ["card"],
       metadata: {
         userId,
         type: "CREDITS",
@@ -95,11 +105,13 @@ export class PaymentService {
     if (!planConfig) {
       throw new NotFoundException(`Plan ${planName} not found`);
     }
-    
+
     if (!planConfig.stripePriceId) {
       // In Test Mode, we might not have a price ID in the DB.
       // We will create a dummy price on the fly for test mode or throw an error.
-      throw new InternalServerErrorException("Plan does not have a Stripe Price ID configured.");
+      throw new InternalServerErrorException(
+        "Plan does not have a Stripe Price ID configured.",
+      );
     }
 
     // Check if user already has an active subscription
@@ -112,7 +124,10 @@ export class PaymentService {
       customer: customerId,
       items: [{ price: planConfig.stripePriceId }],
       payment_behavior: "default_incomplete",
-      payment_settings: { save_default_payment_method: "on_subscription", payment_method_types: ['card'] },
+      payment_settings: {
+        save_default_payment_method: "on_subscription",
+        payment_method_types: ["card"],
+      },
       expand: ["latest_invoice.payment_intent"],
       metadata: {
         userId,
@@ -124,7 +139,9 @@ export class PaymentService {
     const paymentIntent = invoice.payment_intent as any;
 
     if (!paymentIntent) {
-      throw new InternalServerErrorException("Failed to create subscription payment intent");
+      throw new InternalServerErrorException(
+        "Failed to create subscription payment intent",
+      );
     }
 
     // Record in history
@@ -167,6 +184,3 @@ export class PaymentService {
     return this.stripe;
   }
 }
-
-
-

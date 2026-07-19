@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -106,7 +106,7 @@ function CheckoutForm({ clientSecret, onSuccess }: CheckoutFormProps) {
       e.preventDefault();
       await confirmPayment();
     },
-    [confirmPayment]
+    [confirmPayment],
   );
 
   const handleExpressReady = useCallback(
@@ -116,7 +116,7 @@ function CheckoutForm({ clientSecret, onSuccess }: CheckoutFormProps) {
         setExpressAvailable(true);
       }
     },
-    []
+    [],
   );
 
   const handleExpressConfirm = useCallback(async () => {
@@ -206,7 +206,7 @@ export function PaymentModal({
 }: PaymentModalProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [selectedPack, setSelectedPack] = useState<CreditPackage>(
-    CREDIT_PACKAGES[1]
+    CREDIT_PACKAGES[1],
   );
   const [isInitializing, setIsInitializing] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
@@ -249,12 +249,15 @@ export function PaymentModal({
           setClientSecret(res.data.clientSecret);
         }
       } catch (err: unknown) {
-        const axiosErr = err as { response?: { data?: { message?: string } }; message?: string };
+        const axiosErr = err as {
+          response?: { data?: { message?: string } };
+          message?: string;
+        };
         console.error("Failed to initialize payment", err);
         setInitError(
           axiosErr.response?.data?.message ??
             axiosErr.message ??
-            t("payment.modal.initFailed")
+            t("payment.modal.initFailed"),
         );
       } finally {
         setIsInitializing(false);
@@ -290,7 +293,15 @@ export function PaymentModal({
     setTimeout(() => {
       onClose();
     }, 2500);
-  }, [type, selectedPack, planName, addCredits, setCredits, setPlanId, onClose]);
+  }, [
+    type,
+    selectedPack,
+    planName,
+    addCredits,
+    setCredits,
+    setPlanId,
+    onClose,
+  ]);
 
   return (
     <AnimatePresence>
@@ -321,7 +332,7 @@ export function PaymentModal({
                   ? t("payment.modal.creditsDesc")
                   : t("payment.modal.upgradeDesc").replace(
                       "{plan}",
-                      planName ?? ""
+                      planName ?? "",
                     )}
               </p>
 
@@ -384,7 +395,9 @@ export function PaymentModal({
                   <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-500/20 flex items-center justify-center mb-4">
                     <X className="w-6 h-6" />
                   </div>
-                  <p className="font-bold mb-2">{t("payment.modal.initFailed")}</p>
+                  <p className="font-bold mb-2">
+                    {t("payment.modal.initFailed")}
+                  </p>
                   <p className="text-sm text-red-500/80">{initError}</p>
                 </div>
               ) : isInitializing || !clientSecret ? (

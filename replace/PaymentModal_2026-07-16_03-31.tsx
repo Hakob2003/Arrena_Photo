@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,7 +17,7 @@ import { useTranslation } from "../../lib/i18n";
 
 // Use test publishable key if env is missing (for local dev without keys)
 const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_mock"
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || "pk_test_mock",
 );
 
 interface PaymentModalProps {
@@ -29,11 +29,23 @@ interface PaymentModalProps {
 
 const CREDIT_PACKAGES = [
   { id: "pack_100", label: "100", amountUsd: 4.99, credits: 100 },
-  { id: "pack_500", label: "500", amountUsd: 19.99, credits: 500, popular: true },
+  {
+    id: "pack_500",
+    label: "500",
+    amountUsd: 19.99,
+    credits: 500,
+    popular: true,
+  },
   { id: "pack_1000", label: "1000", amountUsd: 34.99, credits: 1000 },
 ];
 
-function CheckoutForm({ clientSecret, onSuccess }: { clientSecret: string; onSuccess: () => void }) {
+function CheckoutForm({
+  clientSecret,
+  onSuccess,
+}: {
+  clientSecret: string;
+  onSuccess: () => void;
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
@@ -74,33 +86,55 @@ function CheckoutForm({ clientSecret, onSuccess }: { clientSecret: string; onSuc
   };
 
   return (
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
       <div className="mb-2">
-        <ExpressCheckoutElement options={{ paymentMethods: { applePay: 'auto', googlePay: 'auto', link: 'never', amazonPay: 'never', paypal: 'never', klarna: 'never' } }} onConfirm={async (e) => {
-          if (!stripe || !elements) return;
-          setIsLoading(true);
-          setError(null);
-          const { error: confirmError } = await stripe.confirmPayment({
-            elements,
-            clientSecret,
-            confirmParams: { return_url: window.location.href },
-            redirect: 'if_required'
-          });
-          if (confirmError) {
-            setError(confirmError.message || 'Payment failed.');
-            setIsLoading(false);
-          } else {
-            onSuccess();
-          }
-        }} />
+        <ExpressCheckoutElement
+          options={{
+            paymentMethods: {
+              applePay: "auto",
+              googlePay: "auto",
+              link: "never",
+              amazonPay: "never",
+              paypal: "never",
+              klarna: "never",
+            },
+          }}
+          onConfirm={async (e) => {
+            if (!stripe || !elements) return;
+            setIsLoading(true);
+            setError(null);
+            const { error: confirmError } = await stripe.confirmPayment({
+              elements,
+              clientSecret,
+              confirmParams: { return_url: window.location.href },
+              redirect: "if_required",
+            });
+            if (confirmError) {
+              setError(confirmError.message || "Payment failed.");
+              setIsLoading(false);
+            } else {
+              onSuccess();
+            }
+          }}
+        />
       </div>
       <div className="flex items-center gap-4 my-2 opacity-50">
         <div className="flex-1 h-px bg-current"></div>
-        <span className="text-xs font-medium uppercase tracking-widest">{t('payment.modal.orPayWithCard')}</span>
+        <span className="text-xs font-medium uppercase tracking-widest">
+          {t("payment.modal.orPayWithCard")}
+        </span>
         <div className="flex-1 h-px bg-current"></div>
       </div>
-      <PaymentElement options={{ wallets: { applePay: 'never', googlePay: 'never', link: 'never' } }} />
-      {error && <div className="text-red-600 dark:text-red-400 text-sm p-3 bg-red-100 dark:bg-red-400/10 border border-red-200 dark:border-red-400/20 rounded-lg">{error}</div>}
+      <PaymentElement
+        options={{
+          wallets: { applePay: "never", googlePay: "never", link: "never" },
+        }}
+      />
+      {error && (
+        <div className="text-red-600 dark:text-red-400 text-sm p-3 bg-red-100 dark:bg-red-400/10 border border-red-200 dark:border-red-400/20 rounded-lg">
+          {error}
+        </div>
+      )}
       <button
         disabled={isLoading || !stripe || !elements}
         type="submit"
@@ -110,16 +144,25 @@ function CheckoutForm({ clientSecret, onSuccess }: { clientSecret: string; onSuc
             : "bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-gray-100"
         }`}
       >
-        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : t('payment.modal.payNow')}
+        {isLoading ? (
+          <Loader2 className="w-5 h-5 animate-spin" />
+        ) : (
+          t("payment.modal.payNow")
+        )}
       </button>
       <div className="text-center text-xs text-slate-500 dark:text-gray-500 mt-2 flex items-center justify-center gap-1">
-        {t('payment.modal.securePayment')} <b>Stripe</b>
+        {t("payment.modal.securePayment")} <b>Stripe</b>
       </div>
     </form>
   );
 }
 
-export function PaymentModal({ isOpen, onClose, type, planName }: PaymentModalProps) {
+export function PaymentModal({
+  isOpen,
+  onClose,
+  type,
+  planName,
+}: PaymentModalProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [selectedPack, setSelectedPack] = useState(CREDIT_PACKAGES[1]);
   const [isInitializing, setIsInitializing] = useState(false);
@@ -153,7 +196,11 @@ export function PaymentModal({ isOpen, onClose, type, planName }: PaymentModalPr
         }
       } catch (err: any) {
         console.error("Failed to initialize payment", err);
-        setInitError(err.response?.data?.message || err.message || "Failed to initialize payment");
+        setInitError(
+          err.response?.data?.message ||
+            err.message ||
+            "Failed to initialize payment",
+        );
       } finally {
         setIsInitializing(false);
       }
@@ -190,12 +237,17 @@ export function PaymentModal({ isOpen, onClose, type, planName }: PaymentModalPr
             {/* Left Side: Summary / Package Selection */}
             <div className="w-full md:w-1/3 bg-slate-50 dark:bg-[#111] p-6 md:p-8 flex flex-col border-b md:border-b-0 md:border-r border-black/10 dark:border-white/10 shrink-0">
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                {type === "CREDITS" ? t('payment.modal.buyCredits') : t('payment.modal.upgradePlan')}
+                {type === "CREDITS"
+                  ? t("payment.modal.buyCredits")
+                  : t("payment.modal.upgradePlan")}
               </h2>
               <p className="text-slate-500 dark:text-zinc-400 text-sm mb-6">
                 {type === "CREDITS"
-                  ? t('payment.modal.creditsDesc')
-                  : t('payment.modal.upgradeDesc').replace('{plan}', planName || '')}
+                  ? t("payment.modal.creditsDesc")
+                  : t("payment.modal.upgradeDesc").replace(
+                      "{plan}",
+                      planName || "",
+                    )}
               </p>
 
               {type === "CREDITS" && (
@@ -212,11 +264,15 @@ export function PaymentModal({ isOpen, onClose, type, planName }: PaymentModalPr
                     >
                       {pack.popular && (
                         <div className="absolute -top-3 right-4 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
-                          {t('payment.modal.popular')}
+                          {t("payment.modal.popular")}
                         </div>
                       )}
-                      <div className="font-semibold text-slate-900 dark:text-white">{pack.label} {t('payment.modal.credits')}</div>
-                      <div className="text-sm text-slate-500 dark:text-zinc-400">${pack.amountUsd}</div>
+                      <div className="font-semibold text-slate-900 dark:text-white">
+                        {pack.label} {t("payment.modal.credits")}
+                      </div>
+                      <div className="text-sm text-slate-500 dark:text-zinc-400">
+                        ${pack.amountUsd}
+                      </div>
                     </button>
                   ))}
                 </div>
@@ -239,9 +295,13 @@ export function PaymentModal({ isOpen, onClose, type, planName }: PaymentModalPr
                   className="flex flex-col items-center justify-center text-center text-slate-900 dark:text-white"
                 >
                   <CheckCircle className="w-20 h-20 text-green-500 mb-4" />
-                  <h3 className="text-2xl font-bold mb-2">{t('payment.modal.success')}</h3>
+                  <h3 className="text-2xl font-bold mb-2">
+                    {t("payment.modal.success")}
+                  </h3>
                   <p className="text-slate-500 dark:text-zinc-400">
-                    {type === "CREDITS" ? t('payment.modal.creditsAdded') : t('payment.modal.subActive')}
+                    {type === "CREDITS"
+                      ? t("payment.modal.creditsAdded")
+                      : t("payment.modal.subActive")}
                   </p>
                 </motion.div>
               ) : initError ? (
@@ -249,13 +309,15 @@ export function PaymentModal({ isOpen, onClose, type, planName }: PaymentModalPr
                   <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-500/20 flex items-center justify-center mb-4">
                     <X className="w-6 h-6" />
                   </div>
-                  <p className="font-bold mb-2">{t('payment.modal.initFailed')}</p>
+                  <p className="font-bold mb-2">
+                    {t("payment.modal.initFailed")}
+                  </p>
                   <p className="text-sm text-red-500/80">{initError}</p>
                 </div>
               ) : isInitializing || !clientSecret ? (
                 <div className="flex flex-col items-center justify-center text-slate-400 dark:text-white/50 h-full">
                   <Loader2 className="w-8 h-8 animate-spin mb-4" />
-                  <p>{t('payment.modal.initLoading')}</p>
+                  <p>{t("payment.modal.initLoading")}</p>
                 </div>
               ) : (
                 <motion.div
@@ -268,12 +330,12 @@ export function PaymentModal({ isOpen, onClose, type, planName }: PaymentModalPr
                     stripe={stripePromise}
                     options={{
                       clientSecret,
-                      locale: (locale === 'hy' ? 'en' : locale) as any, // Stripe does not support hy
+                      locale: (locale === "hy" ? "en" : locale) as any, // Stripe does not support hy
                       appearance: {
                         theme: "stripe",
                         variables: {
                           colorPrimary: "#3b82f6",
-                          colorBackground: "transparent", 
+                          colorBackground: "transparent",
                           colorText: "inherit",
                           colorDanger: "#ef4444",
                           fontFamily: "Inter, system-ui, sans-serif",
@@ -281,15 +343,18 @@ export function PaymentModal({ isOpen, onClose, type, planName }: PaymentModalPr
                           spacingUnit: "4px",
                         },
                         rules: {
-                          '.Input': {
-                            backgroundColor: 'transparent',
-                            color: 'inherit',
-                          }
-                        }
+                          ".Input": {
+                            backgroundColor: "transparent",
+                            color: "inherit",
+                          },
+                        },
                       },
                     }}
                   >
-                    <CheckoutForm clientSecret={clientSecret} onSuccess={handleSuccess} />
+                    <CheckoutForm
+                      clientSecret={clientSecret}
+                      onSuccess={handleSuccess}
+                    />
                   </Elements>
                 </motion.div>
               )}
@@ -300,8 +365,3 @@ export function PaymentModal({ isOpen, onClose, type, planName }: PaymentModalPr
     </AnimatePresence>
   );
 }
-
-
-
-
-

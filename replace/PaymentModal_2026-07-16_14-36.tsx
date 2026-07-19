@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -66,10 +66,10 @@ function CheckoutForm({ clientSecret, onSuccess }: CheckoutFormProps) {
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [method, setMethod] = useState<'card' | 'apple' | 'google'>('card');
+  const [method, setMethod] = useState<"card" | "apple" | "google">("card");
   const [appleReady, setAppleReady] = useState(false);
   const [googleReady, setGoogleReady] = useState(false);
-  
+
   const { t } = useTranslation();
   const preferences = useUIStore((state) => state.preferences);
   const isLuxury = preferences?.skin === "PREMIUM";
@@ -109,7 +109,7 @@ function CheckoutForm({ clientSecret, onSuccess }: CheckoutFormProps) {
       e.preventDefault();
       await confirmPayment();
     },
-    [confirmPayment]
+    [confirmPayment],
   );
 
   const handleExpressReady = useCallback(
@@ -117,7 +117,7 @@ function CheckoutForm({ clientSecret, onSuccess }: CheckoutFormProps) {
       if (event.availablePaymentMethods?.applePay) setAppleReady(true);
       if (event.availablePaymentMethods?.googlePay) setGoogleReady(true);
     },
-    []
+    [],
   );
 
   const handleExpressConfirm = useCallback(async () => {
@@ -130,33 +130,33 @@ function CheckoutForm({ clientSecret, onSuccess }: CheckoutFormProps) {
       <div className="flex bg-slate-100 dark:bg-[#1a1a1a] p-1 rounded-xl">
         <button
           type="button"
-          onClick={() => setMethod('card')}
+          onClick={() => setMethod("card")}
           className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-            method === 'card'
-              ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white'
-              : 'text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200'
+            method === "card"
+              ? "bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white"
+              : "text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200"
           }`}
         >
           Card
         </button>
         <button
           type="button"
-          onClick={() => setMethod('apple')}
+          onClick={() => setMethod("apple")}
           className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-            method === 'apple'
-              ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white'
-              : 'text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200'
+            method === "apple"
+              ? "bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white"
+              : "text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200"
           }`}
         >
           Apple Pay
         </button>
         <button
           type="button"
-          onClick={() => setMethod('google')}
+          onClick={() => setMethod("google")}
           className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-            method === 'google'
-              ? 'bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white'
-              : 'text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200'
+            method === "google"
+              ? "bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white"
+              : "text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200"
           }`}
         >
           Google Pay
@@ -165,31 +165,31 @@ function CheckoutForm({ clientSecret, onSuccess }: CheckoutFormProps) {
 
       <form onSubmit={handleFormSubmit} className="w-full flex flex-col gap-4">
         {/* Card */}
-        <div className={method === 'card' ? 'block' : 'hidden'}>
+        <div className={method === "card" ? "block" : "hidden"}>
           <PaymentElement
             options={{
               wallets: {
-                applePay: 'never',
-                googlePay: 'never',
-                link: 'never',
+                applePay: "never",
+                googlePay: "never",
+                link: "never",
               },
             }}
           />
         </div>
 
         {/* Apple Pay */}
-        {method === 'apple' && (
+        {method === "apple" && (
           <div>
-            <div className={appleReady ? 'block' : 'hidden'}>
+            <div className={appleReady ? "block" : "hidden"}>
               <ExpressCheckoutElement
                 options={{
                   paymentMethods: {
-                    applePay: 'always',
-                    googlePay: 'never',
-                    link: 'never',
-                    amazonPay: 'never',
-                    paypal: 'never',
-                    klarna: 'never',
+                    applePay: "always",
+                    googlePay: "never",
+                    link: "never",
+                    amazonPay: "never",
+                    paypal: "never",
+                    klarna: "never",
                   },
                 }}
                 onReady={handleExpressReady}
@@ -199,7 +199,8 @@ function CheckoutForm({ clientSecret, onSuccess }: CheckoutFormProps) {
             {!appleReady && (
               <div className="text-center p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-dashed border-slate-300 dark:border-white/20">
                 <p className="text-sm text-slate-600 dark:text-zinc-400">
-                  Apple Pay is not available on this device/browser. Please open this page on an Apple device using Safari.
+                  Apple Pay is not available on this device/browser. Please open
+                  this page on an Apple device using Safari.
                 </p>
               </div>
             )}
@@ -207,18 +208,18 @@ function CheckoutForm({ clientSecret, onSuccess }: CheckoutFormProps) {
         )}
 
         {/* Google Pay */}
-        {method === 'google' && (
+        {method === "google" && (
           <div>
-            <div className={googleReady ? 'block' : 'hidden'}>
+            <div className={googleReady ? "block" : "hidden"}>
               <ExpressCheckoutElement
                 options={{
                   paymentMethods: {
-                    googlePay: 'always',
-                    applePay: 'never',
-                    link: 'never',
-                    amazonPay: 'never',
-                    paypal: 'never',
-                    klarna: 'never',
+                    googlePay: "always",
+                    applePay: "never",
+                    link: "never",
+                    amazonPay: "never",
+                    paypal: "never",
+                    klarna: "never",
                   },
                 }}
                 onReady={handleExpressReady}
@@ -228,7 +229,9 @@ function CheckoutForm({ clientSecret, onSuccess }: CheckoutFormProps) {
             {!googleReady && (
               <div className="text-center p-4 bg-slate-50 dark:bg-white/5 rounded-xl border border-dashed border-slate-300 dark:border-white/20">
                 <p className="text-sm text-slate-600 dark:text-zinc-400">
-                  Google Pay is not available on this browser. Please ensure you are using a supported browser (like Chrome) and have a saved card.
+                  Google Pay is not available on this browser. Please ensure you
+                  are using a supported browser (like Chrome) and have a saved
+                  card.
                 </p>
               </div>
             )}
@@ -242,12 +245,18 @@ function CheckoutForm({ clientSecret, onSuccess }: CheckoutFormProps) {
         )}
 
         <button
-          disabled={isLoading || !stripe || !elements || (method === 'apple' && !appleReady) || (method === 'google' && !googleReady)}
+          disabled={
+            isLoading ||
+            !stripe ||
+            !elements ||
+            (method === "apple" && !appleReady) ||
+            (method === "google" && !googleReady)
+          }
           type="submit"
           className={`w-full py-3 px-4 font-semibold rounded-xl mt-4 disabled:opacity-50 flex items-center justify-center transition-all ${
             isLuxury
-              ? 'bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)]'
-              : 'bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-gray-100'
+              ? "bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)]"
+              : "bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-gray-100"
           }`}
         >
           {isLoading ? (
@@ -274,7 +283,7 @@ export function PaymentModal({
 }: PaymentModalProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [selectedPack, setSelectedPack] = useState<CreditPackage>(
-    CREDIT_PACKAGES[1]
+    CREDIT_PACKAGES[1],
   );
   const [isInitializing, setIsInitializing] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
@@ -317,12 +326,15 @@ export function PaymentModal({
           setClientSecret(res.data.clientSecret);
         }
       } catch (err: unknown) {
-        const axiosErr = err as { response?: { data?: { message?: string } }; message?: string };
+        const axiosErr = err as {
+          response?: { data?: { message?: string } };
+          message?: string;
+        };
         console.error("Failed to initialize payment", err);
         setInitError(
           axiosErr.response?.data?.message ??
             axiosErr.message ??
-            t("payment.modal.initFailed")
+            t("payment.modal.initFailed"),
         );
       } finally {
         setIsInitializing(false);
@@ -358,7 +370,15 @@ export function PaymentModal({
     setTimeout(() => {
       onClose();
     }, 2500);
-  }, [type, selectedPack, planName, addCredits, setCredits, setPlanId, onClose]);
+  }, [
+    type,
+    selectedPack,
+    planName,
+    addCredits,
+    setCredits,
+    setPlanId,
+    onClose,
+  ]);
 
   return (
     <AnimatePresence>
@@ -389,7 +409,7 @@ export function PaymentModal({
                   ? t("payment.modal.creditsDesc")
                   : t("payment.modal.upgradeDesc").replace(
                       "{plan}",
-                      planName ?? ""
+                      planName ?? "",
                     )}
               </p>
 
@@ -452,7 +472,9 @@ export function PaymentModal({
                   <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-500/20 flex items-center justify-center mb-4">
                     <X className="w-6 h-6" />
                   </div>
-                  <p className="font-bold mb-2">{t("payment.modal.initFailed")}</p>
+                  <p className="font-bold mb-2">
+                    {t("payment.modal.initFailed")}
+                  </p>
                   <p className="text-sm text-red-500/80">{initError}</p>
                 </div>
               ) : isInitializing || !clientSecret ? (

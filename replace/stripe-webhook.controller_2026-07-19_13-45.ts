@@ -1,4 +1,4 @@
-import {
+﻿import {
   Controller,
   Post,
   Req,
@@ -117,17 +117,7 @@ export class StripeWebhookController {
     }
   }
 
-  private getCardDetails(paymentIntent: any) {
-    const card = paymentIntent.charges?.data?.[0]?.payment_method_details?.card;
-    if (card) {
-      return { cardLast4: String(card.last4), cardBrand: String(card.brand) };
-    }
-    return { cardLast4: null, cardBrand: null };
-  }
-
   private async handlePaymentIntentSucceeded(paymentIntent: any) {
-    const { cardLast4, cardBrand } = this.getCardDetails(paymentIntent);
-
     // Check if it's a credit purchase
     if (paymentIntent.metadata?.type === "CREDITS") {
       const userId = paymentIntent.metadata.userId;
@@ -139,7 +129,7 @@ export class StripeWebhookController {
       // Update history
       await this.prisma.paymentHistory.updateMany({
         where: { stripePaymentIntentId: paymentIntent.id },
-        data: { status: "SUCCEEDED", cardLast4, cardBrand },
+        data: { status: "SUCCEEDED" },
       });
 
       if (userId && creditsToAdd > 0) {
@@ -166,7 +156,7 @@ export class StripeWebhookController {
       // It's a subscription or something else
       await this.prisma.paymentHistory.updateMany({
         where: { stripePaymentIntentId: paymentIntent.id },
-        data: { status: "SUCCEEDED", cardLast4, cardBrand },
+        data: { status: "SUCCEEDED" },
       });
     }
   }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
@@ -185,7 +185,7 @@ export function PaymentTab() {
       id: "#INV-001",
       date: "21 Jun 2026",
       amount: "$29.00",
-      method: "Visa •••• 4242",
+      method: "Visa вЂўвЂўвЂўвЂў 4242",
       status: "Success",
       plan: "Pro Creator",
     },
@@ -193,7 +193,7 @@ export function PaymentTab() {
       id: "#INV-002",
       date: "21 May 2026",
       amount: "$29.00",
-      method: "Visa •••• 4242",
+      method: "Visa вЂўвЂўвЂўвЂў 4242",
       status: "Success",
       plan: "Pro Creator",
     },
@@ -201,7 +201,7 @@ export function PaymentTab() {
       id: "#INV-003",
       date: "15 May 2026",
       amount: "$15.00",
-      method: "Mastercard •••• 5555",
+      method: "Mastercard вЂўвЂўвЂўвЂў 5555",
       status: "Success",
       plan: "Credits (1000)",
     },
@@ -209,7 +209,7 @@ export function PaymentTab() {
       id: "#INV-004",
       date: "21 Apr 2026",
       amount: "$29.00",
-      method: "Visa •••• 4242",
+      method: "Visa вЂўвЂўвЂўвЂў 4242",
       status: "Failed",
       plan: "Pro Creator",
     },
@@ -217,7 +217,7 @@ export function PaymentTab() {
 
   return (
     <div className="space-y-8 animate-in fade-in">
-      {/* Block 7: Способы оплаты */}
+      {/* Block 7: РЎРїРѕСЃРѕР±С‹ РѕРїР»Р°С‚С‹ */}
       <div>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold text-slate-900 dark:text-white">
@@ -367,7 +367,7 @@ export function PaymentTab() {
         </div>
       </div>
 
-      {/* Block 4: История платежей */}
+      {/* Block 4: РСЃС‚РѕСЂРёСЏ РїР»Р°С‚РµР¶РµР№ */}
       <div>
         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">
           {t("billing.payment.billingHistory")}

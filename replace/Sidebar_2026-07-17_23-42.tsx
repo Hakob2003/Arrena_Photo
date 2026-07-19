@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -572,21 +572,21 @@ export function Sidebar() {
         >
           <div>
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
-              {isSidebarOpen ? t("nav.sectionOverview") : "•••"}
+              {isSidebarOpen ? t("nav.sectionOverview") : "вЂўвЂўвЂў"}
             </p>
             {renderLinks(MAIN_LINKS, 0)}
           </div>
 
           <div>
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
-              {isSidebarOpen ? t("nav.sectionStudio") : "•••"}
+              {isSidebarOpen ? t("nav.sectionStudio") : "вЂўвЂўвЂў"}
             </p>
             {renderLinks(USER_LINKS, MAIN_LINKS.length)}
           </div>
 
           <div>
             <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
-              {isSidebarOpen ? t("nav.sectionSettings") : "•••"}
+              {isSidebarOpen ? t("nav.sectionSettings") : "вЂўвЂўвЂў"}
             </p>
             {renderLinks(SETTINGS_LINKS, MAIN_LINKS.length + USER_LINKS.length)}
 
