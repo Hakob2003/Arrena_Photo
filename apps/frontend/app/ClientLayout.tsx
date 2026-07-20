@@ -224,17 +224,20 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     const distanceX = touchEndX - touchStartX;
     const distanceY = touchEndY - touchStartY;
 
-    const isHorizontal = Math.abs(distanceX) > Math.abs(distanceY);
+    const isHorizontal = Math.abs(distanceX) > Math.abs(distanceY) * 1.5;
 
     if (touchFingers === 1) {
       if (isHorizontal) {
-        // Swipe Left/Right (from anywhere)
+        // Swipe Left/Right
         if (distanceX > 50 && !isSidebarOpen) {
-          setSidebarOpen(true);
+          // Open sidebar only if swipe starts from the left edge (e.g. < 60px)
+          if (touchStartX < 60) {
+            setSidebarOpen(true);
+          }
         } else if (distanceX < -50 && isSidebarOpen) {
           setSidebarOpen(false);
         }
-      } else {
+      } else if (Math.abs(distanceY) > Math.abs(distanceX)) {
         // Swipe Up/Down with 1 finger (Pull-to-refresh)
         // ONLY if at the top of the page AT THE START of the touch and touch starts near the top
         if (distanceY > 100 && touchStartScrollY <= 5 && touchStartY < 150) {
