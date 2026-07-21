@@ -47,6 +47,8 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     useUIStore();
   const navDirection = useUIStore((state) => state.navDirection);
 
+  const activeSkin = user ? preferences.skin : "NEON";
+
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchStartY, setTouchStartY] = useState<number | null>(null);
   const [touchFingers, setTouchFingers] = useState<number>(0);
@@ -57,57 +59,72 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   >([]);
   const [mounted, setMounted] = useState(false);
 
-  // Not using drumVariants anymore for the main cylinder
-  // The VirtualCylinder handles its own transitions.
+  const PUBLIC_ROUTES = [
+    "/",
+    "/login",
+    "/register",
+    "/privacy",
+    "/terms",
+    "/refund-policy",
+    "/billing-policy",
+    "/verify",
+  ];
+
+  const isProtectedRoute = pathname ? !PUBLIC_ROUTES.includes(pathname) : false;
+  const isRedirecting = mounted && !user && isProtectedRoute;
+  const shouldRenderContent = mounted && !isRedirecting;
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    // Attempt silent refresh on initial load
+    if (isRedirecting) {
+      router.push("/login");
+    }
+  }, [isRedirecting, router]);
+
+  useEffect(() => {
+    // Just fetch /auth/me. If we have a refresh_token cookie but no access_token in memory,
+    // the axios interceptor will automatically pause this request, call /auth/refresh,
+    // save the new access_token, and then replay this request.
     api
-      .post("/auth/refresh")
-      .then((res) => {
-        if (res.data?.access_token) {
-          const newToken = res.data.access_token;
-          api
-            .get("/auth/me")
-            .then((meRes) => {
-              const data = meRes.data;
-              const freshUser = {
-                id: data.id,
-                email: data.email,
-                name: data.name || data.email?.split("@")[0] || "User",
-                image: data.avatarUrl,
-                role:
-                  typeof data.role === "object" ? data.role.name : data.role,
-                credits: data.credits,
-                planId: data.planId || "free",
-              };
-              login(freshUser, newToken);
-              if (typeof data.credits === "number") {
-                setCredits(data.credits);
-              }
-              if (data.preferences) {
-                setPreferences({
-                  theme: data.preferences.theme || "DARK",
-                  accentColor: data.preferences.accentColor || "INDIGO",
-                  fontSize: data.preferences.fontSize || "MEDIUM",
-                  compactMode: !!data.preferences.compactMode,
-                  animationsEnabled:
-                    data.preferences.animationsEnabled !== false,
-                  skin: data.preferences.skin || "NEON",
-                });
-              }
-            })
-            .catch((err) => {
-              console.error("Failed to fetch fresh user data", err);
-            });
+      .get("/auth/me")
+      .then((meRes) => {
+        const data = meRes.data;
+        const freshUser = {
+          id: data.id,
+          email: data.email,
+          name: data.name || data.email?.split("@")[0] || "User",
+          image: data.avatarUrl,
+          role: typeof data.role === "object" ? data.role.name : data.role,
+          credits: data.credits,
+          planId: data.planId || "free",
+        };
+        // Retrieve the token that was just set by the interceptor
+        const currentToken =
+          api.defaults.headers.common["Authorization"]
+            ?.toString()
+            .replace("Bearer ", "") || null;
+        login(freshUser, currentToken);
+        if (typeof data.credits === "number") {
+          setCredits(data.credits);
+        }
+        if (data.preferences) {
+          setPreferences({
+            theme: data.preferences.theme || "DARK",
+            accentColor: data.preferences.accentColor || "INDIGO",
+            fontSize: data.preferences.fontSize || "MEDIUM",
+            compactMode: !!data.preferences.compactMode,
+            animationsEnabled: data.preferences.animationsEnabled !== false,
+            skin: data.preferences.skin || "NEON",
+          });
         }
       })
       .catch((err) => {
-        console.log("Silent refresh failed (user not logged in)");
+        console.log(
+          "Initial auth check failed (user not logged in or session expired)",
+        );
       });
   }, [login, setCredits, setPreferences]);
 
@@ -278,17 +295,20 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     <SmoothScrollProvider>
       <div
         className={
-          preferences.skin === "PREMIUM"
-            ? `flex h-[100dvh] w-full overflow-hidden theme-${preferences?.skin?.toLowerCase() || "default"}`
-            : `flex min-h-screen w-full theme-${preferences?.skin?.toLowerCase() || "default"}`
+          activeSkin === "PREMIUM"
+            ? `flex h-[100dvh] w-full overflow-hidden theme-${activeSkin?.toLowerCase() || "default"}`
+            : `flex min-h-screen w-full theme-${activeSkin?.toLowerCase() || "default"}`
         }
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {mounted && user && <Sidebar />}
+        {shouldRenderContent &&
+          user &&
+          pathname !== "/login" &&
+          pathname !== "/register" && <Sidebar />}
         <div className="flex-1 flex flex-col min-w-0 relative">
-          {mounted && preferences.skin === "NEON" ? (
+          {shouldRenderContent && activeSkin === "NEON" ? (
             <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-background">
               <motion.div
                 className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] md:w-[50vw] md:h-[50vw] rounded-full"
@@ -327,36 +347,36 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                 }}
               />
             </div>
-          ) : mounted && preferences.skin === "LUXURY" ? (
+          ) : shouldRenderContent && activeSkin === "LUXURY" ? (
             <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
               <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-[#D4AF37]/5 blur-[60px] rounded-full" />
               <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-[#C5A028]/10 blur-[60px] rounded-full" />
             </div>
-          ) : mounted ? (
+          ) : shouldRenderContent ? (
             <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
               <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[40px] rounded-full" />
               <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 blur-[40px] rounded-full" />
             </div>
           ) : null}
 
-          <Topbar />
+          {pathname !== "/login" && pathname !== "/register" && <Topbar />}
           <main
             id="main-scroll-container"
             className={
-              preferences.skin === "PREMIUM"
+              activeSkin === "PREMIUM"
                 ? "flex-1 relative z-10 overflow-hidden"
                 : "flex-1 relative z-10 custom-scrollbar pb-20"
             }
           >
             <div
               className={
-                preferences.skin === "PREMIUM"
+                activeSkin === "PREMIUM"
                   ? "h-[100dvh] w-full relative"
                   : "pb-10"
               }
             >
-              {preferences.skin === "PREMIUM" ? (
-                mounted ? (
+              {activeSkin === "PREMIUM" ? (
+                shouldRenderContent ? (
                   isFlowRoute(pathname || "/") ? (
                     <VirtualCylinder currentPathname={pathname || "/"} />
                   ) : (
@@ -378,7 +398,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
                 )
-              ) : mounted ? (
+              ) : shouldRenderContent ? (
                 <div className="flex flex-col min-h-full">
                   <div className="flex-1">{children}</div>
                   <Footer />
@@ -398,7 +418,6 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
           </main>
         </div>
       </div>
-      <Toaster position="bottom-right" />
       <SwipeHint />
     </SmoothScrollProvider>
   );

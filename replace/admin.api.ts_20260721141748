@@ -70,15 +70,15 @@ export const adminApi = {
     return res.data;
   },
   runSystemAudit: async () => {
-    const res = await api.get("/admin/system-audit");
+    const res = await api.get('/admin/system-audit');
     return res.data;
   },
   getSystemAuditGarbage: async () => {
-    const res = await api.get("/admin/system-audit/garbage");
+    const res = await api.get('/admin/system-audit/garbage');
     return res.data;
   },
   cleanSystemAuditGarbage: async () => {
-    const res = await api.delete("/admin/system-audit/garbage");
+    const res = await api.delete('/admin/system-audit/garbage');
     return res.data;
   },
 

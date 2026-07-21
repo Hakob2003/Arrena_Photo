@@ -20,6 +20,17 @@ function LoginContent() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // Redirect if already logged in
+  useEffect(() => {
+    if (useAuthStore.getState().user && !token) {
+      if (useAuthStore.getState().user?.role === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
+    }
+  }, [router, token]);
+
   // Handle auto-login if token is present in URL (e.g. from OAuth redirect)
   useEffect(() => {
     if (token) {

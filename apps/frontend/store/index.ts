@@ -30,7 +30,7 @@ interface AuthState {
   planId: string;
   paymentMethods: PaymentMethod[];
   fetchPaymentMethods: () => Promise<void>;
-  login: (user: NonNullable<AuthState["user"]>, token: string) => void;
+  login: (user: NonNullable<AuthState["user"]>, token: string | null) => void;
   updateUser: (userUpdates: Partial<NonNullable<AuthState["user"]>>) => void;
   logout: () => Promise<void>;
   deductCredits: (amount: number) => void;

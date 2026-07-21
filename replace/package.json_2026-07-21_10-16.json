@@ -3,19 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": ">=20.x",
+    "node": "20.x",
     "pnpm": ">=8.0.0"
   },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "pnpm --parallel --recursive run dev",
     "build": "if [ \"$RENDER_SERVICE_NAME\" = \"arrena-photo-backend\" ]; then pnpm run db:generate && pnpm --filter @arrena-photo/backend-api run build; elif [ \"$RENDER_SERVICE_NAME\" = \"arrena-photo-worker\" ]; then pnpm run db:generate && pnpm --filter @arrena-photo/worker run build; elif [ \"$RENDER_SERVICE_NAME\" = \"arrena-photo-frontend\" ]; then cd apps/frontend && npm run build; else pnpm --recursive run build; fi",
     "start": "if [ \"$RENDER_SERVICE_NAME\" = \"arrena-photo-backend\" ]; then pnpm run db:push && cd apps/backend-api && pnpm run start:prod; elif [ \"$RENDER_SERVICE_NAME\" = \"arrena-photo-worker\" ]; then cd apps/worker && node dist/main; elif [ \"$RENDER_SERVICE_NAME\" = \"arrena-photo-frontend\" ]; then cd apps/frontend && npm start; else pnpm --parallel --recursive run start; fi",
     "lint": "pnpm --recursive run lint",
-    "typecheck": "pnpm --recursive run typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "db:generate": "pnpm --filter @arrena-photo/database run generate",
     "db:migrate": "pnpm --filter @arrena-photo/database run migrate:deploy",
@@ -24,13 +20,10 @@
     "prepare": "husky"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.6",
-    "@eslint/js": "^10.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.8",
     "prettier": "^3.2.5",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^8.64.0"
+    "typescript": "^5.4.5"
   },
   "pnpm.overrides": {
     "multer": "1.4.5-lts.1",
@@ -44,8 +37,6 @@
     "papaparse": "^5.5.3"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json,md}": [
-      "prettier --write"
-    ]
+    "*.{ts,tsx,js,jsx,json,md}": ["prettier --write"]
   }
 }

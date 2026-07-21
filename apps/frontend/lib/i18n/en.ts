@@ -506,6 +506,19 @@ const en: Record<string, string> = {
   "legal.refund.title": "Refund Policy",
   "legal.refund.content":
     "Unless otherwise required by law, paid subscriptions are non-refundable once the digital service has begun.\n\nRefunds are possible in cases of:\n• double billing;\n• technical errors;\n• accidental payments;\n• other cases provided by law.\n\nNon-refundable:\n• used credits;\n• completed generations;\n• active subscriptions after service provision has started (unless law provides otherwise).",
+
+  // === Admin Audit ===
+  "admin.audit.title": "System Audit",
+  "admin.audit.subtitle":
+    "Check database, environment, and 3rd-party services health",
+  "admin.audit.running": "Running system checks...",
+  "admin.audit.lastRun": "Last run: ",
+  "admin.audit.idleText":
+    "Click below to scan the entire system configuration. This might take a few seconds.",
+  "admin.audit.startButton": "Start System Audit",
+  "admin.audit.runAgain": "Run Again",
+  "admin.audit.done": "Done",
+  "admin.audit.runButton": "Run System Audit",
 };
 
 export default en;

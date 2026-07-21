@@ -64,7 +64,8 @@ export function GenerationModal({
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
     const url = getValidUrl(generation.imageUrl);
-    const shareText = t("myGen.shareText") || "Check out this generation from Arrena Photo!";
+    const shareText =
+      t("myGen.shareText") || "Check out this generation from Arrena Photo!";
 
     if (navigator.share && navigator.canShare) {
       try {
@@ -185,11 +186,18 @@ export function GenerationModal({
                 <p
                   className={`text-lg font-bold shadow-black drop-shadow-md ${isLuxury ? "text-[#D4AF37]" : "text-white"}`}
                 >
-                  {generation.model || (t("myGen.aiModel") || "AI Model")}
+                  {typeof generation.model === "object" &&
+                  generation.model !== null
+                    ? generation.model.name
+                    : generation.model || t("myGen.aiModel") || "AI Model"}
                 </p>
                 {generation.template && (
                   <p className="text-sm text-white/70 drop-shadow-md">
-                    {t("myGen.template") || "Template"}: {generation.template}
+                    {t("myGen.template") || "Template"}:{" "}
+                    {typeof generation.template === "object" &&
+                    generation.template !== null
+                      ? generation.template.name
+                      : generation.template}
                   </p>
                 )}
               </div>

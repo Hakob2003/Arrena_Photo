@@ -5,8 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint \"{app,components,lib}/**/*.{ts,tsx}\" --fix",
-    "typecheck": "tsc --noEmit"
+    "lint": "eslint \"{app,components,lib}/**/*.{ts,tsx}\" --fix"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",

@@ -1,0 +1,23 @@
+{
+  "name": "@arrena-photo/database",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "generate": "prisma generate",
+    "migrate:deploy": "prisma migrate deploy",
+    "push": "prisma db push --accept-data-loss",
+    "seed": "prisma db seed"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^17.4.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "prisma": "^5.22.0"
+  },
+  "prisma": {
+    "seed": "npx ts-node prisma/seed.ts"
+  }
+}

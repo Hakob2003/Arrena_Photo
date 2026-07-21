@@ -6,8 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 tsc",
-    "dev": "tsc --watch",
-    "typecheck": "tsc --noEmit"
+    "dev": "tsc --watch"
   },
   "dependencies": {
     "class-transformer": "^0.5.1",

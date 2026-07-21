@@ -4,6 +4,7 @@ import { Providers } from "./providers";
 import { ClientLayout } from "./ClientLayout";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -34,6 +35,7 @@ export default function RootLayout({
         <Providers>
           <ClientLayout>{children}</ClientLayout>
         </Providers>
+        <Toaster position="top-center" containerStyle={{ zIndex: 9999 }} />
         <script
           src="https://telegram.org/js/telegram-web-app.js"
           async

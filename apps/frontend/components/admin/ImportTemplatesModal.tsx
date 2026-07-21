@@ -71,6 +71,7 @@ export function ImportTemplatesModal({
         if (parseResult.errors.length > 0 && parseResult.data.length === 0) {
           throw new Error(
             "Failed to parse CSV/TSV data: " + parseResult.errors[0].message,
+            { cause: jsonError },
           );
         }
 
