@@ -143,6 +143,9 @@ importers:
       express:
         specifier: ^5.2.1
         version: 5.2.1
+      geoip-lite:
+        specifier: ^2.0.3
+        version: 2.0.3
       googleapis:
         specifier: ^173.0.0
         version: 173.0.0
@@ -200,7 +203,7 @@ importers:
     devDependencies:
       '@nestjs/cli':
         specifier: ^10.0.0
-        version: 10.4.9(@swc/cli@0.8.1(@swc/core@1.15.43)(chokidar@3.6.0))(@swc/core@1.15.43)
+        version: 10.4.9(@swc/cli@0.8.1(@swc/core@1.15.43)(chokidar@3.6.0))(@swc/core@1.15.43)(cssnano@7.1.9(postcss@8.5.15))(postcss@8.5.15)
       '@nestjs/schematics':
         specifier: ^10.0.0
         version: 10.2.3(chokidar@3.6.0)(typescript@5.9.3)
@@ -225,6 +228,9 @@ importers:
       '@types/express':
         specifier: ^4.17.17
         version: 4.17.25
+      '@types/geoip-lite':
+        specifier: ^1.4.4
+        version: 1.4.4
       '@types/jest':
         specifier: ^29.5.2
         version: 29.5.14
@@ -284,7 +290,7 @@ importers:
         version: 29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(jest-util@30.4.1)(jest@29.7.0(@types/node@20.19.42)(ts-node@10.9.2(@swc/core@1.15.43)(@types/node@20.19.42)(typescript@5.9.3)))(typescript@5.9.3)
       ts-loader:
         specifier: ^9.4.3
-        version: 9.6.0(typescript@5.9.3)(webpack@5.106.2(@swc/core@1.15.43))
+        version: 9.6.0(typescript@5.9.3)(webpack@5.106.2(@swc/core@1.15.43)(cssnano@7.1.9(postcss@8.5.15))(postcss@8.5.15))
       ts-node:
         specifier: ^10.9.1
         version: 10.9.2(@swc/core@1.15.43)(@types/node@20.19.42)(typescript@5.9.3)
@@ -541,7 +547,7 @@ importers:
     devDependencies:
       '@nestjs/cli':
         specifier: ^10.0.0
-        version: 10.4.9(@swc/core@1.15.43)(cssnano@7.1.9(postcss@8.5.15))(postcss@8.5.15)
+        version: 10.4.9(@swc/core@1.15.43)
       '@nestjs/schematics':
         specifier: ^10.0.0
         version: 10.2.3(chokidar@3.6.0)(typescript@5.9.3)
@@ -616,7 +622,7 @@ importers:
         version: 29.4.11(@babel/core@7.29.7)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.4.1(@babel/core@7.29.7))(jest-util@30.4.1)(jest@29.7.0(@types/node@20.19.43)(ts-node@10.9.2(@swc/core@1.15.43)(@types/node@20.19.43)(typescript@5.9.3)))(typescript@5.9.3)
       ts-loader:
         specifier: ^9.4.3
-        version: 9.6.0(typescript@5.9.3)(webpack@5.106.2(@swc/core@1.15.43)(cssnano@7.1.9(postcss@8.5.15))(postcss@8.5.15))
+        version: 9.6.0(typescript@5.9.3)(webpack@5.106.2(@swc/core@1.15.43))
       ts-node:
         specifier: ^10.9.1
         version: 10.9.2(@swc/core@1.15.43)(@types/node@20.19.43)(typescript@5.9.3)
@@ -2390,6 +2396,9 @@ packages:
 
   '@types/express@4.17.25':
     resolution: {integrity: sha512-dVd04UKsfpINUnK0yBoYHDF3xu7xVH4BuDotC/xGuycx4CgbP48X/KF/586bcObxT0HENHXEU8Nqtu6NR+eKhw==}
+
+  '@types/geoip-lite@1.4.4':
+    resolution: {integrity: sha512-2uVfn+C6bX/H356H6mjxsWUA5u8LO8dJgSBIRO/NFlpMe4DESzacutD/rKYrTDKm1Ugv78b4Wz1KvpHrlv3jSw==}
 
   '@types/googlepay@0.7.11':
     resolution: {integrity: sha512-njLi4oCyqYx4nT1xoZWFDnLtKVbsbZkJTzLO45X5RW3yJTgDFSg2Wj6dnuXx+ZdZa89gBLkfMIbKNnMi5Y2wpw==}
@@ -4530,6 +4539,10 @@ packages:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
 
+  geoip-lite@2.0.3:
+    resolution: {integrity: sha512-I0v/6sITK5FhEXHmatGSPBMply2nHN/2D743LIx4KkksttZt/E505lDaV6qUwt5RM08MbZW+/4E0KxusLVN39w==}
+    engines: {node: '>=24.0.0'}
+
   get-caller-file@2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
@@ -4868,6 +4881,10 @@ packages:
   ioredis@5.11.1:
     resolution: {integrity: sha512-ehuGcf94bQXhfagULNXrJdfnWO38v070jxSx/qE87Kjzmu2fU7ro5EFAb+OPituLqgfyuQaym5DlrNydW2sJ9A==}
     engines: {node: '>=12.22.0'}
+
+  ip-address@10.2.0:
+    resolution: {integrity: sha512-/+S6j4E9AHvW9SWMSEY9Xfy66O5PWvVEJ08O0y5JGyEKQpojb0K0GKpz/v5HJ/G0vi3D2sjGK78119oXZeE0qA==}
+    engines: {node: '>= 12'}
 
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
@@ -5379,6 +5396,10 @@ packages:
   language-tags@1.0.9:
     resolution: {integrity: sha512-MbjN408fEndfiQXbFQ1vnd+1NoLDsnQW41410oQBXiyXDMYH5z505juWa4KUE1LqxRC7DgOgZDbKLxHIwm27hA==}
     engines: {node: '>=0.10'}
+
+  lazy@1.0.11:
+    resolution: {integrity: sha512-Y+CjUfLmIpoUCCRl0ub4smrYtGGr5AOa2AKOaWelGHOGz33X/Y/KizefGqbkwfz44+cnq/+9habclf8vOmu2LA==}
+    engines: {node: '>=0.2.0'}
 
   leac@0.7.0:
     resolution: {integrity: sha512-qMrZeyEekgdRQ9o6a4NAB2EQZrv827GJdn1vnapwSJ90hWRB4TzUSunvacPkxQ2TnNqHNI1/zSt0hlo0crG8Jw==}
@@ -9050,45 +9071,7 @@ snapshots:
       bullmq: 5.78.0
       tslib: 2.8.1
 
-  '@nestjs/cli@10.4.9(@swc/cli@0.8.1(@swc/core@1.15.43)(chokidar@3.6.0))(@swc/core@1.15.43)':
-    dependencies:
-      '@angular-devkit/core': 17.3.11(chokidar@3.6.0)
-      '@angular-devkit/schematics': 17.3.11(chokidar@3.6.0)
-      '@angular-devkit/schematics-cli': 17.3.11(chokidar@3.6.0)
-      '@nestjs/schematics': 10.2.3(chokidar@3.6.0)(typescript@5.7.2)
-      chalk: 4.1.2
-      chokidar: 3.6.0
-      cli-table3: 0.6.5
-      commander: 4.1.1
-      fork-ts-checker-webpack-plugin: 9.0.2(typescript@5.7.2)(webpack@5.106.2(@swc/core@1.15.43))
-      glob: 10.5.0
-      inquirer: 8.2.6
-      node-emoji: 1.11.0
-      ora: 5.4.1
-      tree-kill: 1.2.2
-      tsconfig-paths: 4.2.0
-      tsconfig-paths-webpack-plugin: 4.2.0
-      typescript: 5.7.2
-      webpack: 5.106.2(@swc/core@1.15.43)
-      webpack-node-externals: 3.0.0
-    optionalDependencies:
-      '@swc/cli': 0.8.1(@swc/core@1.15.43)(chokidar@3.6.0)
-      '@swc/core': 1.15.43
-    transitivePeerDependencies:
-      - '@minify-html/node'
-      - '@swc/css'
-      - '@swc/html'
-      - clean-css
-      - cssnano
-      - csso
-      - esbuild
-      - html-minifier-terser
-      - lightningcss
-      - postcss
-      - uglify-js
-      - webpack-cli
-
-  '@nestjs/cli@10.4.9(@swc/core@1.15.43)(cssnano@7.1.9(postcss@8.5.15))(postcss@8.5.15)':
+  '@nestjs/cli@10.4.9(@swc/cli@0.8.1(@swc/core@1.15.43)(chokidar@3.6.0))(@swc/core@1.15.43)(cssnano@7.1.9(postcss@8.5.15))(postcss@8.5.15)':
     dependencies:
       '@angular-devkit/core': 17.3.11(chokidar@3.6.0)
       '@angular-devkit/schematics': 17.3.11(chokidar@3.6.0)
@@ -9108,6 +9091,44 @@ snapshots:
       tsconfig-paths-webpack-plugin: 4.2.0
       typescript: 5.7.2
       webpack: 5.106.2(@swc/core@1.15.43)(cssnano@7.1.9(postcss@8.5.15))(postcss@8.5.15)
+      webpack-node-externals: 3.0.0
+    optionalDependencies:
+      '@swc/cli': 0.8.1(@swc/core@1.15.43)(chokidar@3.6.0)
+      '@swc/core': 1.15.43
+    transitivePeerDependencies:
+      - '@minify-html/node'
+      - '@swc/css'
+      - '@swc/html'
+      - clean-css
+      - cssnano
+      - csso
+      - esbuild
+      - html-minifier-terser
+      - lightningcss
+      - postcss
+      - uglify-js
+      - webpack-cli
+
+  '@nestjs/cli@10.4.9(@swc/core@1.15.43)':
+    dependencies:
+      '@angular-devkit/core': 17.3.11(chokidar@3.6.0)
+      '@angular-devkit/schematics': 17.3.11(chokidar@3.6.0)
+      '@angular-devkit/schematics-cli': 17.3.11(chokidar@3.6.0)
+      '@nestjs/schematics': 10.2.3(chokidar@3.6.0)(typescript@5.7.2)
+      chalk: 4.1.2
+      chokidar: 3.6.0
+      cli-table3: 0.6.5
+      commander: 4.1.1
+      fork-ts-checker-webpack-plugin: 9.0.2(typescript@5.7.2)(webpack@5.106.2(@swc/core@1.15.43))
+      glob: 10.5.0
+      inquirer: 8.2.6
+      node-emoji: 1.11.0
+      ora: 5.4.1
+      tree-kill: 1.2.2
+      tsconfig-paths: 4.2.0
+      tsconfig-paths-webpack-plugin: 4.2.0
+      typescript: 5.7.2
+      webpack: 5.106.2(@swc/core@1.15.43)
       webpack-node-externals: 3.0.0
     optionalDependencies:
       '@swc/core': 1.15.43
@@ -9639,6 +9660,8 @@ snapshots:
       '@types/express-serve-static-core': 4.19.8
       '@types/qs': 6.15.1
       '@types/serve-static': 1.15.10
+
+  '@types/geoip-lite@1.4.4': {}
 
   '@types/googlepay@0.7.11': {}
 
@@ -12372,6 +12395,14 @@ snapshots:
 
   gensync@1.0.0-beta.2: {}
 
+  geoip-lite@2.0.3:
+    dependencies:
+      chalk: 4.1.2
+      iconv-lite: 0.6.3
+      ip-address: 10.2.0
+      lazy: 1.0.11
+      yauzl: 3.4.0
+
   get-caller-file@2.0.5: {}
 
   get-east-asian-width@1.6.0: {}
@@ -12686,7 +12717,6 @@ snapshots:
   iconv-lite@0.6.3:
     dependencies:
       safer-buffer: 2.1.2
-    optional: true
 
   iconv-lite@0.7.2:
     dependencies:
@@ -12795,6 +12825,8 @@ snapshots:
       standard-as-callback: 2.1.0
     transitivePeerDependencies:
       - supports-color
+
+  ip-address@10.2.0: {}
 
   ipaddr.js@1.9.1: {}
 
@@ -13637,6 +13669,8 @@ snapshots:
   language-tags@1.0.9:
     dependencies:
       language-subtag-registry: 0.3.23
+
+  lazy@1.0.11: {}
 
   leac@0.7.0:
     optional: true

@@ -12,6 +12,7 @@ import {
 } from "@nestjs/common";
 import { Request, Response } from "express";
 import { AuthService, IOAuthProfile } from "./auth.service";
+import { SecurityService } from "../security/security.service";
 import { RegisterDto, LoginDto } from "./dto/auth.dto";
 import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
@@ -23,7 +24,10 @@ import { Throttle } from "@nestjs/throttler";
 @ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly securityService: SecurityService,
+  ) {}
 
   @Post("register")
   @Throttle({ default: { limit: 5, ttl: 60000 } })
@@ -58,10 +62,39 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "Login and get JWT token" })
   @ApiResponse({ status: 200, description: "Login successful" })
-  async login(@Body() dto: LoginDto, @Res() res: Response) {
-    const result = await this.authService.login(dto);
-    this.setCookies(res, result);
-    return res.json({ success: true, access_token: result.access_token });
+  async login(
+    @Body() dto: LoginDto,
+    @Res() res: Response,
+    @Req() req: Request,
+  ) {
+    try {
+      const result = await this.authService.login(dto);
+      this.setCookies(res, result);
+      return res.json({ success: true, access_token: result.access_token });
+    } catch (error: any) {
+      if (error?.status === HttpStatus.UNAUTHORIZED) {
+        const clientIp =
+          (req.headers["x-forwarded-for"] as string) ||
+          req.socket.remoteAddress ||
+          "unknown";
+        const ip = clientIp.split(",")[0].trim();
+
+        // Don't block the request, just log it asynchronously
+        this.securityService
+          .logEvent({
+            ip,
+            macAddress: (req.headers["x-mac-address"] as string) || null,
+            endpoint: req.originalUrl || req.url,
+            method: req.method,
+            attackType: "FAILED_LOGIN",
+            riskScore: 30,
+            isBlocked: false,
+            reason: `Failed login attempt for email: ${dto.email}`,
+          })
+          .catch((err) => console.error("Failed to log security event", err));
+      }
+      throw error;
+    }
   }
 
   @Post("refresh")

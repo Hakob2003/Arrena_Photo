@@ -509,6 +509,24 @@ const hy: Record<string, string> = {
   "admin.audit.runAgain": "Կրկին ստուգել",
   "admin.audit.done": "Պատրաստ է",
   "admin.audit.runButton": "Ամբողջական աուդիտ",
+
+  // === Security Center ===
+  "admin.security.title": "Անվտանգության Կենտրոն",
+  "admin.security.subtitle":
+    "Կորպորատիվ մակարդակի վեբ հավելվածների firewall և սպառնալիքների մոնիտորինգ",
+  "admin.security.overallScore": "Անվտանգության ընդհանուր ցուցանիշ",
+  "admin.security.attacksToday": "Հարձակումներ այսօր",
+  "admin.security.blockedByWaf": "Արգելափակված է WAF-ի կողմից",
+  "admin.security.blockedIps": "Արգելափակված IP-ներ",
+  "admin.security.inBlacklist": "Ներկայումս սև ցուցակում",
+  "admin.security.activeSessions": "Ակտիվ սեսիաներ",
+  "admin.security.currentActive": "Ընթացիկ ակտիվ օգտվողներ",
+  "admin.security.wafStatus": "WAF Կարգավիճակ",
+  "admin.security.active": "Ակտիվ",
+  "admin.security.protectingAll": "Պաշտպանում է բոլոր էնդփոյնթները",
+  "admin.security.liveMonitor": "Ակտիվ Մոնիտորինգ",
+  "admin.security.firewall": "Firewall / Արգելափակված IP-ներ",
+  "admin.security.audit": "Կազմաձևման Աուդիտ",
 };
 
 export default hy;

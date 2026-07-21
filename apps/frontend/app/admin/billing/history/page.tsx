@@ -6,6 +6,7 @@ import { DataTable } from "../../../../components/admin/DataTable";
 import { Badge } from "../../../../components/admin/Badge";
 import { AnimatePresence } from "framer-motion";
 import { BillingModal } from "../../../../components/admin/BillingModal";
+import { BentoCard } from "../../../../components/admin/BentoCard";
 
 function HistoryContent() {
   const router = useRouter();
@@ -137,116 +138,125 @@ function HistoryContent() {
         </div>
       </div>
 
-      <div className="animate-in fade-in">
-        <DataTable
-          data={currentData}
-          columns={[
-            {
-              key: "user",
-              header: "Пользователь",
-              render: (r) => (
-                <span className="font-medium text-slate-900 dark:text-white">
-                  {r.user}
-                </span>
-              ),
-            },
-            { key: "plan", header: "Тариф" },
-            { key: "amount", header: "Сумма" },
-            { key: "date", header: "Дата" },
-            {
-              key: "status",
-              header: "Статус",
-              render: (r) => {
-                let v: "success" | "warning" | "error" | "default" = "default";
-                if (r.status === "PAID") v = "success";
-                if (r.status === "REFUNDED") v = "warning";
-                if (r.status === "FAILED") v = "error";
-                return <Badge variant={v}>{r.status}</Badge>;
+      <BentoCard
+        colSpan={0}
+        rowSpan={0}
+        delay={0.1}
+        noPadding
+        className="w-full overflow-hidden min-h-[400px]"
+      >
+        <div className="w-full max-w-full overflow-x-auto">
+          <DataTable
+            data={currentData}
+            columns={[
+              {
+                key: "user",
+                header: "Пользователь",
+                render: (r) => (
+                  <span className="font-medium text-slate-900 dark:text-white">
+                    {r.user}
+                  </span>
+                ),
               },
-            },
-            {
-              key: "actions",
-              header: "",
-              render: (r) =>
-                r.status === "PAID" ? (
-                  <button
-                    onClick={() => handleRefund(r)}
-                    className="text-sm text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                  >
-                    Возврат
-                  </button>
-                ) : null,
-            },
-          ]}
-        />
-        {transactions.length > 0 && (
-          <div className="flex flex-col sm:flex-row items-center justify-between mt-4 px-6 gap-4 pb-6">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-500 dark:text-slate-400">
-                Строк на странице:
-              </span>
-              <select
-                value={pageSize}
-                onChange={(e) => {
-                  setPageSize(Number(e.target.value));
-                  setCurrentPage(1);
-                }}
-                className="bg-white dark:bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-md text-sm px-2 py-1 outline-none focus:border-indigo-500 dark:text-white"
-              >
-                <option value={5}>5</option>
-                <option value={10}>10</option>
-                <option value={15}>15</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-slate-500 dark:text-slate-400">
-                {`Страница ${currentPage} из ${totalPages || 1}`}
-              </span>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.max(1, prev - 1))
-                  }
-                  disabled={currentPage === 1}
-                  className="px-3 py-1.5 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/[0.03] dark:hover:bg-white/5 transition-colors text-sm dark:text-white"
-                >
-                  Назад
-                </button>
-
-                <div className="flex gap-1 flex-wrap justify-center">
-                  {visiblePages.map((pageNum) => (
+              { key: "plan", header: "Тариф" },
+              { key: "amount", header: "Сумма" },
+              { key: "date", header: "Дата" },
+              {
+                key: "status",
+                header: "Статус",
+                render: (r) => {
+                  let v: "success" | "warning" | "error" | "default" =
+                    "default";
+                  if (r.status === "PAID") v = "success";
+                  if (r.status === "REFUNDED") v = "warning";
+                  if (r.status === "FAILED") v = "error";
+                  return <Badge variant={v}>{r.status}</Badge>;
+                },
+              },
+              {
+                key: "actions",
+                header: "",
+                render: (r) =>
+                  r.status === "PAID" ? (
                     <button
-                      key={pageNum < 0 ? `ellipsis-${pageNum}` : pageNum}
-                      onClick={() => pageNum > 0 && setCurrentPage(pageNum)}
-                      disabled={pageNum < 0}
-                      className={`w-8 h-8 rounded-lg transition-colors flex items-center justify-center text-sm ${
-                        currentPage === pageNum
-                          ? "bg-indigo-600 text-white font-medium"
-                          : pageNum < 0
-                            ? "text-slate-400 cursor-default"
-                            : "text-slate-600 dark:text-gray-300 hover:bg-black/[0.05] dark:hover:bg-white/10"
-                      }`}
+                      onClick={() => handleRefund(r)}
+                      className="text-sm text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                     >
-                      {pageNum < 0 ? "..." : pageNum}
+                      Возврат
                     </button>
-                  ))}
-                </div>
-
-                <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                  }
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-1.5 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/[0.03] dark:hover:bg-white/5 transition-colors text-sm dark:text-white"
+                  ) : null,
+              },
+            ]}
+          />
+          {transactions.length > 0 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-4 px-6 gap-4 pb-6">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-slate-500 dark:text-slate-400">
+                  Строк на странице:
+                </span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="bg-white dark:bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-md text-sm px-2 py-1 outline-none focus:border-indigo-500 dark:text-white"
                 >
-                  Вперед
-                </button>
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={15}>15</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-slate-500 dark:text-slate-400">
+                  {`Страница ${currentPage} из ${totalPages || 1}`}
+                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(1, prev - 1))
+                    }
+                    disabled={currentPage === 1}
+                    className="px-3 py-1.5 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/[0.03] dark:hover:bg-white/5 transition-colors text-sm dark:text-white"
+                  >
+                    Назад
+                  </button>
+
+                  <div className="flex gap-1 flex-wrap justify-center">
+                    {visiblePages.map((pageNum) => (
+                      <button
+                        key={pageNum < 0 ? `ellipsis-${pageNum}` : pageNum}
+                        onClick={() => pageNum > 0 && setCurrentPage(pageNum)}
+                        disabled={pageNum < 0}
+                        className={`w-8 h-8 rounded-lg transition-colors flex items-center justify-center text-sm ${
+                          currentPage === pageNum
+                            ? "bg-indigo-600 text-white font-medium"
+                            : pageNum < 0
+                              ? "text-slate-400 cursor-default"
+                              : "text-slate-600 dark:text-gray-300 hover:bg-black/[0.05] dark:hover:bg-white/10"
+                        }`}
+                      >
+                        {pageNum < 0 ? "..." : pageNum}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                    }
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1.5 rounded-lg border border-black/10 dark:border-white/10 bg-white dark:bg-[#0a0a0a] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-black/[0.03] dark:hover:bg-white/5 transition-colors text-sm dark:text-white"
+                  >
+                    Вперед
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </BentoCard>
 
       <AnimatePresence>
         {isRefundOpen && selectedTx && (

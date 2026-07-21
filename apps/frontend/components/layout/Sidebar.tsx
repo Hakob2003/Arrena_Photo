@@ -24,6 +24,18 @@ import {
   Settings,
   CreditCard,
   Crown,
+  LayoutDashboard,
+  LineChart,
+  Users,
+  Shield,
+  Zap,
+  Brain,
+  Bot,
+  Key,
+  ScrollText,
+  Ticket,
+  ClipboardList,
+  ArrowLeft,
 } from "lucide-react";
 
 export function Sidebar() {
@@ -102,13 +114,125 @@ export function Sidebar() {
     },
   ];
 
+  const isAdminActive = pathname.startsWith("/admin");
+
+  const ADMIN_SECTIONS = [
+    {
+      title: "Overview",
+      links: [
+        {
+          href: "/admin",
+          label: "Dashboard",
+          icon: <LayoutDashboard className="w-5 h-5" />,
+        },
+        {
+          href: "/admin/analytics",
+          label: "Analytics",
+          icon: <LineChart className="w-5 h-5" />,
+        },
+      ],
+    },
+    {
+      title: "Management",
+      links: [
+        {
+          href: "/admin/users",
+          label: "Users",
+          icon: <Users className="w-5 h-5" />,
+        },
+        {
+          href: "/admin/security",
+          label: "Security",
+          icon: <Shield className="w-5 h-5" />,
+        },
+        {
+          href: "/admin/templates",
+          label: "Templates",
+          icon: <Palette className="w-5 h-5" />,
+        },
+        {
+          href: "/admin/marketplace",
+          label: "Marketplace",
+          icon: <ShoppingCart className="w-5 h-5" />,
+        },
+        {
+          href: "/admin/generations",
+          label: "Generations",
+          icon: <Zap className="w-5 h-5" />,
+        },
+      ],
+    },
+    {
+      title: "Configuration",
+      links: [
+        {
+          href: "/admin/ai-models",
+          label: "AI Models",
+          icon: <Brain className="w-5 h-5" />,
+        },
+        {
+          href: "/admin/ai-providers",
+          label: "AI Providers",
+          icon: <Bot className="w-5 h-5" />,
+        },
+        {
+          href: "/admin/api-keys",
+          label: "API Keys",
+          icon: <Key className="w-5 h-5" />,
+        },
+        {
+          href: "/admin/cloud",
+          label: "Cloud Storage",
+          icon: <Cloud className="w-5 h-5" />,
+        },
+      ],
+    },
+    {
+      title: t("admin.sidebar.billing.title") || "Billing",
+      links: [
+        {
+          href: "/admin/billing/tariffs",
+          label: t("admin.sidebar.billing.tariffs") || "Tariffs",
+          icon: <CreditCard className="w-5 h-5" />,
+        },
+        {
+          href: "/admin/billing/history",
+          label: t("admin.sidebar.billing.history") || "History",
+          icon: <ScrollText className="w-5 h-5" />,
+        },
+        {
+          href: "/admin/billing/promocodes",
+          label: t("admin.sidebar.billing.promocodes") || "Promo Codes",
+          icon: <Ticket className="w-5 h-5" />,
+        },
+      ],
+    },
+    {
+      title: "System",
+      links: [
+        {
+          href: "/admin/audit-logs",
+          label: "Audit Logs",
+          icon: <ClipboardList className="w-5 h-5" />,
+        },
+        {
+          href: "/admin/settings",
+          label: "Settings",
+          icon: <Settings className="w-5 h-5" />,
+        },
+      ],
+    },
+  ];
+
   const renderLinks = (links: any[], startIndex = 0) => (
     <ul className="space-y-1">
       {links.map((link, i) => {
         const globalIndex = startIndex + i;
         const isActive =
           pathname === link.href ||
-          (link.href !== "/" && pathname.startsWith(link.href));
+          (link.href !== "/" &&
+            link.href !== "/admin" &&
+            pathname.startsWith(link.href + "/"));
         // Use globalIndex to offset the gradient, ensuring a single unified 2D gradient
         const gradientPosY = `${globalIndex * 8}%`;
         return (
@@ -567,187 +691,150 @@ export function Sidebar() {
         <div
           className={`flex-1 overflow-y-auto overflow-x-hidden py-6 flex flex-col gap-8 ${isSidebarOpen ? "custom-scrollbar px-3" : "scrollbar-hide px-1"}`}
         >
-          <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
-              {isSidebarOpen ? t("nav.sectionOverview") : "•••"}
-            </p>
-            {renderLinks(MAIN_LINKS, 0)}
-          </div>
-
-          <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
-              {isSidebarOpen ? t("nav.sectionStudio") : "•••"}
-            </p>
-            {renderLinks(USER_LINKS, MAIN_LINKS.length)}
-          </div>
-
-          <div>
-            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
-              {isSidebarOpen ? t("nav.sectionSettings") : "•••"}
-            </p>
-            {renderLinks(SETTINGS_LINKS, MAIN_LINKS.length + USER_LINKS.length)}
-
-            {user?.role === "ADMIN" &&
-              (() => {
-                const isAdminActive = pathname.startsWith("/admin");
+          {isAdminActive ? (
+            <>
+              {ADMIN_SECTIONS.map((section, idx) => {
+                // Calculate an offset for gradient coloring based on previous sections
+                const startIndex = ADMIN_SECTIONS.slice(0, idx).reduce(
+                  (acc, curr) => acc + curr.links.length,
+                  0,
+                );
                 return (
-                  <div className="mt-8">
-                    <p
-                      className={cn(
-                        "text-[10px] font-semibold uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left transition-all",
-                        isLuxury
-                          ? "text-[#D4AF37]"
-                          : isNeon
-                            ? "text-[rgb(var(--color-accent-400))] drop-shadow-[0_0_8px_rgb(var(--color-accent-500)/0.8)]"
-                            : "text-pink-500",
-                      )}
-                    >
-                      {isSidebarOpen ? t("nav.adminPanel") : "ADM"}
+                  <div key={idx}>
+                    <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
+                      {isSidebarOpen ? section.title : "•••"}
                     </p>
-                    <ul className="space-y-1">
-                      <li>
-                        <Link
-                          href="/admin/ai-models"
-                          className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-slate-500 hover:text-slate-900 hover:bg-[#fafafa] dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5 group ${!isSidebarOpen ? "justify-center !px-0" : ""} ${isAdminActive ? "text-slate-900 dark:text-white" : ""}`}
-                        >
-                          {isAdminActive && (
-                            <motion.div
-                              layoutId="sidebar-active"
-                              className={cn(
-                                "absolute inset-0 rounded-lg border-l-2",
-                                isPremium
-                                  ? "bg-gradient-to-r from-white/10 to-transparent border-white shadow-[inset_4px_0_15px_rgba(255,255,255,0.1)]"
-                                  : isLuxury
-                                    ? "bg-gradient-to-r from-[#D4AF37]/5 to-transparent border-[#D4AF37]"
-                                    : isNeon
-                                      ? "bg-gradient-to-r from-[rgb(var(--color-accent-500)/0.05)] to-transparent border-[rgb(var(--color-accent-500))] shadow-[inset_4px_0_15px_rgb(var(--color-accent-500)/0.25)]"
-                                      : "bg-gradient-to-r from-[rgb(var(--color-accent-500)/0.05)] dark:from-[rgb(var(--color-accent-500)/0.1)] to-transparent border-[rgb(var(--color-accent-500))]",
-                              )}
-                              transition={{
-                                type: "spring",
-                                stiffness: 350,
-                                damping: 30,
-                              }}
-                            />
-                          )}
-                          <span
-                            className={cn(
-                              "relative z-10 w-6 flex items-center justify-center transition-all",
-                              isAdminActive && isLuxury ? "text-[#D4AF37]" : "",
-                              isNeon && isAdminActive
-                                ? "drop-shadow-[0_0_12px_rgb(var(--color-accent-500)/0.9)]"
-                                : "",
-                            )}
-                          >
-                            {isNeon && isAdminActive ? (
-                              <>
-                                <svg
-                                  style={{
-                                    width: 0,
-                                    height: 0,
-                                    position: "absolute",
-                                  }}
-                                  aria-hidden="true"
-                                  focusable="false"
-                                >
-                                  <mask id="icon-mask-admin">
-                                    <svg
-                                      width="28"
-                                      height="28"
-                                      viewBox="0 0 32 32"
-                                      style={{ overflow: "visible" }}
-                                    >
-                                      <rect
-                                        width="32"
-                                        height="32"
-                                        fill="black"
-                                      />
-                                      <g
-                                        transform="translate(6, 6)"
-                                        style={{ color: "white" }}
-                                        stroke="white"
-                                        fill="none"
-                                      >
-                                        <Crown
-                                          className="w-5 h-5"
-                                          style={{ overflow: "visible" }}
-                                        />
-                                      </g>
-                                    </svg>
-                                  </mask>
-                                </svg>
-                                <div
-                                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 pointer-events-none"
-                                  style={{
-                                    WebkitMask: `url(#icon-mask-admin)`,
-                                    mask: `url(#icon-mask-admin)`,
-                                  }}
-                                >
-                                  <div
-                                    className="w-full h-full"
-                                    style={{
-                                      backgroundImage:
-                                        "linear-gradient(135deg, #818cf8, #c084fc, #22d3ee)",
-                                      backgroundSize: "400% 1200%",
-                                      backgroundPosition: `0% ${(MAIN_LINKS.length + USER_LINKS.length + SETTINGS_LINKS.length) * 8}%`,
-                                    }}
-                                  />
-                                </div>
-                                <div className="opacity-0 w-5 h-5 flex items-center justify-center">
-                                  <Crown className="w-5 h-5" />
-                                </div>
-                              </>
-                            ) : (
-                              <Crown className="w-5 h-5" />
-                            )}
-                          </span>
-                          <AnimatePresence mode="wait">
-                            {isSidebarOpen && (
-                              <motion.span
-                                initial={{ opacity: 0, width: 0 }}
-                                animate={{ opacity: 1, width: "auto" }}
-                                exit={{ opacity: 0, width: 0 }}
-                                className={cn(
-                                  "relative z-10 font-medium whitespace-nowrap overflow-hidden transition-all flex items-center",
-                                  isNeon && isAdminActive
-                                    ? "drop-shadow-[0_0_8px_rgba(99,102,241,0.8)]"
-                                    : "",
-                                )}
-                              >
-                                <span
-                                  className={
-                                    isNeon && isAdminActive
-                                      ? "bg-clip-text text-transparent"
-                                      : ""
-                                  }
-                                  style={
-                                    isNeon && isAdminActive
-                                      ? {
-                                          backgroundImage:
-                                            "linear-gradient(135deg, #818cf8, #c084fc, #22d3ee)",
-                                          backgroundSize: "400% 1200%",
-                                          backgroundPosition: `20% ${(MAIN_LINKS.length + USER_LINKS.length + SETTINGS_LINKS.length) * 8}%`,
-                                        }
-                                      : undefined
-                                  }
-                                >
-                                  {t("nav.goToAdmin")}
-                                </span>
-                              </motion.span>
-                            )}
-                          </AnimatePresence>
-                          {!isSidebarOpen && !isMobile && (
-                            <div className="absolute left-full ml-2 px-2 py-1 bg-[#fafafa] dark:bg-gray-800 text-slate-900 dark:text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-sm dark:shadow-none">
-                              {t("nav.admin")}
-                            </div>
-                          )}
-                        </Link>
-                      </li>
-                    </ul>
+                    {renderLinks(section.links, startIndex)}
                   </div>
                 );
-              })()}
-          </div>
+              })}
+
+              <div className="mt-8">
+                <p
+                  className={cn(
+                    "text-[10px] font-semibold uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left transition-all",
+                    isLuxury
+                      ? "text-[#D4AF37]"
+                      : isNeon
+                        ? "text-[rgb(var(--color-accent-400))] drop-shadow-[0_0_8px_rgb(var(--color-accent-500)/0.8)]"
+                        : "text-purple-500",
+                  )}
+                >
+                  {isSidebarOpen ? t("nav.backToApp") || "App" : "APP"}
+                </p>
+                <ul className="space-y-1">
+                  <li>
+                    <Link
+                      href="/"
+                      className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-slate-500 hover:text-slate-900 hover:bg-[#fafafa] dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5 group ${!isSidebarOpen ? "justify-center !px-0" : ""}`}
+                    >
+                      <span className="relative z-10 w-6 flex items-center justify-center transition-all">
+                        <ArrowLeft className="w-5 h-5" />
+                      </span>
+                      <AnimatePresence mode="wait">
+                        {isSidebarOpen && (
+                          <motion.span
+                            initial={{ opacity: 0, width: 0 }}
+                            animate={{ opacity: 1, width: "auto" }}
+                            exit={{ opacity: 0, width: 0 }}
+                            className="relative z-10 font-medium whitespace-nowrap overflow-hidden transition-all flex items-center"
+                          >
+                            {t("nav.home") || "Back"}
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                      {!isSidebarOpen && !isMobile && (
+                        <div className="absolute left-full ml-2 px-2 py-1 bg-[#fafafa] dark:bg-gray-800 text-slate-900 dark:text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-sm dark:shadow-none">
+                          {t("nav.home") || "Back"}
+                        </div>
+                      )}
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
+                  {isSidebarOpen ? t("nav.sectionOverview") : "•••"}
+                </p>
+                {renderLinks(MAIN_LINKS, 0)}
+              </div>
+
+              <div>
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
+                  {isSidebarOpen ? t("nav.sectionStudio") : "•••"}
+                </p>
+                {renderLinks(USER_LINKS, MAIN_LINKS.length)}
+              </div>
+
+              <div>
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left">
+                  {isSidebarOpen ? t("nav.sectionSettings") : "•••"}
+                </p>
+                {renderLinks(
+                  SETTINGS_LINKS,
+                  MAIN_LINKS.length + USER_LINKS.length,
+                )}
+
+                {user?.role === "ADMIN" &&
+                  (() => {
+                    return (
+                      <div className="mt-8">
+                        <p
+                          className={cn(
+                            "text-[10px] font-semibold uppercase tracking-wider mb-3 px-3 h-4 whitespace-nowrap overflow-hidden text-center sm:text-left transition-all",
+                            isLuxury
+                              ? "text-[#D4AF37]"
+                              : isNeon
+                                ? "text-[rgb(var(--color-accent-400))] drop-shadow-[0_0_8px_rgb(var(--color-accent-500)/0.8)]"
+                                : "text-pink-500",
+                          )}
+                        >
+                          {isSidebarOpen ? t("nav.adminPanel") : "ADM"}
+                        </p>
+                        <ul className="space-y-1">
+                          <li>
+                            <Link
+                              href="/admin/analytics"
+                              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all relative text-slate-500 hover:text-slate-900 hover:bg-[#fafafa] dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5 group ${!isSidebarOpen ? "justify-center !px-0" : ""}`}
+                            >
+                              <span
+                                className={cn(
+                                  "relative z-10 w-6 flex items-center justify-center transition-all",
+                                )}
+                              >
+                                <Crown className="w-5 h-5" />
+                              </span>
+                              <AnimatePresence mode="wait">
+                                {isSidebarOpen && (
+                                  <motion.span
+                                    initial={{ opacity: 0, width: 0 }}
+                                    animate={{ opacity: 1, width: "auto" }}
+                                    exit={{ opacity: 0, width: 0 }}
+                                    className={cn(
+                                      "relative z-10 font-medium whitespace-nowrap overflow-hidden transition-all flex items-center",
+                                    )}
+                                  >
+                                    <span>{t("nav.goToAdmin")}</span>
+                                  </motion.span>
+                                )}
+                              </AnimatePresence>
+                              {!isSidebarOpen && !isMobile && (
+                                <div className="absolute left-full ml-2 px-2 py-1 bg-[#fafafa] dark:bg-gray-800 text-slate-900 dark:text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-sm dark:shadow-none">
+                                  {t("nav.admin")}
+                                </div>
+                              )}
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+                    );
+                  })()}
+              </div>
+            </>
+          )}
         </div>
 
         {/* User Profile Section */}

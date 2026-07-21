@@ -1,11 +1,30 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { PageHeader } from '../../components/admin/PageHeader';
-import { adminApi } from '../../lib/admin.api';
+import React, { useEffect, useState } from "react";
+import { adminApi } from "../../lib/admin.api";
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, Legend
-} from 'recharts';
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  Legend,
+} from "recharts";
+import { BentoCard } from "../../components/admin/BentoCard";
+import {
+  Download,
+  DollarSign,
+  Users,
+  CreditCard,
+  Sparkles,
+  Database,
+  BarChart3,
+  TrendingUp,
+  Layers,
+} from "lucide-react";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<any>(null);
@@ -14,149 +33,485 @@ export default function AdminDashboard() {
     adminApi.getDashboardStats().then(setStats).catch(console.error);
   }, []);
 
-  const kpis = [
-    { label: 'Total Revenue', value: stats ? `$${stats.revenue.toFixed(2)}` : '...', trend: 'All Time' },
-    { label: 'Active Subscriptions', value: stats ? stats.activeSubscriptions.toString() : '...', trend: 'Paying users' },
-    { label: 'API Tokens Used', value: stats ? stats.apiTokensUsed.toLocaleString() : '...', trend: 'Total AI usage' },
-    { label: 'Total Users', value: stats ? stats.users.toString() : '...', trend: stats ? `+${stats.newUsers.day}d / +${stats.newUsers.week}w / +${stats.newUsers.month}m` : '...' },
-    { label: 'Total Generations', value: stats ? stats.generations.total.toString() : '...', trend: stats ? `${((stats.generations.success / (stats.generations.total || 1)) * 100).toFixed(1)}% success` : '...' },
-  ];
+  if (!stats) {
+    return (
+      <div className="flex h-[80vh] w-full items-center justify-center p-8">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-white" />
+          <p className="text-sm font-medium text-white/50 tracking-widest uppercase">
+            Loading Platform Data
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <PageHeader 
-        title="Dashboard" 
-        description="Overview of your platform's performance"
-        actions={<button className="px-3 py-1.5 bg-white text-black text-sm font-medium rounded-md hover:bg-gray-200">Download Report</button>}
-      />
+    <div className="flex flex-col gap-6 p-4 sm:p-6 lg:p-8 min-h-screen max-w-[1600px] mx-auto text-slate-200">
+      {/* Header section */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end justify-between">
+        <div>
+          <h1 className="text-4xl font-bold tracking-tighter text-white mb-2">
+            Platform Overview
+          </h1>
+          <p className="text-sm font-medium text-white/40 uppercase tracking-widest">
+            Key metrics and performance
+          </p>
+        </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-        {kpis.map((kpi, i) => (
-          <div key={i} className="p-5 border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a]">
-            <p className="text-sm text-slate-400 dark:text-gray-500 mb-1">{kpi.label}</p>
-            <div className="flex items-end justify-between">
-              <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-900 dark:text-white tracking-tight">{kpi.value}</h3>
-              <span className="text-xs font-medium text-slate-400 dark:text-gray-500">
-                {kpi.trend}
-              </span>
-            </div>
-          </div>
-        ))}
+        <button className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-bold rounded-full hover:bg-gray-200 transition-colors shadow-lg hover:shadow-white/20">
+          <Download className="w-4 h-4" />
+          Download Report
+        </button>
       </div>
 
-      {/* Charts Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a] p-6 h-[400px] flex flex-col">
-          <h3 className="text-sm font-medium text-slate-500 dark:text-gray-400 mb-4">Revenue & Generations Overview (7 Days)</h3>
-          <div className="flex-1 w-full">
-            {stats?.chartData ? (
+      {/* Smart Resizing Bento Grid (Flexbox Based) */}
+      <div className="flex flex-col gap-4 lg:gap-6 mt-4">
+        {/* ROW 1: Quick KPIs */}
+        <div className="flex flex-wrap gap-4 lg:gap-6">
+          <BentoCard
+            colSpan={0}
+            rowSpan={0}
+            delay={0.1}
+            gradient="from-purple-500/20 to-transparent"
+            className="flex-auto min-w-[200px]"
+          >
+            <div className="flex flex-col h-full justify-between gap-6">
+              <div className="flex items-start justify-between opacity-50 gap-4">
+                <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
+                  Total Revenue
+                </span>
+                <DollarSign className="w-4 h-4 flex-shrink-0" />
+              </div>
+              <div className="flex items-end justify-between mt-4">
+                <div className="text-5xl font-bold tracking-tight text-white">
+                  ${stats.revenue.toFixed(2)}
+                </div>
+                <span className="text-xs font-medium text-purple-400 mb-1 whitespace-nowrap ml-2">
+                  All Time
+                </span>
+              </div>
+            </div>
+          </BentoCard>
+
+          <BentoCard
+            colSpan={0}
+            rowSpan={0}
+            delay={0.2}
+            gradient="from-blue-500/20 to-transparent"
+            className="flex-auto min-w-[200px]"
+          >
+            <div className="flex flex-col h-full justify-between gap-6">
+              <div className="flex items-start justify-between opacity-50 gap-4">
+                <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
+                  Total Generations
+                </span>
+                <Sparkles className="w-4 h-4 flex-shrink-0" />
+              </div>
+              <div className="flex items-end justify-between mt-4">
+                <div className="text-5xl font-bold tracking-tight text-white">
+                  {stats.generations.total.toLocaleString()}
+                </div>
+                <span className="text-xs font-medium text-blue-400 mb-1 whitespace-nowrap ml-2">
+                  {(
+                    (stats.generations.success /
+                      (stats.generations.total || 1)) *
+                    100
+                  ).toFixed(1)}
+                  % success
+                </span>
+              </div>
+            </div>
+          </BentoCard>
+
+          <BentoCard
+            colSpan={0}
+            rowSpan={0}
+            delay={0.3}
+            gradient="from-emerald-500/20 to-transparent"
+            className="flex-auto min-w-[200px]"
+          >
+            <div className="flex flex-col h-full justify-between gap-6">
+              <div className="flex items-start justify-between opacity-50 gap-4">
+                <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
+                  Active Subs
+                </span>
+                <CreditCard className="w-4 h-4 flex-shrink-0" />
+              </div>
+              <div>
+                <div className="text-4xl font-bold tracking-tight text-white mt-4">
+                  {stats.activeSubscriptions.toLocaleString()}
+                </div>
+                <p className="text-[10px] text-emerald-400/80 uppercase tracking-wider mt-1 whitespace-nowrap">
+                  Paying users
+                </p>
+              </div>
+            </div>
+          </BentoCard>
+
+          <BentoCard
+            colSpan={0}
+            rowSpan={0}
+            delay={0.4}
+            gradient="from-rose-500/20 to-transparent"
+            className="flex-auto min-w-[200px]"
+          >
+            <div className="flex flex-col h-full justify-between gap-6">
+              <div className="flex items-start justify-between opacity-50 gap-4">
+                <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
+                  Total Users
+                </span>
+                <Users className="w-4 h-4 flex-shrink-0" />
+              </div>
+              <div>
+                <div className="text-4xl font-bold tracking-tight text-white mt-4">
+                  {stats.users.toLocaleString()}
+                </div>
+                <p className="text-[10px] text-rose-400/80 uppercase tracking-wider mt-1 whitespace-nowrap">
+                  +{stats.newUsers.week} this week
+                </p>
+              </div>
+            </div>
+          </BentoCard>
+        </div>
+
+        {/* ROW 2 & 3: Main Charts */}
+        <div className="flex flex-wrap gap-4 lg:gap-6">
+          <BentoCard
+            colSpan={0}
+            rowSpan={0}
+            delay={0.5}
+            noPadding
+            className="flex-[2] min-w-[300px]"
+          >
+            <div className="p-6 pb-2 flex items-center justify-between">
+              <div className="flex items-start gap-2 opacity-50">
+                <TrendingUp className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                <span className="text-xs font-bold uppercase tracking-wide text-purple-400 whitespace-nowrap">
+                  Revenue & Generations (7 Days)
+                </span>
+              </div>
+            </div>
+            <div className="flex-1 w-full h-[300px] px-2 pb-4">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <AreaChart
+                  data={stats.chartData}
+                  margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                >
                   <defs>
                     <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#c084fc" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#c084fc" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorGen" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#60a5fa" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#60a5fa" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
-                  <XAxis dataKey="date" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#111', borderColor: '#333', color: '#fff' }}
-                    itemStyle={{ color: '#fff' }}
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="#ffffff10"
+                    vertical={false}
                   />
-                  <Legend />
-                  <Area type="monotone" dataKey="revenue" name="Revenue ($)" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorRev)" />
-                  <Area type="monotone" dataKey="generations" name="Generations" stroke="#3b82f6" fillOpacity={1} fill="url(#colorGen)" />
+                  <XAxis
+                    dataKey="date"
+                    stroke="#ffffff40"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#ffffff40"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "rgba(10, 10, 10, 0.8)",
+                      borderColor: "rgba(255,255,255,0.1)",
+                      color: "#fff",
+                      backdropFilter: "blur(10px)",
+                      borderRadius: "12px",
+                    }}
+                    itemStyle={{ color: "#fff" }}
+                  />
+                  <Legend
+                    iconType="circle"
+                    wrapperStyle={{ fontSize: "12px", opacity: 0.8 }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="revenue"
+                    name="Revenue ($)"
+                    stroke="#c084fc"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorRev)"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="generations"
+                    name="Generations"
+                    stroke="#60a5fa"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorGen)"
+                  />
                 </AreaChart>
               </ResponsiveContainer>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-600">Loading chart...</div>
-            )}
-          </div>
-        </div>
+            </div>
+          </BentoCard>
 
-        <div className="border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a] p-6 h-[400px] flex flex-col">
-          <h3 className="text-sm font-medium text-slate-500 dark:text-gray-400 mb-4">Tokens & Credits Usage</h3>
-          <div className="flex-1 w-full">
-            {stats?.chartData ? (
+          <BentoCard
+            colSpan={0}
+            rowSpan={0}
+            delay={0.6}
+            noPadding
+            className="flex-1 min-w-[300px]"
+          >
+            <div className="p-6 pb-2 flex items-center justify-between">
+              <div className="flex items-start gap-2 opacity-50">
+                <Database className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                <span className="text-xs font-bold uppercase tracking-wide text-amber-400 whitespace-nowrap">
+                  Tokens & Credits
+                </span>
+              </div>
+            </div>
+            <div className="flex-1 w-full h-[300px] px-2 pb-4">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
-                  <XAxis dataKey="date" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#111', borderColor: '#333', color: '#fff' }}
-                    itemStyle={{ color: '#fff' }}
+                <AreaChart
+                  data={stats.chartData}
+                  margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="colorTok" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#fbbf24" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#fbbf24" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="colorCred" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#f87171" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#f87171" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="#ffffff10"
+                    vertical={false}
                   />
-                  <Legend />
-                  <Area type="monotone" dataKey="tokens" name="Tokens" stroke="#f59e0b" fillOpacity={0.1} fill="#f59e0b" />
-                  <Area type="monotone" dataKey="credits" name="Credits" stroke="#ef4444" fillOpacity={0.1} fill="#ef4444" />
+                  <XAxis
+                    dataKey="date"
+                    stroke="#ffffff40"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#ffffff40"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "rgba(10, 10, 10, 0.8)",
+                      borderColor: "rgba(255,255,255,0.1)",
+                      color: "#fff",
+                      backdropFilter: "blur(10px)",
+                      borderRadius: "12px",
+                    }}
+                    itemStyle={{ color: "#fff" }}
+                  />
+                  <Legend
+                    iconType="circle"
+                    wrapperStyle={{ fontSize: "12px", opacity: 0.8 }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="tokens"
+                    name="Tokens"
+                    stroke="#fbbf24"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorTok)"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="credits"
+                    name="Credits"
+                    stroke="#f87171"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorCred)"
+                  />
                 </AreaChart>
               </ResponsiveContainer>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-600">Loading chart...</div>
-            )}
-          </div>
+            </div>
+          </BentoCard>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-        <div className="border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a] p-6">
-          <h3 className="text-sm font-medium text-slate-500 dark:text-gray-400 mb-4">Popular Templates</h3>
-          <div className="space-y-4">
-            {stats?.popularTemplates?.length > 0 ? stats.popularTemplates.map((t: any) => (
-              <div key={t.id} className="flex justify-between items-center pb-3 border-b border-black/5 dark:border-white/5 last:border-0 last:pb-0">
-                <span className="text-slate-900 dark:text-slate-900 dark:text-white font-medium">{t.name}</span>
-                <span className="text-slate-500 dark:text-gray-400 text-sm">{t.downloadCount} downloads</span>
+        {/* ROW 4 & 5: Activity & Templates */}
+        <div className="flex flex-wrap gap-4 lg:gap-6">
+          <BentoCard
+            colSpan={0}
+            rowSpan={0}
+            delay={0.7}
+            className="flex-1 min-w-[300px] overflow-y-auto custom-scrollbar"
+          >
+            <div className="flex items-start gap-2 opacity-50 mb-6">
+              <Layers className="w-4 h-4 flex-shrink-0" />
+              <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
+                Popular Templates
+              </span>
+            </div>
+            <div className="space-y-4">
+              {stats.popularTemplates?.length > 0 ? (
+                stats.popularTemplates.map((t: any, index: number) => (
+                  <div
+                    key={t.id}
+                    className="flex justify-between items-center pb-3 border-b border-white/5 last:border-0 last:pb-0"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-xs font-bold text-white/50 flex-shrink-0">
+                        {index + 1}
+                      </div>
+                      <span className="text-white/80 font-medium whitespace-nowrap mr-4">
+                        {t.name}
+                      </span>
+                    </div>
+                    <span className="text-white/40 text-sm tabular-nums whitespace-nowrap">
+                      {t.downloadCount} DL
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-white/30 text-sm italic">
+                  No template data available
+                </div>
+              )}
+            </div>
+          </BentoCard>
+
+          <BentoCard
+            colSpan={0}
+            rowSpan={0}
+            delay={0.8}
+            noPadding
+            className="flex-[2] min-w-[300px]"
+          >
+            <div className="p-6 pb-2 flex items-center justify-between">
+              <div className="flex items-start gap-2 opacity-50">
+                <BarChart3 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <span className="text-xs font-bold uppercase tracking-wide text-emerald-400 whitespace-nowrap">
+                  User Activity Growth
+                </span>
               </div>
-            )) : (
-              <div className="text-gray-600">No data available</div>
-            )}
-          </div>
-        </div>
-
-        <div className="border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a] p-6">
-          <h3 className="text-sm font-medium text-slate-500 dark:text-gray-400 mb-4">Generation Status</h3>
-          <div className="flex gap-4">
-             <div className="flex-1 p-4 bg-green-500/10 border border-green-500/20 rounded-lg text-center">
-               <div className="text-2xl font-bold text-green-400">{stats?.generations?.success || 0}</div>
-               <div className="text-xs text-green-500/70 mt-1 uppercase">Successful</div>
-             </div>
-              <div className="flex-1 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-center">
-                <div className="text-2xl font-bold text-red-400">{stats?.generations?.failed || 0}</div>
-                <div className="text-xs text-red-500/70 mt-1 uppercase">Failed</div>
-              </div>
-          </div>
-        </div>
-
-        <div className="border border-black/10 dark:border-white/10 rounded-lg bg-[#0a0a0a] p-6">
-          <h3 className="text-sm font-medium text-slate-500 dark:text-gray-400 mb-4">User Activity Growth (7 Days)</h3>
-          <div className="h-[200px] w-full">
-            {stats?.chartData ? (
+            </div>
+            <div className="flex-1 w-full h-[250px] px-2 pb-4">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
-                  <XAxis dataKey="date" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-                  <Tooltip 
-                    cursor={{ fill: '#222' }}
-                    contentStyle={{ backgroundColor: '#111', borderColor: '#333', color: '#fff' }}
+                <BarChart
+                  data={stats.chartData}
+                  margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                >
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="#ffffff10"
+                    vertical={false}
                   />
-                  <Bar dataKey="users" name="Active Users" fill="#10b981" radius={[4, 4, 0, 0]} />
+                  <XAxis
+                    dataKey="date"
+                    stroke="#ffffff40"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#ffffff40"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <Tooltip
+                    cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                    contentStyle={{
+                      backgroundColor: "rgba(10, 10, 10, 0.8)",
+                      borderColor: "rgba(255,255,255,0.1)",
+                      color: "#fff",
+                      backdropFilter: "blur(10px)",
+                      borderRadius: "12px",
+                    }}
+                  />
+                  <Bar
+                    dataKey="users"
+                    name="Active Users"
+                    fill="#34d399"
+                    radius={[4, 4, 0, 0]}
+                  />
                 </BarChart>
               </ResponsiveContainer>
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-600">Loading chart...</div>
-            )}
+            </div>
+          </BentoCard>
+
+          <div className="flex-1 min-w-[250px] flex flex-col gap-4 lg:gap-6 h-full">
+            <BentoCard
+              colSpan={0}
+              rowSpan={0}
+              delay={0.9}
+              gradient="from-zinc-500/10 to-transparent"
+              className="flex-1"
+            >
+              <div className="flex items-start justify-between opacity-50 mb-4 gap-4">
+                <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
+                  Generation Status
+                </span>
+              </div>
+              <div className="flex gap-4 h-full">
+                <div className="flex-1 flex flex-col justify-center items-center p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl">
+                  <div className="text-3xl font-bold text-emerald-400">
+                    {stats.generations.success}
+                  </div>
+                  <div className="text-[10px] text-emerald-500/70 mt-1 uppercase font-bold tracking-wider whitespace-nowrap">
+                    Success
+                  </div>
+                </div>
+                <div className="flex-1 flex flex-col justify-center items-center p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl">
+                  <div className="text-3xl font-bold text-rose-400">
+                    {stats.generations.failed}
+                  </div>
+                  <div className="text-[10px] text-rose-500/70 mt-1 uppercase font-bold tracking-wider whitespace-nowrap">
+                    Failed
+                  </div>
+                </div>
+              </div>
+            </BentoCard>
+
+            <BentoCard
+              colSpan={0}
+              rowSpan={0}
+              delay={1.0}
+              gradient="from-indigo-500/10 to-transparent"
+              className="flex-1"
+            >
+              <div className="flex flex-col h-full justify-between gap-6">
+                <div className="flex items-start justify-between opacity-50 gap-4">
+                  <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
+                    Total API Tokens
+                  </span>
+                  <Database className="w-4 h-4 flex-shrink-0" />
+                </div>
+                <div>
+                  <div className="text-4xl font-bold tracking-tight text-white mt-4">
+                    {stats.apiTokensUsed.toLocaleString()}
+                  </div>
+                  <p className="text-[10px] text-indigo-400/80 uppercase tracking-wider mt-1 whitespace-nowrap">
+                    Overall platform usage
+                  </p>
+                </div>
+              </div>
+            </BentoCard>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

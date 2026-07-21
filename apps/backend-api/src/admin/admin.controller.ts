@@ -44,6 +44,12 @@ export class AdminController {
     return this.adminService.getDashboardStats();
   }
 
+  @Get("analytics")
+  @ApiOperation({ summary: "Get deep dive analytics data" })
+  getAnalytics() {
+    return this.adminService.getAnalyticsStats();
+  }
+
   @Get("users/recent")
   @ApiOperation({ summary: "Get recently registered users" })
   getRecentUsers() {

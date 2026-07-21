@@ -28,6 +28,25 @@ After every change:
 - `pnpm run build`
 - Visual review in browser
 
+## Design Language & Patterns
+
+### Bento Grid (Smart Resizing)
+
+- Use Flexbox (`flex flex-wrap gap-4 lg:gap-6`) instead of strict CSS Grid (`grid-cols-12`) for Bento Grid wrappers.
+- For Bento cards to smartly resize based on translated content (Armenian, Russian), use `flex-auto min-w-[200px]` (or similar `min-w-min`).
+- Ensure titles and labels have `whitespace-nowrap` so they push the boundaries of their parent bento cards elegantly without wrapping.
+
+### Glassmorphism
+
+- Use deep dark backgrounds (`bg-[#0A0A0A]/80`) with strong backdrop blur (`backdrop-blur-2xl`).
+- Add subtle borders (`border-white/5`) and soft, custom gradients (`from-purple-500/10 to-transparent`) for an inner glow effect.
+
+### Modals / Dialogs
+
+- The default Shadcn `DialogContent` restricts width to `sm:max-w-md` (448px).
+- If a modal contains a wide table (e.g. `min-w-[700px]`), ALWAYS override the width explicitly using `w-[95vw] sm:max-w-4xl` to prevent content or buttons from overflowing outside the dark modal container.
+- For wide tables, always wrap the `<Table>` component in `<div className="overflow-x-auto border rounded-md">`.
+
 ## Rules
 
 - Do NOT touch backend files.

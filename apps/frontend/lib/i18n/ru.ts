@@ -526,6 +526,24 @@ const ru: Record<string, string> = {
   "admin.audit.runAgain": "Запустить снова",
   "admin.audit.done": "Готово",
   "admin.audit.runButton": "Полный аудит",
+
+  // === Security Center ===
+  "admin.security.title": "Центр Безопасности",
+  "admin.security.subtitle":
+    "Корпоративный межсетевой экран и мониторинг угроз (WAF)",
+  "admin.security.overallScore": "Общий индекс безопасности",
+  "admin.security.attacksToday": "Атак сегодня",
+  "admin.security.blockedByWaf": "Заблокировано WAF",
+  "admin.security.blockedIps": "Заблокированные IP",
+  "admin.security.inBlacklist": "Сейчас в черном списке",
+  "admin.security.activeSessions": "Активные сессии",
+  "admin.security.currentActive": "Текущие онлайн пользователи",
+  "admin.security.wafStatus": "Статус WAF",
+  "admin.security.active": "Активен",
+  "admin.security.protectingAll": "Защищает все эндпоинты",
+  "admin.security.liveMonitor": "Мониторинг Атак",
+  "admin.security.firewall": "Брандмауэр / IP Черный Список",
+  "admin.security.audit": "Аудит Безопасности",
 };
 
 export default ru;

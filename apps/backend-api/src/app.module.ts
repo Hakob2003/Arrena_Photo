@@ -23,6 +23,7 @@ import { ProfileModule } from "./profile/profile.module";
 
 import { SettingsModule } from "./settings/settings.module";
 import { PaymentModule } from "./payment/payment.module";
+import { SecurityModule } from "./security/security.module";
 
 @Module({
   imports: [
@@ -99,6 +100,7 @@ import { PaymentModule } from "./payment/payment.module";
     ProfileModule,
     SettingsModule,
     PaymentModule,
+    SecurityModule,
   ],
   providers: [
     {

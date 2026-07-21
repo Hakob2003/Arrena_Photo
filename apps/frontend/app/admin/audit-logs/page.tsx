@@ -5,6 +5,7 @@ import { DataTable } from "../../../components/admin/DataTable";
 import { adminApi } from "../../../lib/admin.api";
 import { SystemAuditModal } from "../../../components/admin/SystemAuditModal";
 import { useTranslation } from "../../../lib/i18n";
+import { BentoCard } from "../../../components/admin/BentoCard";
 
 export default function AdminAuditLogs() {
   const { t } = useTranslation();
@@ -88,56 +89,66 @@ export default function AdminAuditLogs() {
           Loading audit logs...
         </div>
       ) : (
-        <DataTable
-          data={logs}
-          columns={[
-            {
-              key: "timestamp",
-              header: "Timestamp",
-              render: (r: any) => (
-                <span className="font-mono text-slate-400 dark:text-gray-500 text-xs">
-                  {r.timestamp}
-                </span>
-              ),
-            },
-            {
-              key: "admin",
-              header: "Actor",
-              render: (r: any) => (
-                <span className="font-semibold text-slate-900 dark:text-slate-900 dark:text-white">
-                  {r.admin}
-                </span>
-              ),
-            },
-            {
-              key: "action",
-              header: "Action",
-              render: (r: any) => (
-                <span className="px-2 py-1 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded text-xs font-mono text-gray-300">
-                  {r.action}
-                </span>
-              ),
-            },
-            {
-              key: "target",
-              header: "Details",
-              render: (r: any) => (
-                <span className="text-slate-500 dark:text-gray-400 text-xs truncate max-w-xs block">
-                  {r.target}
-                </span>
-              ),
-            },
-            {
-              key: "ip",
-              header: "IP",
-              render: (r: any) => (
-                <span className="font-mono text-slate-400 dark:text-gray-500 text-xs">
-                  {r.ip}
-                </span>
-              ),
-            },
-          ]}
-        />
+        <BentoCard
+          colSpan={0}
+          rowSpan={0}
+          delay={0.1}
+          noPadding
+          className="w-full overflow-hidden min-h-[400px]"
+        >
+          <div className="w-full max-w-full overflow-x-auto">
+            <DataTable
+              data={logs}
+              columns={[
+                {
+                  key: "timestamp",
+                  header: "Timestamp",
+                  render: (r: any) => (
+                    <span className="font-mono text-slate-400 dark:text-gray-500 text-xs">
+                      {r.timestamp}
+                    </span>
+                  ),
+                },
+                {
+                  key: "admin",
+                  header: "Actor",
+                  render: (r: any) => (
+                    <span className="font-semibold text-slate-900 dark:text-slate-900 dark:text-white">
+                      {r.admin}
+                    </span>
+                  ),
+                },
+                {
+                  key: "action",
+                  header: "Action",
+                  render: (r: any) => (
+                    <span className="px-2 py-1 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded text-xs font-mono text-gray-300">
+                      {r.action}
+                    </span>
+                  ),
+                },
+                {
+                  key: "target",
+                  header: "Details",
+                  render: (r: any) => (
+                    <span className="text-slate-500 dark:text-gray-400 text-xs truncate max-w-xs block">
+                      {r.target}
+                    </span>
+                  ),
+                },
+                {
+                  key: "ip",
+                  header: "IP",
+                  render: (r: any) => (
+                    <span className="font-mono text-slate-400 dark:text-gray-500 text-xs">
+                      {r.ip}
+                    </span>
+                  ),
+                },
+              ]}
+            />
+          </div>
+        </BentoCard>
       )}
     </>
   );

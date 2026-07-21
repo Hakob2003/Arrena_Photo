@@ -519,6 +519,24 @@ const en: Record<string, string> = {
   "admin.audit.runAgain": "Run Again",
   "admin.audit.done": "Done",
   "admin.audit.runButton": "Run System Audit",
+
+  // === Security Center ===
+  "admin.security.title": "Security Center",
+  "admin.security.subtitle":
+    "Enterprise-grade Web Application Firewall & Threat Monitoring",
+  "admin.security.overallScore": "Overall Security Score",
+  "admin.security.attacksToday": "Attacks Today",
+  "admin.security.blockedByWaf": "Blocked by WAF",
+  "admin.security.blockedIps": "Blocked IPs",
+  "admin.security.inBlacklist": "Currently in blacklist",
+  "admin.security.activeSessions": "Active Sessions",
+  "admin.security.currentActive": "Current active users",
+  "admin.security.wafStatus": "WAF Status",
+  "admin.security.active": "Active",
+  "admin.security.protectingAll": "Protecting all endpoints",
+  "admin.security.liveMonitor": "Live Monitor",
+  "admin.security.firewall": "Firewall / Blocked IPs",
+  "admin.security.audit": "Configuration Audit",
 };
 
 export default en;

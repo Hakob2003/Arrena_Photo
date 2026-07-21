@@ -134,6 +134,7 @@ model User {
   payouts         Payout[]
   reports         TemplateReport[]
   generationLikes GenerationLike[]
+  securityEvents  SecurityEvent[]
 
   @@index([email])
 }
@@ -636,4 +637,39 @@ model StripeWebhookEvent {
   type      String
   status    String   @default("PROCESSED") // "PROCESSED", "FAILED"
   createdAt DateTime @default(now())
+}
+
+model SecurityEvent {
+  id          String   @id @default(uuid())
+  ip          String
+  macAddress  String?
+  country     String?
+  city        String?
+  userId      String?
+  endpoint    String
+  method      String
+  attackType  String   // e.g. "SQLi", "XSS", "BruteForce"
+  riskScore   Int      @default(0) // 0-100
+  isBlocked   Boolean  @default(false)
+  reason      String?
+  payloadHash String?
+  createdAt   DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([ip])
+  @@index([createdAt])
+  @@index([attackType])
+}
+
+model BlockedIp {
+  id          String   @id @default(uuid())
+  ip          String   @unique
+  reason      String?
+  country     String?
+  isPermanent Boolean  @default(false)
+  expiresAt   DateTime?
+  blockedAt   DateTime @default(now())
+
+  @@index([ip])
 }

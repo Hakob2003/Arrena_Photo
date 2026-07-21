@@ -87,6 +87,10 @@ export const adminApi = {
     const res = await api.get("/admin/dashboard");
     return res.data;
   },
+  getAnalytics: async () => {
+    const res = await api.get("/admin/analytics");
+    return res.data;
+  },
 
   // Payouts
   getPayouts: async (page = 1, limit = 20) => {

@@ -286,10 +286,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     setIsPinch(false);
   };
 
-  if (isAdmin) {
-    // Return children directly; admin/layout.tsx will handle the admin UI
-    return <>{children}</>;
-  }
+  // Return layout for all routes including admin
 
   return (
     <SmoothScrollProvider>

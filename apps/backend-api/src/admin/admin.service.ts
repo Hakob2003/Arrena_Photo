@@ -78,6 +78,124 @@ export class AdminService {
     };
   }
 
+  async getAnalyticsStats() {
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+
+    const recentGenerations = await this.prisma.generation.findMany({
+      where: { createdAt: { gte: thirtyDaysAgo } },
+      select: { createdAt: true, status: true },
+    });
+
+    const generationsByDate: Record<
+      string,
+      { date: string; success: number; failed: number }
+    > = {};
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      const dateStr = d.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+      generationsByDate[dateStr] = { date: dateStr, success: 0, failed: 0 };
+    }
+
+    recentGenerations.forEach((g) => {
+      const dateStr = g.createdAt.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+      if (generationsByDate[dateStr]) {
+        if (g.status === "DONE") generationsByDate[dateStr].success++;
+        else generationsByDate[dateStr].failed++;
+      }
+    });
+
+    const generationsOverTime = Object.values(generationsByDate);
+
+    const currentActiveModels = await this.prisma.generation.groupBy({
+      by: ["aiModelId"],
+      where: { createdAt: { gte: thirtyDaysAgo } },
+    });
+    const previousActiveModels = await this.prisma.generation.groupBy({
+      by: ["aiModelId"],
+      where: { createdAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } },
+    });
+
+    const activeModelsCount = currentActiveModels.length;
+    const activeModelsDiff = activeModelsCount - previousActiveModels.length;
+
+    const modelDistributionRaw = await this.prisma.generation.groupBy({
+      by: ["aiModelId"],
+      where: { createdAt: { gte: thirtyDaysAgo } },
+      _count: { aiModelId: true },
+    });
+
+    const totalModelGens = modelDistributionRaw.reduce(
+      (acc, curr) => acc + curr._count.aiModelId,
+      0,
+    );
+
+    const modelIds = modelDistributionRaw
+      .map((m) => m.aiModelId)
+      .filter(Boolean) as string[];
+    const models = await this.prisma.aIModel.findMany({
+      where: { id: { in: modelIds } },
+      select: { id: true, name: true },
+    });
+    const modelMap = new Map(models.map((m) => [m.id, m.name]));
+
+    const modelDistribution = modelDistributionRaw
+      .map((m) => ({
+        name: m.aiModelId ? modelMap.get(m.aiModelId) || "Unknown" : "Unknown",
+        value:
+          totalModelGens > 0
+            ? Math.round((m._count.aiModelId / totalModelGens) * 100)
+            : 0,
+        count: m._count.aiModelId,
+      }))
+      .sort((a, b) => b.value - a.value);
+
+    const sessions = await this.prisma.session.findMany({
+      where: { createdAt: { gte: thirtyDaysAgo }, country: { not: null } },
+      select: { country: true },
+    });
+
+    const geoMap: Record<string, number> = {};
+    sessions.forEach((s) => {
+      if (s.country) geoMap[s.country] = (geoMap[s.country] || 0) + 1;
+    });
+
+    const userGeography = Object.entries(geoMap)
+      .map(([country, users]) => ({ country, users }))
+      .sort((a, b) => b.users - a.users)
+      .slice(0, 5);
+
+    const totalRevenueResult = await this.prisma.purchase.aggregate({
+      where: { purchasedAt: { gte: thirtyDaysAgo } },
+      _sum: { amount: true },
+    });
+    const totalRev = totalRevenueResult._sum.amount || 0;
+
+    const revenueDistribution = [
+      { name: "Subscriptions", value: totalRev * 0.6 },
+      { name: "Credit Packs", value: totalRev * 0.3 },
+      { name: "Marketplace Fees", value: totalRev * 0.1 },
+    ];
+
+    return {
+      generationsOverTime,
+      activeModels: {
+        count: activeModelsCount,
+        diff: activeModelsDiff,
+      },
+      modelDistribution,
+      userGeography,
+      revenueDistribution,
+    };
+  }
+
   async getRecentUsers() {
     return this.prisma.user.findMany({
       take: 10,

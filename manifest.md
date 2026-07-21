@@ -1,3 +1,20 @@
+# Project Manifest
+
+This file tracks all file backups and replacements as per the Backup Policy.
+
+## 2026-07-21 16:33:41 (Admin UI Unification)
+
+### Replaced
+
+- `apps/frontend/app/ClientLayout.tsx` -> `replace/20260721-163341/ClientLayout.tsx`
+- `apps/frontend/app/admin/layout.tsx` -> `replace/20260721-163341/layout.tsx`
+- `apps/frontend/components/layout/Sidebar.tsx` -> `replace/20260721-163341/Sidebar.tsx`
+
+### Deleted
+
+- `apps/frontend/components/admin/AdminSidebar.tsx` -> `delete/20260721-163341/AdminSidebar.tsx`
+- `apps/frontend/components/admin/AdminTopbar.tsx` -> `delete/20260721-163341/AdminTopbar.tsx`
+
 # Manifest of Changes
 
 ## 2026-07-19 13:45 (Retroactive Backup)
@@ -110,3 +127,9 @@
 - **Operation:** Replace
 - **Action performed:** Complete overhaul of System Audit module.
 - **Reason:** Upgraded audit module to production-grade E2E diagnostics.
+
+- Backup schema.prisma to replace/schema.prisma_20260721151331
+- Backup app.module.ts to replace/app.module.ts_20260721151331
+- [20260722_000701] Backed up apps\frontend\app\admin\users\page.tsx to f:\Arrena_Photo\replace\20260722_000701\page.tsx before Bento Grid refactor.
+- [20260722_000701] Backed up apps\frontend\app\admin\analytics\page.tsx to f:\Arrena_Photo\replace\20260722_000701\page.tsx before Bento Grid refactor.
+- [20260722_000701] Backed up apps\frontend\app\admin\templates\page.tsx to f:\Arrena_Photo\replace\20260722_000701\page.tsx before Bento Grid refactor.
