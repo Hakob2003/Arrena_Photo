@@ -130,9 +130,19 @@ export default function AuditLogViewer() {
                   </td>
                   <td
                     className="p-3 text-xs text-white/40 max-w-[200px] truncate"
-                    title={log.details}
+                    title={
+                      log.details
+                        ? typeof log.details === "object"
+                          ? JSON.stringify(log.details)
+                          : String(log.details)
+                        : undefined
+                    }
                   >
-                    {log.details || "-"}
+                    {log.details
+                      ? typeof log.details === "object"
+                        ? JSON.stringify(log.details)
+                        : String(log.details)
+                      : "-"}
                   </td>
                 </tr>
               ))
