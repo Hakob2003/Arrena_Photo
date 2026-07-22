@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "../../../lib/i18n";
+
 import { useState, useEffect } from "react";
 import {
   Table,
@@ -51,6 +53,7 @@ import { PageHeader } from "@/components/admin/PageHeader";
 import { BentoCard } from "@/components/admin/BentoCard";
 
 export default function AdminTemplatesPage() {
+  const { t } = useTranslation();
   const [templates, setTemplates] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -220,8 +223,8 @@ export default function AdminTemplatesPage() {
     <div className="space-y-6 max-w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <PageHeader
-          title="Template Management"
-          description="Manage AI generation templates, categories and visibility."
+          title={t("admin.templates.title")}
+          description={t("admin.templates.subtitle")}
         />
         <div className="flex flex-wrap items-center gap-2 sm:gap-4 shrink-0">
           <Button
@@ -229,13 +232,13 @@ export default function AdminTemplatesPage() {
             variant="outline"
             className="bg-transparent border-black/10 dark:border-gray-800 hover:bg-white dark:bg-gray-800 text-slate-900 dark:text-slate-900 dark:text-white text-xs sm:text-sm"
           >
-            Import CSV/JSON
+            {t("admin.templates.importBtn")}
           </Button>
           <Button
             onClick={openCreate}
             className="bg-indigo-600 shadow-[0_8px_24px_rgba(99,102,241,0.25)] dark:shadow-none hover:bg-indigo-700 text-white text-xs sm:text-sm"
           >
-            <Plus className="mr-1 sm:mr-2 h-4 w-4" /> Create Template
+            <Plus className="mr-1 sm:mr-2 h-4 w-4" /> {t("admin.templates.createBtn")}
           </Button>
         </div>
       </div>
@@ -243,7 +246,7 @@ export default function AdminTemplatesPage() {
       {selectedIds.size > 0 && (
         <div className="flex items-center gap-2 p-2 bg-[#1a1a1a] rounded-md border border-black/10 dark:border-gray-800">
           <span className="text-sm font-medium ml-2 mr-4 text-slate-900 dark:text-slate-900 dark:text-white">
-            {selectedIds.size} selected
+            {selectedIds.size} {t("admin.templates.selected")}
           </span>
           <Button
             size="sm"
@@ -251,7 +254,7 @@ export default function AdminTemplatesPage() {
             className="bg-transparent text-slate-900 dark:text-slate-900 dark:text-white border-gray-700"
             onClick={() => handleBulkAction("PUBLISH")}
           >
-            Publish
+            {t("admin.templates.publishBtn")}
           </Button>
           <Button
             size="sm"
@@ -259,14 +262,14 @@ export default function AdminTemplatesPage() {
             className="bg-transparent text-slate-900 dark:text-slate-900 dark:text-white border-gray-700"
             onClick={() => handleBulkAction("DRAFT")}
           >
-            Set Draft
+            {t("admin.templates.draftBtn")}
           </Button>
           <Button
             size="sm"
             variant="destructive"
             onClick={() => handleBulkAction("DELETE")}
           >
-            Delete
+            {t("admin.templates.deleteBtn")}
           </Button>
         </div>
       )}
@@ -283,7 +286,7 @@ export default function AdminTemplatesPage() {
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
               <Input
-                placeholder="Search templates..."
+                placeholder={t("admin.templates.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 h-10 bg-[#111] border-black/10 dark:border-gray-800 text-slate-900 dark:text-white"
@@ -295,7 +298,7 @@ export default function AdminTemplatesPage() {
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="h-10 px-3 rounded-lg bg-[#111] border border-black/10 dark:border-gray-800 text-slate-900 dark:text-white text-sm outline-none"
             >
-              <option value="all">All Categories</option>
+              <option value="all">{t("admin.templates.allCategories")}</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -308,10 +311,10 @@ export default function AdminTemplatesPage() {
               onChange={(e) => setSelectedStatus(e.target.value)}
               className="h-10 px-3 rounded-lg bg-[#111] border border-black/10 dark:border-gray-800 text-slate-900 dark:text-white text-sm outline-none"
             >
-              <option value="all">All Statuses</option>
-              <option value="PUBLISHED">Published</option>
-              <option value="DRAFT">Draft</option>
-              <option value="ARCHIVED">Archived</option>
+              <option value="all">{t("admin.templates.allStatuses")}</option>
+              <option value="PUBLISHED">{t("admin.templates.published")}</option>
+              <option value="DRAFT">{t("admin.templates.draft")}</option>
+              <option value="ARCHIVED">{t("admin.templates.archived")}</option>
             </select>
           </div>
           <div className="flex items-center bg-[#111] border border-black/10 dark:border-gray-800 rounded-lg p-1 shrink-0">
@@ -320,7 +323,7 @@ export default function AdminTemplatesPage() {
               size="sm"
               onClick={() => setViewMode("table")}
               className={`h-8 px-3 ${viewMode === "table" ? "bg-black/10 dark:bg-white/10" : ""}`}
-              title="Table View"
+              title={t("admin.templates.tableView")}
             >
               <TableIcon className="h-4 w-4" />
             </Button>
@@ -329,7 +332,7 @@ export default function AdminTemplatesPage() {
               size="sm"
               onClick={() => setViewMode("compact")}
               className={`h-8 px-3 ${viewMode === "compact" ? "bg-black/10 dark:bg-white/10" : ""}`}
-              title="Compact View (No Preview)"
+              title={t("admin.templates.compactView")}
             >
               <List className="h-4 w-4" />
             </Button>
@@ -338,7 +341,7 @@ export default function AdminTemplatesPage() {
               size="sm"
               onClick={() => setViewMode("grid")}
               className={`h-8 px-3 ${viewMode === "grid" ? "bg-black/10 dark:bg-white/10" : ""}`}
-              title="Grid View"
+              title={t("admin.templates.gridView")}
             >
               <LayoutGrid className="h-4 w-4" />
             </Button>
@@ -360,7 +363,7 @@ export default function AdminTemplatesPage() {
               </div>
             ) : filteredTemplates.length === 0 ? (
               <div className="col-span-full text-center py-10 text-slate-400">
-                No templates found
+                {t("admin.templates.noTemplatesFound")}
               </div>
             ) : (
               filteredTemplates.map((template) => (
@@ -390,20 +393,20 @@ export default function AdminTemplatesPage() {
                           onClick={() => openEdit(template)}
                           className="focus:bg-gray-800 cursor-pointer"
                         >
-                          <Edit className="mr-2 h-4 w-4" /> Edit
+                          <Edit className="mr-2 h-4 w-4" /> {t("admin.templates.edit")}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleClone(template.id)}
                           className="focus:bg-gray-800 cursor-pointer"
                         >
-                          <Copy className="mr-2 h-4 w-4" /> Clone
+                          <Copy className="mr-2 h-4 w-4" /> {t("admin.templates.clone")}
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-gray-800" />
                         <DropdownMenuItem
                           onClick={() => setTemplateToDelete(template.id)}
                           className="text-red-500 focus:bg-gray-800 cursor-pointer"
                         >
-                          <Trash className="mr-2 h-4 w-4" /> Delete
+                          <Trash className="mr-2 h-4 w-4" /> {t("admin.templates.delete")}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -443,7 +446,7 @@ export default function AdminTemplatesPage() {
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between mt-auto pt-2 text-sm text-gray-400">
-                      <span>{template.category?.name || "Uncategorized"}</span>
+                      <span>{template.category?.name || t("admin.templates.uncategorized")}</span>
                       <div className="flex items-center gap-1">
                         <input
                           type="number"
@@ -499,23 +502,23 @@ export default function AdminTemplatesPage() {
                   </TableHead>
                   {viewMode === "table" && (
                     <TableHead className="text-slate-500 dark:text-gray-400 w-[70px]">
-                      Preview
+                      {t("admin.templates.preview")}
                     </TableHead>
                   )}
                   <TableHead className="text-slate-500 dark:text-gray-400">
-                    Name
+                    {t("admin.templates.name")}
                   </TableHead>
                   <TableHead className="text-slate-500 dark:text-gray-400">
-                    Category
+                    {t("admin.templates.category")}
                   </TableHead>
                   <TableHead className="text-slate-500 dark:text-gray-400">
-                    Cost
+                    {t("admin.templates.cost")}
                   </TableHead>
                   <TableHead className="text-slate-500 dark:text-gray-400">
-                    Status
+                    {t("admin.templates.status")}
                   </TableHead>
                   <TableHead className="text-right text-slate-500 dark:text-gray-400">
-                    Actions
+                    {t("admin.templates.actions")}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -535,7 +538,7 @@ export default function AdminTemplatesPage() {
                       colSpan={viewMode === "table" ? 7 : 6}
                       className="text-center py-10 text-slate-400 dark:text-gray-500"
                     >
-                      No templates found
+                      {t("admin.templates.noTemplatesFound")}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -570,11 +573,11 @@ export default function AdminTemplatesPage() {
                       <TableCell className="font-medium text-slate-900 dark:text-slate-900 dark:text-white">
                         {template.name}
                         <div className="text-xs text-slate-400 dark:text-gray-500 mt-1">
-                          {template.recommendedModels?.[0] || "Any Model"}
+                          {template.recommendedModels?.[0] || t("admin.templates.anyModel")}
                         </div>
                       </TableCell>
                       <TableCell className="text-gray-600 dark:text-gray-300">
-                        {template.category?.name || "Uncategorized"}
+                        {template.category?.name || t("admin.templates.uncategorized")}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
@@ -649,7 +652,7 @@ export default function AdminTemplatesPage() {
                               }}
                               className="focus:bg-white dark:bg-gray-800 focus:text-slate-900 dark:text-slate-900 dark:text-white cursor-pointer"
                             >
-                              <Edit className="mr-2 h-4 w-4" /> Edit
+                              <Edit className="mr-2 h-4 w-4" /> {t("admin.templates.edit")}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={(e) => {
@@ -658,7 +661,7 @@ export default function AdminTemplatesPage() {
                               }}
                               className="focus:bg-white dark:bg-gray-800 focus:text-slate-900 dark:text-slate-900 dark:text-white cursor-pointer"
                             >
-                              <Copy className="mr-2 h-4 w-4" /> Clone
+                              <Copy className="mr-2 h-4 w-4" /> {t("admin.templates.clone")}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator className="bg-white dark:bg-gray-800" />
                             <DropdownMenuItem
@@ -668,7 +671,7 @@ export default function AdminTemplatesPage() {
                               }}
                               className="text-red-500 focus:bg-white dark:bg-gray-800 focus:text-red-500 cursor-pointer"
                             >
-                              <Trash className="mr-2 h-4 w-4" /> Delete
+                              <Trash className="mr-2 h-4 w-4" /> {t("admin.templates.delete")}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -700,18 +703,19 @@ export default function AdminTemplatesPage() {
         isOpen={!!templateToDelete}
         onClose={() => setTemplateToDelete(null)}
         onConfirm={confirmDelete}
-        title="Удалить шаблон?"
-        itemName="этот шаблон"
+        title={t("admin.templates.deleteModalTitle")}
+        itemName={t("admin.templates.deleteModalItemName")}
       />
 
       <ConfirmDeleteModal
         isOpen={!!bulkActionToConfirm}
         onClose={() => setBulkActionToConfirm(null)}
         onConfirm={confirmBulkDelete}
-        title={`Удалить ${selectedIds.size} шаблонов?`}
-        description="Это действие нельзя отменить. Все выбранные шаблоны будут навсегда удалены."
+        title={t("admin.templates.bulkDeleteModalTitle", { count: selectedIds.size })}
+        description={t("admin.templates.bulkDeleteModalDesc")}
         itemName=""
       />
     </div>
   );
 }
+

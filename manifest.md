@@ -133,3 +133,36 @@ This file tracks all file backups and replacements as per the Backup Policy.
 - [20260722_000701] Backed up apps\frontend\app\admin\users\page.tsx to f:\Arrena_Photo\replace\20260722_000701\page.tsx before Bento Grid refactor.
 - [20260722_000701] Backed up apps\frontend\app\admin\analytics\page.tsx to f:\Arrena_Photo\replace\20260722_000701\page.tsx before Bento Grid refactor.
 - [20260722_000701] Backed up apps\frontend\app\admin\templates\page.tsx to f:\Arrena_Photo\replace\20260722_000701\page.tsx before Bento Grid refactor.
+
+## 2026-07-22 10:23
+
+### 1. Admin Panel Localization (Phase 1)
+- **Original file paths:**
+  - `apps/frontend/lib/i18n/{ru,en,hy}.ts`
+  - `apps/frontend/components/layout/Sidebar.tsx`
+  - `apps/frontend/app/admin/users/page.tsx`
+- **Backup file path:** `replace/i18n/`, `replace/components/`, `replace/app/`
+- **Operation:** Modify
+- **Reason:** Fulfill user request to localize admin panel in 3 languages.
+
+## 2026-07-22 11:37
+
+### 1. Admin Panel Localization (Group 1)
+- **Original file paths:**
+  - `apps/frontend/app/admin/page.tsx`
+  - `apps/frontend/components/admin/DataTable.tsx`
+  - `apps/frontend/lib/i18n/{ru,en,hy}.ts`
+- **Backup file path:** `replace/group1_admin/`
+- **Operation:** Modify
+- **Action performed:** Added `admin.dashboard.*` and `admin.dataTable.*` keys. Applied translations.
+- **Reason:** Fulfill user request to localize entire admin panel.
+
+## 2026-07-22 16:07
+
+### 1. Fix Dev Environment SMTP Missing Issue
+- **Original file paths:**
+  - `apps/backend-api/src/mail/mail.service.ts`
+- **Backup file path:** `replace/20260722_1607/mail.service.ts`
+- **Operation:** Modify
+- **Action performed:** Added a dev-mode fallback to log the verification URL when SMTP credentials are not configured, preventing silent failure of verification.
+- **Reason:** Resolve user issue with not receiving confirmation emails in development environment.

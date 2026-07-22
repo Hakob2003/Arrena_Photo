@@ -13,8 +13,15 @@ export function useTranslation() {
   const locale = useUIStore((state) => state.locale);
   const dict = dictionaries[locale] || dictionaries.ru;
 
-  const t = useCallback((key: string): string => {
-    return dict[key] || key;
+  const t = useCallback((key: string, params?: Record<string, string | number>): string => {
+    let str = dict[key] || key;
+    if (params) {
+      Object.entries(params).forEach(([k, v]) => {
+        str = str.replace(new RegExp(`\\{\\{${k}\\}\\}`, 'g'), String(v));
+        str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
+      });
+    }
+    return str;
   }, [dict]);
 
   return { t, locale };

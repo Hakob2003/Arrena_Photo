@@ -118,71 +118,71 @@ export function Sidebar() {
 
   const ADMIN_SECTIONS = [
     {
-      title: "Overview",
+      title: t("admin.sidebar.overview") || "Overview",
       links: [
         {
           href: "/admin",
-          label: "Dashboard",
+          label: t("admin.sidebar.dashboard") || "Dashboard",
           icon: <LayoutDashboard className="w-5 h-5" />,
         },
         {
           href: "/admin/analytics",
-          label: "Analytics",
+          label: t("admin.sidebar.analytics") || "Analytics",
           icon: <LineChart className="w-5 h-5" />,
         },
       ],
     },
     {
-      title: "Management",
+      title: t("admin.sidebar.management") || "Management",
       links: [
         {
           href: "/admin/users",
-          label: "Users",
+          label: t("admin.sidebar.users") || "Users",
           icon: <Users className="w-5 h-5" />,
         },
         {
           href: "/admin/security",
-          label: "Security",
+          label: t("admin.sidebar.security") || "Security",
           icon: <Shield className="w-5 h-5" />,
         },
         {
           href: "/admin/templates",
-          label: "Templates",
+          label: t("admin.sidebar.templates") || "Templates",
           icon: <Palette className="w-5 h-5" />,
         },
         {
           href: "/admin/marketplace",
-          label: "Marketplace",
+          label: t("admin.sidebar.marketplace") || "Marketplace",
           icon: <ShoppingCart className="w-5 h-5" />,
         },
         {
           href: "/admin/generations",
-          label: "Generations",
+          label: t("admin.sidebar.generations") || "Generations",
           icon: <Zap className="w-5 h-5" />,
         },
       ],
     },
     {
-      title: "Configuration",
+      title: t("admin.sidebar.configuration") || "Configuration",
       links: [
         {
           href: "/admin/ai-models",
-          label: "AI Models",
+          label: t("admin.sidebar.aiModels") || "AI Models",
           icon: <Brain className="w-5 h-5" />,
         },
         {
           href: "/admin/ai-providers",
-          label: "AI Providers",
+          label: t("admin.sidebar.aiProviders") || "AI Providers",
           icon: <Bot className="w-5 h-5" />,
         },
         {
           href: "/admin/api-keys",
-          label: "API Keys",
+          label: t("admin.sidebar.apiKeys") || "API Keys",
           icon: <Key className="w-5 h-5" />,
         },
         {
           href: "/admin/cloud",
-          label: "Cloud Storage",
+          label: t("admin.sidebar.cloud") || "Cloud Storage",
           icon: <Cloud className="w-5 h-5" />,
         },
       ],
@@ -208,16 +208,16 @@ export function Sidebar() {
       ],
     },
     {
-      title: "System",
+      title: t("admin.sidebar.system") || "System",
       links: [
         {
           href: "/admin/audit-logs",
-          label: "Audit Logs",
+          label: t("admin.sidebar.auditLogs") || "Audit Logs",
           icon: <ClipboardList className="w-5 h-5" />,
         },
         {
           href: "/admin/settings",
-          label: "Settings",
+          label: t("admin.sidebar.settings") || "Settings",
           icon: <Settings className="w-5 h-5" />,
         },
       ],

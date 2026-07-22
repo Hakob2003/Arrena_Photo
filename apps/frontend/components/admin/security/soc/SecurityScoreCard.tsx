@@ -1,7 +1,9 @@
 import { BentoCard } from "../../BentoCard";
 import { ShieldCheck, ShieldAlert, Shield } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export default function SecurityScoreCard({ score }: { score: any }) {
+  const { t } = useTranslation();
   const overall = score.overall;
 
   const getStatusColor = (val: number) => {
@@ -21,14 +23,14 @@ export default function SecurityScoreCard({ score }: { score: any }) {
   };
 
   const categories = [
-    { label: "Network", val: score.categories.network },
-    { label: "Auth", val: score.categories.auth },
-    { label: "API", val: score.categories.api },
-    { label: "Server", val: score.categories.server },
-    { label: "Headers", val: score.categories.headers },
-    { label: "TLS", val: score.categories.tls },
-    { label: "Deps", val: score.categories.dependencies },
-    { label: "DB", val: score.categories.database },
+    { label: t("soc.score.network") || "Network", val: score.categories.network },
+    { label: t("soc.score.auth") || "Auth", val: score.categories.auth },
+    { label: t("soc.score.api") || "API", val: score.categories.api },
+    { label: t("soc.score.server") || "Server", val: score.categories.server },
+    { label: t("soc.score.headers") || "Headers", val: score.categories.headers },
+    { label: t("soc.score.tls") || "TLS", val: score.categories.tls },
+    { label: t("soc.score.deps") || "Deps", val: score.categories.dependencies },
+    { label: t("soc.score.db") || "DB", val: score.categories.database },
   ];
 
   return (
@@ -36,7 +38,7 @@ export default function SecurityScoreCard({ score }: { score: any }) {
       <div className="flex justify-between items-start mb-6">
         <div>
           <h3 className="text-sm font-semibold tracking-wide text-white/50 uppercase">
-            Overall Security Score
+            {t("soc.score.title") || "Overall Security Score"}
           </h3>
           <div
             className={`text-6xl font-black mt-2 tracking-tighter ${getStatusColor(overall)} drop-shadow-lg`}

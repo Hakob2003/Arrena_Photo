@@ -1,39 +1,41 @@
 import { BentoCard } from "../../BentoCard";
 import { UserCheck } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export default function AuthSecurity({ data }: { data: any }) {
+  const { t } = useTranslation();
   const items = [
-    { label: "Successful Logins", value: data.successfulLogins, alert: false },
+    { label: t("soc.auth.success") || "Successful Logins", value: data.successfulLogins, alert: false },
     {
-      label: "Failed Logins",
+      label: t("soc.auth.failed") || "Failed Logins",
       value: data.failedLogins,
       alert: data.failedLogins > 10,
     },
-    { label: "MFA Success", value: data.mfaSuccess, alert: false },
+    { label: t("soc.auth.mfaSuccess") || "MFA Success", value: data.mfaSuccess, alert: false },
     {
-      label: "MFA Failures",
+      label: t("soc.auth.mfaFailed") || "MFA Failures",
       value: data.mfaFailures,
       alert: data.mfaFailures > 5,
     },
-    { label: "Password Resets", value: data.passwordResets, alert: false },
+    { label: t("soc.auth.pwResets") || "Password Resets", value: data.passwordResets, alert: false },
     {
-      label: "Locked Accounts",
+      label: t("soc.auth.locked") || "Locked Accounts",
       value: data.lockedAccounts,
       alert: data.lockedAccounts > 0,
     },
-    { label: "New Devices", value: data.newDevices, alert: false },
+    { label: t("soc.auth.newDevices") || "New Devices", value: data.newDevices, alert: false },
     {
-      label: "Impossible Travel",
+      label: t("soc.auth.impossibleTravel") || "Impossible Travel",
       value: data.impossibleTravel,
       alert: data.impossibleTravel > 0,
     },
     {
-      label: "Anonymous Attempts",
+      label: t("soc.auth.anon") || "Anonymous Attempts",
       value: data.anonymousAttempts,
       alert: data.anonymousAttempts > 0,
     },
     {
-      label: "Concurrent Sessions",
+      label: t("soc.auth.concurrent") || "Concurrent Sessions",
       value: data.concurrentSessions,
       alert: data.concurrentSessions > 0,
     },
@@ -44,7 +46,7 @@ export default function AuthSecurity({ data }: { data: any }) {
       <div className="flex items-center gap-2 mb-6">
         <UserCheck className="w-5 h-5 text-sky-400" />
         <h3 className="text-sm font-semibold tracking-wide text-white uppercase">
-          Authentication Security
+          {t("soc.auth.title") || "Authentication Security"}
         </h3>
       </div>
 

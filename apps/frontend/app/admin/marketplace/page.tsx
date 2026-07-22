@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "../../../lib/i18n";
 import { PageHeader } from "../../../components/admin/PageHeader";
 import { DataTable } from "../../../components/admin/DataTable";
 import { Badge } from "../../../components/admin/Badge";
@@ -7,6 +8,7 @@ import { adminApi } from "../../../lib/admin.api";
 import { BentoCard } from "../../../components/admin/BentoCard";
 
 export default function AdminMarketplace() {
+  const { t } = useTranslation();
   const [payouts, setPayouts] = useState<any[]>([]);
   const [metrics, setMetrics] = useState({ totalPaid: 0, pendingAmount: 0 });
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ export default function AdminMarketplace() {
       .then((data) => {
         const formatted = data.payouts.map((p: any) => ({
           id: p.id,
-          user: p.user?.email || "Unknown",
+          user: p.user?.email || t("admin.generations.unknown"),
           amount: `$${p.amount.toFixed(2)}`,
           date: new Date(p.createdAt).toISOString().split("T")[0],
           status: p.status,
@@ -45,8 +47,8 @@ export default function AdminMarketplace() {
   return (
     <>
       <PageHeader
-        title="Marketplace Payouts"
-        description="Manage creator payout requests and platform commissions."
+        title={t("admin.marketplace.title")}
+        description={t("admin.marketplace.subtitle")}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -57,7 +59,7 @@ export default function AdminMarketplace() {
           className="p-6 flex flex-col justify-center"
         >
           <p className="text-sm text-slate-400 dark:text-gray-500 mb-1">
-            Pending Payouts
+            {t("admin.marketplace.pending")}
           </p>
           <p className="text-2xl font-semibold text-slate-900 dark:text-slate-900 dark:text-white">
             ${metrics.pendingAmount.toFixed(2)}
@@ -70,7 +72,7 @@ export default function AdminMarketplace() {
           className="p-6 flex flex-col justify-center"
         >
           <p className="text-sm text-slate-400 dark:text-gray-500 mb-1">
-            Total Paid (All Time)
+            {t("admin.marketplace.totalPaid")}
           </p>
           <p className="text-2xl font-semibold text-slate-900 dark:text-slate-900 dark:text-white">
             ${metrics.totalPaid.toFixed(2)}
@@ -83,7 +85,7 @@ export default function AdminMarketplace() {
           className="p-6 flex flex-col justify-center"
         >
           <p className="text-sm text-slate-400 dark:text-gray-500 mb-1">
-            Platform Revenue (10% Cut Est.)
+            {t("admin.marketplace.platformRevenue")}
           </p>
           <p className="text-2xl font-semibold text-green-400">
             ${(metrics.totalPaid * 0.1).toFixed(2)}
@@ -100,32 +102,32 @@ export default function AdminMarketplace() {
       >
         <div className="p-6 pb-0">
           <h3 className="text-lg font-medium text-slate-900 dark:text-slate-900 dark:text-white mb-4">
-            Payout Requests
+            {t("admin.marketplace.requests")}
           </h3>
         </div>
         {loading ? (
           <div className="text-slate-500 dark:text-gray-400 p-8 text-center">
-            Loading payouts...
+            {t("admin.marketplace.loading")}
           </div>
         ) : (
           <div className="w-full max-w-full overflow-x-auto">
             <DataTable
               data={payouts}
               columns={[
-                { key: "user", header: "Creator Email" },
+                { key: "user", header: t("admin.marketplace.email") },
                 {
                   key: "amount",
-                  header: "Amount",
+                  header: t("admin.marketplace.amount"),
                   render: (r: any) => (
                     <span className="font-mono text-slate-900 dark:text-slate-900 dark:text-white">
                       {r.amount}
                     </span>
                   ),
                 },
-                { key: "date", header: "Request Date" },
+                { key: "date", header: t("admin.marketplace.date") },
                 {
                   key: "status",
-                  header: "Status",
+                  header: t("admin.marketplace.status"),
                   render: (r: any) => (
                     <Badge
                       variant={r.status === "COMPLETED" ? "success" : "warning"}
@@ -143,7 +145,7 @@ export default function AdminMarketplace() {
                         onClick={() => handleProcessPayment(r.id)}
                         className="text-xs px-2 py-1 bg-white text-black rounded hover:bg-gray-200 font-medium"
                       >
-                        Process Payment
+                        {t("admin.marketplace.processPayment")}
                       </button>
                     ),
                 },
@@ -155,3 +157,4 @@ export default function AdminMarketplace() {
     </>
   );
 }
+

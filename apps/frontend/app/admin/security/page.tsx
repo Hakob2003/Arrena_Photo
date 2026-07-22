@@ -26,18 +26,21 @@ import SocIdentityTab from "@/components/admin/security/soc/tabs/SocIdentityTab"
 import SocInfraTab from "@/components/admin/security/soc/tabs/SocInfraTab";
 import SocAuditTab from "@/components/admin/security/soc/tabs/SocAuditTab";
 
-const TABS = [
-  { id: "overview", label: "Overview" },
-  { id: "network", label: "Network & Web" },
-  { id: "identity", label: "Identity & API" },
-  { id: "infra", label: "Infrastructure" },
-  { id: "audit", label: "Audits & Geo" },
-];
+  // Use translation hook instead of static array for tabs inside component
+  // to properly react to language changes.
 
 export default function SecurityCenterPage() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("overview");
   const [autoRefresh, setAutoRefresh] = useState(30);
+
+  const TABS = [
+    { id: "overview", label: t("admin.security.tabOverview") || "Overview" },
+    { id: "network", label: t("admin.security.tabNetwork") || "Network & Web" },
+    { id: "identity", label: t("admin.security.tabIdentity") || "Identity & API" },
+    { id: "infra", label: t("admin.security.tabInfra") || "Infrastructure" },
+    { id: "audit", label: t("admin.security.tabAudit") || "Audits & Geo" },
+  ];
 
   const { dashboardData, isLoading, timeframe, setTimeframe, fetchDashboard } =
     useSocStore();
@@ -61,7 +64,7 @@ export default function SecurityCenterPage() {
         <div className="flex flex-col items-center gap-4">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-emerald-500/50 border-t-emerald-400" />
           <p className="text-sm font-medium text-emerald-400/50 tracking-widest uppercase">
-            Initializing Enterprise SOC...
+            {t("admin.security.initMsg") || "Initializing Enterprise SOC..."}
           </p>
         </div>
       </div>
@@ -71,7 +74,7 @@ export default function SecurityCenterPage() {
   if (!dashboardData) {
     return (
       <div className="flex h-[80vh] w-full items-center justify-center p-8 text-white">
-        Error loading SOC Data. Please ensure the backend is running.
+        {t("admin.security.errorMsg") || "Error loading SOC Data. Please ensure the backend is running."}
       </div>
     );
   }
@@ -101,11 +104,10 @@ export default function SecurityCenterPage() {
           </div>
           <div>
             <h1 className="text-4xl font-bold tracking-tighter text-white mb-1">
-              Security Operations Center
+              {t("admin.security.title") || "Security Operations Center"}
             </h1>
             <p className="text-sm font-medium text-white/40 uppercase tracking-widest flex items-center gap-2">
-              <Activity className="w-4 h-4 text-emerald-400" /> Live Threat
-              Monitoring Active
+              <Activity className="w-4 h-4 text-emerald-400" /> {t("admin.security.liveMonitoring") || "Live Threat Monitoring Active"}
             </p>
           </div>
         </div>
@@ -122,20 +124,20 @@ export default function SecurityCenterPage() {
               }}
             >
               <SelectTrigger className="w-[100px] bg-transparent border-0 text-xs font-medium focus:ring-0">
-                <SelectValue placeholder="Timeframe" />
+                <SelectValue placeholder={t("admin.security.timeframe") || "Timeframe"} />
               </SelectTrigger>
               <SelectContent className="bg-[#0f0f0f] border-white/10 text-white">
-                <SelectItem value="1h">Last 1 Hour</SelectItem>
-                <SelectItem value="24h">Last 24 Hours</SelectItem>
-                <SelectItem value="7d">Last 7 Days</SelectItem>
-                <SelectItem value="30d">Last 30 Days</SelectItem>
+                <SelectItem value="1h">{t("admin.security.tf1h") || "Last 1 Hour"}</SelectItem>
+                <SelectItem value="24h">{t("admin.security.tf24h") || "Last 24 Hours"}</SelectItem>
+                <SelectItem value="7d">{t("admin.security.tf7d") || "Last 7 Days"}</SelectItem>
+                <SelectItem value="30d">{t("admin.security.tf30d") || "Last 30 Days"}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
             <span className="text-xs font-medium text-white/40 uppercase">
-              Auto-Refresh:
+              {t("admin.security.autoRefresh") || "Auto-Refresh:"}
             </span>
             <Select
               value={autoRefresh.toString()}
@@ -145,7 +147,7 @@ export default function SecurityCenterPage() {
                 <SelectValue placeholder="Refresh" />
               </SelectTrigger>
               <SelectContent className="bg-[#0f0f0f] border-white/10 text-white">
-                <SelectItem value="0">Off</SelectItem>
+                <SelectItem value="0">{t("admin.security.off") || "Off"}</SelectItem>
                 <SelectItem value="5">5s</SelectItem>
                 <SelectItem value="10">10s</SelectItem>
                 <SelectItem value="30">30s</SelectItem>

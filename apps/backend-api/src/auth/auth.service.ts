@@ -73,12 +73,16 @@ export class AuthService {
       });
     }
 
+    const isEmailVerificationRequired = process.env.REQUIRE_EMAIL_VERIFICATION === 'true' && process.env.SMTP_HOST && process.env.SMTP_PASS;
+
     const user = await this.prisma.user.create({
       data: {
         email: dto.email,
         passwordHash: hashedPassword,
         name: dto.name,
         roleId: userRole.id,
+        // Auto-verify if email verification is not strictly required and fully configured
+        emailVerified: isEmailVerificationRequired ? null : new Date(),
       },
     });
 
@@ -133,7 +137,17 @@ export class AuthService {
     }
 
     if (!user.emailVerified) {
-      throw new UnauthorizedException("Please verify your email first");
+      const isEmailVerificationRequired = process.env.REQUIRE_EMAIL_VERIFICATION === 'true' && process.env.SMTP_HOST && process.env.SMTP_PASS;
+      if (!isEmailVerificationRequired) {
+        // Auto-verify legacy users if verification is not strictly required
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: { emailVerified: new Date() },
+        });
+        user.emailVerified = new Date();
+      } else {
+        throw new UnauthorizedException("Please verify your email first");
+      }
     }
 
     const isPasswordValid = await bcrypt.compare(

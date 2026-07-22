@@ -1,17 +1,19 @@
 import { BentoCard } from "../../BentoCard";
 import { Lightbulb, AlertTriangle, ShieldCheck } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export default function Recommendations({
   recommendations,
 }: {
   recommendations: string[];
 }) {
+  const { t } = useTranslation();
   return (
     <BentoCard className="h-full" delay={0.3}>
       <div className="flex items-center gap-2 mb-6">
         <Lightbulb className="w-5 h-5 text-amber-400" />
         <h3 className="text-sm font-semibold tracking-wide text-white uppercase">
-          AI Recommendations
+          {t("soc.recommendations.title") || "AI Recommendations"}
         </h3>
       </div>
 
@@ -20,7 +22,7 @@ export default function Recommendations({
           <div className="flex items-center gap-3 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
             <ShieldCheck className="w-5 h-5" />
             <span className="text-sm font-medium">
-              All systems optimal. No actions required.
+              {t("soc.recommendations.optimal") || "All systems optimal. No actions required."}
             </span>
           </div>
         ) : (

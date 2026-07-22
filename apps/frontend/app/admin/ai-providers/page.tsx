@@ -1,18 +1,20 @@
 "use client";
 import React, { useState } from "react";
+import { useTranslation } from "../../../lib/i18n";
 import { PageHeader } from "../../../components/admin/PageHeader";
 import { Badge } from "../../../components/admin/Badge";
 import { ChatTest } from "../../../components/ai/ChatTest";
 import { BentoCard } from "../../../components/admin/BentoCard";
 
 export default function AdminAiProviders() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"settings" | "test">("settings");
 
   return (
     <>
       <PageHeader
-        title="AI Providers"
-        description="Unified OpenRouter integration settings and tests."
+        title={t("admin.aiProviders.title")}
+        description={t("admin.aiProviders.subtitle")}
       />
 
       <BentoCard
@@ -26,13 +28,13 @@ export default function AdminAiProviders() {
             onClick={() => setActiveTab("settings")}
             className={`px-4 py-2 font-medium transition-colors ${activeTab === "settings" ? "text-slate-900 dark:text-white border-b-2 border-indigo-500" : "text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white"}`}
           >
-            Settings
+            {t("admin.aiProviders.settings")}
           </button>
           <button
             onClick={() => setActiveTab("test")}
             className={`px-4 py-2 font-medium transition-colors ${activeTab === "test" ? "text-slate-900 dark:text-white border-b-2 border-indigo-500" : "text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-white"}`}
           >
-            Test Connection
+            {t("admin.aiProviders.testConnection")}
           </button>
         </div>
       </BentoCard>
@@ -46,18 +48,18 @@ export default function AdminAiProviders() {
             className="flex-1 min-w-[300px]"
           >
             <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-900 dark:text-white mb-4">
-              OpenRouter Configuration
+              {t("admin.aiProviders.config")}
             </h3>
             <div className="space-y-4">
               <div className="flex justify-between items-center py-3 border-b border-black/10 dark:border-white/10">
                 <span className="text-slate-500 dark:text-gray-400">
-                  Status
+                  {t("admin.aiProviders.status")}
                 </span>
                 <Badge variant="success">ACTIVE</Badge>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-black/10 dark:border-white/10">
                 <span className="text-slate-500 dark:text-gray-400">
-                  Default Model
+                  {t("admin.aiProviders.defaultModel")}
                 </span>
                 <span className="font-mono text-slate-900 dark:text-slate-900 dark:text-white bg-black/5 dark:bg-white/5 px-2 py-1 rounded text-sm border border-black/10 dark:border-white/10">
                   openrouter/free
@@ -65,10 +67,10 @@ export default function AdminAiProviders() {
               </div>
               <div className="flex justify-between items-center py-3">
                 <span className="text-slate-500 dark:text-gray-400">
-                  Fallback Logic
+                  {t("admin.aiProviders.fallbackLogic")}
                 </span>
                 <span className="text-slate-900 dark:text-gray-300 text-sm">
-                  Active (returns to openrouter/free on fail)
+                  {t("admin.aiProviders.fallbackDesc")}
                 </span>
               </div>
             </div>
@@ -81,12 +83,12 @@ export default function AdminAiProviders() {
             className="flex-1 min-w-[300px]"
           >
             <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-900 dark:text-white mb-4">
-              Usage Statistics
+              {t("admin.aiProviders.usage")}
             </h3>
             <div className="flex flex-col gap-4">
               <div className="bg-transparent border border-black/10 dark:border-white/10 p-4 rounded-lg">
                 <p className="text-sm text-slate-500 dark:text-gray-400 mb-1">
-                  Total Tokens Used
+                  {t("admin.aiProviders.totalTokens")}
                 </p>
                 <p className="text-3xl font-bold text-slate-900 dark:text-slate-900 dark:text-white">
                   1,492,050
@@ -95,7 +97,7 @@ export default function AdminAiProviders() {
               <div className="flex gap-4">
                 <div className="flex-1 bg-transparent border border-black/10 dark:border-white/10 p-4 rounded-lg">
                   <p className="text-sm text-slate-500 dark:text-gray-400 mb-1">
-                    Input Tokens
+                    {t("admin.aiProviders.inputTokens")}
                   </p>
                   <p className="text-xl font-semibold text-slate-900 dark:text-gray-300">
                     840,100
@@ -103,7 +105,7 @@ export default function AdminAiProviders() {
                 </div>
                 <div className="flex-1 bg-transparent border border-black/10 dark:border-white/10 p-4 rounded-lg">
                   <p className="text-sm text-slate-500 dark:text-gray-400 mb-1">
-                    Output Tokens
+                    {t("admin.aiProviders.outputTokens")}
                   </p>
                   <p className="text-xl font-semibold text-slate-900 dark:text-gray-300">
                     651,950
@@ -116,11 +118,10 @@ export default function AdminAiProviders() {
       ) : (
         <BentoCard colSpan={0} rowSpan={0} delay={0.2} className="w-full">
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-900 dark:text-white mb-4">
-            Live Test
+            {t("admin.aiProviders.liveTest")}
           </h3>
           <p className="text-slate-500 dark:text-gray-400 text-sm mb-6">
-            Test your OpenRouter connection. Tokens are streamed directly from
-            the backend via Server-Sent Events (SSE).
+            {t("admin.aiProviders.testDesc")}
           </p>
           <ChatTest />
         </BentoCard>
@@ -128,3 +129,4 @@ export default function AdminAiProviders() {
     </>
   );
 }
+

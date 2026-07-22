@@ -10,8 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTranslation } from "@/lib/i18n";
 
 export default function Alerts() {
+  const { t } = useTranslation();
   const [alerts, setAlerts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [severity, setSeverity] = useState("ALL");
@@ -70,9 +72,9 @@ export default function Alerts() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
           <h3 className="text-sm font-semibold tracking-wide text-white uppercase">
-            Security Alerts
+            {t("soc.alerts.title") || "Security Alerts"}
           </h3>
-          <p className="text-xs text-white/40 mt-1">Total alerts: {total}</p>
+          <p className="text-xs text-white/40 mt-1">{t("soc.alerts.total") || "Total alerts:"} {total}</p>
         </div>
 
         <Select
@@ -85,14 +87,14 @@ export default function Alerts() {
           }}
         >
           <SelectTrigger className="w-[150px] bg-white/5 border-white/10 text-xs focus:ring-0">
-            <SelectValue placeholder="Severity" />
+            <SelectValue placeholder={t("soc.alerts.severity") || "Severity"} />
           </SelectTrigger>
           <SelectContent className="bg-[#0f0f0f] border-white/10 text-white">
-            <SelectItem value="ALL">All Severities</SelectItem>
-            <SelectItem value="CRITICAL">Critical</SelectItem>
-            <SelectItem value="HIGH">High</SelectItem>
-            <SelectItem value="MEDIUM">Medium</SelectItem>
-            <SelectItem value="LOW">Low</SelectItem>
+            <SelectItem value="ALL">{t("soc.alerts.allSev") || "All Severities"}</SelectItem>
+            <SelectItem value="CRITICAL">{t("soc.alerts.critical") || "Critical"}</SelectItem>
+            <SelectItem value="HIGH">{t("soc.alerts.high") || "High"}</SelectItem>
+            <SelectItem value="MEDIUM">{t("soc.alerts.medium") || "Medium"}</SelectItem>
+            <SelectItem value="LOW">{t("soc.alerts.low") || "Low"}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -101,25 +103,25 @@ export default function Alerts() {
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr className="border-b border-white/10 text-[10px] font-bold text-white/40 uppercase tracking-wider">
-              <th className="p-3">Severity</th>
-              <th className="p-3">Time</th>
-              <th className="p-3">Type</th>
-              <th className="p-3">Target</th>
-              <th className="p-3">IP / Actor</th>
-              <th className="p-3">Action Taken</th>
+              <th className="p-3">{t("soc.alerts.colSev") || "Severity"}</th>
+              <th className="p-3">{t("soc.alerts.colTime") || "Time"}</th>
+              <th className="p-3">{t("soc.alerts.colType") || "Type"}</th>
+              <th className="p-3">{t("soc.alerts.colTarget") || "Target"}</th>
+              <th className="p-3">{t("soc.alerts.colIp") || "IP / Actor"}</th>
+              <th className="p-3">{t("soc.alerts.colAction") || "Action Taken"}</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
                 <td colSpan={6} className="p-8 text-center text-white/40">
-                  Loading alerts...
+                  {t("soc.alerts.loading") || "Loading alerts..."}
                 </td>
               </tr>
             ) : alerts.length === 0 ? (
               <tr>
                 <td colSpan={6} className="p-8 text-center text-white/40">
-                  No alerts found.
+                  {t("soc.alerts.empty") || "No alerts found."}
                 </td>
               </tr>
             ) : (
@@ -154,11 +156,11 @@ export default function Alerts() {
                     <td className="p-3">
                       {a.isBlocked ? (
                         <span className="text-xs font-bold text-rose-400">
-                          Blocked
+                          {t("soc.alerts.blocked") || "Blocked"}
                         </span>
                       ) : (
                         <span className="text-xs font-bold text-amber-400">
-                          Monitored
+                          {t("soc.alerts.monitored") || "Monitored"}
                         </span>
                       )}
                     </td>
@@ -177,17 +179,17 @@ export default function Alerts() {
             onClick={() => setPage((p) => p - 1)}
             className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-50 text-xs font-bold uppercase rounded-lg transition-colors"
           >
-            Previous
+            {t("soc.alerts.prev") || "Previous"}
           </button>
           <span className="text-xs text-white/40">
-            Page {page} of {Math.ceil(total / 10)}
+            {t("soc.alerts.page") || "Page"} {page} {t("soc.alerts.of") || "of"} {Math.ceil(total / 10)}
           </span>
           <button
             disabled={page >= Math.ceil(total / 10)}
             onClick={() => setPage((p) => p + 1)}
             className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-50 text-xs font-bold uppercase rounded-lg transition-colors"
           >
-            Next
+            {t("soc.alerts.next") || "Next"}
           </button>
         </div>
       )}

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import { useTranslation } from '../../lib/i18n';
 
 interface Column<T> {
   key: string;
@@ -16,6 +17,7 @@ interface DataTableProps<T> {
 }
 
 export function DataTable<T extends { id: string }>({ data, columns, onSelectionChange, actions, isLoading }: DataTableProps<T>) {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,15 +46,15 @@ export function DataTable<T extends { id: string }>({ data, columns, onSelection
         <div className="flex items-center gap-2">
           <input 
             type="text" 
-            placeholder="Search..." 
+            placeholder={t("admin.dataTable.searchPlaceholder") || "Search..."} 
             className="bg-[#fafafa] dark:bg-black border border-black/10 dark:border-white/10 rounded-md px-3 py-1.5 text-sm text-slate-900 dark:text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/20"
           />
           <button className="px-3 py-1.5 border border-black/10 dark:border-white/10 rounded-md text-sm text-gray-300 hover:bg-black/[0.03] dark:bg-white/5 transition-colors">
-            Filter
+            {t("admin.dataTable.filter") || "Filter"}
           </button>
         </div>
         <div className="flex items-center gap-2">
-          {selected.size > 0 && <span className="text-sm text-slate-400 dark:text-gray-500">{selected.size} selected</span>}
+          {selected.size > 0 && <span className="text-sm text-slate-400 dark:text-gray-500">{selected.size} {t("admin.dataTable.selected") || "selected"}</span>}
           {actions}
         </div>
       </div>
@@ -96,7 +98,7 @@ export function DataTable<T extends { id: string }>({ data, columns, onSelection
             {data.length === 0 && (
               <tr>
                 <td colSpan={columns.length + 1} className="px-4 py-8 text-center text-slate-400 dark:text-gray-500">
-                  No data found
+                  {t("admin.dataTable.noData") || "No data found"}
                 </td>
               </tr>
             )}
@@ -106,10 +108,10 @@ export function DataTable<T extends { id: string }>({ data, columns, onSelection
       
       {/* Pagination (Mock) */}
       <div className="p-3 sm:p-4 border-t border-black/10 dark:border-white/10 flex flex-col sm:flex-row gap-2 sm:justify-between sm:items-center text-sm text-slate-400 dark:text-gray-500 bg-[#050505]">
-        <span>Showing 1 to {data.length} of {data.length} entries</span>
+        <span>{t("admin.dataTable.showing") || "Showing"} 1 {t("admin.dataTable.to") || "to"} {data.length} {t("admin.dataTable.of") || "of"} {data.length} {t("admin.dataTable.entries") || "entries"}</span>
         <div className="flex gap-1">
-          <button className="px-3 py-1 border border-black/10 dark:border-white/10 rounded-md hover:bg-black/[0.03] dark:bg-white/5 disabled:opacity-50" disabled>Previous</button>
-          <button className="px-3 py-1 border border-black/10 dark:border-white/10 rounded-md hover:bg-black/[0.03] dark:bg-white/5 disabled:opacity-50" disabled>Next</button>
+          <button className="px-3 py-1 border border-black/10 dark:border-white/10 rounded-md hover:bg-black/[0.03] dark:bg-white/5 disabled:opacity-50" disabled>{t("admin.dataTable.previous") || "Previous"}</button>
+          <button className="px-3 py-1 border border-black/10 dark:border-white/10 rounded-md hover:bg-black/[0.03] dark:bg-white/5 disabled:opacity-50" disabled>{t("admin.dataTable.next") || "Next"}</button>
         </div>
       </div>
     </div>

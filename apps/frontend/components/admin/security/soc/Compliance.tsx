@@ -1,7 +1,9 @@
 import { BentoCard } from "../../BentoCard";
 import { ClipboardCheck } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export default function Compliance({ data }: { data: any }) {
+  const { t } = useTranslation();
   const items = [
     {
       label: "OWASP Top 10",
@@ -27,7 +29,7 @@ export default function Compliance({ data }: { data: any }) {
       <div className="flex items-center gap-2 mb-6">
         <ClipboardCheck className="w-5 h-5 text-emerald-400" />
         <h3 className="text-sm font-semibold tracking-wide text-white uppercase">
-          Compliance
+          {t("soc.compliance.title") || "Compliance"}
         </h3>
       </div>
 

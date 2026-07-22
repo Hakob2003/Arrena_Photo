@@ -13,6 +13,12 @@ export class MailService {
     const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:3000';
     const url = `${frontendUrl}/verify?token=${token}`;
 
+    const host = this.configService.get('SMTP_HOST');
+    if (!host) {
+      console.warn(`\n[DEV MODE] SMTP not configured. Verification link for ${email}:\n>>> ${url} <<<\n`);
+      return;
+    }
+
     await this.mailerService.sendMail({
       to: email,
       subject: 'Добро пожаловать в Arrena Photo! Подтвердите ваш Email',

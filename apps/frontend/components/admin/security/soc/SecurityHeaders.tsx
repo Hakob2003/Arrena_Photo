@@ -1,7 +1,9 @@
 import { BentoCard } from "../../BentoCard";
 import { ShieldCheck, ShieldAlert } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export default function SecurityHeaders({ data }: { data: any }) {
+  const { t } = useTranslation();
   const headers = [
     { name: "CSP", ...data.csp },
     { name: "HSTS", ...data.hsts },
@@ -16,7 +18,7 @@ export default function SecurityHeaders({ data }: { data: any }) {
   return (
     <BentoCard className="h-full" delay={0.2}>
       <h3 className="text-sm font-semibold tracking-wide text-white uppercase mb-6">
-        Security Headers
+        {t("soc.headers.title") || "Security Headers"}
       </h3>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {headers.map((h, i) => (

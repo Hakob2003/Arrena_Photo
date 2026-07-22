@@ -1,19 +1,21 @@
 import { BentoCard } from "../../BentoCard";
 import { Users } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export default function SessionSecurity({ data }: { data: any }) {
+  const { t } = useTranslation();
   const items = [
-    { label: "Active Sessions", value: data.active, alert: false },
-    { label: "Admin Sessions", value: data.admin, alert: false },
-    { label: "Remember Me", value: data.rememberMe, alert: false },
-    { label: "Expired Sessions", value: data.expired, alert: false },
-    { label: "Revoked Sessions", value: data.revoked, alert: false },
+    { label: t("soc.session.active") || "Active Sessions", value: data.active, alert: false },
+    { label: t("soc.session.admin") || "Admin Sessions", value: data.admin, alert: false },
+    { label: t("soc.session.rememberMe") || "Remember Me", value: data.rememberMe, alert: false },
+    { label: t("soc.session.expired") || "Expired Sessions", value: data.expired, alert: false },
+    { label: t("soc.session.revoked") || "Revoked Sessions", value: data.revoked, alert: false },
     {
-      label: "Concurrent Logins",
+      label: t("soc.session.concurrent") || "Concurrent Logins",
       value: data.concurrent,
       alert: data.concurrent > 0,
     },
-    { label: "Idle Sessions", value: data.idle, alert: false },
+    { label: t("soc.session.idle") || "Idle Sessions", value: data.idle, alert: false },
   ];
 
   return (
@@ -21,7 +23,7 @@ export default function SessionSecurity({ data }: { data: any }) {
       <div className="flex items-center gap-2 mb-6">
         <Users className="w-5 h-5 text-emerald-400" />
         <h3 className="text-sm font-semibold tracking-wide text-white uppercase">
-          Session Security
+          {t("soc.session.title") || "Session Security"}
         </h3>
       </div>
 

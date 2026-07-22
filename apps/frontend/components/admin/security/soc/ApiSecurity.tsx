@@ -1,42 +1,44 @@
 import { BentoCard } from "../../BentoCard";
 import { Webhook } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export default function ApiSecurity({ data }: { data: any }) {
+  const { t } = useTranslation();
   const items = [
-    { label: "Total API Requests", value: data.totalRequests, alert: false },
+    { label: t("soc.api.totalRequests") || "Total API Requests", value: data.totalRequests, alert: false },
     {
-      label: "Invalid JWT",
+      label: t("soc.api.invalidJwt") || "Invalid JWT",
       value: data.invalidJwt,
       alert: data.invalidJwt > 50,
     },
-    { label: "Expired JWT", value: data.expiredJwt, alert: false },
+    { label: t("soc.api.expiredJwt") || "Expired JWT", value: data.expiredJwt, alert: false },
     {
-      label: "Missing Auth",
+      label: t("soc.api.missingAuth") || "Missing Auth",
       value: data.missingAuth,
       alert: data.missingAuth > 20,
     },
     {
-      label: "Invalid API Keys",
+      label: t("soc.api.invalidKeys") || "Invalid API Keys",
       value: data.invalidKeys,
       alert: data.invalidKeys > 10,
     },
     {
-      label: "Unauthorized Access",
+      label: t("soc.api.unauthorized") || "Unauthorized Access",
       value: data.unauthorized,
       alert: data.unauthorized > 5,
     },
     {
-      label: "Replay Attempts",
+      label: t("soc.api.replayAttempts") || "Replay Attempts",
       value: data.replayAttempts,
       alert: data.replayAttempts > 0,
     },
     {
-      label: "Large Payload Attacks",
+      label: t("soc.api.largePayload") || "Large Payload Attacks",
       value: data.largePayload,
       alert: data.largePayload > 0,
     },
     {
-      label: "Rate Limited Requests",
+      label: t("soc.api.rateLimited") || "Rate Limited Requests",
       value: data.rateLimited,
       alert: data.rateLimited > 100,
     },
@@ -47,7 +49,7 @@ export default function ApiSecurity({ data }: { data: any }) {
       <div className="flex items-center gap-2 mb-6">
         <Webhook className="w-5 h-5 text-indigo-400" />
         <h3 className="text-sm font-semibold tracking-wide text-white uppercase">
-          API Security
+          {t("soc.api.title") || "API Security"}
         </h3>
       </div>
 

@@ -19,6 +19,7 @@ function LoginContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // Redirect if already logged in
   useEffect(() => {
@@ -62,6 +63,8 @@ function LoginContent() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError("");
     try {
       const res = await api.post("/auth/login", { email, password });
       const token = res.data.access_token;
@@ -98,6 +101,7 @@ function LoginContent() {
       }
 
       setError(errorMessage);
+      setIsLoading(false);
     }
   };
 
@@ -155,13 +159,24 @@ function LoginContent() {
           </div>
           <button
             type="submit"
-            className={`w-full py-2.5 rounded-lg font-medium transition-all ${
+            disabled={isLoading}
+            className={`w-full py-2.5 rounded-lg font-medium transition-all flex items-center justify-center space-x-2 ${
               isLuxury
-                ? "bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)]"
-                : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-[0_4px_14px_rgba(79,70,229,0.4)]"
+                ? "bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)] disabled:bg-[#D4AF37]/50 disabled:shadow-none"
+                : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-[0_4px_14px_rgba(79,70,229,0.4)] disabled:bg-indigo-400 disabled:shadow-none"
             }`}
           >
-            {t("auth.login")}
+            {isLoading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>{t("auth.login") || "Loading..."}</span>
+              </>
+            ) : (
+              t("auth.login")
+            )}
           </button>
         </form>
 

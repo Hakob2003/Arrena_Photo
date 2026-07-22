@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "../../../lib/i18n";
 import { PageHeader } from "../../../components/admin/PageHeader";
 import { DataTable } from "../../../components/admin/DataTable";
 import { Badge } from "../../../components/admin/Badge";
@@ -7,6 +8,7 @@ import { adminApi } from "../../../lib/admin.api";
 import { BentoCard } from "../../../components/admin/BentoCard";
 
 export default function AdminGenerations() {
+  const { t } = useTranslation();
   const [generations, setGenerations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,8 +18,8 @@ export default function AdminGenerations() {
       .then((data) => {
         const formatted = data.generations.map((g: any) => ({
           id: g.id.substring(0, 8) + "...",
-          user: g.user?.email || "Unknown",
-          model: g.aiModel?.name || "Unknown",
+          user: g.user?.email || t("admin.generations.unknown"),
+          model: g.aiModel?.name || t("admin.generations.unknown"),
           duration: g.durationMs ? `${(g.durationMs / 1000).toFixed(1)}s` : "-",
           status: g.status,
         }));
@@ -30,13 +32,13 @@ export default function AdminGenerations() {
   return (
     <>
       <PageHeader
-        title="Generation Logs"
-        description="Real-time monitoring of AI rendering jobs across all providers."
+        title={t("admin.generations.title")}
+        description={t("admin.generations.subtitle")}
       />
 
       {loading ? (
         <div className="text-slate-500 dark:text-gray-400 p-8 text-center">
-          Loading generation logs...
+          {t("admin.generations.loadingLogs")}
         </div>
       ) : (
         <BentoCard
@@ -52,23 +54,23 @@ export default function AdminGenerations() {
               columns={[
                 {
                   key: "id",
-                  header: "Job ID",
+                  header: t("admin.generations.jobId"),
                   render: (r: any) => (
                     <span className="font-mono text-slate-400 dark:text-gray-500 text-xs">
                       {r.id}
                     </span>
                   ),
                 },
-                { key: "user", header: "User" },
+                { key: "user", header: t("admin.generations.user") },
                 {
                   key: "model",
-                  header: "Model",
+                  header: t("admin.generations.model"),
                   render: (r: any) => <Badge variant="info">{r.model}</Badge>,
                 },
-                { key: "duration", header: "Duration" },
+                { key: "duration", header: t("admin.generations.duration") },
                 {
                   key: "status",
-                  header: "Status",
+                  header: t("admin.generations.status"),
                   render: (r: any) => {
                     const v =
                       r.status === "DONE"
@@ -87,3 +89,4 @@ export default function AdminGenerations() {
     </>
   );
 }
+

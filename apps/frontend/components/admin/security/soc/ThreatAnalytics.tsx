@@ -9,8 +9,10 @@ import {
   CartesianGrid,
 } from "recharts";
 import { Activity, ShieldAlert, Ban } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export default function ThreatAnalytics({ data }: { data: any }) {
+  const { t } = useTranslation();
   const { totals, timeSeries } = data;
 
   return (
@@ -18,16 +20,16 @@ export default function ThreatAnalytics({ data }: { data: any }) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-sm font-semibold tracking-wide text-white uppercase">
-            Threat Analytics
+            {t("soc.threat.title") || "Threat Analytics"}
           </h3>
           <p className="text-xs text-white/40 mt-1">
-            Request anomalies over time
+            {t("soc.threat.subtitle") || "Request anomalies over time"}
           </p>
         </div>
         <div className="flex gap-4">
           <div className="flex flex-col items-end">
             <span className="text-[10px] text-white/40 uppercase font-bold flex items-center gap-1">
-              <Activity className="w-3 h-3 text-emerald-400" /> Requests
+              <Activity className="w-3 h-3 text-emerald-400" /> {t("soc.threat.requests") || "Requests"}
             </span>
             <span className="text-lg font-bold text-white">
               {totals.rps} RPS
@@ -35,7 +37,7 @@ export default function ThreatAnalytics({ data }: { data: any }) {
           </div>
           <div className="flex flex-col items-end">
             <span className="text-[10px] text-white/40 uppercase font-bold flex items-center gap-1">
-              <ShieldAlert className="w-3 h-3 text-amber-400" /> Suspicious
+              <ShieldAlert className="w-3 h-3 text-amber-400" /> {t("soc.threat.suspicious") || "Suspicious"}
             </span>
             <span className="text-lg font-bold text-amber-400">
               {totals.suspicious}
@@ -43,7 +45,7 @@ export default function ThreatAnalytics({ data }: { data: any }) {
           </div>
           <div className="flex flex-col items-end">
             <span className="text-[10px] text-white/40 uppercase font-bold flex items-center gap-1">
-              <Ban className="w-3 h-3 text-rose-400" /> Blocked
+              <Ban className="w-3 h-3 text-rose-400" /> {t("soc.threat.blocked") || "Blocked"}
             </span>
             <span className="text-lg font-bold text-rose-400">
               {totals.blocked}

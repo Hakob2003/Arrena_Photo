@@ -1,13 +1,15 @@
 import { BentoCard } from "../../BentoCard";
 import { PackageOpen } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export default function DependencySecurity({ data }: { data: any }) {
+  const { t } = useTranslation();
   return (
     <BentoCard className="h-full flex flex-col" delay={0.2}>
       <div className="flex items-center gap-2 mb-6">
         <PackageOpen className="w-5 h-5 text-orange-400" />
         <h3 className="text-sm font-semibold tracking-wide text-white uppercase">
-          Dependency Security
+          {t("soc.dependency.title") || "Dependency Security"}
         </h3>
       </div>
 
@@ -18,11 +20,10 @@ export default function DependencySecurity({ data }: { data: any }) {
               <PackageOpen className="w-5 h-5 text-white/40" />
             </div>
             <h4 className="text-sm font-bold text-white mb-1">
-              Audit Not Configured
+              {t("soc.dependency.notConfigured") || "Audit Not Configured"}
             </h4>
             <p className="text-xs text-white/40 max-w-[250px]">
-              npm audit integration is prepared but currently returning "No
-              Data". Run an audit pipeline to populate this section.
+              {t("soc.dependency.notConfiguredDesc") || "npm audit integration is prepared but currently returning \"No Data\". Run an audit pipeline to populate this section."}
             </p>
           </>
         ) : (
@@ -32,7 +33,7 @@ export default function DependencySecurity({ data }: { data: any }) {
                 {data.vulnerabilities.critical}
               </div>
               <div className="text-[10px] text-white/40 uppercase font-bold mt-1">
-                Critical
+                {t("soc.dependency.critical") || "Critical"}
               </div>
             </div>
             <div className="bg-white/5 p-3 rounded-lg text-center">
@@ -40,7 +41,7 @@ export default function DependencySecurity({ data }: { data: any }) {
                 {data.vulnerabilities.high}
               </div>
               <div className="text-[10px] text-white/40 uppercase font-bold mt-1">
-                High
+                {t("soc.dependency.high") || "High"}
               </div>
             </div>
           </div>

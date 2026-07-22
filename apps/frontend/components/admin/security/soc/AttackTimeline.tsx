@@ -3,8 +3,10 @@ import { BentoCard } from "../../BentoCard";
 import { socApi } from "@/lib/soc.api";
 import { formatDistanceToNow } from "date-fns";
 import { ShieldAlert, Fingerprint, Globe, Activity } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export default function AttackTimeline() {
+  const { t } = useTranslation();
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,9 +28,9 @@ export default function AttackTimeline() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-sm font-semibold tracking-wide text-white uppercase">
-            Attack Timeline
+            {t("soc.timeline.title") || "Attack Timeline"}
           </h3>
-          <p className="text-xs text-white/40 mt-1">Live chronological view</p>
+          <p className="text-xs text-white/40 mt-1">{t("soc.timeline.subtitle") || "Live chronological view"}</p>
         </div>
         <div className="flex gap-2">
           <span className="relative flex h-3 w-3">
@@ -47,7 +49,7 @@ export default function AttackTimeline() {
           </div>
         ) : events.length === 0 ? (
           <div className="text-center py-10 text-white/40 text-sm">
-            No recent attacks recorded.
+            {t("soc.timeline.noAttacks") || "No recent attacks recorded."}
           </div>
         ) : (
           <div className="relative pl-4 space-y-6 before:absolute before:inset-0 before:ml-4 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent">
@@ -75,14 +77,14 @@ export default function AttackTimeline() {
                   <p className="text-xs text-white/60 mb-3">{e.reason}</p>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-1 text-[10px] font-medium text-white/40 bg-black/20 px-2 py-1 rounded">
-                      <Globe className="w-3 h-3" /> {e.country || "Unknown"}
+                      <Globe className="w-3 h-3" /> {e.country || t("soc.timeline.unknown") || "Unknown"}
                     </div>
                     <div className="flex items-center gap-1 text-[10px] font-medium text-white/40 bg-black/20 px-2 py-1 rounded">
                       <Fingerprint className="w-3 h-3" /> {e.ip}
                     </div>
                     {e.isBlocked && (
                       <div className="text-[10px] font-bold text-rose-400 border border-rose-500/30 px-2 py-1 rounded">
-                        BLOCKED
+                        {t("soc.timeline.blocked") || "BLOCKED"}
                       </div>
                     )}
                   </div>

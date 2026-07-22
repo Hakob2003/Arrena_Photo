@@ -1,13 +1,15 @@
 import { BentoCard } from "../../BentoCard";
 import { Server, Cpu, HardDrive, Network } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 export default function ServerSecurity({ data }: { data: any }) {
+  const { t } = useTranslation();
   return (
     <BentoCard delay={0.1}>
       <div className="flex items-center gap-2 mb-6">
         <Server className="w-5 h-5 text-zinc-400" />
         <h3 className="text-sm font-semibold tracking-wide text-white uppercase">
-          Server & Infrastructure Security
+          {t("soc.server.title") || "Server & Infrastructure Security"}
         </h3>
       </div>
 
@@ -15,7 +17,7 @@ export default function ServerSecurity({ data }: { data: any }) {
         {/* CPU */}
         <div className="flex flex-col gap-2 p-4 rounded-xl bg-white/5 border border-white/5">
           <div className="flex items-center justify-between text-white/40">
-            <span className="text-[10px] font-bold uppercase">CPU Usage</span>
+            <span className="text-[10px] font-bold uppercase">{t("soc.server.cpuUsage") || "CPU Usage"}</span>
             <Cpu className="w-4 h-4" />
           </div>
           <div className="text-3xl font-bold text-white">{data.cpu.usage}%</div>
@@ -26,7 +28,7 @@ export default function ServerSecurity({ data }: { data: any }) {
             ></div>
           </div>
           <div className="text-[10px] text-white/40 text-right mt-1">
-            {data.cpu.cores} Cores
+            {data.cpu.cores} {t("soc.server.cores") || "Cores"}
           </div>
         </div>
 
@@ -34,7 +36,7 @@ export default function ServerSecurity({ data }: { data: any }) {
         <div className="flex flex-col gap-2 p-4 rounded-xl bg-white/5 border border-white/5">
           <div className="flex items-center justify-between text-white/40">
             <span className="text-[10px] font-bold uppercase">
-              Memory Usage
+              {t("soc.server.memUsage") || "Memory Usage"}
             </span>
             <HardDrive className="w-4 h-4" />
           </div>
@@ -56,25 +58,25 @@ export default function ServerSecurity({ data }: { data: any }) {
         <div className="flex flex-col gap-2 p-4 rounded-xl bg-white/5 border border-white/5">
           <div className="flex items-center justify-between text-white/40">
             <span className="text-[10px] font-bold uppercase">
-              Network Latency
+              {t("soc.server.networkLatency") || "Network Latency"}
             </span>
             <Network className="w-4 h-4" />
           </div>
           <div className="flex justify-between items-end mt-1">
-            <div className="text-sm font-medium text-white/60">API Latency</div>
+            <div className="text-sm font-medium text-white/60">{t("soc.server.apiLatency") || "API Latency"}</div>
             <div className="text-lg font-bold text-emerald-400">
               {data.network.apiLatency}
             </div>
           </div>
           <div className="flex justify-between items-end">
-            <div className="text-sm font-medium text-white/60">DB Latency</div>
+            <div className="text-sm font-medium text-white/60">{t("soc.server.dbLatency") || "DB Latency"}</div>
             <div className="text-lg font-bold text-emerald-400">
               {data.network.dbLatency}
             </div>
           </div>
           <div className="flex justify-between items-end mt-1 pt-1 border-t border-white/5">
             <div className="text-[10px] font-bold text-white/40 uppercase">
-              Open Connections
+              {t("soc.server.openConnections") || "Open Connections"}
             </div>
             <div className="text-sm font-bold text-white">
               {data.network.openConnections}
@@ -85,7 +87,7 @@ export default function ServerSecurity({ data }: { data: any }) {
         {/* Services */}
         <div className="flex flex-col gap-2 p-4 rounded-xl bg-white/5 border border-white/5">
           <div className="text-[10px] font-bold uppercase text-white/40 mb-2">
-            Service Status
+            {t("soc.server.serviceStatus") || "Service Status"}
           </div>
           <div className="flex-1 flex flex-col justify-between">
             {Object.entries(data.services).map(([key, val]: any) => (

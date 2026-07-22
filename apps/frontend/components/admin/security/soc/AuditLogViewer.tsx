@@ -10,8 +10,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTranslation } from "@/lib/i18n";
 
 export default function AuditLogViewer() {
+  const { t } = useTranslation();
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [action, setAction] = useState("ALL");
@@ -46,9 +48,9 @@ export default function AuditLogViewer() {
           <FileText className="w-5 h-5 text-white/60" />
           <div>
             <h3 className="text-sm font-semibold tracking-wide text-white uppercase">
-              System Audit Log
+              {t("soc.audit.title") || "System Audit Log"}
             </h3>
-            <p className="text-xs text-white/40 mt-1">Total events: {total}</p>
+            <p className="text-xs text-white/40 mt-1">{t("soc.audit.total") || "Total events:"} {total}</p>
           </div>
         </div>
 
@@ -62,17 +64,17 @@ export default function AuditLogViewer() {
           }}
         >
           <SelectTrigger className="w-[180px] bg-white/5 border-white/10 text-xs focus:ring-0">
-            <SelectValue placeholder="Action" />
+            <SelectValue placeholder={t("soc.audit.action") || "Action"} />
           </SelectTrigger>
           <SelectContent className="bg-[#0f0f0f] border-white/10 text-white max-h-[300px]">
-            <SelectItem value="ALL">All Actions</SelectItem>
-            <SelectItem value="LOGIN_SUCCESS">Login Success</SelectItem>
-            <SelectItem value="LOGIN_FAILED">Login Failed</SelectItem>
-            <SelectItem value="PASSWORD_RESET">Password Reset</SelectItem>
-            <SelectItem value="ROLE_CHANGED">Role Changed</SelectItem>
-            <SelectItem value="SETTINGS_UPDATED">Settings Updated</SelectItem>
-            <SelectItem value="BILLING_UPDATED">Billing Updated</SelectItem>
-            <SelectItem value="API_KEY_CREATED">API Key Created</SelectItem>
+            <SelectItem value="ALL">{t("soc.audit.allActions") || "All Actions"}</SelectItem>
+            <SelectItem value="LOGIN_SUCCESS">{t("soc.audit.loginSuccess") || "Login Success"}</SelectItem>
+            <SelectItem value="LOGIN_FAILED">{t("soc.audit.loginFailed") || "Login Failed"}</SelectItem>
+            <SelectItem value="PASSWORD_RESET">{t("soc.audit.pwReset") || "Password Reset"}</SelectItem>
+            <SelectItem value="ROLE_CHANGED">{t("soc.audit.roleChanged") || "Role Changed"}</SelectItem>
+            <SelectItem value="SETTINGS_UPDATED">{t("soc.audit.settingsUpdated") || "Settings Updated"}</SelectItem>
+            <SelectItem value="BILLING_UPDATED">{t("soc.audit.billingUpdated") || "Billing Updated"}</SelectItem>
+            <SelectItem value="API_KEY_CREATED">{t("soc.audit.apiKeyCreated") || "API Key Created"}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -81,24 +83,24 @@ export default function AuditLogViewer() {
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr className="border-b border-white/10 text-[10px] font-bold text-white/40 uppercase tracking-wider">
-              <th className="p-3">Time</th>
-              <th className="p-3">Action</th>
-              <th className="p-3">User</th>
-              <th className="p-3">IP Address</th>
-              <th className="p-3">Details</th>
+              <th className="p-3">{t("soc.audit.colTime") || "Time"}</th>
+              <th className="p-3">{t("soc.audit.colAction") || "Action"}</th>
+              <th className="p-3">{t("soc.audit.colUser") || "User"}</th>
+              <th className="p-3">{t("soc.audit.colIp") || "IP Address"}</th>
+              <th className="p-3">{t("soc.audit.colDetails") || "Details"}</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
                 <td colSpan={5} className="p-8 text-center text-white/40">
-                  Loading audit logs...
+                  {t("soc.audit.loading") || "Loading audit logs..."}
                 </td>
               </tr>
             ) : logs.length === 0 ? (
               <tr>
                 <td colSpan={5} className="p-8 text-center text-white/40">
-                  No logs found.
+                  {t("soc.audit.empty") || "No logs found."}
                 </td>
               </tr>
             ) : (
@@ -158,17 +160,17 @@ export default function AuditLogViewer() {
             onClick={() => setPage((p) => p - 1)}
             className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-50 text-xs font-bold uppercase rounded-lg transition-colors"
           >
-            Previous
+            {t("soc.audit.prev") || "Previous"}
           </button>
           <span className="text-xs text-white/40">
-            Page {page} of {Math.ceil(total / 15)}
+            {t("soc.audit.page") || "Page"} {page} {t("soc.audit.of") || "of"} {Math.ceil(total / 15)}
           </span>
           <button
             disabled={page >= Math.ceil(total / 15)}
             onClick={() => setPage((p) => p + 1)}
             className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-50 text-xs font-bold uppercase rounded-lg transition-colors"
           >
-            Next
+            {t("soc.audit.next") || "Next"}
           </button>
         </div>
       )}

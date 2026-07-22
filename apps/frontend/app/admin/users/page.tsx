@@ -16,6 +16,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { ConfirmDeleteModal } from "../../../components/ui/ConfirmDeleteModal";
+import { useTranslation } from "../../../lib/i18n";
 import {
   Users,
   Search,
@@ -45,6 +46,7 @@ type User = {
 const columnHelper = createColumnHelper<User>();
 
 export default function AdminUsersPage() {
+  const { t } = useTranslation();
   const [data, setData] = useState<User[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -178,7 +180,7 @@ export default function AdminUsersPage() {
 
   const columns = [
     columnHelper.accessor("id", {
-      header: "ID",
+      header: t("admin.users.colId") || "ID",
       cell: (info) => (
         <span className="text-white/40 font-mono text-xs">
           {info.getValue().slice(0, 8)}...
@@ -186,13 +188,13 @@ export default function AdminUsersPage() {
       ),
     }),
     columnHelper.accessor("email", {
-      header: "Email",
+      header: t("admin.users.colEmail") || "Email",
       cell: (info) => (
         <span className="text-white font-medium">{info.getValue()}</span>
       ),
     }),
     columnHelper.accessor("createdAt", {
-      header: "Registered / Last Login",
+      header: t("admin.users.colRegistered") || "Registered / Last Login",
       cell: (info) => {
         const row = info.row.original;
         return (
@@ -203,14 +205,14 @@ export default function AdminUsersPage() {
             <span className="text-xs text-white/40">
               {row.lastLogin
                 ? new Date(row.lastLogin).toLocaleDateString()
-                : "Never"}
+                : t("admin.users.never") || "Never"}
             </span>
           </div>
         );
       },
     }),
     columnHelper.accessor("plan", {
-      header: "Plan",
+      header: t("admin.users.colPlan") || "Plan",
       cell: (info) => (
         <span
           className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${info.getValue() === "FREE" ? "bg-white/10 text-white/70" : "bg-blue-500/20 text-blue-400"}`}
@@ -220,7 +222,7 @@ export default function AdminUsersPage() {
       ),
     }),
     columnHelper.accessor("status", {
-      header: "Status",
+      header: t("admin.users.colStatus") || "Status",
       cell: (info) => (
         <span
           className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${info.getValue() === "BANNED" ? "bg-red-500/20 text-red-400" : "bg-emerald-500/20 text-emerald-400"}`}
@@ -231,7 +233,7 @@ export default function AdminUsersPage() {
     }),
     columnHelper.display({
       id: "limits",
-      header: "Limits",
+      header: t("admin.users.colLimits") || "Limits",
       cell: (props) => {
         const user = props.row.original;
         const hasOverrides =
@@ -240,7 +242,7 @@ export default function AdminUsersPage() {
           user.priorityOverride != null;
 
         if (!hasOverrides) {
-          return <span className="text-xs text-white/40">Default</span>;
+          return <span className="text-xs text-white/40">{t("admin.users.defaultLimits") || "Default"}</span>;
         }
 
         return (
@@ -259,7 +261,7 @@ export default function AdminUsersPage() {
       },
     }),
     columnHelper.accessor("credits", {
-      header: "Credits / Gens",
+      header: t("admin.users.colCredits") || "Credits / Gens",
       cell: (info) => {
         const row = info.row.original;
         return (
@@ -276,7 +278,7 @@ export default function AdminUsersPage() {
     }),
     columnHelper.display({
       id: "actions",
-      header: "Actions",
+      header: t("admin.users.colActions") || "Actions",
       cell: (props) => {
         const user = props.row.original;
         return (
@@ -285,39 +287,39 @@ export default function AdminUsersPage() {
               onClick={() => setEditingCredits(user)}
               className="text-[10px] uppercase font-bold tracking-wider bg-white/5 hover:bg-white/10 text-white px-2 py-1 rounded transition-colors border border-white/5"
             >
-              Credits
+              {t("admin.users.actionCredits") || "Credits"}
             </button>
             <button
               onClick={() => setChangingPlan(user)}
               className="text-[10px] uppercase font-bold tracking-wider bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-2 py-1 rounded transition-colors border border-blue-500/20"
             >
-              Plan
+              {t("admin.users.actionPlan") || "Plan"}
             </button>
             <button
               onClick={() => setEditingLimits(user)}
               className="text-[10px] uppercase font-bold tracking-wider bg-purple-500/10 hover:bg-purple-500/20 text-purple-400 px-2 py-1 rounded transition-colors border border-purple-500/20"
             >
-              Limits
+              {t("admin.users.actionLimits") || "Limits"}
             </button>
             {user.status === "BANNED" ? (
               <button
                 onClick={() => {
-                  if (confirm("Unban user?"))
+                  if (confirm(t("admin.users.actionUnban") + "?"))
                     adminApi.unbanUser(user.id).then(loadData);
                 }}
                 className="text-[10px] uppercase font-bold tracking-wider bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded transition-colors border border-emerald-500/20"
               >
-                Unban
+                {t("admin.users.actionUnban") || "Unban"}
               </button>
             ) : (
               <button
                 onClick={() => {
-                  if (confirm("Ban user?"))
+                  if (confirm(t("admin.users.actionBan") + "?"))
                     adminApi.banUser(user.id).then(loadData);
                 }}
                 className="text-[10px] uppercase font-bold tracking-wider bg-red-500/10 hover:bg-red-500/20 text-red-400 px-2 py-1 rounded transition-colors border border-red-500/20"
               >
-                Ban
+                {t("admin.users.actionBan") || "Ban"}
               </button>
             )}
             <button
@@ -326,7 +328,7 @@ export default function AdminUsersPage() {
               }
               className="text-[10px] uppercase font-bold tracking-wider bg-red-900/30 hover:bg-red-900/50 text-red-400 px-2 py-1 rounded transition-colors border border-red-500/20"
             >
-              Delete
+              {t("admin.users.actionDelete") || "Delete"}
             </button>
           </div>
         );
@@ -343,14 +345,14 @@ export default function AdminUsersPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Users & Access"
-        description="Manage user accounts, roles, and API limits."
+        title={t("admin.users.title") || "Users & Access"}
+        description={t("admin.users.desc") || "Manage user accounts, roles, and API limits."}
         actions={
           <button
             onClick={() => setImporting(true)}
             className="px-4 py-2 bg-white text-black text-sm font-bold rounded-full hover:bg-white/90 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.2)]"
           >
-            Import CSV
+            {t("admin.users.importCsv") || "Import CSV"}
           </button>
         }
       />
@@ -366,7 +368,7 @@ export default function AdminUsersPage() {
           <div className="flex items-center gap-2 opacity-50 mb-4">
             <Search className="w-4 h-4 text-white" />
             <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
-              Search Users
+              {t("admin.users.searchLabel") || "Search Users"}
             </span>
           </div>
           <form
@@ -375,7 +377,7 @@ export default function AdminUsersPage() {
           >
             <input
               type="text"
-              placeholder="Search by email or name..."
+              placeholder={t("admin.users.searchPlaceholder") || "Search by email or name..."}
               className="flex-1 bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/30 transition-colors placeholder:text-white/30"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -387,20 +389,20 @@ export default function AdminUsersPage() {
                 onChange={(e) => setRoleFilter(e.target.value)}
               >
                 <option value="" className="bg-[#0f0f0f]">
-                  All Roles
+                  {t("admin.users.allRoles") || "All Roles"}
                 </option>
                 <option value="USER" className="bg-[#0f0f0f]">
-                  User
+                  {t("admin.users.userRole") || "User"}
                 </option>
                 <option value="ADMIN" className="bg-[#0f0f0f]">
-                  Admin
+                  {t("admin.users.adminRole") || "Admin"}
                 </option>
               </select>
               <button
                 type="submit"
                 className="bg-white/10 text-white border border-white/10 px-6 py-3 rounded-xl text-sm font-bold hover:bg-white/20 transition-colors flex-1"
               >
-                Find
+                {t("admin.users.findBtn") || "Find"}
               </button>
             </div>
           </form>
@@ -416,7 +418,7 @@ export default function AdminUsersPage() {
           <div className="flex flex-col h-full justify-between gap-4">
             <div className="flex items-start justify-between opacity-50 gap-4">
               <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
-                Total Users
+                {t("admin.users.totalUsers") || "Total Users"}
               </span>
               <Users className="w-4 h-4 flex-shrink-0" />
             </div>
@@ -438,7 +440,7 @@ export default function AdminUsersPage() {
         <div className="p-6 border-b border-white/5 flex items-start gap-2 opacity-50">
           <Users className="w-4 h-4 flex-shrink-0" />
           <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
-            User Database
+            {t("admin.users.databaseLabel") || "User Database"}
           </span>
         </div>
         <div className="overflow-x-auto w-full custom-scrollbar pb-2">
@@ -470,7 +472,7 @@ export default function AdminUsersPage() {
                     <div className="flex flex-col items-center gap-2">
                       <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
                       <span className="text-xs uppercase tracking-widest">
-                        Loading...
+                        {t("admin.users.loading") || "Loading..."}
                       </span>
                     </div>
                   </td>
@@ -481,7 +483,7 @@ export default function AdminUsersPage() {
                     colSpan={columns.length}
                     className="px-6 py-12 text-center text-white/40"
                   >
-                    No users found matching your criteria.
+                    {t("admin.users.notFound") || "No users found matching your criteria."}
                   </td>
                 </tr>
               ) : (
@@ -506,7 +508,7 @@ export default function AdminUsersPage() {
         </div>
         <div className="p-4 border-t border-white/5 flex justify-between items-center bg-black/20">
           <div className="text-xs font-medium text-white/40">
-            Showing <span className="text-white">{data.length}</span> of{" "}
+            {t("admin.users.showing") || "Showing"} <span className="text-white">{data.length}</span> {t("admin.users.of") || "of"}{" "}
             <span className="text-white">{total}</span>
           </div>
           <div className="flex gap-2">
@@ -515,14 +517,14 @@ export default function AdminUsersPage() {
               onClick={() => setPage((p) => p - 1)}
               className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-xs font-bold uppercase tracking-wider disabled:opacity-30 hover:bg-white/10 transition-colors text-white"
             >
-              Prev
+              {t("admin.users.prev") || "Prev"}
             </button>
             <button
               disabled={data.length < 20}
               onClick={() => setPage((p) => p + 1)}
               className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-xs font-bold uppercase tracking-wider disabled:opacity-30 hover:bg-white/10 transition-colors text-white"
             >
-              Next
+              {t("admin.users.next") || "Next"}
             </button>
           </div>
         </div>
@@ -536,18 +538,18 @@ export default function AdminUsersPage() {
         <DialogContent className="w-[95vw] sm:max-w-md bg-[#0f0f0f] border-white/10 text-white backdrop-blur-2xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">
-              Manage Credits
+              {t("admin.users.modals.creditsTitle") || "Manage Credits"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-white/50">
-              Editing balance for{" "}
+              {t("admin.users.modals.editingFor") || "Editing balance for"}{" "}
               <strong className="text-white">{editingCredits?.email}</strong>
             </p>
             <form onSubmit={handleAddCredits} className="space-y-6">
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-white/50">
-                  Amount (can be negative)
+                  {t("admin.users.modals.amount") || "Amount (can be negative)"}
                 </label>
                 <input
                   type="number"
@@ -559,7 +561,7 @@ export default function AdminUsersPage() {
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-white/50">
-                  Reason (for Audit Log)
+                  {t("admin.users.modals.reason") || "Reason (for Audit Log)"}
                 </label>
                 <input
                   type="text"
@@ -575,13 +577,13 @@ export default function AdminUsersPage() {
                   onClick={() => setEditingCredits(null)}
                   className="px-4 py-2 text-sm font-bold text-white/50 hover:text-white transition-colors"
                 >
-                  Cancel
+                  {t("admin.users.modals.cancel") || "Cancel"}
                 </button>
                 <button
                   type="submit"
                   className="px-6 py-2 bg-white text-black text-sm font-bold rounded-full hover:bg-white/90 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                 >
-                  Save Changes
+                  {t("admin.users.modals.save") || "Save Changes"}
                 </button>
               </div>
             </form>
@@ -597,18 +599,18 @@ export default function AdminUsersPage() {
         <DialogContent className="w-[95vw] sm:max-w-md bg-[#0f0f0f] border-white/10 text-white backdrop-blur-2xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">
-              Change Subscription Plan
+              {t("admin.users.modals.planTitle") || "Change Subscription Plan"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-white/50">
-              Updating plan for{" "}
+              {t("admin.users.modals.planUpdating") || "Updating plan for"}{" "}
               <strong className="text-white">{changingPlan?.email}</strong>
             </p>
             <form onSubmit={handleChangePlan} className="space-y-6">
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-white/50">
-                  Select Plan
+                  {t("admin.users.modals.selectPlan") || "Select Plan"}
                 </label>
                 <select
                   name="plan"
@@ -632,13 +634,13 @@ export default function AdminUsersPage() {
                   onClick={() => setChangingPlan(null)}
                   className="px-4 py-2 text-sm font-bold text-white/50 hover:text-white transition-colors"
                 >
-                  Cancel
+                  {t("admin.users.modals.cancel") || "Cancel"}
                 </button>
                 <button
                   type="submit"
                   className="px-6 py-2 bg-white text-black text-sm font-bold rounded-full hover:bg-white/90 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                 >
-                  Save Changes
+                  {t("admin.users.modals.save") || "Save Changes"}
                 </button>
               </div>
             </form>
@@ -654,19 +656,19 @@ export default function AdminUsersPage() {
         <DialogContent className="w-[95vw] sm:max-w-md bg-[#0f0f0f] border-white/10 text-white backdrop-blur-2xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">
-              Override Limits
+              {t("admin.users.modals.limitsTitle") || "Override Limits"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-white/50">
-              Set custom limits for{" "}
+              {t("admin.users.modals.limitsDesc") || "Set custom limits for"}{" "}
               <strong className="text-white">{editingLimits?.email}</strong>.
-              Leave blank to use plan defaults.
+              {t("admin.users.modals.limitsDesc2") || "Leave blank to use plan defaults."}
             </p>
             <form onSubmit={handleUpdateLimits} className="space-y-4">
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-white/50">
-                  Max Concurrent Tasks
+                  {t("admin.users.modals.maxConcurrent") || "Max Concurrent Tasks"}
                 </label>
                 <input
                   type="number"
@@ -680,7 +682,7 @@ export default function AdminUsersPage() {
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-white/50">
-                  Queue Delay (ms)
+                  {t("admin.users.modals.queueDelay") || "Queue Delay (ms)"}
                 </label>
                 <input
                   type="number"
@@ -694,7 +696,7 @@ export default function AdminUsersPage() {
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-white/50">
-                  Priority (BullMQ)
+                  {t("admin.users.modals.priority") || "Priority (BullMQ)"}
                 </label>
                 <input
                   type="number"
@@ -710,13 +712,13 @@ export default function AdminUsersPage() {
                   onClick={() => setEditingLimits(null)}
                   className="px-4 py-2 text-sm font-bold text-white/50 hover:text-white transition-colors"
                 >
-                  Cancel
+                  {t("admin.users.modals.cancel") || "Cancel"}
                 </button>
                 <button
                   type="submit"
                   className="px-6 py-2 bg-white text-black text-sm font-bold rounded-full hover:bg-white/90 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                 >
-                  Save Changes
+                  {t("admin.users.modals.save") || "Save Changes"}
                 </button>
               </div>
             </form>
@@ -729,13 +731,12 @@ export default function AdminUsersPage() {
         <DialogContent className="w-[95vw] sm:max-w-2xl bg-[#0f0f0f] border-white/10 text-white backdrop-blur-2xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">
-              Import Users (CSV)
+              {t("admin.users.modals.importTitle") || "Import Users (CSV)"}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-white/50">
-              Paste your CSV contents below. Only the first column (Email) will
-              be parsed.
+              {t("admin.users.modals.importDesc") || "Paste your CSV contents below. Only the first column (Email) will be parsed."}
             </p>
             <div className="space-y-4">
               <textarea
@@ -753,13 +754,13 @@ export default function AdminUsersPage() {
                   }}
                   className="px-4 py-2 text-sm font-bold text-white/50 hover:text-white transition-colors"
                 >
-                  Cancel
+                  {t("admin.users.modals.cancel") || "Cancel"}
                 </button>
                 <button
                   onClick={handleImport}
                   className="px-6 py-2 bg-white text-black text-sm font-bold rounded-full hover:bg-white/90 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.2)]"
                 >
-                  Import Users
+                  {t("admin.users.modals.importBtn") || "Import Users"}
                 </button>
               </div>
             </div>
@@ -772,7 +773,7 @@ export default function AdminUsersPage() {
         isOpen={!!userToDelete}
         onClose={() => setUserToDelete(null)}
         onConfirm={confirmDelete}
-        itemName={`пользователя ${userToDelete?.email}`}
+        itemName={(t("admin.users.deleteItemName") || "user {email}").replace("{email}", userToDelete?.email || "")}
         isLoading={deletingUser}
       />
     </div>

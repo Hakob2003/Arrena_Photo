@@ -25,8 +25,10 @@ import {
   TrendingUp,
   Layers,
 } from "lucide-react";
+import { useTranslation } from "../../lib/i18n";
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   const [stats, setStats] = useState<any>(null);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export default function AdminDashboard() {
         <div className="flex flex-col items-center gap-4">
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-white" />
           <p className="text-sm font-medium text-white/50 tracking-widest uppercase">
-            Loading Platform Data
+            {t("admin.dashboard.loadingData") || "Loading Platform Data"}
           </p>
         </div>
       </div>
@@ -52,16 +54,16 @@ export default function AdminDashboard() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end justify-between">
         <div>
           <h1 className="text-4xl font-bold tracking-tighter text-white mb-2">
-            Platform Overview
+            {t("admin.dashboard.title") || "Platform Overview"}
           </h1>
           <p className="text-sm font-medium text-white/40 uppercase tracking-widest">
-            Key metrics and performance
+            {t("admin.dashboard.subtitle") || "Key metrics and performance"}
           </p>
         </div>
 
         <button className="flex items-center gap-2 px-4 py-2 bg-white text-black text-sm font-bold rounded-full hover:bg-gray-200 transition-colors shadow-lg hover:shadow-white/20">
           <Download className="w-4 h-4" />
-          Download Report
+          {t("admin.dashboard.downloadReport") || "Download Report"}
         </button>
       </div>
 
@@ -79,7 +81,7 @@ export default function AdminDashboard() {
             <div className="flex flex-col h-full justify-between gap-6">
               <div className="flex items-start justify-between opacity-50 gap-4">
                 <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
-                  Total Revenue
+                  {t("admin.dashboard.totalRevenue") || "Total Revenue"}
                 </span>
                 <DollarSign className="w-4 h-4 flex-shrink-0" />
               </div>
@@ -88,7 +90,7 @@ export default function AdminDashboard() {
                   ${stats.revenue.toFixed(2)}
                 </div>
                 <span className="text-xs font-medium text-purple-400 mb-1 whitespace-nowrap ml-2">
-                  All Time
+                  {t("admin.dashboard.allTime") || "All Time"}
                 </span>
               </div>
             </div>
@@ -104,7 +106,7 @@ export default function AdminDashboard() {
             <div className="flex flex-col h-full justify-between gap-6">
               <div className="flex items-start justify-between opacity-50 gap-4">
                 <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
-                  Total Generations
+                  {t("admin.dashboard.totalGenerations") || "Total Generations"}
                 </span>
                 <Sparkles className="w-4 h-4 flex-shrink-0" />
               </div>
@@ -118,7 +120,7 @@ export default function AdminDashboard() {
                       (stats.generations.total || 1)) *
                     100
                   ).toFixed(1)}
-                  % success
+                  % {t("admin.dashboard.success") || "success"}
                 </span>
               </div>
             </div>
@@ -134,7 +136,7 @@ export default function AdminDashboard() {
             <div className="flex flex-col h-full justify-between gap-6">
               <div className="flex items-start justify-between opacity-50 gap-4">
                 <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
-                  Active Subs
+                  {t("admin.dashboard.activeSubs") || "Active Subs"}
                 </span>
                 <CreditCard className="w-4 h-4 flex-shrink-0" />
               </div>
@@ -143,7 +145,7 @@ export default function AdminDashboard() {
                   {stats.activeSubscriptions.toLocaleString()}
                 </div>
                 <p className="text-[10px] text-emerald-400/80 uppercase tracking-wider mt-1 whitespace-nowrap">
-                  Paying users
+                  {t("admin.dashboard.payingUsers") || "Paying users"}
                 </p>
               </div>
             </div>
@@ -159,7 +161,7 @@ export default function AdminDashboard() {
             <div className="flex flex-col h-full justify-between gap-6">
               <div className="flex items-start justify-between opacity-50 gap-4">
                 <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
-                  Total Users
+                  {t("admin.dashboard.totalUsers") || "Total Users"}
                 </span>
                 <Users className="w-4 h-4 flex-shrink-0" />
               </div>
@@ -168,7 +170,7 @@ export default function AdminDashboard() {
                   {stats.users.toLocaleString()}
                 </div>
                 <p className="text-[10px] text-rose-400/80 uppercase tracking-wider mt-1 whitespace-nowrap">
-                  +{stats.newUsers.week} this week
+                  +{stats.newUsers.week} {t("admin.dashboard.thisWeek") || "this week"}
                 </p>
               </div>
             </div>
@@ -188,7 +190,7 @@ export default function AdminDashboard() {
               <div className="flex items-start gap-2 opacity-50">
                 <TrendingUp className="w-4 h-4 text-purple-400 flex-shrink-0" />
                 <span className="text-xs font-bold uppercase tracking-wide text-purple-400 whitespace-nowrap">
-                  Revenue & Generations (7 Days)
+                  {t("admin.dashboard.revAndGen7Days") || "Revenue & Generations (7 Days)"}
                 </span>
               </div>
             </div>
@@ -243,7 +245,7 @@ export default function AdminDashboard() {
                   <Area
                     type="monotone"
                     dataKey="revenue"
-                    name="Revenue ($)"
+                    name={t("admin.dashboard.revenueUsd") || "Revenue ($)"}
                     stroke="#c084fc"
                     strokeWidth={2}
                     fillOpacity={1}
@@ -252,7 +254,7 @@ export default function AdminDashboard() {
                   <Area
                     type="monotone"
                     dataKey="generations"
-                    name="Generations"
+                    name={t("admin.dashboard.generations") || "Generations"}
                     stroke="#60a5fa"
                     strokeWidth={2}
                     fillOpacity={1}
@@ -274,7 +276,7 @@ export default function AdminDashboard() {
               <div className="flex items-start gap-2 opacity-50">
                 <Database className="w-4 h-4 text-amber-400 flex-shrink-0" />
                 <span className="text-xs font-bold uppercase tracking-wide text-amber-400 whitespace-nowrap">
-                  Tokens & Credits
+                  {t("admin.dashboard.tokensAndCredits") || "Tokens & Credits"}
                 </span>
               </div>
             </div>
@@ -329,7 +331,7 @@ export default function AdminDashboard() {
                   <Area
                     type="monotone"
                     dataKey="tokens"
-                    name="Tokens"
+                    name={t("admin.dashboard.tokens") || "Tokens"}
                     stroke="#fbbf24"
                     strokeWidth={2}
                     fillOpacity={1}
@@ -338,7 +340,7 @@ export default function AdminDashboard() {
                   <Area
                     type="monotone"
                     dataKey="credits"
-                    name="Credits"
+                    name={t("admin.dashboard.credits") || "Credits"}
                     stroke="#f87171"
                     strokeWidth={2}
                     fillOpacity={1}
@@ -361,14 +363,14 @@ export default function AdminDashboard() {
             <div className="flex items-start gap-2 opacity-50 mb-6">
               <Layers className="w-4 h-4 flex-shrink-0" />
               <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
-                Popular Templates
+                {t("admin.dashboard.popularTemplates") || "Popular Templates"}
               </span>
             </div>
             <div className="space-y-4">
               {stats.popularTemplates?.length > 0 ? (
-                stats.popularTemplates.map((t: any, index: number) => (
+                stats.popularTemplates.map((tpl: any, index: number) => (
                   <div
-                    key={t.id}
+                    key={tpl.id}
                     className="flex justify-between items-center pb-3 border-b border-white/5 last:border-0 last:pb-0"
                   >
                     <div className="flex items-center gap-3">
@@ -376,17 +378,17 @@ export default function AdminDashboard() {
                         {index + 1}
                       </div>
                       <span className="text-white/80 font-medium whitespace-nowrap mr-4">
-                        {t.name}
+                        {tpl.name}
                       </span>
                     </div>
                     <span className="text-white/40 text-sm tabular-nums whitespace-nowrap">
-                      {t.downloadCount} DL
+                      {tpl.downloadCount} {t("admin.dashboard.dl") || "DL"}
                     </span>
                   </div>
                 ))
               ) : (
                 <div className="text-white/30 text-sm italic">
-                  No template data available
+                  {t("admin.dashboard.noTemplateData") || "No template data available"}
                 </div>
               )}
             </div>
@@ -403,7 +405,7 @@ export default function AdminDashboard() {
               <div className="flex items-start gap-2 opacity-50">
                 <BarChart3 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                 <span className="text-xs font-bold uppercase tracking-wide text-emerald-400 whitespace-nowrap">
-                  User Activity Growth
+                  {t("admin.dashboard.userActivityGrowth") || "User Activity Growth"}
                 </span>
               </div>
             </div>
@@ -443,7 +445,7 @@ export default function AdminDashboard() {
                   />
                   <Bar
                     dataKey="users"
-                    name="Active Users"
+                    name={t("admin.dashboard.activeUsers") || "Active Users"}
                     fill="#34d399"
                     radius={[4, 4, 0, 0]}
                   />
@@ -462,7 +464,7 @@ export default function AdminDashboard() {
             >
               <div className="flex items-start justify-between opacity-50 mb-4 gap-4">
                 <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
-                  Generation Status
+                  {t("admin.dashboard.generationStatus") || "Generation Status"}
                 </span>
               </div>
               <div className="flex gap-4 h-full">
@@ -471,7 +473,7 @@ export default function AdminDashboard() {
                     {stats.generations.success}
                   </div>
                   <div className="text-[10px] text-emerald-500/70 mt-1 uppercase font-bold tracking-wider whitespace-nowrap">
-                    Success
+                    {t("admin.dashboard.successStatus") || "Success"}
                   </div>
                 </div>
                 <div className="flex-1 flex flex-col justify-center items-center p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl">
@@ -479,7 +481,7 @@ export default function AdminDashboard() {
                     {stats.generations.failed}
                   </div>
                   <div className="text-[10px] text-rose-500/70 mt-1 uppercase font-bold tracking-wider whitespace-nowrap">
-                    Failed
+                    {t("admin.dashboard.failedStatus") || "Failed"}
                   </div>
                 </div>
               </div>
@@ -495,7 +497,7 @@ export default function AdminDashboard() {
               <div className="flex flex-col h-full justify-between gap-6">
                 <div className="flex items-start justify-between opacity-50 gap-4">
                   <span className="text-xs font-bold uppercase tracking-wide whitespace-nowrap">
-                    Total API Tokens
+                    {t("admin.dashboard.totalApiTokens") || "Total API Tokens"}
                   </span>
                   <Database className="w-4 h-4 flex-shrink-0" />
                 </div>
@@ -504,7 +506,7 @@ export default function AdminDashboard() {
                     {stats.apiTokensUsed.toLocaleString()}
                   </div>
                   <p className="text-[10px] text-indigo-400/80 uppercase tracking-wider mt-1 whitespace-nowrap">
-                    Overall platform usage
+                    {t("admin.dashboard.platformUsage") || "Overall platform usage"}
                   </p>
                 </div>
               </div>

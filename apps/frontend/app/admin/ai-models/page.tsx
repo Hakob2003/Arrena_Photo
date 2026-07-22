@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "../../../lib/i18n";
 import { api } from "@/lib/api";
 import toast from "react-hot-toast";
 import { PageHeader } from "../../../components/admin/PageHeader";
@@ -567,6 +568,7 @@ function HelpGuide({
 }
 
 export default function AdminAIModelsPage() {
+  const { t } = useTranslation();
   const [models, setModels] = useState<AIModel[]>([]);
   const [providers, setProviders] = useState<AIProvider[]>([]);
   const [loading, setLoading] = useState(true);
@@ -694,8 +696,8 @@ export default function AdminAIModelsPage() {
   return (
     <>
       <PageHeader
-        title="AI Models"
-        description="Управление моделями генерации изображений"
+        title={t("admin.aiModels.title")}
+        description={t("admin.aiModels.subtitle")}
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <button
@@ -719,7 +721,7 @@ export default function AdminAIModelsPage() {
                   d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              Справка
+              {t("admin.aiModels.help")}
             </button>
             <button
               onClick={openCreateModal}
@@ -738,7 +740,7 @@ export default function AdminAIModelsPage() {
                   d="M12 4v16m8-8H4"
                 />
               </svg>
-              Добавить модель
+              {t("admin.aiModels.addModel")}
             </button>
           </div>
         }
@@ -781,7 +783,7 @@ export default function AdminAIModelsPage() {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              placeholder="Поиск по названию, slug..."
+              placeholder={t("admin.aiModels.searchPlaceholder")}
               className="w-full pl-10 pr-4 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-900 dark:text-white text-sm placeholder-gray-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 transition-colors"
             />
           </div>
@@ -794,7 +796,7 @@ export default function AdminAIModelsPage() {
             className="px-3 py-2 bg-black/[0.03] dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-slate-900 dark:text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500/50 transition-colors appearance-none cursor-pointer"
           >
             <option value="" className="bg-[#111]">
-              Все провайдеры
+              {t("admin.aiModels.allProviders")}
             </option>
             {providers.map((p) => (
               <option key={p.id} value={p.id} className="bg-[#111]">
@@ -810,7 +812,7 @@ export default function AdminAIModelsPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="bg-transparent border border-black/10 dark:border-white/10 rounded-xl p-4">
             <p className="text-xs text-slate-400 dark:text-gray-500 uppercase tracking-wider mb-1">
-              Всего моделей
+              {t("admin.aiModels.totalModels")}
             </p>
             <p className="text-2xl font-bold text-slate-900 dark:text-slate-900 dark:text-white">
               {total}
@@ -818,7 +820,7 @@ export default function AdminAIModelsPage() {
           </div>
           <div className="bg-transparent border border-black/10 dark:border-white/10 rounded-xl p-4">
             <p className="text-xs text-slate-400 dark:text-gray-500 uppercase tracking-wider mb-1">
-              Активных
+              {t("admin.aiModels.activeModels")}
             </p>
             <p className="text-2xl font-bold text-green-500 dark:text-green-400">
               {models.filter((m) => m.isActive).length}
@@ -826,7 +828,7 @@ export default function AdminAIModelsPage() {
           </div>
           <div className="bg-transparent border border-black/10 dark:border-white/10 rounded-xl p-4">
             <p className="text-xs text-slate-400 dark:text-gray-500 uppercase tracking-wider mb-1">
-              Провайдеров
+              {t("admin.aiModels.totalProviders")}
             </p>
             <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
               {providers.length}
@@ -834,7 +836,7 @@ export default function AdminAIModelsPage() {
           </div>
           <div className="bg-transparent border border-black/10 dark:border-white/10 rounded-xl p-4">
             <p className="text-xs text-slate-400 dark:text-gray-500 uppercase tracking-wider mb-1">
-              Бесплатных
+              {t("admin.aiModels.freeModels")}
             </p>
             <p className="text-2xl font-bold text-yellow-500 dark:text-yellow-400">
               {models.filter((m) => m.isFree).length}
@@ -857,25 +859,25 @@ export default function AdminAIModelsPage() {
               <thead>
                 <tr className="border-b border-black/10 dark:border-white/10 text-slate-500 dark:text-gray-400 text-xs uppercase tracking-wider">
                   <th className="text-left px-4 py-3 font-medium whitespace-nowrap">
-                    Провайдер
+                    {t("admin.aiModels.provider")}
                   </th>
                   <th className="text-left px-4 py-3 font-medium whitespace-nowrap">
-                    Модель
+                    {t("admin.aiModels.model")}
                   </th>
                   <th className="text-left px-4 py-3 font-medium whitespace-nowrap">
-                    Статус
+                    {t("admin.aiModels.status")}
                   </th>
                   <th className="text-left px-4 py-3 font-medium whitespace-nowrap">
-                    Стоимость
+                    {t("admin.aiModels.cost")}
                   </th>
                   <th className="text-left px-4 py-3 font-medium whitespace-nowrap">
-                    Скорость
+                    {t("admin.aiModels.speed")}
                   </th>
                   <th className="text-right px-4 py-3 font-medium whitespace-nowrap">
-                    Запросов
+                    {t("admin.aiModels.requests")}
                   </th>
                   <th className="text-right px-4 py-3 font-medium whitespace-nowrap">
-                    Действия
+                    {t("admin.aiModels.actions")}
                   </th>
                 </tr>
               </thead>
@@ -886,7 +888,7 @@ export default function AdminAIModelsPage() {
                       <div className="flex items-center justify-center gap-3">
                         <div className="w-5 h-5 border-2 border-black/10 dark:border-white/10 border-t-indigo-500 rounded-full animate-spin" />
                         <span className="text-slate-500 dark:text-gray-400">
-                          Загрузка...
+                          {t("admin.aiModels.loading")}
                         </span>
                       </div>
                     </td>
@@ -896,12 +898,12 @@ export default function AdminAIModelsPage() {
                     <td colSpan={7} className="px-4 py-12 text-center">
                       <div className="text-slate-400 dark:text-gray-500">
                         <div className="text-3xl mb-2">🧠</div>
-                        <p>Модели не найдены</p>
+                        <p>{t("admin.aiModels.noModels")}</p>
                         <button
                           onClick={openCreateModal}
                           className="text-indigo-400 hover:text-indigo-300 mt-2 text-sm"
                         >
-                          Добавить первую модель →
+                          {t("admin.aiModels.addFirstModel")} →
                         </button>
                       </div>
                     </td>
@@ -1122,7 +1124,7 @@ export default function AdminAIModelsPage() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-black/10 dark:border-white/10">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-900 dark:text-white">
-                {editingModel ? "Редактировать модель" : "Добавить модель"}
+                {editingModel ? t("admin.aiModels.editModel") : t("admin.aiModels.addModel")}
               </h3>
               <button
                 onClick={() => setShowModal(false)}
@@ -1328,7 +1330,7 @@ export default function AdminAIModelsPage() {
                 onClick={() => setShowModal(false)}
                 className="px-4 py-2 text-sm text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:text-slate-900 dark:text-white transition-colors"
               >
-                Отмена
+                {t("admin.aiModels.cancel")}
               </button>
               <button
                 onClick={handleSave}
@@ -1338,7 +1340,7 @@ export default function AdminAIModelsPage() {
                 {saving && (
                   <div className="w-4 h-4 border-2 border-black/20 dark:border-white/20 border-t-white rounded-full animate-spin" />
                 )}
-                {editingModel ? "Сохранить" : "Добавить"}
+                {editingModel ? t("admin.aiModels.save") : t("admin.aiModels.add")}
               </button>
             </div>
           </div>
@@ -1360,9 +1362,10 @@ export default function AdminAIModelsPage() {
         isOpen={!!modelToDelete}
         onClose={() => setModelToDelete(null)}
         onConfirm={confirmDelete}
-        itemName={`модель "${modelToDelete?.name}"`}
+        itemName={t("admin.aiModels.deleteItemName", { name: modelToDelete?.name || "" })}
         isLoading={deletingId !== null}
       />
     </>
   );
 }
+
