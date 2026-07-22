@@ -8,6 +8,16 @@ import { useAuthStore } from "../../../store";
 import { api } from "../../../lib/api";
 import { useTranslation } from "../../../lib/i18n";
 import { useUIStore } from "../../../store";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import { SetupCardForm } from "../../../components/ui/SetupCardForm";
+import type { StripeElementLocale } from "@stripe/stripe-js";
+
+const STRIPE_LOCALE_MAP: Record<string, StripeElementLocale> = {
+  en: "en",
+  ru: "ru",
+  hy: "en",
+};
 
 export function PaymentTab() {
   const {
@@ -16,19 +26,18 @@ export function PaymentTab() {
     setDefaultPaymentMethod,
     fetchPaymentMethods,
   } = useAuthStore();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const isLuxury = useUIStore((state) => state.preferences?.skin === "LUXURY");
+  const theme = useUIStore((state) => state.preferences?.theme);
+  const stripeLocale = STRIPE_LOCALE_MAP[locale] ?? "en";
+  const [isDark, setIsDark] = useState(false);
 
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [stripePromise, setStripePromise] = useState<any>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [isInitializingStripe, setIsInitializingStripe] = useState(false);
 
-  const [newCard, setNewCard] = useState({
-    number: "",
-    expiry: "",
-    cvv: "",
-    limit: 100,
-    balance: 250,
-  });
   const [editingCard, setEditingCard] = useState<any>(null);
 
   const router = useRouter();
@@ -74,7 +83,28 @@ export function PaymentTab() {
 
   useEffect(() => {
     fetchPaymentMethods().then(() => {});
+    
+    // Load Stripe config
+    api.get("/payment/config").then(({ data }) => {
+      if (data.provider === "stripe" && data.publicKey) {
+        setStripePromise(loadStripe(data.publicKey));
+      }
+    }).catch(console.error);
   }, []);
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      setIsDark(document.documentElement.classList.contains("dark"));
+      const observer = new MutationObserver(() => {
+        setIsDark(document.documentElement.classList.contains("dark"));
+      });
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+      return () => observer.disconnect();
+    }
+  }, [theme]);
 
   useEffect(() => {
     fetchHistory();
@@ -221,82 +251,29 @@ export function PaymentTab() {
     return y < currentYear || (y === currentYear && m < currentMonth);
   };
 
-  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\D/g, "");
-    val = val.substring(0, 16);
-    const formatted = val.match(/.{1,4}/g)?.join(" ") || val;
-    setNewCard({ ...newCard, number: formatted });
-  };
-
-  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\D/g, "");
-    if (val.length > 4) val = val.substring(0, 4);
-    if (val.length >= 3) {
-      val = val.substring(0, 2) + "/" + val.substring(2);
-    }
-    setNewCard({ ...newCard, expiry: val });
-  };
-
-  const handleCvvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value.replace(/\D/g, "");
-    val = val.substring(0, 4);
-    setNewCard({ ...newCard, cvv: val });
-  };
-
-  const handleAddCardSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const numClean = newCard.number.replace(/\s/g, "");
-    if (numClean.length !== 16) {
-      toast.error("Card number must be 16 digits.");
-      return;
-    }
-
-    if (newCard.cvv.length < 3) {
-      toast.error("CVV must be 3 or 4 digits.");
-      return;
-    }
-
-    if (newCard.expiry.length !== 5) {
-      toast.error("Enter expiry in MM/YY format.");
-      return;
-    }
-
-    const [month, year] = newCard.expiry.split("/");
-    const monthNum = parseInt(month, 10);
-    const yearNum = parseInt(year, 10);
-    const now = new Date();
-    const currentMonth = now.getMonth() + 1;
-    const currentYear = now.getFullYear() % 100;
-
-    if (monthNum < 1 || monthNum > 12) {
-      toast.error("Invalid month.");
-      return;
-    }
-
-    if (
-      yearNum < currentYear ||
-      (yearNum === currentYear && monthNum < currentMonth)
-    ) {
-      toast.error("Card is expired.");
-      return;
-    }
-
+  const handleOpenAddModal = async () => {
+    setAddModalOpen(true);
+    setIsInitializingStripe(true);
     try {
-      await api.post("/billing/payment-methods", {
-        cardNumber: newCard.number,
-        expiry: newCard.expiry,
-        cvv: newCard.cvv,
-        cardholderName: "User",
-        limit: Number(newCard.limit),
-        balance: Number(newCard.balance),
-      });
-      await fetchPaymentMethods();
+      const res = await api.post("/payment/create-setup-intent");
+      setClientSecret(res.data.clientSecret);
+    } catch (e: any) {
+      toast.error(e.response?.data?.message || "Failed to initialize secure form");
       setAddModalOpen(false);
-      setNewCard({ number: "", expiry: "", cvv: "", limit: 100, balance: 250 });
-      toast.success("Card added successfully!");
+    } finally {
+      setIsInitializingStripe(false);
+    }
+  };
+
+  const handleSetupSuccess = async (setupIntentId: string, limit: number) => {
+    try {
+      await api.post("/billing/sync-card", { setupIntentId, limit });
+      await fetchPaymentMethods();
+      toast.success("Card added securely!");
+      setAddModalOpen(false);
+      setClientSecret(null);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Error adding card");
+      toast.error(err.response?.data?.message || "Failed to sync card");
     }
   };
 
@@ -348,7 +325,7 @@ export function PaymentTab() {
             {t("billing.payment.title")}
           </h2>
           <button
-            onClick={() => setAddModalOpen(true)}
+            onClick={handleOpenAddModal}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
               isLuxury
                 ? "bg-[#D4AF37] hover:bg-[#C5A028] text-black"
@@ -473,7 +450,7 @@ export function PaymentTab() {
           ))}
 
           <div
-            onClick={() => setAddModalOpen(true)}
+            onClick={handleOpenAddModal}
             className={`p-5 border-2 border-dashed border-black/10 dark:border-white/10 bg-transparent rounded-2xl flex items-center justify-center min-h-[140px] cursor-pointer hover:bg-slate-50 dark:hover:bg-white/5 transition-all group ${
               isLuxury
                 ? "hover:border-[#D4AF37]/50"
@@ -925,111 +902,30 @@ export function PaymentTab() {
               <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
                 {t("billing.payment.addCardTitle")}
               </h2>
-              <form
-                onSubmit={handleAddCardSubmit}
-                className="flex flex-col gap-4"
-              >
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">
-                    {t("billing.payment.cardNumber")}
-                  </label>
-                  <input
-                    required
-                    type="text"
-                    value={newCard.number}
-                    onChange={handleNumberChange}
-                    placeholder="0000 0000 0000 0000"
-                    className={`w-full bg-slate-50 dark:bg-black/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? "focus:border-[#D4AF37]" : "focus:border-indigo-500"}`}
+              {isInitializingStripe || !clientSecret || !stripePromise ? (
+                <div className="flex flex-col items-center justify-center text-slate-400 py-10">
+                  <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                  <p>Loading secure payment gateway...</p>
+                </div>
+              ) : (
+                <Elements
+                  stripe={stripePromise}
+                  options={{
+                    clientSecret,
+                    locale: stripeLocale,
+                    appearance: { theme: isDark ? "night" : "stripe" },
+                  }}
+                >
+                  <SetupCardForm
+                    onSuccess={handleSetupSuccess}
+                    onCancel={() => {
+                      setAddModalOpen(false);
+                      setClientSecret(null);
+                    }}
+                    isLuxury={isLuxury}
                   />
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">
-                      {t("billing.payment.expiryDate")}
-                    </label>
-                    <input
-                      required
-                      type="text"
-                      value={newCard.expiry}
-                      onChange={handleExpiryChange}
-                      placeholder="MM/YY"
-                      className={`w-full bg-slate-50 dark:bg-black/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? "focus:border-[#D4AF37]" : "focus:border-indigo-500"}`}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">
-                      {t("billing.payment.cvv")}
-                    </label>
-                    <input
-                      required
-                      type="text"
-                      value={newCard.cvv}
-                      onChange={handleCvvChange}
-                      placeholder="123"
-                      className={`w-full bg-slate-50 dark:bg-black/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? "focus:border-[#D4AF37]" : "focus:border-indigo-500"}`}
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">
-                      {t("billing.payment.maxLimit")}
-                    </label>
-                    <input
-                      required
-                      type="number"
-                      min="0"
-                      value={newCard.limit}
-                      onChange={(e) =>
-                        setNewCard({
-                          ...newCard,
-                          limit: Number(e.target.value),
-                        })
-                      }
-                      placeholder="100"
-                      className={`w-full bg-slate-50 dark:bg-black/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? "focus:border-[#D4AF37]" : "focus:border-indigo-500"}`}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-1">
-                      {t("billing.payment.cardBalance")}
-                    </label>
-                    <input
-                      required
-                      type="number"
-                      min="0"
-                      value={newCard.balance}
-                      onChange={(e) =>
-                        setNewCard({
-                          ...newCard,
-                          balance: Number(e.target.value),
-                        })
-                      }
-                      placeholder="250"
-                      className={`w-full bg-slate-50 dark:bg-black/5 border border-black/10 dark:border-white/10 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none ${isLuxury ? "focus:border-[#D4AF37]" : "focus:border-indigo-500"}`}
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-3 mt-4">
-                  <button
-                    type="submit"
-                    className={`flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                      isLuxury
-                        ? "bg-[#D4AF37] hover:bg-[#C5A028] text-black"
-                        : "bg-indigo-600 hover:bg-indigo-700 text-white"
-                    }`}
-                  >
-                    {t("billing.payment.save")}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setAddModalOpen(false)}
-                    className="flex-1 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/5 text-slate-900 dark:text-white text-sm font-medium rounded-lg transition-colors"
-                  >
-                    {t("ui.confirmDelete.cancel")}
-                  </button>
-                </div>
-              </form>
+                </Elements>
+              )}
             </motion.div>
           </div>
         )}

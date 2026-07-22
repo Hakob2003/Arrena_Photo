@@ -57,7 +57,8 @@ export function PaymentModal({
   planName,
   initialCreditAmount,
 }: PaymentModalProps) {
-  const [method, setMethod] = useState<"card" | "apple" | "google">("card");
+  const [method, setMethod] = useState<"card" | "apple" | "google" | "saved">("card");
+  const [selectedSavedCardId, setSelectedSavedCardId] = useState<string>("");
   const [config, setConfig] = useState<any>(null);
   const [stripePromise, setStripePromise] = useState<any>(null);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -75,6 +76,8 @@ export function PaymentModal({
   const addCredits = useAuthStore((state) => state.addCredits);
   const setCredits = useAuthStore((state) => state.setCredits);
   const setPlanId = useAuthStore((state) => state.setPlanId);
+  const paymentMethods = useAuthStore((state) => state.paymentMethods);
+  const fetchPaymentMethods = useAuthStore((state) => state.fetchPaymentMethods);
   const isLuxury = useUIStore((state) => state.preferences?.skin) === "PREMIUM";
 
   const stripeLocale = STRIPE_LOCALE_MAP[locale] ?? "en";
@@ -106,6 +109,20 @@ export function PaymentModal({
       }
     }
   }, [isOpen, type, initialCreditAmount]);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchPaymentMethods().then(() => {});
+    }
+  }, [isOpen, fetchPaymentMethods]);
+
+  useEffect(() => {
+    if (paymentMethods && paymentMethods.length > 0 && !selectedSavedCardId) {
+      const defaultCard = paymentMethods.find((pm) => pm.isDefault) || paymentMethods[0];
+      setSelectedSavedCardId(defaultCard.id);
+      setMethod("saved");
+    }
+  }, [paymentMethods, selectedSavedCardId]);
 
   // 1. Fetch Config
   useEffect(() => {
@@ -178,6 +195,16 @@ export function PaymentModal({
           // Synchronously update the backend state if webhook hasn't fired yet
           await api.post("/payment/sync-status", { paymentIntentId });
         }
+        
+        // Auto-save the card if it was newly created
+        if (paymentIntentId && method === "card") {
+          try {
+            await api.post("/billing/sync-card", { setupIntentId: paymentIntentId, limit: 0 });
+            await fetchPaymentMethods();
+          } catch (syncErr) {
+            console.warn("Failed to auto-save card:", syncErr);
+          }
+        }
 
         const { data } = await api.get("/auth/me");
         if (data.credits !== undefined) setCredits(data.credits);
@@ -225,6 +252,25 @@ export function PaymentModal({
       await handleSuccess(res.data.providerPaymentId);
     } catch (err: any) {
       setInitError(err.response?.data?.message ?? "Wallet payment failed");
+      setIsProcessingWallet(false);
+    }
+  };
+
+  const handleChargeSavedCard = async () => {
+    setIsProcessingWallet(true);
+    setInitError(null);
+    try {
+      const finalAmount = getFinalAmount();
+      await api.post("/payment/charge-saved-card", {
+        paymentMethodId: selectedSavedCardId,
+        amount: finalAmount,
+        type,
+        credits: type === "CREDITS" ? selectedPack.credits : undefined,
+        planName: type === "SUBSCRIPTION" ? planName : undefined,
+      });
+      await handleSuccess();
+    } catch (err: any) {
+      setInitError(err.response?.data?.message ?? "Saved card payment failed");
       setIsProcessingWallet(false);
     }
   };
@@ -477,17 +523,30 @@ export function PaymentModal({
               ) : (
                 <div className="w-full max-w-md mx-auto flex flex-col gap-4">
                   {/* Payment Method Selector */}
-                  <div className="flex bg-slate-100 dark:bg-[#1a1a1a] p-1 rounded-xl mb-4">
+                  <div className="flex bg-slate-100 dark:bg-[#1a1a1a] p-1 rounded-xl mb-4 overflow-x-auto custom-scrollbar">
+                    {paymentMethods.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setMethod("saved")}
+                        className={`flex-1 py-2 px-3 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
+                          method === "saved"
+                            ? "bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white"
+                            : "text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                        }`}
+                      >
+                        Saved Card
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => setMethod("card")}
-                      className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      className={`flex-1 py-2 px-3 text-sm font-medium rounded-lg transition-colors whitespace-nowrap ${
                         method === "card"
                           ? "bg-white dark:bg-black shadow-sm text-slate-900 dark:text-white"
                           : "text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200"
                       }`}
                     >
-                      Card
+                      New Card
                     </button>
                     <button
                       type="button"
@@ -516,6 +575,62 @@ export function PaymentModal({
                   {initError && (
                     <div className="text-red-600 dark:text-red-400 text-sm p-3 bg-red-100 dark:bg-red-400/10 border border-red-200 dark:border-red-400/20 rounded-lg">
                       {initError}
+                    </div>
+                  )}
+
+                  {/* Saved Card View */}
+                  {method === "saved" && paymentMethods.length > 0 && (
+                    <div className="flex flex-col gap-4 py-4 w-full px-4">
+                      <div className="space-y-3">
+                        {paymentMethods.map((pm) => (
+                          <div
+                            key={pm.id}
+                            onClick={() => setSelectedSavedCardId(pm.id)}
+                            className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                              selectedSavedCardId === pm.id
+                                ? isLuxury
+                                  ? "border-[#D4AF37] bg-[#D4AF37]/10"
+                                  : "border-indigo-500 bg-indigo-50 dark:bg-indigo-500/10"
+                                : "border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20"
+                            }`}
+                          >
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-6 bg-slate-200 dark:bg-white/10 rounded flex items-center justify-center text-xs font-bold">
+                                  {pm.type || "Card"}
+                                </div>
+                                <span className="font-mono">**** {pm.last4 || pm.cardNumber?.slice(-4)}</span>
+                              </div>
+                              <span className="text-sm text-slate-500">{pm.expiry}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="w-full text-left mt-2">
+                        <LegalCheckboxes
+                          termsAccepted={termsAccepted}
+                          setTermsAccepted={setTermsAccepted}
+                          isSubscription={type === "SUBSCRIPTION"}
+                        />
+                      </div>
+
+                      <button
+                        disabled={!termsAccepted || isProcessingWallet}
+                        onClick={handleChargeSavedCard}
+                        className={`w-full py-3 px-4 font-semibold rounded-xl mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-all ${
+                          isLuxury
+                            ? "bg-[#D4AF37] hover:bg-[#C5A028] text-black shadow-[0_4px_14px_rgba(212,175,55,0.4)]"
+                            : "bg-slate-900 dark:bg-white text-white dark:text-black hover:bg-slate-800 dark:hover:bg-gray-100"
+                        }`}
+                      >
+                        {isProcessingWallet ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          t("payment.modal.payNow")
+                        )}
+                      </button>
+                      <LegalDisclaimer isSubscription={type === "SUBSCRIPTION"} />
                     </div>
                   )}
 

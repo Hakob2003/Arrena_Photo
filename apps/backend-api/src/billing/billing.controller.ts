@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, UseGuards, Request, BadRequestException } from '@nestjs/common';
 import { BillingService } from './billing.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
@@ -42,10 +42,13 @@ export class BillingController {
     return this.billingService.getPaymentMethods(req.user.id);
   }
 
-  @Post('payment-methods')
-  @ApiOperation({ summary: 'Add a new payment method' })
-  addPaymentMethod(@Request() req, @Body() data: any) {
-    return this.billingService.addPaymentMethod(req.user.id, data);
+  @Post('sync-card')
+  @ApiOperation({ summary: 'Sync a saved card from Stripe SetupIntent or PaymentIntent' })
+  syncPaymentMethod(@Request() req, @Body() data: { setupIntentId: string, limit: number }) {
+    if (!data.setupIntentId) {
+      throw new BadRequestException("setupIntentId is required");
+    }
+    return this.billingService.syncPaymentMethod(req.user.id, data.setupIntentId, data.limit || 0);
   }
 
   @Delete('payment-methods/:id')

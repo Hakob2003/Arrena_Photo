@@ -3,13 +3,19 @@ import {
   NotFoundException,
   BadRequestException,
   OnModuleInit,
+  InternalServerErrorException,
 } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { SubscriptionPlan } from "@prisma/client";
+import { PaymentProvider } from "../payment/interfaces/payment-provider.interface";
+import { Inject } from "@nestjs/common";
 
 @Injectable()
 export class BillingService implements OnModuleInit {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject("PAYMENT_PROVIDER") private paymentProvider: PaymentProvider
+  ) {}
 
   async onModuleInit() {
     const planConfigs = [
@@ -114,60 +120,75 @@ export class BillingService implements OnModuleInit {
     });
   }
 
-  async addPaymentMethod(
-    userId: string,
-    data: {
-      cardNumber: string;
-      expiry: string;
-      cardholderName: string;
-      cvv?: string;
-      balance: number;
-      limit: number;
-      isDefault?: boolean;
-    },
-  ) {
-    // Basic formatting
-    const cleanedNumber = data.cardNumber.replace(/\s+/g, "");
-    const isExpired = this.checkIfExpired(data.expiry);
+  async syncPaymentMethod(userId: string, setupIntentId: string, limit: number) {
+    const stripe = (this.paymentProvider as any).getStripeInstance?.();
+    if (!stripe) {
+      throw new InternalServerErrorException("Payment provider does not support direct stripe access");
+    }
 
-    if (isExpired) {
-      throw new BadRequestException("Cannot add an expired card");
+    let paymentMethodId: string;
+    
+    if (setupIntentId.startsWith('seti_')) {
+      const setupIntent = await stripe.setupIntents.retrieve(setupIntentId);
+      if (setupIntent.status !== 'succeeded') {
+        throw new BadRequestException("SetupIntent is not succeeded");
+      }
+      if (typeof setupIntent.payment_method === 'string') {
+        paymentMethodId = setupIntent.payment_method;
+      } else if (setupIntent.payment_method && setupIntent.payment_method.id) {
+        paymentMethodId = setupIntent.payment_method.id;
+      } else {
+        throw new BadRequestException("No payment method found on SetupIntent");
+      }
+    } else if (setupIntentId.startsWith('pm_')) {
+      // Direct payment method ID (e.g. from checkout where it was saved)
+      paymentMethodId = setupIntentId;
+    } else {
+      throw new BadRequestException("Invalid ID provided for sync");
+    }
+
+    const pm = await stripe.paymentMethods.retrieve(paymentMethodId);
+    
+    if (pm.customer) {
+      // Verify it belongs to this user
+      const user = await this.prisma.user.findUnique({ where: { id: userId } });
+      if (user?.stripeCustomerId !== pm.customer) {
+        throw new BadRequestException("Payment method does not belong to this user");
+      }
+    }
+
+    if (pm.type !== 'card' || !pm.card) {
+      throw new BadRequestException("Only cards are supported");
     }
 
     const existingCards = await this.prisma.paymentMethod.count({
       where: { userId },
     });
     const isFirstCard = existingCards === 0;
-    const makeDefault = data.isDefault || isFirstCard;
 
-    if (makeDefault) {
-      // Unset previous defaults
-      await this.prisma.paymentMethod.updateMany({
-        where: { userId, isDefault: true },
-        data: { isDefault: false },
-      });
-    }
-
-    const last4 =
-      cleanedNumber.length >= 4 ? cleanedNumber.slice(-4) : cleanedNumber;
-    let brand = "visa";
-    if (cleanedNumber.startsWith("5") || cleanedNumber.startsWith("2"))
-      brand = "mastercard";
-    if (cleanedNumber.startsWith("4")) brand = "visa";
-    if (cleanedNumber.startsWith("34") || cleanedNumber.startsWith("37"))
-      brand = "amex";
-
-    return this.prisma.paymentMethod.create({
-      data: {
+    const brand = pm.card.brand || "unknown";
+    const last4 = pm.card.last4 || "0000";
+    const expiry = `${pm.card.exp_month.toString().padStart(2, '0')}/${pm.card.exp_year.toString().slice(-2)}`;
+    
+    return this.prisma.paymentMethod.upsert({
+      where: { id: paymentMethodId }, // Using stripe ID directly!
+      create: {
+        id: paymentMethodId,
         userId,
         last4,
         brand,
-        expiry: data.expiry,
-        cardholderName: data.cardholderName,
-        balance: data.balance,
-        limit: data.limit,
-        isDefault: makeDefault,
+        expiry,
+        cardholderName: pm.billing_details?.name || "Cardholder",
+        balance: 0,
+        limit: limit,
+        isDefault: isFirstCard,
       },
+      update: {
+        limit,
+        last4,
+        brand,
+        expiry,
+      }
     });
   }
 
@@ -178,6 +199,16 @@ export class BillingService implements OnModuleInit {
     if (!card) throw new NotFoundException("Card not found");
 
     await this.prisma.paymentMethod.delete({ where: { id } });
+
+    // Also detach from stripe
+    try {
+      const stripe = (this.paymentProvider as any).getStripeInstance?.();
+      if (stripe) {
+        await stripe.paymentMethods.detach(id);
+      }
+    } catch (e) {
+      console.warn("Failed to detach payment method from Stripe", e);
+    }
 
     // If we deleted the default card, make another one default if it exists and is not expired
     if (card.isDefault) {

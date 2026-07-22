@@ -66,4 +66,19 @@ export interface PaymentProvider {
     priceId: string,
     metadata?: Record<string, any>
   ): Promise<{ success: boolean; providerPaymentId?: string; errorMessage?: string }>;
+
+  /**
+   * Create a SetupIntent to securely add a new card
+   */
+  createSetupIntent(customerId: string, metadata?: Record<string, any>): Promise<{ clientSecret: string; setupIntentId: string }>;
+
+  /**
+   * Charge a saved card
+   */
+  chargeSavedCard(
+    customerId: string,
+    paymentMethodId: string,
+    amountUsd: number,
+    metadata?: Record<string, any>
+  ): Promise<{ success: boolean; providerPaymentId?: string; errorMessage?: string }>;
 }

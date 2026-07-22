@@ -73,6 +73,100 @@ export class PaymentService {
     return { clientSecret };
   }
 
+  // --- Setup Intent (Save card without charging) ---
+  async createSetupIntent(userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException("User not found");
+
+    const customerId = await this.paymentProvider.getOrCreateCustomer(
+      user.email,
+      user.name || undefined,
+      userId,
+    );
+
+    if (!user.stripeCustomerId) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { stripeCustomerId: customerId },
+      });
+    }
+
+    return this.paymentProvider.createSetupIntent(customerId, { userId });
+  }
+
+  // --- Charge Saved Card ---
+  async chargeSavedCard(
+    userId: string,
+    paymentMethodId: string,
+    amountUsd: number,
+    type: "CREDITS" | "SUBSCRIPTION",
+    credits?: number,
+    planName?: string,
+  ) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException("User not found");
+
+    const customerId = await this.paymentProvider.getOrCreateCustomer(
+      user.email,
+      user.name || undefined,
+      userId,
+    );
+
+    if (type === "SUBSCRIPTION") {
+       if (!planName) throw new InternalServerErrorException("Plan name required");
+       // For simplicity, we can reuse processWalletSubscriptionToken if we just adapt it,
+       // but wait, chargeSavedCard just charges amount. Subscriptions need subscription creation.
+       // Actually, we don't need chargeSavedCard for subscriptions if they just call createSubscription 
+       // with a default payment method, but our createSubscription already handles saved cards if default!
+       throw new InternalServerErrorException("Use createSubscription for subscriptions");
+    }
+
+    const result = await this.paymentProvider.chargeSavedCard(
+      customerId,
+      paymentMethodId,
+      amountUsd,
+      {
+        userId,
+        type: "CREDITS",
+        creditsToAdd: credits?.toString() || "0",
+      },
+    );
+
+    if (!result.success) {
+      throw new InternalServerErrorException(result.errorMessage || "Failed to charge saved card");
+    }
+
+    await this.prisma.paymentHistory.create({
+      data: {
+        id: this.generateTransactionId(userId),
+        userId,
+        stripePaymentIntentId: result.providerPaymentId || "",
+        amount: Math.round(amountUsd * 100),
+        currency: "usd",
+        status: "SUCCEEDED",
+        type: "CREDITS",
+        creditsAdded: credits || 0,
+      },
+    });
+
+    if (credits && credits > 0) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { credits: { increment: credits } },
+      });
+
+      await this.prisma.creditTransaction.create({
+        data: {
+          userId,
+          amount: credits,
+          reason: "Purchase via Saved Card",
+        },
+      });
+    }
+
+    return { success: true, providerPaymentId: result.providerPaymentId };
+  }
+
   // --- Subscription (Recurring) ---
   async createSubscription(userId: string, planName: string) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });

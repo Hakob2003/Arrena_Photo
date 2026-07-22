@@ -13,7 +13,7 @@ import { LegalCheckboxes, LegalDisclaimer } from "./LegalCompliance";
 
 interface ProviderCardFormProps {
   clientSecret: string;
-  onSuccess: (paymentIntentId?: string) => void;
+  onSuccess: (paymentIntentId?: string, paymentIntent?: any) => void;
   termsAccepted: boolean;
   setTermsAccepted: (val: boolean) => void;
   isSubscription: boolean;
@@ -64,7 +64,7 @@ export function ProviderCardForm({
         setError(confirmError.message ?? t("payment.modal.genericError"));
         setIsLoading(false);
       } else {
-        onSuccess(paymentIntent?.id);
+        onSuccess(paymentIntent?.id, paymentIntent);
       }
     },
     [stripe, elements, clientSecret, onSuccess, t],

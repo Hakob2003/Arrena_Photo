@@ -43,3 +43,26 @@ export class ValidateMerchantDto {
   @IsNotEmpty()
   validationURL: string;
 }
+
+export class ChargeSavedCardDto {
+  @IsString()
+  @IsNotEmpty()
+  paymentMethodId: string;
+
+  @IsNumber()
+  @IsPositive()
+  amount: number;
+
+  @IsString()
+  @IsNotEmpty()
+  type: 'CREDITS' | 'SUBSCRIPTION';
+
+  @IsOptional()
+  @IsString()
+  planName?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  credits?: number;
+}

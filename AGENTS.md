@@ -17,6 +17,8 @@ For every task:
 5. Implement the smallest safe change.
 6. Validate the result.
 7. Produce the final report.
+8. Check task.md after completing each task point.
+9. Do not work on more than 3 files simultaneously.
 
 Never skip validation.
 

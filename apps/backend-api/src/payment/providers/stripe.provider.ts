@@ -34,6 +34,7 @@ export class StripeProvider implements PaymentProvider {
       currency: "usd",
       customer: customerId,
       payment_method_types: ['card'],
+      setup_future_usage: 'off_session',
       metadata: {
         userId,
         type: "CREDITS",
@@ -192,6 +193,50 @@ export class StripeProvider implements PaymentProvider {
            return { success: false, errorMessage: 'Additional action required', providerPaymentId: subscription.id };
         }
         return { success: false, errorMessage: `Subscription status is ${subscription.status}` };
+      }
+    } catch (error: any) {
+      return { success: false, errorMessage: error.message };
+    }
+  }
+
+  async createSetupIntent(customerId: string, metadata?: Record<string, any>): Promise<{ clientSecret: string; setupIntentId: string }> {
+    const setupIntent = await this.stripe.setupIntents.create({
+      customer: customerId,
+      payment_method_types: ['card'],
+      metadata: metadata || {},
+    });
+
+    if (!setupIntent.client_secret) {
+      throw new InternalServerErrorException("Failed to generate setup intent client secret");
+    }
+
+    return {
+      clientSecret: setupIntent.client_secret,
+      setupIntentId: setupIntent.id,
+    };
+  }
+
+  async chargeSavedCard(
+    customerId: string,
+    paymentMethodId: string,
+    amountUsd: number,
+    metadata?: Record<string, any>
+  ): Promise<{ success: boolean; providerPaymentId?: string; errorMessage?: string }> {
+    try {
+      const paymentIntent = await this.stripe.paymentIntents.create({
+        amount: Math.round(amountUsd * 100),
+        currency: "usd",
+        customer: customerId,
+        payment_method: paymentMethodId,
+        off_session: true,
+        confirm: true,
+        metadata: metadata || {},
+      });
+
+      if (paymentIntent.status === 'succeeded') {
+        return { success: true, providerPaymentId: paymentIntent.id };
+      } else {
+        return { success: false, errorMessage: `Unhandled status: ${paymentIntent.status}`, providerPaymentId: paymentIntent.id };
       }
     } catch (error: any) {
       return { success: false, errorMessage: error.message };

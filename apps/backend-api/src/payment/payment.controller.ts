@@ -18,6 +18,7 @@ import {
   CreateSubscriptionDto,
   ProcessWalletDto,
   ValidateMerchantDto,
+  ChargeSavedCardDto,
 } from "./dto/payment.dto";
 import { ConfigService } from "@nestjs/config";
 import { Throttle } from "@nestjs/throttler";
@@ -114,6 +115,44 @@ export class PaymentController {
       const e = err as Error;
       throw new InternalServerErrorException(
         e.message || "Failed to process wallet payment",
+      );
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @Post("create-setup-intent")
+  async createSetupIntent(@CurrentUser() user: IJwtPayload) {
+    try {
+      return await this.paymentService.createSetupIntent(user.id);
+    } catch (err: unknown) {
+      const e = err as Error;
+      throw new InternalServerErrorException(
+        e.message || "Failed to create setup intent",
+      );
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  @Post("charge-saved-card")
+  async chargeSavedCard(
+    @CurrentUser() user: IJwtPayload,
+    @Body() body: ChargeSavedCardDto,
+  ) {
+    try {
+      return await this.paymentService.chargeSavedCard(
+        user.id,
+        body.paymentMethodId,
+        body.amount,
+        body.type,
+        body.credits,
+        body.planName,
+      );
+    } catch (err: unknown) {
+      const e = err as Error;
+      throw new InternalServerErrorException(
+        e.message || "Failed to charge saved card",
       );
     }
   }
