@@ -583,7 +583,7 @@ function GeneratorContent() {
                     {t("generate.hiddenPrompt")}
                   </p>
                   <Link
-                    href="/profile/billing"
+                    href="/billing"
                     className="px-4 py-2 bg-white text-black text-xs font-bold rounded-full hover:scale-105 transition-transform"
                   >
                     {t("generate.goToPlans")}
