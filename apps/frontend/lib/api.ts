@@ -28,8 +28,19 @@ export const api = axios.create({
 
 let inMemoryToken: string | null = null;
 
+if (typeof window !== "undefined") {
+  inMemoryToken = localStorage.getItem("token") || null;
+}
+
 export const setToken = (token: string | null) => {
   inMemoryToken = token;
+  if (typeof window !== "undefined") {
+    if (token) {
+      localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
+    }
+  }
 };
 
 export const getToken = () => inMemoryToken;

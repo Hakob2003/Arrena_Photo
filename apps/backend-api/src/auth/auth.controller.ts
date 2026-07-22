@@ -44,8 +44,8 @@ export class AuthController {
     const isProd = process.env.NODE_ENV === "production";
     const secureAttr = isProd ? "; Secure" : "";
 
-    const accessCookie = `access_token=${tokens.access_token}; HttpOnly${secureAttr}; SameSite=Lax; Path=/; Max-Age=900`;
-    const refreshCookie = `refresh_token=${tokens.refresh_token}; HttpOnly${secureAttr}; SameSite=Lax; Path=/v1/auth/refresh; Max-Age=604800`;
+    const accessCookie = `access_token=${tokens.access_token}; HttpOnly${secureAttr}; SameSite=None; Path=/; Max-Age=900`;
+    const refreshCookie = `refresh_token=${tokens.refresh_token}; HttpOnly${secureAttr}; SameSite=None; Path=/v1/auth/refresh; Max-Age=604800`;
 
     // In Express 5 / NestJS, setting an array works for multiple Set-Cookie headers
     res.setHeader("Set-Cookie", [accessCookie, refreshCookie]);
